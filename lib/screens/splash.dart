@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/config/app_text_style.dart';
-import 'package:guftagu_mobile/config/theme.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -26,7 +26,11 @@ class SplashScreen extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [colors(context).primary, colors(context).secondary],
+                  // colors: [colors(context).primary, colors(context).secondary],
+                  colors: [
+                    context.colorExt.primary,
+                    context.colorExt.secondary,
+                  ],
                 ),
               ),
             ),
