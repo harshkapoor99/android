@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -14,10 +14,13 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    // Future.wait([
+    // ]).then((value) {
+    // });
+    // precacheImage(AssetImage("assets/images/bg_grad.png"), context);
+    // precacheImage(AssetImage("assets/images/bg_img.png"), context);
     Future.delayed(Duration(seconds: 1)).then((value) {
       context.nav.pushReplacementNamed(Routes.signup);
-      precacheImage(AssetImage("assets/images/bg_grad.png"), context);
-      precacheImage(AssetImage("assets/images/bg_img.png"), context);
     });
     super.initState();
   }
@@ -26,32 +29,37 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "Guftagu",
-              style: AppTextStyle(context).title.copyWith(fontSize: 40.sp),
-            ),
-            Container(
-              height: 32.w,
-              width: 32.w,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  // colors: [colors(context).primary, colors(context).secondary],
-                  colors: [
-                    context.colorExt.primary,
-                    context.colorExt.secondary,
-                  ],
-                ),
-              ),
-            ),
-          ],
+        child: SvgPicture.asset(
+          "assets/svgs/logo.svg",
+          width: 240.w,
+          fit: BoxFit.contain,
         ),
+        // Row(
+        //   mainAxisSize: MainAxisSize.min,
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   children: [
+        //     Text(
+        //       "Guftagu",
+        //       style: AppTextStyle(context).title.copyWith(fontSize: 40.sp),
+        //     ),
+        //     Container(
+        //       height: 32.w,
+        //       width: 32.w,
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         gradient: LinearGradient(
+        //           begin: Alignment.topCenter,
+        //           end: Alignment.bottomCenter,
+        //           // colors: [colors(context).primary, colors(context).secondary],
+        //           colors: [
+        //             context.colorExt.primary,
+        //             context.colorExt.secondary,
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

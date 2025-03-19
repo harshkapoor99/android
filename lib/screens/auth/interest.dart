@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/screens/dashboard.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class CharacterSelectionScreen extends StatefulWidget {
@@ -107,7 +109,14 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                   }).toList(),
             ),
             50.ph,
-            GradientButton(title: "done", onTap: () => {}),
+            GradientButton(
+              title: "done",
+              onTap:
+                  () => context.nav.pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                    (Route<dynamic> route) => false,
+                  ),
+            ),
           ],
         ),
       ),
