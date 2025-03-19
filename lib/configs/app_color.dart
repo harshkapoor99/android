@@ -86,13 +86,13 @@ class AppColors extends ThemeExtension<AppColors> {
 }
 
 class AppStaticColors {
-  static const Color primaryColor = Color(0xFF7517F8);
-  static const Color secondaryColor = Color(0xFFE323FF);
+  static const Color primaryColor = Color(0xFF9D00C6);
+  static const Color secondaryColor = Color(0xFF7517F8);
   static const Color accentColor = Color(0xFF00FFED);
   static const Color whiteColor = Color(0xFFFFFFFF);
   static const Color blackColor = Color(0xFF030712);
   static const Color redColor = Color(0xffFF324B);
-  static const Color grayColor = Color(0xff617986);
+  static const Color grayColor = Color(0xff23222F);
   static const Color orangeColor = Color(0xFFFAA809);
   static const Color yellowColor = Color(0xFFFFEE06);
   static const Color greenColor = Color(0xFF00CA45);

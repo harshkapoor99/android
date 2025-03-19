@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guftagu_mobile/config/app_color.dart';
+import 'package:guftagu_mobile/configs/app_color.dart';
 
 extension ContextLess on BuildContext {
   NavigatorState get nav {

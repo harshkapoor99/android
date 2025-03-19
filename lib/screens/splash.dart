@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:guftagu_mobile/config/app_text_style.dart';
+import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 1)).then((value) {
+      context.nav.pushReplacementNamed(Routes.signup);
+      precacheImage(AssetImage("assets/images/bg_grad.png"), context);
+      precacheImage(AssetImage("assets/images/bg_img.png"), context);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

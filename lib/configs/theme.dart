@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:guftagu_mobile/config/app_color.dart';
+import 'package:guftagu_mobile/configs/app_color.dart';
 
 AppColors colors(context) => Theme.of(context).extension<AppColors>()!;
 
@@ -37,9 +37,7 @@ ThemeData getAppTheme({
         background:
             isDarkTheme ? const Color(0xFF1C1C1E) : const Color(0xFFF3F4F6),
         border:
-            isDarkTheme
-                ? AppStaticColors.accentColor.withValues(alpha: .2)
-                : AppStaticColors.grayColor.withValues(alpha: .2),
+            isDarkTheme ? AppStaticColors.grayColor : AppStaticColors.grayColor,
       ),
     ],
     fontFamily: 'OpenSans',

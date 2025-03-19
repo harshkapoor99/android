@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:guftagu_mobile/config/theme.dart';
+import 'package:guftagu_mobile/configs/theme.dart';
 import 'package:guftagu_mobile/routes.dart';
 
 void main() {
