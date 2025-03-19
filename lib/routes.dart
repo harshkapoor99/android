@@ -31,7 +31,7 @@ class Routes {
       case Routes.otp:
         child = OtpScreen();
       case Routes.interest:
-        child = InterestSeletion();
+        child = CharacterSelectionScreen();
       case Routes.dashboard:
         child = DashboardScreen();
       default:

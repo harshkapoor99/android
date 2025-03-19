@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
@@ -58,7 +59,11 @@ class OtpScreen extends StatelessWidget {
                   ),
                   30.ph,
 
-                  GradientButton(title: "confirm", onTap: () {}),
+                  GradientButton(
+                    title: "confirm",
+                    onTap:
+                        () => context.nav.pushReplacementNamed(Routes.interest),
+                  ),
                   20.ph,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
