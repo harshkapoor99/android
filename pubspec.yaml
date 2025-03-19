@@ -23,6 +23,7 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
@@ -39,3 +40,11 @@ flutter:
           weight: 600
         - asset: assets/fonts/OpenSans-Bold.ttf
           weight: 700
+
+flutter_launcher_icons:
+  image_path_android: "assets/images/logo.png"
+  image_path_ios: "assets/images/logo.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  background_color_ios: "#000000"
