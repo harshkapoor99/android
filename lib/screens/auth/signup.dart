@@ -1,11 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:guftagu_mobile/components/bluring_image_cluster.dart';
 import 'package:guftagu_mobile/components/google_auth.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/text_input_widget.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
@@ -17,31 +17,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final List<FocusNode> _focusNodes = [FocusNode(), FocusNode()];
-  double _blurValue = 0.0;
-
-  @override
-  void initState() {
-    super.initState();
-    for (var focusNode in _focusNodes) {
-      focusNode.addListener(_updateBlur);
-    }
-  }
-
-  void _updateBlur() {
-    setState(() {
-      _blurValue = _focusNodes.any((node) => node.hasFocus) ? 6.r : 0.0;
-    });
-  }
-
-  @override
-  void dispose() {
-    for (var focusNode in _focusNodes) {
-      focusNode.removeListener(_updateBlur);
-      focusNode.dispose();
-    }
-    super.dispose();
-  }
+  final _focusNodes = [FocusNode(), FocusNode()];
 
   @override
   Widget build(BuildContext context) {
@@ -52,28 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Stack(
           children: [
             Image.asset("assets/images/bg_grad.png", width: double.infinity),
-            TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0.0, end: _blurValue),
-              duration: Duration(
-                milliseconds: 300,
-              ), // Adjust animation duration
-              builder: (context, blur, child) {
-                return ImageFiltered(
-                  imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-                  child: child,
-                );
-              },
-              child: Padding(
-                padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).viewPadding.top + 10.h,
-                ),
-                child: Image.asset(
-                  "assets/images/bg_img.png",
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            BluringImageCluster(focusNodes: _focusNodes),
 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -103,7 +58,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   10.ph,
                   TextInputWidget(focusNode: _focusNodes[1]),
                   30.ph,
-                  GradientButton(title: "verify", onTap: () {}),
+                  GradientButton(
+                    title: "verify",
+                    onTap: () => context.nav.pushNamed(Routes.otp),
+                  ),
                   20.ph,
                   Align(
                     alignment: Alignment.center,
@@ -131,6 +89,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   20.ph,
                   GoogleAuthButton(),
+                  20.ph,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Already registered? ",
+                        style: AppTextStyle(context).textSmall,
+                      ),
+                      GestureDetector(
+                        onTap:
+                            () =>
+                                context.nav.pushReplacementNamed(Routes.login),
+                        child: Text(
+                          "Login!",
+                          style: AppTextStyle(
+                            context,
+                          ).textSmall.copyWith(color: context.colorExt.primary),
+                        ),
+                      ),
+                    ],
+                  ),
                   20.ph,
                 ],
               ),

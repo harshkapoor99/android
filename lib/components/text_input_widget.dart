@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class TextInputWidget extends StatelessWidget {
   const TextInputWidget({
@@ -50,10 +51,10 @@ class TextInputWidget extends StatelessWidget {
       style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xff1F1F2A),
+        fillColor: context.colorExt.border,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Color(0xFF23222F)),
+          borderSide: BorderSide(color: context.colorExt.border),
         ),
       ),
     );
