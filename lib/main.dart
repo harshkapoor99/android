@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Guftagu',
           // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          themeMode: ThemeMode.dark,
           theme: getAppTheme(context: context, isDarkTheme: false),
           darkTheme: getAppTheme(context: context, isDarkTheme: true),
           onGenerateRoute: Routes.generatedRoutes,
