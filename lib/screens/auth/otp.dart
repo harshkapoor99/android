@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -19,7 +20,7 @@ class OtpScreen extends StatelessWidget {
         onTap: () => FocusScope.of(context).unfocus(),
         child: Stack(
           children: [
-            Image.asset("assets/images/bg_grad.png", width: double.infinity),
+            Assets.images.bgGrad.image(width: double.infinity),
 
             // if (context.nav.canPop()) BackButtonWidget(),
             Padding(

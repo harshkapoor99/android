@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -13,16 +14,17 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    // Future.wait([
-    // ]).then((value) {
-    // });
-    // precacheImage(AssetImage("assets/images/bg_grad.png"), context);
-    // precacheImage(AssetImage("assets/images/bg_img.png"), context);
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      context.nav.pushReplacementNamed(Routes.signup);
+  void didChangeDependencies() {
+    // Adjust the provider based on the image type
+    Future.wait([
+      precacheImage(Assets.images.bgGrad.provider(), context),
+      precacheImage(Assets.images.bgGrad.provider(), context),
+    ]).then((value) {
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        context.nav.pushReplacementNamed(Routes.signup);
+      });
     });
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override

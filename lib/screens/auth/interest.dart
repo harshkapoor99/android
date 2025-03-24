@@ -62,51 +62,102 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
               "Tap on 4 - 5 of your favorite genres",
               style: AppTextStyle(context).textSmall.copyWith(fontSize: 12.sp),
             ),
-            60.ph,
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              alignment: WrapAlignment.center,
-              children:
-                  characterTypes.map((type) {
-                    bool isSelected = selectedTypes.contains(type);
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (isSelected) {
-                            selectedTypes.remove(type);
-                          } else {
-                            if (selectedTypes.length < 5) {
-                              selectedTypes.add(type);
-                            }
-                          }
-                        });
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient:
-                              isSelected
-                                  ? const LinearGradient(
-                                    colors: [Colors.yellow, Colors.pink],
-                                  )
-                                  : null,
-                          color: isSelected ? null : Colors.grey[900],
-                        ),
-                        child: Text(
-                          type,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+            50.ph,
+            // Expanded(
+            //   child: ListView.builder(
+            //     itemBuilder: (context, index) {
+            //       bool isSelected = selectedTypes.contains(
+            //         characterTypes[index],
+            //       );
+            //       return GestureDetector(
+            //         onTap: () {
+            //           setState(() {
+            //             if (isSelected) {
+            //               selectedTypes.remove(characterTypes[index]);
+            //             } else {
+            //               if (selectedTypes.length < 5) {
+            //                 selectedTypes.add(characterTypes[index]);
+            //               }
+            //             }
+            //           });
+            //         },
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //             horizontal: 16,
+            //             vertical: 10,
+            //           ),
+            //           decoration: BoxDecoration(
+            //             borderRadius: BorderRadius.circular(20),
+            //             gradient:
+            //                 isSelected
+            //                     ? const LinearGradient(
+            //                       colors: [Colors.yellow, Colors.pink],
+            //                     )
+            //                     : null,
+            //             color: isSelected ? null : Colors.grey[900],
+            //           ),
+            //           child: Text(
+            //             characterTypes[index],
+            //             style: TextStyle(
+            //               color: Colors.white,
+            //               fontWeight: FontWeight.bold,
+            //             ),
+            //           ),
+            //         ),
+            //       );
+            //     },
+            //     shrinkWrap: true,
+            //     itemCount: characterTypes.length,
+            //   ),
+            // ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.center,
+                  children:
+                      characterTypes.map((type) {
+                        bool isSelected = selectedTypes.contains(type);
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (isSelected) {
+                                selectedTypes.remove(type);
+                              } else {
+                                if (selectedTypes.length < 5) {
+                                  selectedTypes.add(type);
+                                }
+                              }
+                            });
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              gradient:
+                                  isSelected
+                                      ? const LinearGradient(
+                                        colors: [Colors.yellow, Colors.pink],
+                                      )
+                                      : null,
+                              color: isSelected ? null : Colors.grey[900],
+                            ),
+                            child: Text(
+                              type,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
+                        );
+                      }).toList(),
+                ),
+              ),
             ),
             50.ph,
             GradientButton(
