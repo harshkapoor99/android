@@ -19,6 +19,20 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _focusNodes = [FocusNode(), FocusNode()];
+  bool isLoading = false;
+
+  void signUp() async {
+    setState(() {
+      isLoading = true;
+    });
+    FocusManager.instance.primaryFocus?.unfocus();
+    await Future.delayed(Duration(seconds: 1)).then((value) {
+      setState(() {
+        isLoading = false;
+      });
+      context.nav.pushNamed(Routes.otp);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +75,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   30.ph,
                   GradientButton(
                     title: "verify",
-                    onTap: () => context.nav.pushNamed(Routes.otp),
+                    showLoading: isLoading,
+                    onTap: signUp,
                   ),
                   20.ph,
                   Align(

@@ -20,6 +20,20 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final List<FocusNode> _focusNodes = [FocusNode()];
+  bool isLoading = false;
+
+  void login() async {
+    setState(() {
+      isLoading = true;
+    });
+    FocusManager.instance.primaryFocus?.unfocus();
+    await Future.delayed(Duration(seconds: 1)).then((value) {
+      setState(() {
+        isLoading = false;
+      });
+      context.nav.pushNamed(Routes.otp);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +71,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   30.ph,
                   GradientButton(
                     title: "continue",
-                    onTap: () => context.nav.pushNamed(Routes.otp),
+                    showLoading: isLoading,
+                    onTap: login,
                   ),
                   20.ph,
                   Align(

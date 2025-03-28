@@ -4,10 +4,16 @@ import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class GradientButton extends StatelessWidget {
-  const GradientButton({super.key, required this.title, required this.onTap});
+  const GradientButton({
+    super.key,
+    required this.title,
+    required this.onTap,
+    this.showLoading = false,
+  });
 
   final String title;
   final VoidCallback onTap;
+  final bool showLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +34,17 @@ class GradientButton extends StatelessWidget {
           ),
         ),
         onPressed: onTap,
-        child: Text(
-          title.toUpperCase(),
-          style: AppTextStyle(context).buttonText,
-        ),
+        child:
+            showLoading
+                ? SizedBox(
+                  height: 20.h,
+                  width: 20.h,
+                  child: CircularProgressIndicator(),
+                )
+                : Text(
+                  title.toUpperCase(),
+                  style: AppTextStyle(context).buttonText,
+                ),
       ),
     );
   }
