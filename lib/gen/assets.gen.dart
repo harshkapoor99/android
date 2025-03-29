@@ -62,8 +62,23 @@ class $AssetsImagesGen {
 class $AssetsSvgsGen {
   const $AssetsSvgsGen();
 
+  /// File path: assets/svgs/bg_circle_large.svg
+  String get bgCircleLarge => 'assets/svgs/bg_circle_large.svg';
+
+  /// File path: assets/svgs/bg_circle_small.svg
+  String get bgCircleSmall => 'assets/svgs/bg_circle_small.svg';
+
   /// File path: assets/svgs/bg_grad.svg
   String get bgGrad => 'assets/svgs/bg_grad.svg';
+
+  /// File path: assets/svgs/bg_grad_large.svg
+  String get bgGradLarge => 'assets/svgs/bg_grad_large.svg';
+
+  /// File path: assets/svgs/bg_grad_small.svg
+  String get bgGradSmall => 'assets/svgs/bg_grad_small.svg';
+
+  /// File path: assets/svgs/ic_audio_spectrum.svg
+  String get icAudioSpectrum => 'assets/svgs/ic_audio_spectrum.svg';
 
   /// File path: assets/svgs/ic_chat.svg
   String get icChat => 'assets/svgs/ic_chat.svg';
@@ -92,6 +107,12 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/ic_profile.svg
   String get icProfile => 'assets/svgs/ic_profile.svg';
 
+  /// File path: assets/svgs/ic_speaker.svg
+  String get icSpeaker => 'assets/svgs/ic_speaker.svg';
+
+  /// File path: assets/svgs/ic_speaker_grad.svg
+  String get icSpeakerGrad => 'assets/svgs/ic_speaker_grad.svg';
+
   /// File path: assets/svgs/logo.svg
   String get logo => 'assets/svgs/logo.svg';
 
@@ -100,7 +121,12 @@ class $AssetsSvgsGen {
 
   /// List of all assets
   List<String> get values => [
+    bgCircleLarge,
+    bgCircleSmall,
     bgGrad,
+    bgGradLarge,
+    bgGradSmall,
+    icAudioSpectrum,
     icChat,
     icChatGrag1,
     icCoins,
@@ -110,6 +136,8 @@ class $AssetsSvgsGen {
     icMyAi,
     icNotification,
     icProfile,
+    icSpeaker,
+    icSpeakerGrad,
     logo,
     logoAnimated,
   ];

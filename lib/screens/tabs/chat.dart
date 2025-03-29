@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -216,7 +217,7 @@ class _ChatTabState extends State<ChatTab> {
                       vertical: 5.h,
                       horizontal: 16.w,
                     ),
-                    onTap: () {},
+                    onTap: () => context.nav.pushNamed(Routes.chat),
                     leading: SizedBox(
                       width: 50.w,
                       height: 50.w,
