@@ -24,6 +24,18 @@ class AppTextStyle {
     fontWeight: FontWeight.w400,
   );
 
+  TextStyle get textSemibold => TextStyle(
+    color: colors(context).textPrimary,
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+  );
+
+  TextStyle get textBold => TextStyle(
+    color: colors(context).textPrimary,
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w700,
+  );
+
   TextStyle get textSmall => TextStyle(
     color: colors(context).textSecondary,
     fontSize: 14.sp,
@@ -50,7 +62,7 @@ class AppTextStyle {
 
   TextStyle get appBarText => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 18.sp,
-    fontWeight: FontWeight.w600,
+    fontSize: 20.sp,
+    fontWeight: FontWeight.w700,
   );
 }

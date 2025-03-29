@@ -18,11 +18,45 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg_img.png
   AssetGenImage get bgImg => const AssetGenImage('assets/images/bg_img.png');
 
+  /// File path: assets/images/img1.jpeg
+  AssetGenImage get img1 => const AssetGenImage('assets/images/img1.jpeg');
+
+  /// File path: assets/images/img2.jpeg
+  AssetGenImage get img2 => const AssetGenImage('assets/images/img2.jpeg');
+
+  /// File path: assets/images/img3.jpeg
+  AssetGenImage get img3 => const AssetGenImage('assets/images/img3.jpeg');
+
+  /// File path: assets/images/img4.jpeg
+  AssetGenImage get img4 => const AssetGenImage('assets/images/img4.jpeg');
+
+  /// File path: assets/images/img5.jpeg
+  AssetGenImage get img5 => const AssetGenImage('assets/images/img5.jpeg');
+
+  /// File path: assets/images/imgTrans1.png
+  AssetGenImage get imgTrans1 =>
+      const AssetGenImage('assets/images/imgTrans1.png');
+
+  /// File path: assets/images/imgTrans2.png
+  AssetGenImage get imgTrans2 =>
+      const AssetGenImage('assets/images/imgTrans2.png');
+
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [bgGrad, bgImg, logo];
+  List<AssetGenImage> get values => [
+    bgGrad,
+    bgImg,
+    img1,
+    img2,
+    img3,
+    img4,
+    img5,
+    imgTrans1,
+    imgTrans2,
+    logo,
+  ];
 }
 
 class $AssetsSvgsGen {
@@ -31,14 +65,54 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/bg_grad.svg
   String get bgGrad => 'assets/svgs/bg_grad.svg';
 
+  /// File path: assets/svgs/ic_chat.svg
+  String get icChat => 'assets/svgs/ic_chat.svg';
+
+  /// File path: assets/svgs/ic_chatGrag1.svg
+  String get icChatGrag1 => 'assets/svgs/ic_chatGrag1.svg';
+
+  /// File path: assets/svgs/ic_coins.svg
+  String get icCoins => 'assets/svgs/ic_coins.svg';
+
+  /// File path: assets/svgs/ic_create.svg
+  String get icCreate => 'assets/svgs/ic_create.svg';
+
   /// File path: assets/svgs/ic_google.svg
   String get icGoogle => 'assets/svgs/ic_google.svg';
+
+  /// File path: assets/svgs/ic_menu.svg
+  String get icMenu => 'assets/svgs/ic_menu.svg';
+
+  /// File path: assets/svgs/ic_myAi.svg
+  String get icMyAi => 'assets/svgs/ic_myAi.svg';
+
+  /// File path: assets/svgs/ic_notification.svg
+  String get icNotification => 'assets/svgs/ic_notification.svg';
+
+  /// File path: assets/svgs/ic_profile.svg
+  String get icProfile => 'assets/svgs/ic_profile.svg';
 
   /// File path: assets/svgs/logo.svg
   String get logo => 'assets/svgs/logo.svg';
 
+  /// File path: assets/svgs/logo_animated.svg
+  String get logoAnimated => 'assets/svgs/logo_animated.svg';
+
   /// List of all assets
-  List<String> get values => [bgGrad, icGoogle, logo];
+  List<String> get values => [
+    bgGrad,
+    icChat,
+    icChatGrag1,
+    icCoins,
+    icCreate,
+    icGoogle,
+    icMenu,
+    icMyAi,
+    icNotification,
+    icProfile,
+    logo,
+    logoAnimated,
+  ];
 }
 
 class Assets {

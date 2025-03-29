@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
+import 'package:guftagu_mobile/configs/app_text_style.dart';
 
 extension ContextLess on BuildContext {
   NavigatorState get nav {
@@ -12,5 +13,9 @@ extension ContextLess on BuildContext {
 
   AppColors get colorExt {
     return Theme.of(this).extension<AppColors>()!;
+  }
+
+  AppTextStyle get appTextStyle {
+    return AppTextStyle(this);
   }
 }
