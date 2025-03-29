@@ -125,16 +125,18 @@ class _ChatTabState extends State<ChatTab> {
                   color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Text(
-                  category,
-                  style: context.appTextStyle.textSemibold.copyWith(
-                    color:
-                        isSelected
-                            ? context.colorExt.background
-                            : context.colorExt.textPrimary.withValues(
-                              alpha: 0.6,
-                            ),
-                    fontSize: 12.sp,
+                child: Center(
+                  child: Text(
+                    category,
+                    style: context.appTextStyle.textSemibold.copyWith(
+                      color:
+                          isSelected
+                              ? context.colorExt.background
+                              : context.colorExt.textPrimary.withValues(
+                                alpha: 0.6,
+                              ),
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ),
@@ -158,11 +160,11 @@ class _ChatTabState extends State<ChatTab> {
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: ais.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: EdgeInsets.only(
-                    right: index < ais.length - 1 ? 8.0.w : 0,
+                    right: index < ais.length - 1 ? 8.w : 0,
                   ),
                   child: Column(
                     children: [

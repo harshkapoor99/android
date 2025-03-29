@@ -155,22 +155,24 @@ class _HomeTabState extends State<HomeTab> {
             child: GestureDetector(
               onTap: () => selectCategoryTab(category),
               child: Container(
-                height: 36.h,
                 padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.h),
                 decoration: BoxDecoration(
                   color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
                   borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Text(
-                  category,
-                  style: AppTextStyle(context).textSemibold.copyWith(
-                    color:
-                        isSelected
-                            ? context.colorExt.background
-                            : context.colorExt.textPrimary.withValues(
-                              alpha: 0.6,
-                            ),
-                    fontSize: 12.sp,
+                child: Center(
+                  child: Text(
+                    category,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyle(context).textSemibold.copyWith(
+                      color:
+                          isSelected
+                              ? context.colorExt.background
+                              : context.colorExt.textPrimary.withValues(
+                                alpha: 0.6,
+                              ),
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ),
