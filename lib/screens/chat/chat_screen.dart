@@ -93,7 +93,7 @@ class ChatScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return ChatBubble(

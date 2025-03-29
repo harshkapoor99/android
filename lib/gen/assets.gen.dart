@@ -44,8 +44,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
+  /// File path: assets/images/logo_animation.json
+  String get logoAnimation => 'assets/images/logo_animation.json';
+
   /// List of all assets
-  List<AssetGenImage> get values => [
+  List<dynamic> get values => [
     bgGrad,
     bgImg,
     img1,
@@ -56,6 +59,7 @@ class $AssetsImagesGen {
     imgTrans1,
     imgTrans2,
     logo,
+    logoAnimation,
   ];
 }
 

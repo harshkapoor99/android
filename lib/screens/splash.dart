@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
       precacheImage(Assets.images.bgGrad.provider(), context),
     ]).then((value) {
       Future.delayed(Duration(seconds: 1)).then((value) {
-        context.nav.pushReplacementNamed(Routes.signup);
+        context.nav.pushReplacementNamed(Routes.dashboard);
       });
     });
     super.didChangeDependencies();
@@ -31,37 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: SvgPicture.asset(
-          "assets/svgs/logo.svg",
-          width: 240.w,
-          fit: BoxFit.contain,
-        ),
-        // Row(
-        //   mainAxisSize: MainAxisSize.min,
-        //   crossAxisAlignment: CrossAxisAlignment.center,
-        //   children: [
-        //     Text(
-        //       "Guftagu",
-        //       style: AppTextStyle(context).title.copyWith(fontSize: 40.sp),
-        //     ),
-        //     Container(
-        //       height: 32.w,
-        //       width: 32.w,
-        //       decoration: BoxDecoration(
-        //         shape: BoxShape.circle,
-        //         gradient: LinearGradient(
-        //           begin: Alignment.topCenter,
-        //           end: Alignment.bottomCenter,
-        //           // colors: [colors(context).primary, colors(context).secondary],
-        //           colors: [
-        //             context.colorExt.primary,
-        //             context.colorExt.secondary,
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ],
-        // ),
+        child:
+        // Lottie.asset(Assets.images.logoAnimation),
+        SvgPicture.asset(Assets.svgs.logo, width: 240.w, fit: BoxFit.contain),
       ),
     );
   }
