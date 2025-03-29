@@ -56,13 +56,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: Text('Sign Up', style: AppTextStyle(context).title),
                   ),
                   50.ph,
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text("Name", style: AppTextStyle(context).labelText),
-                  ),
-                  10.ph,
-                  TextInputWidget(focusNode: _focusNodes[0]),
-                  10.ph,
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 8.0),
+                  //   child: Text("Name", style: AppTextStyle(context).labelText),
+                  // ),
+                  // 10.ph,
+                  // TextInputWidget(focusNode: _focusNodes[0]),
+                  // 10.ph,
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
                     child: Text(
@@ -71,7 +71,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   10.ph,
-                  TextInputWidget(focusNode: _focusNodes[1]),
+                  TextInputWidget(focusNode: _focusNodes[0]),
                   30.ph,
                   GradientButton(
                     title: "verify",
