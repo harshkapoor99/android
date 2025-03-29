@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
@@ -152,110 +153,139 @@ class _ChatTabState extends State<ChatTab> {
     if (showHome) {
       return HomeTab(startChat: startChat);
     } else {
-      return Column(
-        children: [
-          SizedBox(height: 10),
-          Container(
-            height: 140.h,
-            child: ListView.builder(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              scrollDirection: Axis.horizontal,
-              itemCount: ais.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.only(
-                    right: index < ais.length - 1 ? 8.w : 0,
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 120.h,
-                        width: 80.w,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(250.r),
-                          image: DecorationImage(
-                            image: Assets.images.img5.provider(),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Text(
-                        ais[index],
-                        style: context.appTextStyle.textSemibold.copyWith(
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 10),
-          //   child: TextField(
-          //     decoration: InputDecoration(
-          //       hintText: "Search",
-          //       // prefixIcon: Icon(Icons.search),
-          //       filled: true,
-          //       fillColor: Colors.grey[900],
-          //       border: OutlineInputBorder(
-          //         borderRadius: BorderRadius.circular(20.r),
-          //         borderSide: BorderSide.none,
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          25.ph,
-          buildCategoryTabs(),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h),
+      return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Column(
+          children: [
+            SizedBox(height: 10),
+            SizedBox(
+              height: 140.h,
               child: ListView.builder(
-                itemCount: chats.length,
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                scrollDirection: Axis.horizontal,
+                itemCount: ais.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    contentPadding: EdgeInsets.symmetric(
-                      vertical: 5.h,
-                      horizontal: 16.w,
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      right: index < ais.length - 1 ? 8.w : 0,
                     ),
-                    onTap: () => context.nav.pushNamed(Routes.chat),
-                    leading: SizedBox(
-                      width: 50.w,
-                      height: 50.w,
-                      child: CircleAvatar(
-                        backgroundImage: Assets.images.img1.provider(),
-                      ),
-                    ),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Text(
-                          chats[index]['name']!,
-                          style: context.appTextStyle.textSemibold.copyWith(
-                            fontSize: 12.sp,
+                        Container(
+                          height: 120.h,
+                          width: 80.w,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(250.r),
+                            image: DecorationImage(
+                              image: Assets.images.img5.provider(),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                         Text(
-                          chats[index]['time']!,
+                          ais[index],
                           style: context.appTextStyle.textSemibold.copyWith(
                             fontSize: 12.sp,
                           ),
                         ),
                       ],
                     ),
-                    subtitle: Text(
-                      chats[index]['message']!,
-                      style: context.appTextStyle.textSmall.copyWith(
-                        fontSize: 12.sp,
-                      ),
-                    ),
                   );
                 },
               ),
             ),
-          ),
-        ],
+            10.ph,
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: SizedBox(
+                height: 45.h,
+                child: TextField(
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                    hintText: "Search",
+                    hintStyle: context.appTextStyle.textSmall.copyWith(
+                      color: context.colorExt.textPrimary.withValues(
+                        alpha: 0.7,
+                      ),
+                    ),
+                    suffixIcon: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 10.w,
+                      ),
+                      child: SvgPicture.asset(
+                        Assets.svgs.icSearch,
+                        height: 10.w,
+                        width: 10.w,
+                      ),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[900],
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(60.r),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            15.ph,
+            buildCategoryTabs(),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.h),
+                child: ListView.builder(
+                  itemCount: chats.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        vertical: 5.h,
+                        horizontal: 16.w,
+                      ),
+                      onTap: () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        Future.delayed(Durations.medium1).then((value) {
+                          context.nav.pushNamed(Routes.chat);
+                        });
+                      },
+                      leading: SizedBox(
+                        width: 50.w,
+                        height: 50.w,
+                        child: CircleAvatar(
+                          backgroundImage: Assets.images.img1.provider(),
+                        ),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            chats[index]['name']!,
+                            style: context.appTextStyle.textSemibold.copyWith(
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                          Text(
+                            chats[index]['time']!,
+                            style: context.appTextStyle.textSemibold.copyWith(
+                              fontSize: 12.sp,
+                            ),
+                          ),
+                        ],
+                      ),
+                      subtitle: Text(
+                        chats[index]['message']!,
+                        style: context.appTextStyle.textSmall.copyWith(
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       );
     }
   }

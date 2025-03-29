@@ -124,6 +124,9 @@ class $AssetsSvgsGen {
   /// File path: assets/svgs/ic_profile.svg
   String get icProfile => 'assets/svgs/ic_profile.svg';
 
+  /// File path: assets/svgs/ic_search.svg
+  String get icSearch => 'assets/svgs/ic_search.svg';
+
   /// File path: assets/svgs/ic_speaker.svg
   String get icSpeaker => 'assets/svgs/ic_speaker.svg';
 
@@ -154,6 +157,7 @@ class $AssetsSvgsGen {
     icMyAi,
     icNotification,
     icProfile,
+    icSearch,
     icSpeaker,
     icSpeakerGrad,
     logo,
