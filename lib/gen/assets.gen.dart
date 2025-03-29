@@ -15,6 +15,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/bg_grad.png
   AssetGenImage get bgGrad => const AssetGenImage('assets/images/bg_grad.png');
 
+  /// File path: assets/images/bg_grad_large.png
+  AssetGenImage get bgGradLarge =>
+      const AssetGenImage('assets/images/bg_grad_large.png');
+
+  /// File path: assets/images/bg_grad_small.png
+  AssetGenImage get bgGradSmall =>
+      const AssetGenImage('assets/images/bg_grad_small.png');
+
   /// File path: assets/images/bg_img.png
   AssetGenImage get bgImg => const AssetGenImage('assets/images/bg_img.png');
 
@@ -50,6 +58,8 @@ class $AssetsImagesGen {
   /// List of all assets
   List<dynamic> get values => [
     bgGrad,
+    bgGradLarge,
+    bgGradSmall,
     bgImg,
     img1,
     img2,
@@ -89,6 +99,9 @@ class $AssetsSvgsGen {
 
   /// File path: assets/svgs/ic_chatGrag1.svg
   String get icChatGrag1 => 'assets/svgs/ic_chatGrag1.svg';
+
+  /// File path: assets/svgs/ic_chat_prefix.svg
+  String get icChatPrefix => 'assets/svgs/ic_chat_prefix.svg';
 
   /// File path: assets/svgs/ic_coins.svg
   String get icCoins => 'assets/svgs/ic_coins.svg';
@@ -133,6 +146,7 @@ class $AssetsSvgsGen {
     icAudioSpectrum,
     icChat,
     icChatGrag1,
+    icChatPrefix,
     icCoins,
     icCreate,
     icGoogle,

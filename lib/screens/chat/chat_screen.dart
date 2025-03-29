@@ -105,33 +105,50 @@ class ChatScreen extends StatelessWidget {
             ),
             Container(
               padding: const EdgeInsets.all(10),
-              color: Colors.black,
               child: Row(
                 children: [
                   Expanded(
-                    child: TextField(
-                      focusNode: _focusNodes,
-
-                      decoration: InputDecoration(
-                        hintText: "Start your dream chatting",
-                        hintStyle: context.appTextStyle.textSmall.copyWith(
-                          color: context.colorExt.textPrimary.withValues(
-                            alpha: 0.7,
+                    child: SizedBox(
+                      // height: 45.w,
+                      child: TextField(
+                        // maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 4,
+                        focusNode: _focusNodes,
+                        decoration: InputDecoration(
+                          prefixIcon: Padding(
+                            padding: EdgeInsets.only(
+                              left: 12.w,
+                              top: 10.w,
+                              bottom: 10.w,
+                            ),
+                            child: SvgPicture.asset(
+                              Assets.svgs.icChatPrefix,
+                              height: 10.w,
+                              width: 10.w,
+                            ),
                           ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[900],
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(60.r),
-                          borderSide: BorderSide.none,
+                          hintText: "Start your dream chatting",
+                          hintStyle: context.appTextStyle.textSmall.copyWith(
+                            color: context.colorExt.textPrimary.withValues(
+                              alpha: 0.7,
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: context.colorExt.border,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(60.r),
+                            borderSide: BorderSide.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
                   10.pw,
                   Container(
-                    width: 50.w,
-                    height: 50.w,
+                    width: 45.w,
+                    height: 45.w,
                     decoration: BoxDecoration(
                       color: context.colorExt.border,
                       borderRadius: BorderRadius.circular(100.w),
