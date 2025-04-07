@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
@@ -17,6 +19,37 @@ class Onboarding extends StatefulWidget {
 class _OnboardingState extends State<Onboarding> {
   int selectedIndex = 0;
   final _pageController = PageController(initialPage: 0, viewportFraction: 1);
+
+  late Timer _timer;
+
+  void _schedule() {
+    _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      if (selectedIndex < 2) {
+        _pageController.nextPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      } else {
+        _pageController.animateToPage(
+          0,
+          duration: Duration(milliseconds: 600),
+          curve: Curves.ease,
+        );
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    _schedule();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +111,6 @@ class _OnboardingState extends State<Onboarding> {
                   bool isSelected = selectedIndex == index;
                   return GestureDetector(
                     onTap: () {
-                      //   outerCarouselController.animateToPage(index);
                       _pageController.animateToPage(
                         index,
                         duration: Duration(milliseconds: 300),
@@ -108,22 +140,8 @@ class _OnboardingState extends State<Onboarding> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: GradientButton(
-                  title: selectedIndex < 2 ? "Next" : "Get started",
-                  onTap: () {
-                    if (selectedIndex < 2) {
-                      _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    } else {
-                      //   _pageController.animateToPage(
-                      //     0,
-                      //     duration: Duration(milliseconds: 300),
-                      //     curve: Curves.ease,
-                      //   );
-                      context.nav.pushReplacementNamed(Routes.signup);
-                    }
-                  },
+                  title: "Get started",
+                  onTap: () => context.nav.pushReplacementNamed(Routes.signup),
                 ),
               ),
               20.ph,
