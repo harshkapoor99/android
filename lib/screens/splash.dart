@@ -21,7 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
       precacheImage(Assets.images.bgGrad.provider(), context),
     ]).then((value) {
       Future.delayed(Duration(seconds: 1)).then((value) {
-        context.nav.pushReplacementNamed(Routes.signup);
+        context.nav.pushReplacementNamed(Routes.onboarding);
       });
     });
     super.didChangeDependencies();

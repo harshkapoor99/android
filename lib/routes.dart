@@ -6,6 +6,7 @@ import 'package:guftagu_mobile/screens/auth/signup.dart';
 import 'package:guftagu_mobile/screens/chat/call_screen.dart';
 import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
+import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -14,6 +15,7 @@ class Routes {
 
   static const splash = "/";
   static const signup = "/signup";
+  static const onboarding = "/onboarding";
   static const login = "/login";
   static const otp = "/otp";
   static const interest = "/interest";
@@ -27,6 +29,8 @@ class Routes {
     switch (settings.name) {
       case Routes.splash:
         child = SplashScreen();
+      case Routes.onboarding:
+        child = Onboarding();
       case Routes.signup:
         child = SignUpScreen();
       case Routes.login:
