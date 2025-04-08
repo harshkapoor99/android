@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/screens/tabs/chat.dart';
 import 'package:guftagu_mobile/screens/tabs/create.dart';
-import 'package:guftagu_mobile/screens/tabs/myAis.dart';
+import 'package:guftagu_mobile/screens/tabs/my_ais.dart';
 import 'package:guftagu_mobile/screens/tabs/profile.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
