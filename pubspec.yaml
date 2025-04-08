@@ -35,6 +35,8 @@ flutter:
   assets:
     - assets/svgs/
     - assets/images/
+    - assets/images/model/
+    - assets/images/onboarding/
 
   fonts:
     - family: OpenSans

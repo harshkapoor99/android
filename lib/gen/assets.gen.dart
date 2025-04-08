@@ -12,48 +12,40 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/bg_grad.png
-  AssetGenImage get bgGrad => const AssetGenImage('assets/images/bg_grad.png');
+  /// File path: assets/images/bg_grad.webp
+  AssetGenImage get bgGrad => const AssetGenImage('assets/images/bg_grad.webp');
 
-  /// File path: assets/images/bg_grad_large.png
+  /// File path: assets/images/bg_grad_large.webp
   AssetGenImage get bgGradLarge =>
-      const AssetGenImage('assets/images/bg_grad_large.png');
+      const AssetGenImage('assets/images/bg_grad_large.webp');
 
-  /// File path: assets/images/bg_grad_small.png
+  /// File path: assets/images/bg_grad_small.webp
   AssetGenImage get bgGradSmall =>
-      const AssetGenImage('assets/images/bg_grad_small.png');
+      const AssetGenImage('assets/images/bg_grad_small.webp');
 
-  /// File path: assets/images/bg_img.png
-  AssetGenImage get bgImg => const AssetGenImage('assets/images/bg_img.png');
+  /// File path: assets/images/bg_img.webp
+  AssetGenImage get bgImg => const AssetGenImage('assets/images/bg_img.webp');
 
-  /// File path: assets/images/img1.jpeg
-  AssetGenImage get img1 => const AssetGenImage('assets/images/img1.jpeg');
-
-  /// File path: assets/images/img2.jpeg
-  AssetGenImage get img2 => const AssetGenImage('assets/images/img2.jpeg');
-
-  /// File path: assets/images/img3.jpeg
-  AssetGenImage get img3 => const AssetGenImage('assets/images/img3.jpeg');
-
-  /// File path: assets/images/img4.jpeg
-  AssetGenImage get img4 => const AssetGenImage('assets/images/img4.jpeg');
-
-  /// File path: assets/images/img5.jpeg
-  AssetGenImage get img5 => const AssetGenImage('assets/images/img5.jpeg');
-
-  /// File path: assets/images/imgTrans1.png
+  /// File path: assets/images/imgTrans1.webp
   AssetGenImage get imgTrans1 =>
-      const AssetGenImage('assets/images/imgTrans1.png');
+      const AssetGenImage('assets/images/imgTrans1.webp');
 
-  /// File path: assets/images/imgTrans2.png
+  /// File path: assets/images/imgTrans2.webp
   AssetGenImage get imgTrans2 =>
-      const AssetGenImage('assets/images/imgTrans2.png');
+      const AssetGenImage('assets/images/imgTrans2.webp');
 
-  /// File path: assets/images/logo.png
-  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
+  /// File path: assets/images/logo.webp
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.webp');
 
   /// File path: assets/images/logo_animation.json
   String get logoAnimation => 'assets/images/logo_animation.json';
+
+  /// Directory path: assets/images/model
+  $AssetsImagesModelGen get model => const $AssetsImagesModelGen();
+
+  /// Directory path: assets/images/onboarding
+  $AssetsImagesOnboardingGen get onboarding =>
+      const $AssetsImagesOnboardingGen();
 
   /// List of all assets
   List<dynamic> get values => [
@@ -61,11 +53,6 @@ class $AssetsImagesGen {
     bgGradLarge,
     bgGradSmall,
     bgImg,
-    img1,
-    img2,
-    img3,
-    img4,
-    img5,
     imgTrans1,
     imgTrans2,
     logo,
@@ -162,6 +149,132 @@ class $AssetsSvgsGen {
     icSpeakerGrad,
     logo,
     logoAnimated,
+  ];
+}
+
+class $AssetsImagesModelGen {
+  const $AssetsImagesModelGen();
+
+  /// File path: assets/images/model/mod_img1.jpeg
+  AssetGenImage get modImg1 =>
+      const AssetGenImage('assets/images/model/mod_img1.jpeg');
+
+  /// File path: assets/images/model/mod_img2.jpeg
+  AssetGenImage get modImg2 =>
+      const AssetGenImage('assets/images/model/mod_img2.jpeg');
+
+  /// File path: assets/images/model/mod_img3.jpeg
+  AssetGenImage get modImg3 =>
+      const AssetGenImage('assets/images/model/mod_img3.jpeg');
+
+  /// File path: assets/images/model/mod_img4.jpeg
+  AssetGenImage get modImg4 =>
+      const AssetGenImage('assets/images/model/mod_img4.jpeg');
+
+  /// File path: assets/images/model/mod_img5.jpeg
+  AssetGenImage get modImg5 =>
+      const AssetGenImage('assets/images/model/mod_img5.jpeg');
+
+  /// File path: assets/images/model/mod_img6.jpeg
+  AssetGenImage get modImg6 =>
+      const AssetGenImage('assets/images/model/mod_img6.jpeg');
+
+  /// File path: assets/images/model/mod_img7.jpeg
+  AssetGenImage get modImg7 =>
+      const AssetGenImage('assets/images/model/mod_img7.jpeg');
+
+  /// File path: assets/images/model/mod_img8.jpeg
+  AssetGenImage get modImg8 =>
+      const AssetGenImage('assets/images/model/mod_img8.jpeg');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    modImg1,
+    modImg2,
+    modImg3,
+    modImg4,
+    modImg5,
+    modImg6,
+    modImg7,
+    modImg8,
+  ];
+}
+
+class $AssetsImagesOnboardingGen {
+  const $AssetsImagesOnboardingGen();
+
+  /// File path: assets/images/onboarding/ob_img1.webp
+  AssetGenImage get obImg1 =>
+      const AssetGenImage('assets/images/onboarding/ob_img1.webp');
+
+  /// File path: assets/images/onboarding/ob_img10.webp
+  AssetGenImage get obImg10 =>
+      const AssetGenImage('assets/images/onboarding/ob_img10.webp');
+
+  /// File path: assets/images/onboarding/ob_img11.webp
+  AssetGenImage get obImg11 =>
+      const AssetGenImage('assets/images/onboarding/ob_img11.webp');
+
+  /// File path: assets/images/onboarding/ob_img12.webp
+  AssetGenImage get obImg12 =>
+      const AssetGenImage('assets/images/onboarding/ob_img12.webp');
+
+  /// File path: assets/images/onboarding/ob_img13.webp
+  AssetGenImage get obImg13 =>
+      const AssetGenImage('assets/images/onboarding/ob_img13.webp');
+
+  /// File path: assets/images/onboarding/ob_img14.webp
+  AssetGenImage get obImg14 =>
+      const AssetGenImage('assets/images/onboarding/ob_img14.webp');
+
+  /// File path: assets/images/onboarding/ob_img2.webp
+  AssetGenImage get obImg2 =>
+      const AssetGenImage('assets/images/onboarding/ob_img2.webp');
+
+  /// File path: assets/images/onboarding/ob_img3.webp
+  AssetGenImage get obImg3 =>
+      const AssetGenImage('assets/images/onboarding/ob_img3.webp');
+
+  /// File path: assets/images/onboarding/ob_img4.webp
+  AssetGenImage get obImg4 =>
+      const AssetGenImage('assets/images/onboarding/ob_img4.webp');
+
+  /// File path: assets/images/onboarding/ob_img5.webp
+  AssetGenImage get obImg5 =>
+      const AssetGenImage('assets/images/onboarding/ob_img5.webp');
+
+  /// File path: assets/images/onboarding/ob_img6.webp
+  AssetGenImage get obImg6 =>
+      const AssetGenImage('assets/images/onboarding/ob_img6.webp');
+
+  /// File path: assets/images/onboarding/ob_img7.webp
+  AssetGenImage get obImg7 =>
+      const AssetGenImage('assets/images/onboarding/ob_img7.webp');
+
+  /// File path: assets/images/onboarding/ob_img8.webp
+  AssetGenImage get obImg8 =>
+      const AssetGenImage('assets/images/onboarding/ob_img8.webp');
+
+  /// File path: assets/images/onboarding/ob_img9.webp
+  AssetGenImage get obImg9 =>
+      const AssetGenImage('assets/images/onboarding/ob_img9.webp');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+    obImg1,
+    obImg10,
+    obImg11,
+    obImg12,
+    obImg13,
+    obImg14,
+    obImg2,
+    obImg3,
+    obImg4,
+    obImg5,
+    obImg6,
+    obImg7,
+    obImg8,
+    obImg9,
   ];
 }
 
