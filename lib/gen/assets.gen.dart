@@ -227,6 +227,10 @@ class $AssetsImagesOnboardingGen {
   AssetGenImage get obImg14 =>
       const AssetGenImage('assets/images/onboarding/ob_img14.webp');
 
+  /// File path: assets/images/onboarding/ob_img15.webp
+  AssetGenImage get obImg15 =>
+      const AssetGenImage('assets/images/onboarding/ob_img15.webp');
+
   /// File path: assets/images/onboarding/ob_img2.webp
   AssetGenImage get obImg2 =>
       const AssetGenImage('assets/images/onboarding/ob_img2.webp');
@@ -267,6 +271,7 @@ class $AssetsImagesOnboardingGen {
     obImg12,
     obImg13,
     obImg14,
+    obImg15,
     obImg2,
     obImg3,
     obImg4,
