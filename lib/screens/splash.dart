@@ -20,6 +20,18 @@ class _SplashScreenState extends State<SplashScreen> {
     Assets.images.bgGradSmall,
     Assets.images.imgTrans1,
     Assets.images.imgTrans2,
+    Assets.images.onboarding.obImg1,
+    Assets.images.onboarding.obImg2,
+    Assets.images.onboarding.obImg3,
+    Assets.images.onboarding.obImg4,
+    Assets.images.onboarding.obImg5,
+    Assets.images.onboarding.obImg6,
+    Assets.images.onboarding.obImg7,
+    Assets.images.onboarding.obImg8,
+    Assets.images.onboarding.obImg9,
+    Assets.images.onboarding.obImg10,
+    Assets.images.onboarding.obImg11,
+    Assets.images.onboarding.obImg12,
   ];
 
   @override
