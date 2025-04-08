@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
@@ -86,67 +87,6 @@ class _ChatTabState extends State<ChatTab> {
       "time": "12:30 PM",
     },
   ];
-  Widget buildCategoryTabs() {
-    final categories = [
-      "Lover",
-      "Sports",
-      "Girlfriend",
-      "Bollywood",
-      "Fashion",
-      "Villain",
-      "Comedian",
-      "Anime",
-      "Gamer",
-      "Celebrity",
-      "Sci-Fi",
-      "Horror",
-      "Superhero",
-      "Historical",
-    ];
-
-    return SizedBox(
-      height: 36.h,
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          bool isSelected = category == selectedCategoryTab;
-
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < categories.length - 1 ? 8.0.w : 0,
-            ),
-            child: GestureDetector(
-              onTap: () => selectCategoryTab(category),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.h),
-                decoration: BoxDecoration(
-                  color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Center(
-                  child: Text(
-                    category,
-                    style: context.appTextStyle.textSemibold.copyWith(
-                      color:
-                          isSelected
-                              ? context.colorExt.background
-                              : context.colorExt.textPrimary.withValues(
-                                alpha: 0.6,
-                              ),
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -231,7 +171,7 @@ class _ChatTabState extends State<ChatTab> {
               ),
             ),
             15.ph,
-            buildCategoryTabs(),
+            CategoryList(),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.h),

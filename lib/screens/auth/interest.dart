@@ -7,7 +7,7 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class CharacterSelectionScreen extends StatefulWidget {
-  CharacterSelectionScreen({super.key});
+  const CharacterSelectionScreen({super.key});
 
   @override
   State<CharacterSelectionScreen> createState() =>

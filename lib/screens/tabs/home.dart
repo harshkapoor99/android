@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/gradient_text.dart';
-import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:lottie/lottie.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key, required this.startChat});
@@ -17,14 +15,6 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  String selectedCategoryTab = "";
-
-  void selectCategoryTab(String tab) {
-    setState(() {
-      selectedCategoryTab = tab;
-    });
-  }
-
   Widget buildHeader() {
     return Container(
       margin: EdgeInsets.all(16.w),
@@ -122,69 +112,6 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  Widget buildCategoryTabs() {
-    final categories = [
-      "Lover",
-      "Sports",
-      "Girlfriend",
-      "Bollywood",
-      "Fashion",
-      "Villain",
-      "Comedian",
-      "Anime",
-      "Gamer",
-      "Celebrity",
-      "Sci-Fi",
-      "Horror",
-      "Superhero",
-      "Historical",
-    ];
-
-    return SizedBox(
-      height: 36.h,
-      child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          bool isSelected = category == selectedCategoryTab;
-
-          return Padding(
-            padding: EdgeInsets.only(
-              right: index < categories.length - 1 ? 8.0.w : 0,
-            ),
-            child: GestureDetector(
-              onTap: () => selectCategoryTab(category),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.h),
-                decoration: BoxDecoration(
-                  color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Center(
-                  child: Text(
-                    category,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyle(context).textSemibold.copyWith(
-                      color:
-                          isSelected
-                              ? context.colorExt.background
-                              : context.colorExt.textPrimary.withValues(
-                                alpha: 0.6,
-                              ),
-                      fontSize: 12.sp,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget buildCharacterGrid() {
     final imageUrls = [
       Assets.images.onboarding.obImg3,
@@ -224,26 +151,9 @@ class _HomeTabState extends State<HomeTab> {
         children: [
           buildHeader(),
           buildGradientTexts(),
-          buildCategoryTabs(),
+          CategoryList(),
           buildCharacterGrid(),
         ],
-      ),
-    );
-  }
-}
-
-class CategoryItem extends StatelessWidget {
-  final String title;
-
-  const CategoryItem({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Center(
-        child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
       ),
     );
   }
