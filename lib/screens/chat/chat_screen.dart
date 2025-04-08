@@ -44,7 +44,9 @@ class ChatScreen extends StatelessWidget {
         ),
         title: Row(
           children: [
-            CircleAvatar(backgroundImage: Assets.images.img1.provider()),
+            CircleAvatar(
+              backgroundImage: Assets.images.model.modImg1.provider(),
+            ),
             10.pw,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +190,7 @@ class ChatBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15.r),
                 image: DecorationImage(
-                  image: Assets.images.img1.provider(),
+                  image: Assets.images.model.modImg1.provider(),
                   fit: BoxFit.cover,
                 ),
               ),

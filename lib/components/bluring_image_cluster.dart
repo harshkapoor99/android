@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 
 class BluringImageCluster extends StatefulWidget {
   const BluringImageCluster({super.key, required this.focusNodes});
@@ -53,8 +54,7 @@ class _MyWidgetState extends State<BluringImageCluster> {
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).viewPadding.top + 10.h,
         ),
-        child: Image.asset(
-          "assets/images/bg_img.png",
+        child: Assets.images.bgImg.image(
           width: double.infinity,
           fit: BoxFit.cover,
         ),

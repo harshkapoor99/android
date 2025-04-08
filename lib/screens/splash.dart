@@ -13,13 +13,23 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final List<AssetGenImage> images = [
+    Assets.images.bgGrad,
+    Assets.images.bgImg,
+    Assets.images.bgGradLarge,
+    Assets.images.bgGradSmall,
+    Assets.images.imgTrans1,
+    Assets.images.imgTrans2,
+  ];
+
   @override
   void didChangeDependencies() {
+    final precacheFutures =
+        images
+            .map((image) => precacheImage(image.provider(), context))
+            .toList();
     // Adjust the provider based on the image type
-    Future.wait([
-      precacheImage(Assets.images.bgGrad.provider(), context),
-      precacheImage(Assets.images.bgGrad.provider(), context),
-    ]).then((value) {
+    Future.wait(precacheFutures).then((value) {
       Future.delayed(Duration(seconds: 1)).then((value) {
         context.nav.pushReplacementNamed(Routes.onboarding);
       });

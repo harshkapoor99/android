@@ -30,7 +30,9 @@ class CallScreen extends StatelessWidget {
         ),
         title: Row(
           children: [
-            CircleAvatar(backgroundImage: Assets.images.img1.provider()),
+            CircleAvatar(
+              backgroundImage: Assets.images.model.modImg1.provider(),
+            ),
             10.pw,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,7 +98,8 @@ class CallScreen extends StatelessWidget {
                         alignment: Alignment.center,
                         child: CircleAvatar(
                           maxRadius: 105.w,
-                          backgroundImage: Assets.images.img1.provider(),
+                          backgroundImage:
+                              Assets.images.model.modImg1.provider(),
                         ),
                       ),
                     ],

@@ -177,7 +177,7 @@ class _ChatTabState extends State<ChatTab> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(250.r),
                             image: DecorationImage(
-                              image: Assets.images.img5.provider(),
+                              image: Assets.images.model.modImg4.provider(),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -253,7 +253,8 @@ class _ChatTabState extends State<ChatTab> {
                         width: 50.w,
                         height: 50.w,
                         child: CircleAvatar(
-                          backgroundImage: Assets.images.img1.provider(),
+                          backgroundImage:
+                              Assets.images.model.modImg1.provider(),
                         ),
                       ),
                       title: Row(

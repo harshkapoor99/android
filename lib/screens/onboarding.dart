@@ -153,22 +153,34 @@ class _OnboardingState extends State<Onboarding> {
   }
 }
 
-class ImageGrid extends StatelessWidget {
-  ImageGrid({super.key});
+class ImageGrid extends StatefulWidget {
+  const ImageGrid({super.key});
+
+  @override
+  State<ImageGrid> createState() => _ImageGridState();
+}
+
+class _ImageGridState extends State<ImageGrid> {
   final List<AssetGenImage> images = [
-    Assets.images.img1,
-    Assets.images.img2,
-    Assets.images.img3,
-    Assets.images.img4,
-    Assets.images.img5,
-    Assets.images.img1,
-    Assets.images.img2,
-    Assets.images.img3,
-    Assets.images.img4,
-    Assets.images.img5,
-    Assets.images.img1,
-    Assets.images.img2,
+    Assets.images.onboarding.obImg1,
+    Assets.images.onboarding.obImg2,
+    Assets.images.onboarding.obImg3,
+    Assets.images.onboarding.obImg4,
+    Assets.images.onboarding.obImg5,
+    Assets.images.onboarding.obImg6,
+    Assets.images.onboarding.obImg7,
+    Assets.images.onboarding.obImg8,
+    Assets.images.onboarding.obImg9,
+    Assets.images.onboarding.obImg10,
+    Assets.images.onboarding.obImg11,
+    Assets.images.onboarding.obImg12,
   ];
+
+  @override
+  void initState() {
+    images.shuffle();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
