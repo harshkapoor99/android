@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/screens/tabs/home.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class ModelCard extends StatelessWidget {
-  const ModelCard({super.key, required this.imageUrl, required this.widget});
+class ModelCard extends ConsumerWidget {
+  const ModelCard({super.key, required this.imageUrl});
 
   final AssetGenImage imageUrl;
-  final HomeTab widget;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: Stack(
@@ -89,7 +90,16 @@ class ModelCard extends StatelessWidget {
                   width: 15.w,
                   height: 15.w,
                 ),
-                onPressed: widget.startChat,
+                onPressed: () {
+                  context.nav.pushNamed(Routes.chat);
+                  Future.delayed(
+                    Duration(milliseconds: 500),
+                    () =>
+                        ref
+                            .read(isHomeVisitedProvider.notifier)
+                            .setHomeViewed(),
+                  );
+                },
               ),
             ),
           ),

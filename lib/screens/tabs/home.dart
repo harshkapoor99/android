@@ -7,8 +7,7 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class HomeTab extends StatefulWidget {
-  const HomeTab({super.key, required this.startChat});
-  final VoidCallback startChat;
+  const HomeTab({super.key});
 
   @override
   State<HomeTab> createState() => _HomeTabState();
@@ -137,7 +136,7 @@ class _HomeTabState extends State<HomeTab> {
         ),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return ModelCard(imageUrl: imageUrls[index], widget: widget);
+          return ModelCard(imageUrl: imageUrls[index]);
         },
       ),
     );

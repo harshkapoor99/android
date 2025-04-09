@@ -1,0 +1,17 @@
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        options:
+          # provider_name_suffix: "Provider"
+          # provider_family_name_suffix: "Family"
+          # provider_name_prefix: ""
+          # provider_family_name_prefix: ""
+      source_gen|combining_builder:
+        generate_for:
+          - lib/**.dart
+        options:
+          build_extensions:
+            {
+              "lib/providers/{{file}}.dart": "lib/gen/providers/{{file}}.gen.dart",
+            }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/screens/tabs/chat.dart';
 import 'package:guftagu_mobile/screens/tabs/create.dart';
 import 'package:guftagu_mobile/screens/tabs/my_ais.dart';
@@ -9,15 +11,9 @@ import 'package:guftagu_mobile/screens/tabs/profile.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+class DashboardScreen extends ConsumerWidget {
+  DashboardScreen({super.key});
 
-  @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
-  int _currentIndex = 0;
   final List<Widget> _screens = [
     ChatTab(),
     CreateTab(),
@@ -25,43 +21,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ProfileTab(),
   ];
 
+  final List<BottomBarIconLabel> _tabWidgets = [
+    BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
+    BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
+    BottomBarIconLabel(assetName: Assets.svgs.icMyAi, label: 'My AIs'),
+    BottomBarIconLabel(assetName: Assets.svgs.icProfile, label: 'Profile'),
+  ];
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    int currentIndex = ref.watch(tabIndexProvider);
+
     return Scaffold(
       backgroundColor: context.colorExt.background,
       appBar: AppConstants.appbar(context),
-      body: _screens[_currentIndex],
+      body: _screens[currentIndex],
 
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
-        currentIndex: _currentIndex,
+        currentIndex: currentIndex,
         backgroundColor: Color(0xFF171717),
         selectedItemColor: context.colorExt.textPrimary,
         unselectedItemColor: Colors.grey,
-        onTap:
-            (index) => setState(() {
-              _currentIndex = index;
-            }),
+        onTap: (index) => ref.read(tabIndexProvider.notifier).changeTab(index),
         items:
-            [
-                  BottomBarIconLabel(
-                    assetName: Assets.svgs.icChat,
-                    label: 'Chat',
-                  ),
-                  BottomBarIconLabel(
-                    assetName: Assets.svgs.icCreate,
-                    label: 'Create',
-                  ),
-                  BottomBarIconLabel(
-                    assetName: Assets.svgs.icMyAi,
-                    label: 'My AIs',
-                  ),
-                  BottomBarIconLabel(
-                    assetName: Assets.svgs.icProfile,
-                    label: 'Profile',
-                  ),
-                ]
+            _tabWidgets
                 .map(
                   (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
                     activeIcon: SvgPicture.asset(

@@ -1,35 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class ChatTab extends StatefulWidget {
-  const ChatTab({super.key});
-
-  @override
-  State<ChatTab> createState() => _ChatTabState();
-}
-
-class _ChatTabState extends State<ChatTab> {
-  bool showHome = true;
-  void startChat() {
-    setState(() {
-      showHome = false;
-    });
-  }
-
-  String selectedCategoryTab = "";
-
-  void selectCategoryTab(String tab) {
-    setState(() {
-      selectedCategoryTab = tab;
-    });
-  }
+class ChatTab extends ConsumerWidget {
+  ChatTab({super.key});
 
   final List<String> ais = [
     "Maddy",
@@ -89,9 +71,9 @@ class _ChatTabState extends State<ChatTab> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    if (showHome) {
-      return HomeTab(startChat: startChat);
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (!ref.watch(isHomeVisitedProvider)) {
+      return HomeTab();
     } else {
       return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
