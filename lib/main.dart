@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           title: 'Guftagu',
+          // remove banner - Aryan
+          debugShowCheckedModeBanner: false,
           // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
           themeMode: ThemeMode.dark,
           theme: getAppTheme(context: context, isDarkTheme: false),
