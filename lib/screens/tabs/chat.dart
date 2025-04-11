@@ -85,11 +85,11 @@ class ChatTab extends ConsumerWidget {
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 16.w),
                 scrollDirection: Axis.horizontal,
-                itemCount: ais.length,
+                itemCount: ais.length + 1,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.only(
-                      right: index < ais.length - 1 ? 8.w : 0,
+                      right: index < ais.length ? 8.w : 0,
                     ),
                     child: Column(
                       children: [
@@ -97,15 +97,34 @@ class ChatTab extends ConsumerWidget {
                           height: 120.h,
                           width: 80.w,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(250.r),
-                            image: DecorationImage(
-                              image: Assets.images.model.modImg4.provider(),
-                              fit: BoxFit.cover,
-                            ),
+                            borderRadius: BorderRadius.circular(40.r),
+                            color:
+                                index == ais.length
+                                    ? context.colorExt.border
+                                    : null,
+                            image:
+                                index < ais.length
+                                    ? DecorationImage(
+                                      image:
+                                          Assets.images.model.modImg4
+                                              .provider(),
+                                      fit: BoxFit.cover,
+                                    )
+                                    : null,
                           ),
+                          child:
+                              index == ais.length
+                                  ? Center(
+                                    child: SvgPicture.asset(
+                                      Assets.svgs.icMyAi,
+                                      height: 20.w,
+                                      width: 20.w,
+                                    ),
+                                  )
+                                  : null,
                         ),
                         Text(
-                          ais[index],
+                          index == ais.length ? "Explore" : ais[index],
                           style: context.appTextStyle.textSemibold.copyWith(
                             fontSize: 12.sp,
                           ),

@@ -6,15 +6,10 @@ import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class HomeTab extends StatefulWidget {
+class HomeTab extends StatelessWidget {
   const HomeTab({super.key});
 
-  @override
-  State<HomeTab> createState() => _HomeTabState();
-}
-
-class _HomeTabState extends State<HomeTab> {
-  Widget buildHeader() {
+  Widget buildHeader(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
@@ -90,7 +85,7 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  Widget buildGradientTexts() {
+  Widget buildGradientTexts(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.w),
       child: Row(
@@ -111,7 +106,7 @@ class _HomeTabState extends State<HomeTab> {
     );
   }
 
-  Widget buildCharacterGrid() {
+  Widget buildCharacterGrid(BuildContext context) {
     final imageUrls = [
       Assets.images.onboarding.obImg3,
       Assets.images.model.modImg5,
@@ -148,10 +143,10 @@ class _HomeTabState extends State<HomeTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildHeader(),
-          buildGradientTexts(),
+          buildHeader(context),
+          buildGradientTexts(context),
           CategoryList(),
-          buildCharacterGrid(),
+          buildCharacterGrid(context),
         ],
       ),
     );
