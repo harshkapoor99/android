@@ -6,8 +6,10 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class AppConstants {
-  static appbar(BuildContext context) {
+  static appbar(BuildContext context, {bool implyLeading = true}) {
     return AppBar(
+      // commit - implyLeading
+      automaticallyImplyLeading: implyLeading,
       title: Row(
         children: [
           SvgPicture.asset(Assets.svgs.logo, height: 50.w, width: 50.w),

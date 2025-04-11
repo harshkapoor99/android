@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../components/choice_option_selector.dart';
+import '../../components/labeled_text_field.dart';
+import '../../components/image_option_selector.dart';
+import '../../components/next_button.dart';
+
 class CreateTab extends StatefulWidget {
   const CreateTab({super.key});
 
@@ -10,14 +15,15 @@ class CreateTab extends StatefulWidget {
 
 class _CreateTab extends State<CreateTab> {
   final TextEditingController _nameController = TextEditingController();
-
   String selectedAge = '';
   String selectedGender = '';
+  String selectedStyle = '';
+  String selectedOrientation = '';
+  String selectedLanguage = '';
+  int currentStep = 0;
 
-  // age option
   final List<String> ageOptions = ['Teen (+18)', '20s', '30s', '40-55s'];
 
-  // gender option
   final List<Map<String, dynamic>> genderOptions = [
     {
       'label': 'Female',
@@ -39,19 +45,166 @@ class _CreateTab extends State<CreateTab> {
     },
   ];
 
+  final List<Map<String, dynamic>> styleOptions = [
+    {
+      'label': 'Realistic',
+      'image': 'assets/images/model/mod_img9.png',
+      'value': 'realistic',
+    },
+    {
+      'label': 'Animie',
+      'image': 'assets/images/model/mod_img10.png',
+      'value': 'anime',
+    },
+  ];
+
+  final List<String> orientationOptions = ['Straight', 'Gay', 'Lesbian'];
+  final List<String> languageOptions = ['English', 'Hinglish'];
+
+  void _nextStep() {
+    if (currentStep < 3) {
+      setState(() => currentStep++);
+    } else {
+      debugPrint("Name: ${_nameController.text}");
+      debugPrint("Age: $selectedAge");
+      debugPrint("Gender: $selectedGender");
+      debugPrint("Style: $selectedStyle");
+      debugPrint("Orientation: $selectedOrientation");
+      debugPrint("Language: $selectedLanguage");
+      // Navigate or finish action
+    }
+  }
+
+  void _prevStep() {
+    if (currentStep > 0) setState(() => currentStep--);
+  }
+
+  Widget buildStepContent(int step) {
+    switch (step) {
+      case 0:
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LabeledTextField(
+                controller: _nameController,
+                label: 'Character Name',
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Choose Age',
+                style: GoogleFonts.openSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ChoiceOptionSelector(
+                options: ageOptions,
+                selected: selectedAge,
+                onSelected: (age) => setState(() => selectedAge = age),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Gender',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ImageOptionSelector(
+                options: genderOptions,
+                selected: selectedGender,
+                onChanged: (gender) => setState(() => selectedGender = gender),
+              ),
+            ],
+          ),
+        );
+      case 1:
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Style',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ImageOptionSelector(
+                options: styleOptions,
+                selected: selectedStyle,
+                onChanged: (style) => setState(() => selectedStyle = style),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Sexual Orientation',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ChoiceOptionSelector(
+                options: orientationOptions,
+                selected: selectedOrientation,
+                onSelected: (value) => setState(() => selectedOrientation = value),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Primary Language',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 12),
+              ChoiceOptionSelector(
+                options: languageOptions,
+                selected: selectedLanguage,
+                onSelected: (value) => setState(() => selectedLanguage = value),
+              ),
+            ],
+          ),
+        );
+      case 2:
+        return Center(
+          child: Text(
+            "Step 3 Content",
+            style: GoogleFonts.poppins(color: Colors.white),
+          ),
+        );
+      case 3:
+        return Center(
+          child: Text(
+            "Preview Step or Final Submit",
+            style: GoogleFonts.poppins(color: Colors.white),
+          ),
+        );
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // spacing
-              SizedBox(height: 14),
-              // Character creation row
+              // Header with title and current step number
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -60,208 +213,55 @@ class _CreateTab extends State<CreateTab> {
                     style: GoogleFonts.openSans(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
-                      height: 1.0,
-                      letterSpacing: 0.0,
-                      color: Color(0xFFC9C9C9),
+                      color: const Color(0xFFC9C9C9),
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
                         'STEP',
                         style: GoogleFonts.openSans(
                           fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          height: 1.0,
-                          color: Color(0xFFA3A3A3),
+                          color: const Color(0xFFA3A3A3),
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        '1/4',
+                        '${currentStep + 1}/4',
                         style: GoogleFonts.openSans(
                           fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          height: 1.0,
                           color: Colors.white,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
 
-              SizedBox(
-                width: 374,
-                height: 90,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Character Name',
-                      style: GoogleFonts.openSans(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        height: 1.0,
-                        color: Color(0xFFF2F2F2),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _nameController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFF23222F),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 32),
+              Expanded(child: buildStepContent(currentStep)),
+              const SizedBox(height: 20),
 
-              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (currentStep > 0)
+                    TextButton(
+                      onPressed: _prevStep,
+                      child: const Text("Previous", style: TextStyle(color: Colors.white)),
+                    )
+                  else
+                    const SizedBox(),
 
-              Text(
-                'Choose Age',
-                style: GoogleFonts.openSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  height: 1.0,
-                  color: Color(0xFFF2F2F2),
-                ),
+                  NextButton(
+                    label: currentStep == 3 ? "Finish" : "Next",
+                    onPressed: _nextStep,
+                  ),
+                ],
               ),
 
               const SizedBox(height: 20),
-              Wrap(
-                spacing: 10,
-                children:
-                    ageOptions.map((age) {
-                      final isSelected = selectedAge == age;
-                      return ChoiceChip(
-                        label: Text(age),
-                        selected: isSelected,
-                        onSelected: (_) {
-                          setState(() => selectedAge = age);
-                        },
-                        labelStyle: TextStyle(
-                          color: isSelected ? Colors.black : Colors.white,
-                        ),
-                        selectedColor: Colors.white,
-                        backgroundColor: Colors.grey[800],
-                      );
-                    }).toList(),
-              ),
-              const SizedBox(height: 40),
-              Text('Gender', style: GoogleFonts.poppins(color: Colors.white)),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:
-                    genderOptions.map((gender) {
-                      final isSelected = selectedGender == gender['value'];
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() => selectedGender = gender['value']);
-                        },
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 106.86,
-                              width: 116.75,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color:
-                                      isSelected
-                                          ? Colors.white
-                                          : Colors.transparent,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                                image: DecorationImage(
-                                  image: AssetImage(gender['image']),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              gender['label'],
-                              style: GoogleFonts.poppins(
-                                color: Color(0xFFE5E5E5),
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-              ),
-
-              const Spacer(),
-
-              Align(
-                alignment: Alignment.centerRight,
-                child: Material(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Ink(
-                    width: 132,
-                    height: 46,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF9D00C6),
-                          Color(0xFF00FFED),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () {
-                        // onPressed logic
-                      },
-                      child: const Center(
-                        child: Text(
-                          'Next',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'OpenSans', // Make sure you added OpenSans in pubspec.yaml
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            height: 1.0, // line-height 100%
-                            letterSpacing: 0.0,
-                            color: Colors.white, // Assuming white text
-                          ),
-                        ),
-
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
             ],
           ),
         ),
