@@ -141,7 +141,7 @@ class _OnboardingState extends State<Onboarding> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: GradientButton(
                   title: "Get started",
-                  onTap: () => context.nav.pushReplacementNamed(Routes.signup),
+                  onTap: () => context.nav.pushReplacementNamed(Routes.login),
                 ),
               ),
               20.ph,

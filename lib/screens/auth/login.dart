@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:guftagu_mobile/components/back_button.dart';
 import 'package:guftagu_mobile/components/bluring_image_cluster.dart';
 import 'package:guftagu_mobile/components/google_auth.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
@@ -20,6 +19,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final List<FocusNode> _focusNodes = [FocusNode()];
+  bool isLogin = true;
   bool isLoading = false;
 
   void login() async {
@@ -27,11 +27,17 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
     FocusManager.instance.primaryFocus?.unfocus();
-    await Future.delayed(Duration(seconds: 1)).then((value) {
+    await Future.delayed(Duration(seconds: 1), () {
       setState(() {
         isLoading = false;
       });
       context.nav.pushNamed(Routes.otp);
+    });
+  }
+
+  void toggleLogin() {
+    setState(() {
+      isLogin = !isLogin;
     });
   }
 
@@ -45,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Assets.images.bgGrad.image(width: double.infinity),
             BluringImageCluster(focusNodes: _focusNodes),
-            if (context.nav.canPop()) BackButtonWidget(),
 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -55,7 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   Align(
                     alignment: Alignment.center,
-                    child: Text('Login', style: AppTextStyle(context).title),
+                    child: Text(
+                      isLogin ? 'Log In' : 'Sign Up',
+                      style: AppTextStyle(context).title,
+                    ),
                   ),
                   50.ph,
 
@@ -100,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   20.ph,
-                  GoogleAuthButton(),
+                  GoogleAuthButton(isLogin: isLogin),
                   20.ph,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -110,11 +118,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: AppTextStyle(context).textSmall,
                       ),
                       GestureDetector(
-                        onTap:
-                            () =>
-                                context.nav.pushReplacementNamed(Routes.signup),
+                        onTap: toggleLogin,
+                        // () =>
+                        //     context.nav.pushReplacementNamed(Routes.signup),
                         child: Text(
-                          "Sign up!",
+                          !isLogin ? "Log in!" : "Sign up!",
                           style: AppTextStyle(
                             context,
                           ).textSmall.copyWith(color: context.colorExt.primary),

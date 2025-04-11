@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:guftagu_mobile/components/back_button.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
@@ -21,6 +22,7 @@ class OtpScreen extends StatelessWidget {
         child: Stack(
           children: [
             Assets.images.bgGrad.image(width: double.infinity),
+            if (context.nav.canPop()) BackButtonWidget(),
 
             // if (context.nav.canPop()) BackButtonWidget(),
             Padding(

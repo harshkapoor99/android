@@ -5,7 +5,8 @@ import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class GoogleAuthButton extends StatelessWidget {
-  const GoogleAuthButton({super.key});
+  const GoogleAuthButton({super.key, this.isLogin = false});
+  final bool isLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,10 @@ class GoogleAuthButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset("assets/svgs/ic_google.svg", height: 40.h),
-          Text('Sign Up with Google', style: AppTextStyle(context).textSmall),
+          Text(
+            '${isLogin ? "Log in" : "Sign up"} with Google',
+            style: AppTextStyle(context).textSmall,
+          ),
         ],
       ),
     );
