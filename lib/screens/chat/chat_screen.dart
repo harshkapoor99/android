@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/chat.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class ChatScreen extends StatelessWidget {
+class ChatScreen extends ConsumerWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
+  // final _messageController = TextEditingController();
 
   final List<Map<String, dynamic>> messages = [
     {'isMe': false, 'text': "Hey, what's up?"},
@@ -28,7 +31,8 @@ class ChatScreen extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var provider = ref.watch(chatProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorExt.background,
@@ -112,38 +116,11 @@ class ChatScreen extends StatelessWidget {
                   Expanded(
                     child: SizedBox(
                       // height: 45.w,
-                      child: TextField(
-                        // maxLines: null,
-                        keyboardType: TextInputType.multiline,
-                        minLines: 1,
-                        maxLines: 4,
-                        focusNode: _focusNodes,
-                        decoration: InputDecoration(
-                          prefixIcon: Padding(
-                            padding: EdgeInsets.only(
-                              left: 12.w,
-                              top: 10.w,
-                              bottom: 10.w,
-                            ),
-                            child: SvgPicture.asset(
-                              Assets.svgs.icChatPrefix,
-                              height: 10.w,
-                              width: 10.w,
-                            ),
-                          ),
-                          hintText: "Start your dream chatting",
-                          hintStyle: context.appTextStyle.textSmall.copyWith(
-                            color: context.colorExt.textPrimary.withValues(
-                              alpha: 0.7,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: context.colorExt.border,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(60.r),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+                      child: MessageBox(
+                        controller:
+                            ref.read(chatProvider.notifier).messageController,
+                        hasMessage: provider.hasMessage,
+                        focusNodes: _focusNodes,
                       ),
                     ),
                   ),
@@ -164,6 +141,116 @@ class ChatScreen extends StatelessWidget {
         ),
       ),
       backgroundColor: Colors.black,
+    );
+  }
+}
+
+class MessageBox extends StatefulWidget {
+  const MessageBox({
+    super.key,
+    this.controller,
+    this.focusNodes,
+    required this.hasMessage,
+  });
+
+  final bool hasMessage;
+  final FocusNode? focusNodes;
+  final TextEditingController? controller;
+
+  @override
+  State<MessageBox> createState() => _MessageBoxState();
+}
+
+class _MessageBoxState extends State<MessageBox> {
+  bool isFocused = false;
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onFocusChange: (value) {
+        setState(() {
+          isFocused = value;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Durations.short2,
+        padding: EdgeInsets.only(left: 12.w),
+        decoration: BoxDecoration(
+          color: context.colorExt.border,
+          borderRadius: BorderRadius.circular(
+            widget.hasMessage || isFocused ? 10.r : 60.r,
+          ),
+          border: Border.all(
+            color:
+                isFocused ? context.colorExt.primary : context.colorExt.border,
+            width: 1.5,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              height: 16.w,
+              width: 16.w,
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                Assets.svgs.icChatPrefix,
+                height: 16.w,
+                width: 16.w,
+              ),
+            ),
+            Expanded(
+              child: TextField(
+                controller: widget.controller,
+                keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 5,
+                focusNode: widget.focusNodes,
+                style: context.appTextStyle.textSmall.copyWith(fontSize: 12.sp),
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(
+                    top: 5.w,
+                    bottom: 5.w,
+                    left: 8.w,
+                  ),
+
+                  hintText: "Start your dream chatting",
+                  hintStyle: context.appTextStyle.textSmall.copyWith(
+                    fontSize: 12.sp,
+                    color: context.colorExt.textPrimary.withValues(alpha: 0.7),
+                  ),
+                  fillColor: context.colorExt.border,
+                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              height: 40.w,
+              width: widget.hasMessage ? 0 : 40.w,
+              duration: Duration(milliseconds: 100),
+              child: GestureDetector(
+                onTap: () {
+                  print("iconPressed");
+                },
+                child: IconButton(
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    Assets.svgs.icPlus,
+                    height: 16.w,
+                    width: 16.w,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
