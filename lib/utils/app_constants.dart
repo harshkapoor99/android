@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class AppConstants {
@@ -31,4 +34,46 @@ class AppConstants {
       ),
     );
   }
+
+  static void showSnackbar({
+    required String message,
+    required bool isSuccess,
+    bool isTop = false,
+  }) {
+    final snackBar = SnackBar(
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      dismissDirection:
+          isTop ? DismissDirection.startToEnd : DismissDirection.down,
+      backgroundColor:
+          isSuccess
+              ? AppStaticColors.grayColor.withValues(alpha: 1)
+              : AppStaticColors.redColor.withValues(alpha: 1),
+      content: Text(
+        message,
+        style: snackbarKey.currentContext!.appTextStyle.textSmall,
+      ),
+      margin:
+          isTop
+              ? EdgeInsets.only(
+                bottom:
+                    MediaQuery.of(
+                      navigatorKey.currentState!.context,
+                    ).size.height -
+                    160,
+                right: 20,
+                left: 20,
+              )
+              : null,
+    );
+    // ScaffoldMessenger.of(
+    //   navigatorKey.currentState!.context,
+    // ).showSnackBar(snackBar);
+    snackbarKey.currentState!.showSnackBar(snackBar);
+  }
+
+  static GlobalKey<ScaffoldMessengerState> snackbarKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

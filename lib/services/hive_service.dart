@@ -1,0 +1,102 @@
+import 'dart:convert';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:guftagu_mobile/configs/hive_contants.dart';
+import 'package:guftagu_mobile/models/user_model.dart';
+import 'package:guftagu_mobile/services/api_client.dart';
+
+part '../gen/services/hive_service.gen.dart';
+
+@Riverpod(keepAlive: true)
+class HiveService extends _$HiveService {
+  // Box getters for easy access
+  Box get _authBox => Hive.box(AppHSC.authBox);
+  Box get _userBox => Hive.box(AppHSC.userBox);
+  Box get _appSettingsBox => Hive.box(AppHSC.appSettingsBox);
+
+  @override
+  void build() {
+    // Initialization logic if needed
+  }
+
+  // Auth Token Operations
+  Future<void> saveUserAuthToken({
+    required String accessToken,
+    String? refreshToken,
+  }) async {
+    _authBox.put(AppHSC.accessToken, accessToken);
+    ref.read(apiClientProvider).updateToken(accessToken);
+    if (refreshToken != null) {
+      _authBox.put(AppHSC.refreshToken, refreshToken);
+    }
+  }
+
+  Future<void> removeUserAuthToken() async {
+    await _authBox.delete(AppHSC.accessToken);
+    await _authBox.delete(AppHSC.refreshToken);
+  }
+
+  String? getAuthToken() {
+    return _authBox.get(AppHSC.accessToken);
+  }
+
+  // User Data Operations
+  Future<void> saveUserInfo({required User userInfo}) async {
+    await _userBox.put(AppHSC.userInfo, userInfo.toMap());
+  }
+
+  User? getUserInfo() {
+    Map<dynamic, dynamic>? userInfo = _userBox.get(AppHSC.userInfo);
+    print(userInfo.runtimeType);
+    print(userInfo);
+    if (userInfo != null) {
+      return User.fromMap(userInfo.cast<String, dynamic>());
+    }
+    return null;
+  }
+
+  String? getUserId() {
+    return getUserInfo()?.id;
+  }
+
+  Future<void> removeUserData() async {
+    await _userBox.clear();
+  }
+
+  // App Settings Operations
+  Future<void> setOnboardingValue({required bool value}) async {
+    await _appSettingsBox.put(AppHSC.onBoarded, value);
+  }
+
+  Future<void> setDarkTheme({required bool value}) async {
+    await _appSettingsBox.put(AppHSC.isDarkTheme, value);
+  }
+
+  bool getTheme() {
+    return _appSettingsBox.get(AppHSC.isDarkTheme, defaultValue: false);
+  }
+
+  bool getOnboardingStatus() {
+    return _appSettingsBox.get(AppHSC.onBoarded, defaultValue: false);
+  }
+
+  // Combined Operations
+  Future<List<dynamic>> loadTokenAndUser() async {
+    return [getOnboardingStatus(), getAuthToken(), getUserInfo()];
+  }
+
+  Future<bool> removeAllData() async {
+    try {
+      await removeUserAuthToken();
+      await removeUserData();
+      ref.read(apiClientProvider).updateTokenDefault();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // JSON conversion helpers (optional)
+  static User userFromMap(String str) => User.fromMap(json.decode(str));
+  static String userToMap(User data) => json.encode(data.toMap());
+}
