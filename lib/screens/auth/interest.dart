@@ -35,18 +35,6 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     "Psychologists",
     "Historical Figures",
     "Environment Activist",
-    //
-    "Mythical Beings",
-    "Secret Admirer",
-    "Artists & Creators",
-    "Professionals",
-    "Your Crush",
-    "Fantasy Legends",
-    "Spiritual Guides",
-    "Philosophers",
-    "Psychologists",
-    "Historical Figures",
-    "Environment Activist",
   ];
 
   List<String> selectedTypes = [
@@ -58,29 +46,6 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> characterTypes = [
-      "Scientists",
-      "Fictional Characters",
-      "Activists",
-      "Visionaries",
-      "Lover",
-      "Everyday Companions",
-      "Friends",
-      "Athletes & Adventurers",
-      "Mythical Beings",
-      "Secret Admirer",
-      "Artists & Creators",
-      "Professionals",
-      "Your Crush",
-      "Fantasy Legends",
-      "Spiritual Guides",
-      "Philosophers",
-      "Psychologists",
-      "Historical Figures",
-      "Environment Activist",
-      //
-      // "Mythical Beings",
-    ];
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(

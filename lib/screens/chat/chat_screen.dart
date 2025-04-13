@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/providers/chat.dart';
+import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -11,7 +11,6 @@ import 'package:guftagu_mobile/utils/entensions.dart';
 class ChatScreen extends ConsumerWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
-  // final _messageController = TextEditingController();
 
   final List<Map<String, dynamic>> messages = [
     {'isMe': false, 'text': "Hey, what's up?"},
@@ -117,8 +116,7 @@ class ChatScreen extends ConsumerWidget {
                     child: SizedBox(
                       // height: 45.w,
                       child: MessageBox(
-                        controller:
-                            ref.read(chatProvider.notifier).messageController,
+                        controller: ref.read(chatProvider).messageController,
                         hasMessage: provider.hasMessage,
                         focusNodes: _focusNodes,
                       ),
