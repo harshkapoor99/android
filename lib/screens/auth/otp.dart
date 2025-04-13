@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/back_button.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/auth_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class OtpScreen extends StatelessWidget {
-  OtpScreen({super.key});
-  final TextEditingController pinCodeController = TextEditingController();
+class OtpScreen extends ConsumerWidget {
+  const OtpScreen({super.key});
+
+  void verify(BuildContext context, WidgetRef ref) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (!ref.read(authProvider).canVerify) return;
+    ref
+        .read(authProvider.notifier)
+        .verifyOtp()
+        .then((value) {
+          if (value.isSuccess) {
+            AppConstants.showSnackbar(message: value.message, isSuccess: true);
+            context.nav.pushReplacementNamed(Routes.interest);
+          }
+        })
+        .onError((error, stackTrace) {
+          AppConstants.showSnackbar(message: error.toString(), isSuccess: true);
+        });
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    var provider = ref.watch(authProvider);
     return Scaffold(
       backgroundColor: Colors.black,
       body: GestureDetector(
@@ -54,7 +74,7 @@ class OtpScreen extends StatelessWidget {
                   ),
                   50.ph,
                   PinPutWidget(
-                    pinCodeController: pinCodeController,
+                    pinCodeController: provider.otpControler,
                     onCompleted: (pin) {},
                     validator: (value) {
                       return null;
@@ -64,8 +84,9 @@ class OtpScreen extends StatelessWidget {
 
                   GradientButton(
                     title: "confirm",
-                    onTap:
-                        () => context.nav.pushReplacementNamed(Routes.interest),
+                    showLoading: provider.isLoading,
+                    disabled: !provider.canVerify,
+                    onTap: () => verify(context, ref),
                   ),
                   20.ph,
                   Row(

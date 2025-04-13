@@ -43,7 +43,7 @@ class _PinputExampleState extends State<PinPutWidget> {
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
       width: 80.h,
-      height: 75.h,
+      height: 60.h,
       textStyle: const TextStyle(fontSize: 22),
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -60,7 +60,7 @@ class _PinputExampleState extends State<PinPutWidget> {
           Directionality(
             textDirection: TextDirection.ltr,
             child: Pinput(
-              length: 4,
+              length: 6,
               preFilledWidget: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -80,7 +80,7 @@ class _PinputExampleState extends State<PinPutWidget> {
                   border: Border.all(color: context.colorExt.border),
                 ),
               ),
-              separatorBuilder: (index) => const SizedBox(width: 16),
+              separatorBuilder: (index) => const SizedBox(width: 8),
               validator: _validatePin,
               hapticFeedbackType: HapticFeedbackType.lightImpact,
               onCompleted: _handleCompleted,

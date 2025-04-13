@@ -1,22 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import 'dart:math' show pi;
 
-class Onboarding extends StatefulWidget {
+class Onboarding extends ConsumerStatefulWidget {
   const Onboarding({super.key});
 
   @override
-  State<Onboarding> createState() => _OnboardingState();
+  ConsumerState<Onboarding> createState() => _OnboardingState();
 }
 
-class _OnboardingState extends State<Onboarding> {
+class _OnboardingState extends ConsumerState<Onboarding> {
   int selectedIndex = 0;
   final _pageController = PageController(initialPage: 0, viewportFraction: 1);
 
@@ -141,7 +143,12 @@ class _OnboardingState extends State<Onboarding> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: GradientButton(
                   title: "Get started",
-                  onTap: () => context.nav.pushReplacementNamed(Routes.login),
+                  onTap: () {
+                    ref
+                        .read(hiveServiceProvider.notifier)
+                        .setOnboardingValue(value: true);
+                    context.nav.pushReplacementNamed(Routes.login);
+                  },
                 ),
               ),
               20.ph,

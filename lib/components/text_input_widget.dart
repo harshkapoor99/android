@@ -11,7 +11,7 @@ class TextInputWidget extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.maxLines = 1,
     this.label,
-    this.suffixIcon,
+    this.suffix,
     this.prefix,
     this.maxLength,
     this.onChanged,
@@ -19,16 +19,19 @@ class TextInputWidget extends StatelessWidget {
     this.readOnly = false,
     this.disabled = false,
     this.autofocus = false,
+    this.prefixText,
+    this.sufixText,
   });
 
   final String? hint;
   final String? label;
+  final String? prefixText, sufixText;
   final TextEditingController? controller;
   final bool? obscureText;
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final int? maxLines, maxLength;
-  final Widget? suffixIcon, prefix;
+  final Widget? suffix, prefix;
   final ValueChanged<String>? onChanged;
   final FocusNode? focusNode;
   final bool readOnly;
@@ -48,8 +51,14 @@ class TextInputWidget extends StatelessWidget {
       textAlignVertical: TextAlignVertical.center,
       obscureText: obscureText!,
       onChanged: onChanged,
-      style: TextStyle(color: Colors.white),
+      validator: validator,
+      style: context.appTextStyle.text,
       decoration: InputDecoration(
+        prefixText: prefixText,
+        suffixText: sufixText,
+        prefix: prefix,
+        suffix: suffix,
+        prefixStyle: context.appTextStyle.text,
         filled: true,
         fillColor: context.colorExt.border,
         enabledBorder: OutlineInputBorder(

@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   final List<AssetGenImage> images = [
     Assets.images.bgGrad,
     Assets.images.bgImg,
@@ -34,6 +36,12 @@ class _SplashScreenState extends State<SplashScreen> {
     Assets.images.onboarding.obImg12,
   ];
 
+  // @override
+  // void initState() {
+  //   ref.read(hiveServiceProvider.notifier).removeAllData();
+  //   super.initState();
+  // }
+
   @override
   void didChangeDependencies() {
     final precacheFutures =
@@ -43,7 +51,17 @@ class _SplashScreenState extends State<SplashScreen> {
     // Adjust the provider based on the image type
     Future.wait(precacheFutures).then((value) {
       Future.delayed(Duration(seconds: 1)).then((value) {
-        context.nav.pushReplacementNamed(Routes.onboarding);
+        final hiveService = ref.read(hiveServiceProvider.notifier);
+        final isOnboarded = hiveService.getOnboardingStatus();
+        final userInfo = hiveService.getUserInfo();
+
+        if (!isOnboarded) {
+          context.nav.pushReplacementNamed(Routes.onboarding);
+        } else if (userInfo == null) {
+          context.nav.pushReplacementNamed(Routes.login);
+        } else {
+          context.nav.pushReplacementNamed(Routes.dashboard);
+        }
       });
     });
     super.didChangeDependencies();

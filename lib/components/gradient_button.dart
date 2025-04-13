@@ -9,23 +9,31 @@ class GradientButton extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.showLoading = false,
+    this.disabled = false,
   });
 
   final String title;
   final VoidCallback onTap;
-  final bool showLoading;
+  final bool showLoading, disabled;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [context.colorExt.primary, context.colorExt.tertiary],
-          begin: Alignment(-0.5, -1.5),
-          end: Alignment(1.3, 1.5),
-        ),
+        gradient:
+            !disabled
+                ? LinearGradient(
+                  colors: [context.colorExt.primary, context.colorExt.tertiary],
+                  begin: Alignment(-0.5, -1.5),
+                  end: Alignment(1.3, 1.5),
+                )
+                : null,
         borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(
+          color: disabled ? context.colorExt.border : Colors.transparent,
+          width: 4,
+        ),
       ),
       child: TextButton(
         style: ButtonStyle(
@@ -33,7 +41,7 @@ class GradientButton extends StatelessWidget {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
           ),
         ),
-        onPressed: onTap,
+        onPressed: disabled || showLoading ? null : onTap,
         child:
             showLoading
                 ? SizedBox(
