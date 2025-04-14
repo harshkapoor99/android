@@ -21,11 +21,6 @@ class ChatTab extends ConsumerWidget {
     "Fred",
     "Tisha",
     "Maddy",
-    "Alia",
-    "John",
-    "Jaan",
-    "Fred",
-    "Tisha",
   ];
   final List<Map<String, String>> chats = [
     {
@@ -124,8 +119,8 @@ class ChatTab extends ConsumerWidget {
                                     ? Center(
                                       child: SvgPicture.asset(
                                         Assets.svgs.icMyAi,
-                                        height: 20.w,
-                                        width: 20.w,
+                                        height: 25.w,
+                                        width: 25.w,
                                       ),
                                     )
                                     : null,
