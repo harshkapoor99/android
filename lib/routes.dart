@@ -6,6 +6,7 @@ import 'package:guftagu_mobile/screens/auth/signup.dart';
 import 'package:guftagu_mobile/screens/chat/call_screen.dart';
 import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
+import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:page_transition/page_transition.dart';
@@ -20,6 +21,7 @@ class Routes {
   static const otp = "/otp";
   static const interest = "/interest";
   static const dashboard = "/dashboard";
+  static const explore = "/explore";
   static const chat = "/chat";
   static const call = "/call";
 
@@ -41,6 +43,8 @@ class Routes {
         child = CharacterSelectionScreen();
       case Routes.dashboard:
         child = DashboardScreen();
+      case Routes.explore:
+        child = ExploreScreen();
       case Routes.chat:
         child = ChatScreen();
       case Routes.call:

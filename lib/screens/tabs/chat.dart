@@ -93,7 +93,7 @@ class ChatTab extends ConsumerWidget {
                     ),
                     child: Column(
                       children: [
-                        Container(
+                        Ink(
                           height: 120.h,
                           width: 80.w,
                           decoration: BoxDecoration(
@@ -112,16 +112,24 @@ class ChatTab extends ConsumerWidget {
                                     )
                                     : null,
                           ),
-                          child:
-                              index == ais.length
-                                  ? Center(
-                                    child: SvgPicture.asset(
-                                      Assets.svgs.icMyAi,
-                                      height: 20.w,
-                                      width: 20.w,
-                                    ),
-                                  )
-                                  : null,
+                          child: InkWell(
+                            onTap: () {
+                              if (index == ais.length) {
+                                context.nav.pushNamed(Routes.explore);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(40.r),
+                            child:
+                                index == ais.length
+                                    ? Center(
+                                      child: SvgPicture.asset(
+                                        Assets.svgs.icMyAi,
+                                        height: 20.w,
+                                        width: 20.w,
+                                      ),
+                                    )
+                                    : null,
+                          ),
                         ),
                         Text(
                           index == ais.length ? "Explore" : ais[index],
