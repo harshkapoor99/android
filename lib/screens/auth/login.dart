@@ -159,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               Routes.dashboard,
                             ),
                         child: Text(
-                          "Bypass Login (debgug only)",
+                          "Bypass Login (debug only)",
                           style: AppTextStyle(
                             context,
                           ).textSmall.copyWith(color: context.colorExt.primary),

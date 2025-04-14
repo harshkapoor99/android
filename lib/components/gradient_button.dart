@@ -18,8 +18,9 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Ink(
       width: double.infinity,
+      height: 50.h,
       decoration: BoxDecoration(
         gradient:
             !disabled
@@ -30,29 +31,24 @@ class GradientButton extends StatelessWidget {
                 )
                 : null,
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: disabled ? context.colorExt.border : Colors.transparent,
-          width: 4,
-        ),
+        color: disabled ? context.colorExt.border : null,
       ),
-      child: TextButton(
-        style: ButtonStyle(
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.r)),
-          ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10.r),
+        onTap: disabled || showLoading ? null : onTap,
+        child: Center(
+          child:
+              showLoading
+                  ? SizedBox(
+                    height: 20.h,
+                    width: 20.h,
+                    child: CircularProgressIndicator(),
+                  )
+                  : Text(
+                    title.toUpperCase(),
+                    style: AppTextStyle(context).buttonText,
+                  ),
         ),
-        onPressed: disabled || showLoading ? null : onTap,
-        child:
-            showLoading
-                ? SizedBox(
-                  height: 20.h,
-                  width: 20.h,
-                  child: CircularProgressIndicator(),
-                )
-                : Text(
-                  title.toUpperCase(),
-                  style: AppTextStyle(context).buttonText,
-                ),
       ),
     );
   }
