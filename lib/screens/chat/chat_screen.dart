@@ -320,7 +320,7 @@ class AnimatedSendButton extends StatelessWidget {
       child: IconButton(
         onPressed: onPressed,
         icon: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 200),
           transitionBuilder: (Widget child, Animation<double> animation) {
             return ScaleTransition(scale: animation, child: child);
           },

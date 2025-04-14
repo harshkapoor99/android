@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/call_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class CallScreen extends StatefulWidget {
+class CallScreen extends ConsumerWidget {
   const CallScreen({super.key});
-
   @override
-  State<CallScreen> createState() => _CallScreenState();
-}
-
-class _CallScreenState extends State<CallScreen> {
-  bool isSpeakerOn = false;
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(callProvider);
     return Scaffold(
       backgroundColor: context.colorExt.background,
       appBar: AppBar(
@@ -125,6 +121,7 @@ class _CallScreenState extends State<CallScreen> {
                     _buildCircleButton(
                       SvgPicture.asset(Assets.svgs.icChat, width: 20.w),
                       context.colorExt.border,
+                      onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
                       Icon(Icons.call_end, color: Colors.white, size: 30.w),
@@ -133,7 +130,7 @@ class _CallScreenState extends State<CallScreen> {
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
-                      isSpeakerOn
+                      provider.isSpeakerOn
                           ? SvgPicture.asset(
                             Assets.svgs.icSpeakerGrad,
                             width: 20.w,
@@ -144,9 +141,7 @@ class _CallScreenState extends State<CallScreen> {
                           ),
                       context.colorExt.border,
                       onPressed:
-                          () => setState(() {
-                            isSpeakerOn = !isSpeakerOn;
-                          }),
+                          () => ref.read(callProvider.notifier).toggleSpeaker(),
                     ),
                   ],
                 ),
