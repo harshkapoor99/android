@@ -5,12 +5,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends ConsumerWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
+  final ImagePicker picker = ImagePicker();
 
   final List<Map<String, dynamic>> messages = [
     {'isMe': false, 'text': "Hey, what's up?"},
@@ -28,6 +32,41 @@ class ChatScreen extends ConsumerWidget {
       'text': "Not much, just hanging out at home. How about you?",
     },
   ];
+
+  getPermission(Permission permission) async {
+    var checkStatus = await permission.status;
+
+    if (checkStatus.isGranted) {
+      return;
+    } else {
+      var status = await permission.request();
+      if (status.isGranted) {
+      } else if (status.isDenied) {
+        getPermission(permission);
+      } else {
+        openAppSettings();
+        // EasyLoading.showError('Allow the permission');
+      }
+    }
+  }
+
+  Future getImage(ImageSource media) async {
+    if (media == ImageSource.camera) {
+      getPermission(Permission.camera);
+    } else {
+      getPermission(Permission.storage);
+    }
+    var img = await picker.pickImage(source: media);
+    if (img != null) {
+      // var image = await compressImage(File(img.path));
+      // var image = File(img.path);
+      // if (image != null) {
+      //   ref.read(profileServiceProvider).uploadImage = XFile(image.path);
+      //   image = null;
+      //   setState(() {});
+      // }
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -118,6 +157,19 @@ class ChatScreen extends ConsumerWidget {
                         controller: ref.read(chatProvider).messageController,
                         hasMessage: provider.hasMessage,
                         focusNodes: _focusNodes,
+                        onPlusPressed: () {
+                          AppConstants.getPickImageAlert(
+                            context: context,
+                            pressCamera: () {
+                              getImage(ImageSource.camera);
+                              Navigator.of(context).pop();
+                            },
+                            pressGallery: () {
+                              getImage(ImageSource.gallery);
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -143,11 +195,15 @@ class MessageBox extends StatefulWidget {
     this.controller,
     this.focusNodes,
     required this.hasMessage,
+    this.onStarPressed,
+    this.onPlusPressed,
   });
 
   final bool hasMessage;
   final FocusNode? focusNodes;
   final TextEditingController? controller;
+  final VoidCallback? onStarPressed;
+  final VoidCallback? onPlusPressed;
 
   @override
   State<MessageBox> createState() => _MessageBoxState();
@@ -226,17 +282,12 @@ class _MessageBoxState extends State<MessageBox> {
               height: 40.w,
               width: widget.hasMessage ? 0 : 40.w,
               duration: Duration(milliseconds: 100),
-              child: GestureDetector(
-                onTap: () {
-                  print("iconPressed");
-                },
-                child: IconButton(
-                  onPressed: () {},
-                  icon: SvgPicture.asset(
-                    Assets.svgs.icPlus,
-                    height: 16.w,
-                    width: 16.w,
-                  ),
+              child: IconButton(
+                onPressed: widget.onPlusPressed,
+                icon: SvgPicture.asset(
+                  Assets.svgs.icPlus,
+                  height: 16.w,
+                  width: 16.w,
                 ),
               ),
             ),

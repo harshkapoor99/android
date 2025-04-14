@@ -72,6 +72,55 @@ class AppConstants {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
+  static getPickImageAlert({
+    required BuildContext context,
+    required VoidCallback pressCamera,
+    required VoidCallback pressGallery,
+  }) {
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      isScrollControlled: true,
+      context: context,
+      constraints: const BoxConstraints(maxWidth: 640),
+      builder: (context) {
+        return Container(
+          color: context.colorExt.border,
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          width: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: pressGallery,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 1.w),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: ListTile(
+                    leading: const Icon(Icons.attach_file),
+                    title: Text("Upload from Gallery"),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: pressCamera,
+                child: Container(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: ListTile(
+                    leading: const Icon(Icons.add_a_photo),
+                    title: Text("Take photo"),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static GlobalKey<ScaffoldMessengerState> snackbarKey =
       GlobalKey<ScaffoldMessengerState>();
 
