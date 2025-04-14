@@ -69,13 +69,24 @@ class _OnboardingState extends ConsumerState<Onboarding> {
             child: Assets.images.bgGradSmall.image(),
           ),
           Transform.translate(
-            offset: Offset(0, -130.h),
+            offset: Offset(0, -130.spMin),
             child: Transform.rotate(angle: pi / 12.0, child: ImageGrid()),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.black87,
+                      Colors.transparent,
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
                 height: 170.h,
                 child: PageView(
                   controller: _pageController,
