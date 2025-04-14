@@ -37,12 +37,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     "Environment Activist",
   ];
 
-  List<String> selectedTypes = [
-    "Visionaries",
-    "Lover",
-    "Friends",
-    "Your Crush",
-  ];
+  List<String> selectedTypes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +49,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            20.ph,
             Text(
               "Select your preferred\ncharacter types",
               textAlign: TextAlign.center,
@@ -66,7 +62,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
               "Tap on 4 - 5 of your favorite genres",
               style: AppTextStyle(context).textSmall.copyWith(fontSize: 12.sp),
             ),
-            20.ph,
+            50.ph,
 
             // Expanded(
             //   child: ListView.builder(
@@ -145,7 +141,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20.w,
-                              vertical: 10.h,
+                              vertical: 10.dg,
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
@@ -178,7 +174,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
               ),
             ),
 
-            20.ph,
+            40.ph,
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: GradientButton(

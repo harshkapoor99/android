@@ -21,7 +21,7 @@ class HomeTab extends StatelessWidget {
         borderRadius: BorderRadius.circular(14.r),
       ),
       child: SizedBox(
-        height: 170.h,
+        height: 170.dm,
         child: Row(
           children: [
             Flexible(
@@ -59,21 +59,21 @@ class HomeTab extends StatelessWidget {
               ),
             ),
             Flexible(
-              flex: 35,
+              flex: 40,
               child: Stack(
                 children: [
                   Align(
                     alignment: Alignment.bottomRight,
                     child: Assets.images.imgTrans2.image(
                       fit: BoxFit.contain,
-                      height: 150.h,
+                      height: 150.dm,
                     ),
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Assets.images.imgTrans1.image(
                       fit: BoxFit.contain,
-                      height: 150.h,
+                      height: 150.dm,
                     ),
                   ),
                 ],

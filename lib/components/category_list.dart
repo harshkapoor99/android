@@ -38,7 +38,7 @@ class _CategoryListState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 36.h,
+      height: 30.w,
       child: ListView.builder(
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         scrollDirection: Axis.horizontal,
