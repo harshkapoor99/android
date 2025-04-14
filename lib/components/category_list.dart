@@ -51,26 +51,36 @@ class _CategoryListState extends State<CategoryList> {
             padding: EdgeInsets.only(
               right: index < categories.length - 1 ? 8.0.w : 0,
             ),
-            child: GestureDetector(
-              onTap: () => selectCategoryTab(category),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.h),
-                decoration: BoxDecoration(
-                  color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300), // Animation duration
+              curve: Curves.easeInOut, // Animation curve
+              decoration: BoxDecoration(
+                color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+              child: Material(
+                color:
+                    Colors
+                        .transparent, // Important for InkWell to work properly
+                child: InkWell(
                   borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Center(
-                  child: Text(
-                    category,
-                    textAlign: TextAlign.center,
-                    style: context.appTextStyle.textSemibold.copyWith(
-                      color:
-                          isSelected
-                              ? context.colorExt.background
-                              : context.colorExt.textPrimary.withValues(
-                                alpha: 0.6,
-                              ),
-                      fontSize: 12.sp,
+                  onTap: () => selectCategoryTab(category),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.h),
+                    child: Center(
+                      child: Text(
+                        category,
+                        textAlign: TextAlign.center,
+                        style: context.appTextStyle.textSemibold.copyWith(
+                          color:
+                              isSelected
+                                  ? context.colorExt.background
+                                  : context.colorExt.textPrimary.withValues(
+                                    alpha: 0.6,
+                                  ),
+                          fontSize: 12.sp,
+                        ),
+                      ),
                     ),
                   ),
                 ),
