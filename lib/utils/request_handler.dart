@@ -1,8 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:guftagu_mobile/configs/hive_contants.dart';
-import 'package:guftagu_mobile/routes.dart';
-import 'package:guftagu_mobile/utils/app_constants.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void addApiInterceptors(Dio dio) {
   dio.options.connectTimeout = const Duration(seconds: 20);

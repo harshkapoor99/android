@@ -47,8 +47,6 @@ class HiveService extends _$HiveService {
 
   User? getUserInfo() {
     Map<dynamic, dynamic>? userInfo = _userBox.get(AppHSC.userInfo);
-    print(userInfo.runtimeType);
-    print(userInfo);
     if (userInfo != null) {
       return User.fromMap(userInfo.cast<String, dynamic>());
     }

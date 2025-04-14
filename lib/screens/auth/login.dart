@@ -30,7 +30,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   void login() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    print(_formKey.currentState!.validate());
     if (!_formKey.currentState!.validate()) {
       return;
     }
