@@ -114,7 +114,6 @@ class ChatScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: SizedBox(
-                      // height: 45.w,
                       child: MessageBox(
                         controller: ref.read(chatProvider).messageController,
                         hasMessage: provider.hasMessage,
@@ -123,14 +122,9 @@ class ChatScreen extends ConsumerWidget {
                     ),
                   ),
                   10.pw,
-                  Container(
-                    width: 45.w,
-                    height: 45.w,
-                    decoration: BoxDecoration(
-                      color: context.colorExt.border,
-                      borderRadius: BorderRadius.circular(100.w),
-                    ),
-                    child: const Icon(Icons.mic, color: Colors.white),
+                  AnimatedSendButton(
+                    hasText: provider.hasMessage,
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -247,6 +241,42 @@ class _MessageBoxState extends State<MessageBox> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class AnimatedSendButton extends StatelessWidget {
+  final bool hasText;
+  final VoidCallback onPressed;
+
+  const AnimatedSendButton({
+    required this.hasText,
+    required this.onPressed,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 45.w,
+      height: 45.w,
+      decoration: BoxDecoration(
+        color: context.colorExt.border,
+        borderRadius: BorderRadius.circular(100.w),
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          child:
+              hasText
+                  ? SvgPicture.asset(Assets.svgs.icSend, key: ValueKey("send"))
+                  : SvgPicture.asset(Assets.svgs.icMic, key: ValueKey("mic")),
         ),
       ),
     );

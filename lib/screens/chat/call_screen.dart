@@ -5,9 +5,15 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class CallScreen extends StatelessWidget {
+class CallScreen extends StatefulWidget {
   const CallScreen({super.key});
 
+  @override
+  State<CallScreen> createState() => _CallScreenState();
+}
+
+class _CallScreenState extends State<CallScreen> {
+  bool isSpeakerOn = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,10 +130,23 @@ class CallScreen extends StatelessWidget {
                       Icon(Icons.call_end, color: Colors.white, size: 30.w),
                       Color(0xFFFC015B),
                       size: 60.w,
+                      onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
-                      SvgPicture.asset(Assets.svgs.icSpeaker, width: 20.w),
+                      isSpeakerOn
+                          ? SvgPicture.asset(
+                            Assets.svgs.icSpeakerGrad,
+                            width: 20.w,
+                          )
+                          : SvgPicture.asset(
+                            Assets.svgs.icSpeaker,
+                            width: 20.w,
+                          ),
                       context.colorExt.border,
+                      onPressed:
+                          () => setState(() {
+                            isSpeakerOn = !isSpeakerOn;
+                          }),
                     ),
                   ],
                 ),
@@ -140,12 +159,17 @@ class CallScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCircleButton(Widget icon, Color color, {double size = 50}) {
+  Widget _buildCircleButton(
+    Widget icon,
+    Color color, {
+    double size = 50,
+    void Function()? onPressed,
+  }) {
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      child: IconButton(icon: icon, onPressed: () {}),
+      child: IconButton(icon: icon, onPressed: onPressed),
     );
   }
 }
