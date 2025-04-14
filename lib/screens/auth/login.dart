@@ -151,6 +151,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ],
                     ),
                     20.ph,
+                    GestureDetector(
+                      onTap:
+                          () => context.nav.pushReplacementNamed(
+                            Routes.dashboard,
+                          ),
+                      child: Text(
+                        "Bypass Login (debgug only)",
+                        style: AppTextStyle(
+                          context,
+                        ).textSmall.copyWith(color: context.colorExt.primary),
+                      ),
+                    ),
+                    20.ph,
                   ],
                 ),
               ),

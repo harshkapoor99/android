@@ -29,13 +29,16 @@ class Auth extends _$Auth {
 
     // Dispose controller when provider is disposed
     ref.onDispose(() {
-      initialState.credentialControler.removeListener(_handleTextChange);
-      initialState.otpControler.removeListener(_handleOtpChange);
-      initialState.credentialControler.dispose();
-      initialState.otpControler.dispose();
+      initialState.credentialControler.clear();
+      initialState.otpControler.clear();
     });
 
     return initialState;
+  }
+
+  void clearControllers() {
+    state.credentialControler.clear();
+    state.otpControler.clear();
   }
 
   void _handleTextChange() {
@@ -104,6 +107,12 @@ class Auth extends _$Auth {
             );
         state = state._updateLoggedIn();
       }
+      if (response.data['status'] != 200) {
+        return CommonResponse(
+          message: response.data['message'],
+          isSuccess: false,
+        );
+      }
       User user = User.fromMap(response.data['user_info']);
       String authAccessToken = response.data['access'];
       String authRefreshToken = response.data['refresh'];
@@ -120,7 +129,9 @@ class Auth extends _$Auth {
         message: response.data['message'],
         isSuccess: response.data['status'] == 200,
       );
-    } catch (e) {
+    } catch (e, stack) {
+      print(e);
+      print(stack);
       if (kDebugMode) {
         rethrow;
       } else {

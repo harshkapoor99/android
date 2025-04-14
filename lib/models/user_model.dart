@@ -50,10 +50,10 @@ class User {
   );
 
   factory User.fromMap(Map<String, dynamic> json) => User(
-    id: json["id"],
+    id: json["id"] ?? json["_id"],
     username: json["username"],
     email: json["email"],
-    mobileNumber: json["mobile_number"],
+    mobileNumber: json["mobile_number"] ?? "",
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],
@@ -74,7 +74,7 @@ class User {
 
 class Profile {
   final String fullName;
-  final DateTime? dateOfBirth;
+  final String? dateOfBirth;
   final String gender;
   final String profilePicture;
   final String bio;
@@ -95,7 +95,7 @@ class Profile {
 
   Profile copyWith({
     String? fullName,
-    DateTime? dateOfBirth,
+    String? dateOfBirth,
     String? gender,
     String? profilePicture,
     String? bio,

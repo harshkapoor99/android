@@ -23,9 +23,10 @@ class OtpScreen extends ConsumerWidget {
         .verifyOtp()
         .then((value) {
           if (value.isSuccess) {
-            AppConstants.showSnackbar(message: value.message, isSuccess: true);
             context.nav.pushReplacementNamed(Routes.interest);
+            ref.read(authProvider.notifier).clearControllers();
           }
+          AppConstants.showSnackbar(message: value.message, isSuccess: true);
         })
         .onError((error, stackTrace) {
           AppConstants.showSnackbar(message: error.toString(), isSuccess: true);
@@ -42,9 +43,10 @@ class OtpScreen extends ConsumerWidget {
         child: Stack(
           children: [
             Assets.images.bgGrad.image(width: double.infinity),
-            if (context.nav.canPop()) BackButtonWidget(),
-
-            // if (context.nav.canPop()) BackButtonWidget(),
+            if (context.nav.canPop())
+              BackButtonWidget(
+                onPop: ref.read(authProvider).otpControler.clear,
+              ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(

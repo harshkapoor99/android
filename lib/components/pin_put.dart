@@ -34,7 +34,6 @@ class _PinputExampleState extends State<PinPutWidget> {
 
   @override
   void dispose() {
-    widget.pinCodeController.dispose();
     focusNode.dispose();
     super.dispose();
   }
