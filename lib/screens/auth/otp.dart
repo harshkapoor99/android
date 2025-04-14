@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:guftagu_mobile/components/back_button.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
+import 'package:guftagu_mobile/components/timer.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/auth_provider.dart';
@@ -67,10 +68,33 @@ class OtpScreen extends ConsumerWidget {
                     alignment: Alignment.center,
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        'Lorem ipsum dolor sit amet consectetur. Non morbi suscipit lectus eu. Hendrerit nunc nulla adipiscing .',
+                      child: RichText(
                         textAlign: TextAlign.center,
-                        style: AppTextStyle(context).textSmall,
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                            fontFamily: 'Opensans', // Change as needed
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  "We've sent a one-time password (OTP) to your ${provider.isEmail ? "email" : "phonenumber"} ",
+                              style: context.appTextStyle.textSmall,
+                            ),
+                            TextSpan(
+                              text: provider.credentialControler.text,
+                              style: context.appTextStyle.textSmall.copyWith(
+                                fontWeight: FontWeight.w700,
+                                // color: context.colorExt.primary,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ". Please enter it below to continue.",
+                              style: context.appTextStyle.textSmall,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -91,24 +115,8 @@ class OtpScreen extends ConsumerWidget {
                     onTap: () => verify(context, ref),
                   ),
                   20.ph,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Didn’t recieve a code? ",
-                        style: AppTextStyle(context).textSmall,
-                      ),
-                      GestureDetector(
-                        onTap: () {},
-                        child: Text(
-                          "Resend SMS",
-                          style: AppTextStyle(
-                            context,
-                          ).textSmall.copyWith(color: context.colorExt.primary),
-                        ),
-                      ),
-                    ],
-                  ),
+                  ResendTimer(pinCodeController: provider.otpControler),
+
                   Spacer(),
                   Align(
                     alignment: Alignment.center,

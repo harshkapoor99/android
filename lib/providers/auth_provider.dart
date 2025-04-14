@@ -129,9 +129,7 @@ class Auth extends _$Auth {
         message: response.data['message'],
         isSuccess: response.data['status'] == 200,
       );
-    } catch (e, stack) {
-      print(e);
-      print(stack);
+    } catch (e) {
       if (kDebugMode) {
         rethrow;
       } else {

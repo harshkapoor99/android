@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -151,19 +152,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ],
                     ),
                     20.ph,
-                    GestureDetector(
-                      onTap:
-                          () => context.nav.pushReplacementNamed(
-                            Routes.dashboard,
-                          ),
-                      child: Text(
-                        "Bypass Login (debgug only)",
-                        style: AppTextStyle(
-                          context,
-                        ).textSmall.copyWith(color: context.colorExt.primary),
+                    if (kDebugMode)
+                      GestureDetector(
+                        onTap:
+                            () => context.nav.pushReplacementNamed(
+                              Routes.dashboard,
+                            ),
+                        child: Text(
+                          "Bypass Login (debgug only)",
+                          style: AppTextStyle(
+                            context,
+                          ).textSmall.copyWith(color: context.colorExt.primary),
+                        ),
                       ),
-                    ),
-                    20.ph,
                   ],
                 ),
               ),
