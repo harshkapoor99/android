@@ -26,6 +26,10 @@ class _CreateTab extends State<CreateTab> {
   // case 3
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _backstoryController = TextEditingController();
+  final FocusNode _backstoryFocusNode = FocusNode();
+  final FocusNode _descriptionFocusNode = FocusNode();
+  bool _isBackstoryEmpty = true;
+  bool _isDescriptionEmpty = true;
 
   final List<String> ageOptions = ['Teen (+18)', '20s', '30s', '40-55s'];
 
@@ -65,6 +69,35 @@ class _CreateTab extends State<CreateTab> {
 
   final List<String> orientationOptions = ['Straight', 'Gay', 'Lesbian'];
   final List<String> languageOptions = ['English', 'Hinglish'];
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Listen to changes in the backstory TextField
+    _backstoryController.addListener(() {
+      setState(() {
+        _isBackstoryEmpty = _backstoryController.text.isEmpty;
+      });
+    });
+
+    // Listen to changes in the image description TextField
+    _descriptionController.addListener(() {
+      setState(() {
+        _isDescriptionEmpty = _descriptionController.text.isEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose the controllers and focus nodes
+    _backstoryController.dispose();
+    _backstoryFocusNode.dispose();
+    _descriptionController.dispose();
+    _descriptionFocusNode.dispose();
+    super.dispose();
+  }
 
   void _nextStep() {
     if (currentStep < 4) {
@@ -462,6 +495,7 @@ class _CreateTab extends State<CreateTab> {
                     // Text field
                     TextField(
                       controller: _descriptionController,
+                      focusNode: _descriptionFocusNode, // Attach the FocusNode
                       style: const TextStyle(color: Colors.white),
                       maxLines: null,
                       expands: true,
@@ -472,62 +506,17 @@ class _CreateTab extends State<CreateTab> {
                         hintText: '',
                       ),
                     ),
-                    // Feather icon
-                    Positioned(
-                      top: 16,
-                      left: 16,
-                      child: SvgPicture.asset(
-                        'assets/icons/mingcute_quill-pen-line.svg',
-                        width: 24,
-                        height: 24,
-                      ),
-                    ),
-
-                    // Random Prompt button
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF1E1E25),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                gradient: const LinearGradient(
-                                  colors: [Colors.purple, Colors.blue],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.auto_awesome,
-                                color: Colors.white,
-                                size: 14,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Random Prompt',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                    // Feather icon (conditionally displayed)
+                    if (_isDescriptionEmpty) // Show icon only when the TextField is empty
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: SvgPicture.asset(
+                          'assets/icons/mingcute_quill-pen-line.svg',
+                          width: 24,
+                          height: 24,
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -561,6 +550,7 @@ class _CreateTab extends State<CreateTab> {
                     // Text field
                     TextField(
                       controller: _backstoryController,
+                      focusNode: _backstoryFocusNode, // Attach the FocusNode
                       style: const TextStyle(color: Colors.white),
                       maxLines: null,
                       expands: true,
@@ -571,16 +561,17 @@ class _CreateTab extends State<CreateTab> {
                         hintText: '',
                       ),
                     ),
-                    // Feather icon
-                    Positioned(
-                      top: 16,
-                      left: 16,
-                      child: SvgPicture.asset(
-                        'assets/icons/mingcute_quill-pen-line.svg',
-                        width: 24,
-                        height: 24,
+                    // Feather icon (conditionally displayed)
+                    if (_isBackstoryEmpty) // Show icon only when the TextField is empty
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: SvgPicture.asset(
+                          'assets/icons/mingcute_quill-pen-line.svg',
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
