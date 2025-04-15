@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class CategoryList extends StatefulWidget {
@@ -38,9 +38,9 @@ class _CategoryListState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 30.w,
+      height: 30,
       child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
@@ -49,24 +49,24 @@ class _CategoryListState extends State<CategoryList> {
 
           return Padding(
             padding: EdgeInsets.only(
-              right: index < categories.length - 1 ? 8.0.w : 0,
+              right: index < categories.length - 1 ? 8.0 : 0,
             ),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 300), // Animation duration
               curve: Curves.easeInOut, // Animation curve
               decoration: BoxDecoration(
                 color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
-                borderRadius: BorderRadius.circular(10.r),
+                borderRadius: BorderRadius.circular(10),
               ),
               child: Material(
                 color:
                     Colors
                         .transparent, // Important for InkWell to work properly
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(10.r),
+                  borderRadius: BorderRadius.circular(10),
                   onTap: () => selectCategoryTab(category),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.h),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
                         category,
@@ -78,7 +78,7 @@ class _CategoryListState extends State<CategoryList> {
                                   : context.colorExt.textPrimary.withValues(
                                     alpha: 0.6,
                                   ),
-                          fontSize: 12.sp,
+                          fontSize: 12,
                         ),
                       ),
                     ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:pinput/pinput.dart';
 
@@ -41,8 +41,8 @@ class _PinputExampleState extends State<PinPutWidget> {
   @override
   Widget build(BuildContext context) {
     final defaultPinTheme = PinTheme(
-      width: 80.h,
-      height: 60.h,
+      width: 80,
+      height: 60,
       textStyle: const TextStyle(fontSize: 22),
       decoration: BoxDecoration(
         color: Colors.transparent,
@@ -64,7 +64,7 @@ class _PinputExampleState extends State<PinPutWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 16.h),
+                    margin: EdgeInsets.only(bottom: 16),
                     width: 16,
                     height: 1,
                   ),
@@ -87,7 +87,7 @@ class _PinputExampleState extends State<PinPutWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 16.h),
+                    margin: EdgeInsets.only(bottom: 16),
                     width: 16,
                     height: 1,
                     color: context.colorExt.tertiary,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/back_button.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
@@ -49,7 +49,7 @@ class OtpScreen extends ConsumerWidget {
                 onPop: ref.read(authProvider).otpControler.clear,
               ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +67,7 @@ class OtpScreen extends ConsumerWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
@@ -121,7 +121,7 @@ class OtpScreen extends ConsumerWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      padding: EdgeInsets.symmetric(horizontal: 16),
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(

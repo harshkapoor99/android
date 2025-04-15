@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/configs/app_color.dart';
 
 AppColors colors(context) => Theme.of(context).extension<AppColors>()!;
@@ -66,7 +66,7 @@ ThemeData getAppTheme({
             isDarkTheme
                 ? AppStaticColors.whiteColor
                 : AppStaticColors.blackColor,
-        fontSize: 16.sp,
+        fontSize: 16,
         fontWeight: FontWeight.w600,
         fontFamily: 'OpenSans',
         overflow: TextOverflow.ellipsis,
@@ -107,19 +107,19 @@ InputDecorationTheme inputDecorationTheme({required bool isDarkTheme}) {
     filled: false,
     fillColor: Colors.transparent,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.h),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: borderColor),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.h),
+      borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: borderColor),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.h),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(color: AppStaticColors.primaryColor),
     ),
     errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12.h),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(color: AppStaticColors.redColor),
     ),
   );

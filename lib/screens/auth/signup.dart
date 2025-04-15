@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/bluring_image_cluster.dart';
 import 'package:guftagu_mobile/components/google_auth.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             BluringImageCluster(focusNodes: _focusNodes),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,16 +88,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Expanded(
                           child: Divider(
                             color: context.colorExt.border,
-                            indent: 20.w,
-                            endIndent: 20.w,
+                            indent: 20,
+                            endIndent: 20,
                           ),
                         ),
                         Text('Or', style: AppTextStyle(context).textSmall),
                         Expanded(
                           child: Divider(
                             color: context.colorExt.border,
-                            indent: 20.w,
-                            endIndent: 20.w,
+                            indent: 20,
+                            endIndent: 20,
                           ),
                         ),
                       ],

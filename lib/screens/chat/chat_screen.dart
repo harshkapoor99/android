@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -77,7 +77,7 @@ class ChatScreen extends ConsumerWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.chevron_left_rounded, size: 30.w),
+              icon: Icon(Icons.chevron_left_rounded, size: 30),
               onPressed: () {
                 context.nav.pop();
               },
@@ -98,8 +98,8 @@ class ChatScreen extends ConsumerWidget {
                   children: [
                     5.pw,
                     Container(
-                      width: 7.w,
-                      height: 7.w,
+                      width: 7,
+                      height: 7,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         color: Colors.green,
@@ -108,20 +108,18 @@ class ChatScreen extends ConsumerWidget {
                     5.pw,
                     Text(
                       "Online",
-                      style: context.appTextStyle.text.copyWith(
-                        fontSize: 14.sp,
-                      ),
+                      style: context.appTextStyle.text.copyWith(fontSize: 14),
                     ),
                   ],
                 ),
               ],
             ),
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icCoins, height: 20.w),
+            SvgPicture.asset(Assets.svgs.icCoins, height: 20),
             5.pw,
             Text(
               '1200',
-              style: context.appTextStyle.textBold.copyWith(fontSize: 12.sp),
+              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
             ),
             25.pw,
             IconButton(
@@ -137,7 +135,7 @@ class ChatScreen extends ConsumerWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return ChatBubble(
@@ -221,11 +219,11 @@ class _MessageBoxState extends State<MessageBox> {
       },
       child: AnimatedContainer(
         duration: Durations.short2,
-        padding: EdgeInsets.only(left: 12.w),
+        padding: EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
           color: context.colorExt.border,
           borderRadius: BorderRadius.circular(
-            widget.hasMessage || isFocused ? 10.r : 60.r,
+            widget.hasMessage || isFocused ? 10 : 60,
           ),
           border: Border.all(
             color:
@@ -237,13 +235,13 @@ class _MessageBoxState extends State<MessageBox> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 16.w,
-              width: 16.w,
+              height: 16,
+              width: 16,
               alignment: Alignment.center,
               child: SvgPicture.asset(
                 Assets.svgs.icChatPrefix,
-                height: 16.w,
-                width: 16.w,
+                height: 16,
+                width: 16,
               ),
             ),
             Expanded(
@@ -253,18 +251,14 @@ class _MessageBoxState extends State<MessageBox> {
                 minLines: 1,
                 maxLines: 5,
                 focusNode: widget.focusNodes,
-                style: context.appTextStyle.textSmall.copyWith(fontSize: 12.sp),
+                style: context.appTextStyle.textSmall.copyWith(fontSize: 12),
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(
-                    top: 5.w,
-                    bottom: 5.w,
-                    left: 8.w,
-                  ),
+                  contentPadding: EdgeInsets.only(top: 5, bottom: 5, left: 8),
 
                   hintText: "Start your dream chatting",
                   hintStyle: context.appTextStyle.textSmall.copyWith(
-                    fontSize: 12.sp,
+                    fontSize: 12,
                     color: context.colorExt.textPrimary.withValues(alpha: 0.7),
                   ),
                   fillColor: context.colorExt.border,
@@ -279,15 +273,15 @@ class _MessageBoxState extends State<MessageBox> {
               ),
             ),
             AnimatedContainer(
-              height: 40.w,
-              width: widget.hasMessage ? 0 : 40.w,
+              height: 40,
+              width: widget.hasMessage ? 0 : 40,
               duration: Duration(milliseconds: 100),
               child: IconButton(
                 onPressed: widget.onPlusPressed,
                 icon: SvgPicture.asset(
                   Assets.svgs.icPlus,
-                  height: 16.w,
-                  width: 16.w,
+                  height: 16,
+                  width: 16,
                 ),
               ),
             ),
@@ -311,11 +305,11 @@ class AnimatedSendButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 45.w,
-      height: 45.w,
+      width: 45,
+      height: 45,
       decoration: BoxDecoration(
         color: context.colorExt.border,
-        borderRadius: BorderRadius.circular(100.w),
+        borderRadius: BorderRadius.circular(100),
       ),
       child: IconButton(
         onPressed: onPressed,
@@ -350,11 +344,11 @@ class ChatBubble extends StatelessWidget {
         children: [
           if (!isMe)
             Container(
-              margin: EdgeInsets.only(right: 10.w),
-              width: 40.w,
-              height: 40.w,
+              margin: EdgeInsets.only(right: 10),
+              width: 40,
+              height: 40,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.r),
+                borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
                   image: Assets.images.model.modImg1.provider(),
                   fit: BoxFit.cover,
@@ -374,10 +368,10 @@ class ChatBubble extends StatelessWidget {
               color: isMe ? null : context.colorExt.border,
               borderRadius: BorderRadius.only(
                 //
-                topLeft: Radius.circular(10.w),
-                topRight: Radius.circular(10.w),
-                bottomLeft: Radius.circular(isMe ? 10.w : 0),
-                bottomRight: Radius.circular(isMe ? 0 : 10.w),
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+                bottomLeft: Radius.circular(isMe ? 10 : 0),
+                bottomRight: Radius.circular(isMe ? 0 : 10),
               ),
             ),
             constraints: BoxConstraints(

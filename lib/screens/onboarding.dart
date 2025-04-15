@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
@@ -69,7 +69,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
             child: Assets.images.bgGradSmall.image(),
           ),
           Transform.translate(
-            offset: Offset(0, -130.spMin),
+            offset: Offset(0, -130),
             child: Transform.rotate(angle: pi / 12.0, child: ImageGrid()),
           ),
           Column(
@@ -87,7 +87,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
                     end: Alignment.bottomCenter,
                   ),
                 ),
-                height: 170.h,
+                height: 170,
                 child: PageView(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
@@ -131,17 +131,17 @@ class _OnboardingState extends ConsumerState<Onboarding> {
                       );
                     },
                     child: AnimatedContainer(
-                      width: isSelected ? 30.w : 8.w,
-                      height: 8.h,
+                      width: isSelected ? 30 : 8,
+                      height: 8,
                       margin: EdgeInsets.symmetric(
-                        horizontal: isSelected ? 6.w : 3.w,
+                        horizontal: isSelected ? 6 : 3,
                       ),
                       decoration: BoxDecoration(
                         color:
                             isSelected
                                 ? Color(0xFF242424)
                                 : Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(40.r),
+                        borderRadius: BorderRadius.circular(40),
                       ),
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.ease,
@@ -151,7 +151,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
               ),
               30.ph,
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 child: GradientButton(
                   title: "Get started",
                   onTap: () {
@@ -203,22 +203,22 @@ class _ImageGridState extends State<ImageGrid> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       child: GridView.builder(
         itemCount: images.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // 3 per row
-          crossAxisSpacing: 11.sp,
-          mainAxisSpacing: 11.sp,
+          crossAxisSpacing: 11,
+          mainAxisSpacing: 11,
           childAspectRatio: 0.903,
         ),
         itemBuilder: (context, index) {
           // Determine if this is the middle column
           final isMiddleColumn = index % 3 == 1;
           return Transform.translate(
-            offset: Offset(0, isMiddleColumn ? 30.h : 0),
+            offset: Offset(0, isMiddleColumn ? 30 : 0),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
+              borderRadius: BorderRadius.circular(10),
               child: images[index].image(fit: BoxFit.cover),
             ),
           );
@@ -246,7 +246,7 @@ class TextContainer extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               subTitle,
               textAlign: TextAlign.center,

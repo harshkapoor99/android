@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
@@ -13,23 +12,19 @@ class AppConstants {
     return AppBar(
       title: Row(
         children: [
-          SvgPicture.asset(Assets.svgs.logo, height: 50.w, width: 50.w),
+          SvgPicture.asset(Assets.svgs.logo, height: 50, width: 50),
           5.pw,
           Text('Guftagu', style: AppTextStyle(context).appBarText),
           Spacer(),
-          SvgPicture.asset(Assets.svgs.icCoins, height: 20.w),
+          SvgPicture.asset(Assets.svgs.icCoins, height: 20),
           Text(
             '1200',
-            style: AppTextStyle(context).textBold.copyWith(fontSize: 12.sp),
+            style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
           ),
           15.pw,
-          SvgPicture.asset(
-            Assets.svgs.icNotification,
-            height: 20.w,
-            width: 20.w,
-          ),
+          SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
           15.pw,
-          SvgPicture.asset(Assets.svgs.icMenu, height: 20.w, width: 20.w),
+          SvgPicture.asset(Assets.svgs.icMenu, height: 20, width: 20),
         ],
       ),
     );
@@ -96,7 +91,7 @@ class AppConstants {
               InkWell(
                 onTap: pressGallery,
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 1.w),
+                  margin: EdgeInsets.only(bottom: 1),
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: ListTile(
                     leading: const Icon(Icons.attach_file),

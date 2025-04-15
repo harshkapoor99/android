@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -76,23 +76,21 @@ class ChatTab extends ConsumerWidget {
           children: [
             SizedBox(height: 10),
             SizedBox(
-              height: 140.h,
+              height: 140,
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: ais.length + 1,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(
-                      right: index < ais.length ? 8.w : 0,
-                    ),
+                    padding: EdgeInsets.only(right: index < ais.length ? 8 : 0),
                     child: Column(
                       children: [
                         Ink(
-                          height: 120.h,
-                          width: 80.w,
+                          height: 120,
+                          width: 80,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40.r),
+                            borderRadius: BorderRadius.circular(40),
                             color:
                                 index == ais.length
                                     ? context.colorExt.border
@@ -113,14 +111,14 @@ class ChatTab extends ConsumerWidget {
                                 context.nav.pushNamed(Routes.explore);
                               }
                             },
-                            borderRadius: BorderRadius.circular(40.r),
+                            borderRadius: BorderRadius.circular(40),
                             child:
                                 index == ais.length
                                     ? Center(
                                       child: SvgPicture.asset(
                                         Assets.svgs.icMyAi,
-                                        height: 25.w,
-                                        width: 25.w,
+                                        height: 25,
+                                        width: 25,
                                       ),
                                     )
                                     : null,
@@ -129,7 +127,7 @@ class ChatTab extends ConsumerWidget {
                         Text(
                           index == ais.length ? "Explore" : ais[index],
                           style: context.appTextStyle.textSemibold.copyWith(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                           ),
                         ),
                       ],
@@ -141,12 +139,12 @@ class ChatTab extends ConsumerWidget {
             10.ph,
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
-                height: 45.h,
+                height: 45,
                 child: TextField(
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
                     hintText: "Search",
                     hintStyle: context.appTextStyle.textSmall.copyWith(
                       color: context.colorExt.textPrimary.withValues(
@@ -155,19 +153,19 @@ class ChatTab extends ConsumerWidget {
                     ),
                     suffixIcon: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 10.w,
+                        horizontal: 12,
+                        vertical: 10,
                       ),
                       child: SvgPicture.asset(
                         Assets.svgs.icSearch,
-                        height: 10.w,
-                        width: 10.w,
+                        height: 10,
+                        width: 10,
                       ),
                     ),
                     filled: true,
                     fillColor: Colors.grey[900],
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(60.r),
+                      borderRadius: BorderRadius.circular(60),
                       borderSide: BorderSide.none,
                     ),
                   ),
@@ -178,14 +176,14 @@ class ChatTab extends ConsumerWidget {
             CategoryList(),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.h),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: ListView.builder(
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                       contentPadding: EdgeInsets.symmetric(
-                        vertical: 5.h,
-                        horizontal: 16.w,
+                        vertical: 5,
+                        horizontal: 16,
                       ),
                       onTap: () {
                         FocusManager.instance.primaryFocus?.unfocus();
@@ -194,8 +192,8 @@ class ChatTab extends ConsumerWidget {
                         });
                       },
                       leading: SizedBox(
-                        width: 50.w,
-                        height: 50.w,
+                        width: 50,
+                        height: 50,
                         child: CircleAvatar(
                           backgroundImage:
                               Assets.images.model.modImg1.provider(),
@@ -207,13 +205,13 @@ class ChatTab extends ConsumerWidget {
                           Text(
                             chats[index]['name']!,
                             style: context.appTextStyle.textSemibold.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                             ),
                           ),
                           Text(
                             chats[index]['time']!,
                             style: context.appTextStyle.textSemibold.copyWith(
-                              fontSize: 12.sp,
+                              fontSize: 12,
                             ),
                           ),
                         ],
@@ -221,7 +219,7 @@ class ChatTab extends ConsumerWidget {
                       subtitle: Text(
                         chats[index]['message']!,
                         style: context.appTextStyle.textSmall.copyWith(
-                          fontSize: 12.sp,
+                          fontSize: 12,
                         ),
                       ),
                     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -22,13 +22,13 @@ class ModelCard extends ConsumerWidget {
           //   imageUrl: imageUrls[index],
           //   placeholder: Center(
           //     child: SizedBox(
-          //       width: 60.w,
-          //       height: 60.w,
+          //       width: 60,
+          //       height: 60,
           //       child: Lottie.asset(
           //         Assets.images.logoAnimation,
           //         fit: BoxFit.contain,
-          //         width: 5.w,
-          //         height: 5.w,
+          //         width: 5,
+          //         height: 5,
           //       ),
           //     ),
           //   ),
@@ -59,36 +59,32 @@ class ModelCard extends ConsumerWidget {
             ),
           ),
           Positioned(
-            bottom: 12.h,
-            left: 12.h,
+            bottom: 12,
+            left: 12,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "Elina",
-                  style: context.appTextStyle.buttonText.copyWith(
-                    fontSize: 14.sp,
-                  ),
+                  style: context.appTextStyle.buttonText.copyWith(fontSize: 14),
                 ),
                 Text(
                   "Perfect girlfriend",
-                  style: context.appTextStyle.textSmall.copyWith(
-                    fontSize: 10.sp,
-                  ),
+                  style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
                 ),
               ],
             ),
           ),
           Positioned(
-            bottom: 12.h,
-            right: 12.h,
+            bottom: 12,
+            right: 12,
             child: CircleAvatar(
               backgroundColor: context.colorExt.border.withValues(alpha: 0.8),
               child: IconButton(
                 icon: SvgPicture.asset(
                   Assets.svgs.icChat,
-                  width: 15.w,
-                  height: 15.w,
+                  width: 15,
+                  height: 15,
                 ),
                 onPressed: () {
                   context.nav.pushNamed(Routes.chat);

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/configs/theme.dart';
 
 class AppTextStyle {
@@ -8,61 +8,61 @@ class AppTextStyle {
 
   TextStyle get title => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 28.sp,
+    fontSize: 28,
     fontWeight: FontWeight.w700,
   );
 
   TextStyle get subTitle => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 20.sp,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
   );
 
   TextStyle get text => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 16.sp,
+    fontSize: 16,
     fontWeight: FontWeight.w400,
   );
 
   TextStyle get textSemibold => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 16.sp,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
   );
 
   TextStyle get textBold => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 16.sp,
+    fontSize: 16,
     fontWeight: FontWeight.w700,
   );
 
   TextStyle get textSmall => TextStyle(
     color: colors(context).textSecondary,
-    fontSize: 14.sp,
+    fontSize: 14,
     fontWeight: FontWeight.w400,
   );
 
   TextStyle get labelText => TextStyle(
     color: colors(context).buttonText,
-    fontSize: 14.sp,
+    fontSize: 14,
     fontWeight: FontWeight.w600,
   );
 
   TextStyle get buttonText => TextStyle(
     color: colors(context).buttonText,
-    fontSize: 14.sp,
+    fontSize: 14,
     fontWeight: FontWeight.w700,
   );
 
   TextStyle get hintText => TextStyle(
     color: colors(context).textHint,
-    fontSize: 12.sp,
+    fontSize: 12,
     fontWeight: FontWeight.w400,
   );
 
   TextStyle get appBarText => TextStyle(
     color: colors(context).textPrimary,
-    fontSize: 20.sp,
+    fontSize: 20,
     fontWeight: FontWeight.w700,
   );
 }

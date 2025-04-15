@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -20,7 +20,7 @@ class GradientButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Ink(
       width: double.infinity,
-      height: 50.h,
+      height: 50,
       decoration: BoxDecoration(
         gradient:
             !disabled
@@ -30,18 +30,18 @@ class GradientButton extends StatelessWidget {
                   end: Alignment(1.3, 1.5),
                 )
                 : null,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(10),
         color: disabled ? context.colorExt.border : null,
       ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: BorderRadius.circular(10),
         onTap: disabled || showLoading ? null : onTap,
         child: Center(
           child:
               showLoading
                   ? SizedBox(
-                    height: 20.h,
-                    width: 20.h,
+                    height: 20,
+                    width: 20,
                     child: CircularProgressIndicator(),
                   )
                   : Text(

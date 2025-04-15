@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/call_provider.dart';
@@ -21,7 +21,7 @@ class CallScreen extends ConsumerWidget {
             return IconButton(
               icon: Icon(
                 Icons.chevron_left_rounded,
-                size: 30.w,
+                size: 30,
                 color: Colors.white,
               ),
               onPressed: () {
@@ -44,8 +44,8 @@ class CallScreen extends ConsumerWidget {
                   children: [
                     5.pw,
                     Container(
-                      width: 7.w,
-                      height: 7.w,
+                      width: 7,
+                      height: 7,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
                         color: Colors.green,
@@ -54,20 +54,18 @@ class CallScreen extends ConsumerWidget {
                     5.pw,
                     Text(
                       "Online",
-                      style: context.appTextStyle.text.copyWith(
-                        fontSize: 14.sp,
-                      ),
+                      style: context.appTextStyle.text.copyWith(fontSize: 14),
                     ),
                   ],
                 ),
               ],
             ),
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icCoins, height: 20.w),
+            SvgPicture.asset(Assets.svgs.icCoins, height: 20),
             5.pw,
             Text(
               '1200',
-              style: context.appTextStyle.textBold.copyWith(fontSize: 12.sp),
+              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
             ),
           ],
         ),
@@ -86,8 +84,8 @@ class CallScreen extends ConsumerWidget {
               children: [
                 Spacer(),
                 SizedBox(
-                  width: 250.w,
-                  height: 250.w,
+                  width: 250,
+                  height: 250,
                   child: Stack(
                     children: [
                       //
@@ -99,7 +97,7 @@ class CallScreen extends ConsumerWidget {
                       Align(
                         alignment: Alignment.center,
                         child: CircleAvatar(
-                          maxRadius: 105.w,
+                          maxRadius: 105,
                           backgroundImage:
                               Assets.images.model.modImg1.provider(),
                         ),
@@ -110,35 +108,32 @@ class CallScreen extends ConsumerWidget {
                 20.ph,
                 Text(
                   "12:36",
-                  style: TextStyle(color: Colors.white54, fontSize: 12.sp),
+                  style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
                 20.ph,
-                SvgPicture.asset(Assets.svgs.icAudioSpectrum, width: 150.w),
+                SvgPicture.asset(Assets.svgs.icAudioSpectrum, width: 150),
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildCircleButton(
-                      SvgPicture.asset(Assets.svgs.icChat, width: 20.w),
+                      SvgPicture.asset(Assets.svgs.icChat, width: 20),
                       context.colorExt.border,
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
-                      Icon(Icons.call_end, color: Colors.white, size: 30.w),
+                      Icon(Icons.call_end, color: Colors.white, size: 30),
                       Color(0xFFFC015B),
-                      size: 60.w,
+                      size: 60,
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
                       provider.isSpeakerOn
                           ? SvgPicture.asset(
                             Assets.svgs.icSpeakerGrad,
-                            width: 20.w,
+                            width: 20,
                           )
-                          : SvgPicture.asset(
-                            Assets.svgs.icSpeaker,
-                            width: 20.w,
-                          ),
+                          : SvgPicture.asset(Assets.svgs.icSpeaker, width: 20),
                       context.colorExt.border,
                       onPressed:
                           () => ref.read(callProvider.notifier).toggleSpeaker(),

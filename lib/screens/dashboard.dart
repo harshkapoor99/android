@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -51,8 +51,8 @@ class DashboardScreen extends ConsumerWidget {
                   (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
                     activeIcon: SvgPicture.asset(
                       iconLabel.assetName,
-                      height: 18.w,
-                      width: 18.w,
+                      height: 18,
+                      width: 18,
                       colorFilter: ColorFilter.mode(
                         context.colorExt.textPrimary,
                         BlendMode.srcIn,
@@ -60,8 +60,8 @@ class DashboardScreen extends ConsumerWidget {
                     ),
                     icon: SvgPicture.asset(
                       iconLabel.assetName,
-                      height: 18.w,
-                      width: 18.w,
+                      height: 18,
+                      width: 18,
                       colorFilter: ColorFilter.mode(
                         context.colorExt.textPrimary.withValues(alpha: 0.6),
                         BlendMode.srcIn,

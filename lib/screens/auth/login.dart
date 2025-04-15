@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/bluring_image_cluster.dart';
 import 'package:guftagu_mobile/components/google_auth.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
@@ -67,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             BluringImageCluster(focusNodes: _focusNodes),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -113,16 +113,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Expanded(
                             child: Divider(
                               color: context.colorExt.border,
-                              indent: 20.w,
-                              endIndent: 20.w,
+                              indent: 20,
+                              endIndent: 20,
                             ),
                           ),
                           Text('Or', style: AppTextStyle(context).textSmall),
                           Expanded(
                             child: Divider(
                               color: context.colorExt.border,
-                              indent: 20.w,
-                              endIndent: 20.w,
+                              indent: 20,
+                              endIndent: 20,
                             ),
                           ),
                         ],

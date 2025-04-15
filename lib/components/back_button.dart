@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class BackButtonWidget extends StatelessWidget {
@@ -17,15 +17,15 @@ class BackButtonWidget extends StatelessWidget {
       },
       child: Container(
         margin: EdgeInsets.only(
-          top: MediaQuery.of(context).viewPadding.top + 20.h,
-          left: 20.w,
+          top: MediaQuery.of(context).viewPadding.top + 20,
+          left: 20,
         ),
-        padding: EdgeInsets.all(8.w),
+        padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(10),
           color: context.colorExt.background.withValues(alpha: 1),
         ),
-        child: Icon(Icons.chevron_left_rounded, size: 30.sp),
+        child: Icon(Icons.chevron_left_rounded, size: 30),
       ),
     );
   }

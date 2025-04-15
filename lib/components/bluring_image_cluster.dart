@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 
 class BluringImageCluster extends StatefulWidget {
@@ -26,7 +26,7 @@ class _MyWidgetState extends State<BluringImageCluster> {
 
   void _updateBlur() {
     setState(() {
-      _blurValue = widget.focusNodes.any((node) => node.hasFocus) ? 6.r : 0.0;
+      _blurValue = widget.focusNodes.any((node) => node.hasFocus) ? 6 : 0.0;
     });
   }
 
@@ -52,7 +52,7 @@ class _MyWidgetState extends State<BluringImageCluster> {
       },
       child: Padding(
         padding: EdgeInsets.only(
-          top: MediaQuery.of(context).viewPadding.top + 10.h,
+          top: MediaQuery.of(context).viewPadding.top + 10,
         ),
         child: Assets.images.bgImg.image(
           width: double.infinity,

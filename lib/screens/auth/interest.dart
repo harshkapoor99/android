@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
@@ -44,7 +44,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 50.h),
+        padding: EdgeInsets.symmetric(vertical: 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,7 +60,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
             10.ph,
             Text(
               "Tap on 4 - 5 of your favorite genres",
-              style: AppTextStyle(context).textSmall.copyWith(fontSize: 12.sp),
+              style: AppTextStyle(context).textSmall.copyWith(fontSize: 12),
             ),
             50.ph,
 
@@ -117,10 +117,10 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
             // ),
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                padding: EdgeInsets.symmetric(horizontal: 10),
                 child: Wrap(
-                  spacing: 10.r,
-                  runSpacing: 14.r,
+                  spacing: 10,
+                  runSpacing: 14,
                   alignment: WrapAlignment.start,
                   crossAxisAlignment: WrapCrossAlignment.start,
                   children:
@@ -140,8 +140,8 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 20.w,
-                              vertical: 10.dg,
+                              horizontal: 20,
+                              vertical: 10,
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
@@ -176,7 +176,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
 
             40.ph,
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: 20),
               child: GradientButton(
                 title: "done",
                 onTap:

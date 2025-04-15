@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
@@ -11,23 +11,23 @@ class HomeTab extends StatelessWidget {
 
   Widget buildHeader(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16.w),
+      margin: EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Colors.pinkAccent, Colors.amber],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(14.r),
+        borderRadius: BorderRadius.circular(14),
       ),
       child: SizedBox(
-        height: 170.dm,
+        height: 170,
         child: Row(
           children: [
             Flexible(
               flex: 45,
               child: Padding(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,22 +35,22 @@ class HomeTab extends StatelessWidget {
                     Text(
                       "Let's create your first character Now!",
                       style: context.appTextStyle.textSemibold.copyWith(
-                        fontSize: 18.sp,
+                        fontSize: 18,
                       ),
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(
-                        vertical: 8.w,
-                        horizontal: 20.w,
+                        vertical: 8,
+                        horizontal: 20,
                       ),
                       decoration: BoxDecoration(
                         color: context.colorExt.background,
-                        borderRadius: BorderRadius.circular(8.r),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         "Create Now",
                         style: context.appTextStyle.textSmall.copyWith(
-                          fontSize: 12.sp,
+                          fontSize: 12,
                         ),
                       ),
                     ),
@@ -66,14 +66,14 @@ class HomeTab extends StatelessWidget {
                     alignment: Alignment.bottomRight,
                     child: Assets.images.imgTrans2.image(
                       fit: BoxFit.contain,
-                      height: 150.dm,
+                      height: 150,
                     ),
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Assets.images.imgTrans1.image(
                       fit: BoxFit.contain,
-                      height: 150.dm,
+                      height: 150,
                     ),
                   ),
                 ],
@@ -87,7 +87,7 @@ class HomeTab extends StatelessWidget {
 
   Widget buildGradientTexts(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.w),
+      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -125,8 +125,8 @@ class HomeTab extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          crossAxisSpacing: 12.w,
-          mainAxisSpacing: 12.w,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
           childAspectRatio: 0.9,
         ),
         itemCount: imageUrls.length,

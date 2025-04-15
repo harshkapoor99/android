@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //converts
 extension NumModifier on num {
@@ -9,16 +8,12 @@ extension NumModifier on num {
 
   /// Puts A Vertical Spacer With the value
   SizedBox get ph {
-    return SizedBox(
-      height: toDouble().h,
-    );
+    return SizedBox(height: toDouble());
   }
 
   /// Puts A Horizontal Spacer With the value
   SizedBox get pw {
-    return SizedBox(
-      width: toDouble().w,
-    );
+    return SizedBox(width: toDouble());
   }
 }
 
