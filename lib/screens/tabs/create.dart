@@ -27,7 +27,6 @@ class _CreateTab extends State<CreateTab> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _backstoryController = TextEditingController();
 
-
   final List<String> ageOptions = ['Teen (+18)', '20s', '30s', '40-55s'];
 
   final List<Map<String, dynamic>> genderOptions = [
@@ -68,7 +67,8 @@ class _CreateTab extends State<CreateTab> {
   final List<String> languageOptions = ['English', 'Hinglish'];
 
   void _nextStep() {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
+      // Allow incrementing up to step 4
       setState(() => currentStep++);
     } else {
       debugPrint("Name: ${_nameController.text}");
@@ -99,11 +99,7 @@ class _CreateTab extends State<CreateTab> {
           leading: SizedBox(
             height: 16,
             width: 16,
-            child: SvgPicture.asset(
-              icon,
-              height: 16,
-              width: 16,
-            ),
+            child: SvgPicture.asset(icon, height: 16, width: 16),
           ),
 
           title: Text(
@@ -165,8 +161,6 @@ class _CreateTab extends State<CreateTab> {
                     ],
                   ),
                 ),
-
-
               ),
               Expanded(
                 child: Padding(
@@ -185,10 +179,15 @@ class _CreateTab extends State<CreateTab> {
                         child: Container(
                           width: 106, // Width of the button
                           height: 46, // Height of the button
-                          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16), // Padding
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 16,
+                          ), // Padding
                           decoration: BoxDecoration(
                             color: Color(0xFF23222F),
-                            borderRadius: BorderRadius.circular(100), // Border-radius of 100px
+                            borderRadius: BorderRadius.circular(
+                              100,
+                            ), // Border-radius of 100px
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +200,9 @@ class _CreateTab extends State<CreateTab> {
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              SizedBox(width: 10), // Gap between text and any other widget (e.g., icon)
+                              SizedBox(
+                                width: 10,
+                              ), // Gap between text and any other widget (e.g., icon)
                             ],
                           ),
                         ),
@@ -210,7 +211,6 @@ class _CreateTab extends State<CreateTab> {
                   ),
                 ),
               ),
-
             ],
           ),
         );
@@ -359,11 +359,11 @@ class _CreateTab extends State<CreateTab> {
                           'Voice',
                           'assets/icons/ri_voice-ai-fill.svg',
                         ),
+                        _buildOptionTile('Country', 'assets/icons/ci_flag.svg'),
                         _buildOptionTile(
-                          'Country',
-                          'assets/icons/ci_flag.svg',
+                          'City',
+                          'assets/icons/mage_location.svg',
                         ),
-                        _buildOptionTile('City', 'assets/icons/mage_location.svg'),
                       ],
                     ),
                   ),
@@ -384,7 +384,8 @@ class _CreateTab extends State<CreateTab> {
                 child: Column(
                   children: [
                     Stack(
-                      clipBehavior: Clip.none,  // Allow children to be placed outside the box
+                      clipBehavior:
+                          Clip.none, // Allow children to be placed outside the box
                       children: [
                         // Character image container
                         Container(
@@ -404,25 +405,27 @@ class _CreateTab extends State<CreateTab> {
                         ),
                         // Edit icon positioned 10px outside the box to the right
                         Positioned(
-                          right: -23,  // Positioning the icon 10px outside the container
+                          right:
+                              -23, // Positioning the icon 10px outside the container
                           bottom: 0,
                           child: SvgPicture.asset(
                             'assets/icons/solar_pen-2-bold.svg', // Your SVG asset path
                             width: 26,
                             height: 26,
-                            color: Colors.cyan, // If you want to apply color to the SVG
+                            color:
+                                Colors
+                                    .cyan, // If you want to apply color to the SVG
                           ),
                         ),
                       ],
                     ),
-
 
                     const SizedBox(height: 10),
                     Text(
                       'Character Image',
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w700,
                         color: Colors.white,
                       ),
                     ),
@@ -446,8 +449,13 @@ class _CreateTab extends State<CreateTab> {
                 width: 374,
                 height: 144,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF272730),
-                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ), // Remove green border
+                  borderRadius: BorderRadius.circular(
+                    16,
+                  ), // Keep other properties
+                  color: const Color(0xFF272730), // Background color
                 ),
                 child: Stack(
                   children: [
@@ -457,12 +465,12 @@ class _CreateTab extends State<CreateTab> {
                       style: const TextStyle(color: Colors.white),
                       maxLines: null,
                       expands: true,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          hintText: '',
-                        ),
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        hintText: '',
+                      ),
                     ),
                     // Feather icon
                     Positioned(
@@ -540,8 +548,13 @@ class _CreateTab extends State<CreateTab> {
                 height: 144,
                 width: 374,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF272730),
-                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Colors.transparent,
+                  ), // Remove green border
+                  borderRadius: BorderRadius.circular(
+                    16,
+                  ), // Keep other properties
+                  color: const Color(0xFF272730), // Background color
                 ),
                 child: Stack(
                   children: [
@@ -572,6 +585,108 @@ class _CreateTab extends State<CreateTab> {
                 ),
               ),
               const SizedBox(height: 20),
+            ],
+          ),
+        );
+
+      case 4:
+        return SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    // Character image container
+                    Container(
+                      width: 167,
+                      height: 167,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF272730),
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: Image.asset(
+                          'assets/onboarding/ob_img6.webp',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            print('Error loading image: $error');
+                            // Fallback to placeholder when image fails to load
+                            return Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 83.25,
+                                color: Color(0xFF5B5B69),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+                    Text(
+                      'Here is your Chat Partner',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              Text(
+                'Or choose from images',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFF2F2F2),
+                ),
+              ),
+              const SizedBox(height: 10),
+
+              // Image option selector for choosing from images
+              // 3×2 grid layout with 6 image boxes
+              GridView.count(
+                crossAxisCount: 3, // 3 columns
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                childAspectRatio: 127.72 / 131, // Width/Height ratio
+                children: List.generate(6, (index) {
+                  return Container(
+                    width: 127.72,
+                    height: 131,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.92),
+                      color: const Color(0xFF272730), // Background color
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10.92),
+                      child: Image.asset(
+                        'assets/images/image${index + 1}.jpg', // Replace with your image paths
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(
+                              Icons.image,
+                              size: 50,
+                              color: Color(0xFF5B5B69),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                }),
+              ),
             ],
           ),
         );
@@ -614,7 +729,7 @@ class _CreateTab extends State<CreateTab> {
                       ),
                       const SizedBox(width: 6),
                       Text(
-                        '${currentStep + 1}/4',
+                        '${currentStep + 1 > 4 ? 4 : currentStep + 1}/4', // Ensure it doesn't exceed 4
                         style: GoogleFonts.openSans(
                           fontSize: 18,
                           color: Colors.white,
@@ -638,15 +753,28 @@ class _CreateTab extends State<CreateTab> {
                       onPressed: _prevStep,
                       child: const Text(
                         "Previous",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     )
                   else
                     const SizedBox(),
 
                   NextButton(
-                    label: currentStep == 3 ? "Preview" : "Next",
-                    onPressed: _nextStep,
+                    label:
+                        currentStep == 3
+                            ? "Preview"
+                            : (currentStep == 4 ? "Create" : "Next"),
+                    onPressed:
+                        currentStep == 4
+                            ? () {
+                              // Add your create functionality here
+                              debugPrint("Character Created!");
+                            }
+                            : _nextStep,
                   ),
                 ],
               ),
