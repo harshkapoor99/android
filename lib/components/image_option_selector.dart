@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ImageOptionSelector extends StatelessWidget {
@@ -72,7 +73,14 @@ class ImageOptionSelector extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (option['icon'] != null) ...[
-                            Image.asset(
+                            option['icon'].toString().endsWith('.svg')
+                                ? SvgPicture.asset(
+                              option['icon'],
+                              height: 16,
+                              width: 16,
+                              color: Colors.white,
+                            )
+                                : Image.asset(
                               option['icon'],
                               height: 16,
                               width: 16,
@@ -83,7 +91,7 @@ class ImageOptionSelector extends StatelessWidget {
                           Flexible(
                             child: Text(
                               option['label'],
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
                                 color: Colors.white,

@@ -26,19 +26,29 @@ class ChoiceOptionSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       spacing: spacing,
-      children: options.map((option) {
-        final isSelected = selected == option;
+      children:
+          options.map((option) {
+            final isSelected = selected == option;
 
-        return ChoiceChip(
-          label: Text(option),
-          selected: isSelected,
-          showCheckmark: false,
-          onSelected: (_) => onSelected(option),
-          selectedColor: selectedColor,
-          backgroundColor: unselectedColor,
-          labelStyle: isSelected ? selectedTextStyle : unselectedTextStyle,
-        );
-      }).toList(),
+            return ChoiceChip(
+              label: Text(option),
+              selected: isSelected,
+              showCheckmark: false,
+              onSelected: (_) => onSelected(option),
+              selectedColor: selectedColor,
+              backgroundColor: unselectedColor,
+              labelStyle: isSelected ? selectedTextStyle : unselectedTextStyle,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color:
+                      isSelected
+                          ? selectedColor
+                          : unselectedColor, // 👈 Border = background color
+                ),
+              ),
+            );
+          }).toList(),
     );
   }
 }
