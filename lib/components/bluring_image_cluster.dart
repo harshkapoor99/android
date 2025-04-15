@@ -43,7 +43,7 @@ class _MyWidgetState extends State<BluringImageCluster> {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0.0, end: _blurValue),
-      duration: Duration(milliseconds: 300), // Adjust animation duration
+      duration: const Duration(milliseconds: 300), // Adjust animation duration
       builder: (context, blur, child) {
         return ImageFiltered(
           imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),

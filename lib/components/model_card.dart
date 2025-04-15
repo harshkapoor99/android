@@ -53,7 +53,7 @@ class ModelCard extends ConsumerWidget {
                     Colors.transparent,
                     Colors.black.withValues(alpha: 0.65),
                   ],
-                  stops: [0.5, 0.8],
+                  stops: const [0.5, 0.8],
                 ),
               ),
             ),
@@ -89,7 +89,7 @@ class ModelCard extends ConsumerWidget {
                 onPressed: () {
                   context.nav.pushNamed(Routes.chat);
                   Future.delayed(
-                    Duration(milliseconds: 500),
+                    const Duration(milliseconds: 500),
                     () =>
                         ref
                             .read(isHomeVisitedProvider.notifier)

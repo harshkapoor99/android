@@ -26,8 +26,8 @@ class GradientButton extends StatelessWidget {
             !disabled
                 ? LinearGradient(
                   colors: [context.colorExt.primary, context.colorExt.tertiary],
-                  begin: Alignment(-0.5, -1.5),
-                  end: Alignment(1.3, 1.5),
+                  begin: const Alignment(-0.5, -1.5),
+                  end: const Alignment(1.3, 1.5),
                 )
                 : null,
         borderRadius: BorderRadius.circular(10),
@@ -39,7 +39,7 @@ class GradientButton extends StatelessWidget {
         child: Center(
           child:
               showLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                     height: 20,
                     width: 20,
                     child: CircularProgressIndicator(),

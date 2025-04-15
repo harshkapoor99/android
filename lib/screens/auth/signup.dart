@@ -26,7 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       isLoading = true;
     });
     FocusManager.instance.primaryFocus?.unfocus();
-    await Future.delayed(Duration(seconds: 1)).then((value) {
+    await Future.delayed(const Duration(seconds: 1)).then((value) {
       setState(() {
         isLoading = false;
       });
@@ -46,7 +46,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             BluringImageCluster(focusNodes: _focusNodes),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   20.ph,
-                  GoogleAuthButton(),
+                  const GoogleAuthButton(),
                   20.ph,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

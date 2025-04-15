@@ -28,13 +28,13 @@ class _OnboardingState extends ConsumerState<Onboarding> {
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       if (selectedIndex < 2) {
         _pageController.nextPage(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.ease,
         );
       } else {
         _pageController.animateToPage(
           0,
-          duration: Duration(milliseconds: 600),
+          duration: const Duration(milliseconds: 600),
           curve: Curves.ease,
         );
       }
@@ -69,14 +69,14 @@ class _OnboardingState extends ConsumerState<Onboarding> {
             child: Assets.images.bgGradSmall.image(),
           ),
           Transform.translate(
-            offset: Offset(0, -130),
-            child: Transform.rotate(angle: pi / 12.0, child: ImageGrid()),
+            offset: const Offset(0, -130),
+            child: Transform.rotate(angle: pi / 12.0, child: const ImageGrid()),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
                       Colors.transparent,
@@ -91,14 +91,14 @@ class _OnboardingState extends ConsumerState<Onboarding> {
                 child: PageView(
                   controller: _pageController,
                   scrollDirection: Axis.horizontal,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
 
                   onPageChanged: (index) {
                     setState(() {
                       selectedIndex = index;
                     });
                   },
-                  children: [
+                  children: const [
                     TextContainer(
                       title: "Endless Possibilities",
                       subTitle:
@@ -126,7 +126,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
                     onTap: () {
                       _pageController.animateToPage(
                         index,
-                        duration: Duration(milliseconds: 300),
+                        duration: const Duration(milliseconds: 300),
                         curve: Curves.ease,
                       );
                     },
@@ -139,7 +139,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
                       decoration: BoxDecoration(
                         color:
                             isSelected
-                                ? Color(0xFF242424)
+                                ? const Color(0xFF242424)
                                 : Colors.grey.shade400,
                         borderRadius: BorderRadius.circular(40),
                       ),
@@ -151,7 +151,7 @@ class _OnboardingState extends ConsumerState<Onboarding> {
               ),
               30.ph,
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GradientButton(
                   title: "Get started",
                   onTap: () {
@@ -203,10 +203,10 @@ class _ImageGridState extends State<ImageGrid> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: GridView.builder(
         itemCount: images.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // 3 per row
           crossAxisSpacing: 11,
           mainAxisSpacing: 11,
@@ -246,7 +246,7 @@ class TextContainer extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
               subTitle,
               textAlign: TextAlign.center,

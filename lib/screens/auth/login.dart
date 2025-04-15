@@ -67,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             BluringImageCluster(focusNodes: _focusNodes),
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Form(
                 key: _formKey,
                 child: Column(

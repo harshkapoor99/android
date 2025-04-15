@@ -68,17 +68,17 @@ class ChatTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (!ref.watch(isHomeVisitedProvider)) {
-      return HomeTab();
+      return const HomeTab();
     } else {
       return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Column(
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             SizedBox(
               height: 140,
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: ais.length + 1,
                 itemBuilder: (context, index) {
@@ -139,12 +139,12 @@ class ChatTab extends ConsumerWidget {
             10.ph,
 
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: SizedBox(
                 height: 45,
                 child: TextField(
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                     hintText: "Search",
                     hintStyle: context.appTextStyle.textSmall.copyWith(
                       color: context.colorExt.textPrimary.withValues(
@@ -152,7 +152,7 @@ class ChatTab extends ConsumerWidget {
                       ),
                     ),
                     suffixIcon: Padding(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 10,
                       ),
@@ -173,15 +173,15 @@ class ChatTab extends ConsumerWidget {
               ),
             ),
             15.ph,
-            CategoryList(),
+            const CategoryList(),
             Expanded(
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 child: ListView.builder(
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         vertical: 5,
                         horizontal: 16,
                       ),

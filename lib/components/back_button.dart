@@ -20,12 +20,12 @@ class BackButtonWidget extends StatelessWidget {
           top: MediaQuery.of(context).viewPadding.top + 20,
           left: 20,
         ),
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           color: context.colorExt.background.withValues(alpha: 1),
         ),
-        child: Icon(Icons.chevron_left_rounded, size: 30),
+        child: const Icon(Icons.chevron_left_rounded, size: 30),
       ),
     );
   }

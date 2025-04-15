@@ -19,7 +19,7 @@ class CallScreen extends ConsumerWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.chevron_left_rounded,
                 size: 30,
                 color: Colors.white,
@@ -82,7 +82,7 @@ class CallScreen extends ConsumerWidget {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Spacer(),
+                const Spacer(),
                 SizedBox(
                   width: 250,
                   height: 250,
@@ -106,7 +106,7 @@ class CallScreen extends ConsumerWidget {
                   ),
                 ),
                 20.ph,
-                Text(
+                const Text(
                   "12:36",
                   style: TextStyle(color: Colors.white54, fontSize: 12),
                 ),
@@ -122,8 +122,8 @@ class CallScreen extends ConsumerWidget {
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
-                      Icon(Icons.call_end, color: Colors.white, size: 30),
-                      Color(0xFFFC015B),
+                      const Icon(Icons.call_end, color: Colors.white, size: 30),
+                      const Color(0xFFFC015B),
                       size: 60,
                       onPressed: context.nav.pop,
                     ),

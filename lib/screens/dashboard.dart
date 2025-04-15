@@ -16,9 +16,9 @@ class DashboardScreen extends ConsumerWidget {
 
   final List<Widget> _screens = [
     ChatTab(),
-    CreateTab(),
-    MyAisTab(),
-    ProfileTab(),
+    const CreateTab(),
+    const MyAisTab(),
+    const ProfileTab(),
   ];
 
   final List<BottomBarIconLabel> _tabWidgets = [
@@ -41,7 +41,7 @@ class DashboardScreen extends ConsumerWidget {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.shifting,
         currentIndex: currentIndex,
-        backgroundColor: Color(0xFF171717),
+        backgroundColor: const Color(0xFF171717),
         selectedItemColor: context.colorExt.textPrimary,
         unselectedItemColor: Colors.grey,
         onTap: (index) => ref.read(tabIndexProvider.notifier).changeTab(index),

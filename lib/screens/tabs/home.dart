@@ -11,7 +11,7 @@ class HomeTab extends StatelessWidget {
 
   Widget buildHeader(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Colors.pinkAccent, Colors.amber],
@@ -27,7 +27,7 @@ class HomeTab extends StatelessWidget {
             Flexible(
               flex: 45,
               child: Padding(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -39,7 +39,7 @@ class HomeTab extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                         vertical: 8,
                         horizontal: 20,
                       ),
@@ -87,7 +87,7 @@ class HomeTab extends StatelessWidget {
 
   Widget buildGradientTexts(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -95,8 +95,8 @@ class HomeTab extends StatelessWidget {
             "Explore",
             gradient: LinearGradient(
               colors: [context.colorExt.tertiary, context.colorExt.primary],
-              begin: Alignment(-0.5, -1.5),
-              end: Alignment(1.3, 1.5),
+              begin: const Alignment(-0.5, -1.5),
+              end: const Alignment(1.3, 1.5),
             ),
             style: context.appTextStyle.subTitle,
           ),
@@ -123,7 +123,7 @@ class HomeTab extends StatelessWidget {
       child: GridView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
@@ -145,7 +145,7 @@ class HomeTab extends StatelessWidget {
         children: [
           buildHeader(context),
           buildGradientTexts(context),
-          CategoryList(),
+          const CategoryList(),
           buildCharacterGrid(context),
         ],
       ),

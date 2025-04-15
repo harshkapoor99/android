@@ -30,25 +30,25 @@ class Routes {
 
     switch (settings.name) {
       case Routes.splash:
-        child = SplashScreen();
+        child = const SplashScreen();
       case Routes.onboarding:
-        child = Onboarding();
+        child = const Onboarding();
       case Routes.signup:
-        child = SignUpScreen();
+        child = const SignUpScreen();
       case Routes.login:
-        child = LoginScreen();
+        child = const LoginScreen();
       case Routes.otp:
-        child = OtpScreen();
+        child = const OtpScreen();
       case Routes.interest:
-        child = CharacterSelectionScreen();
+        child = const CharacterSelectionScreen();
       case Routes.dashboard:
         child = DashboardScreen();
       case Routes.explore:
-        child = ExploreScreen();
+        child = const ExploreScreen();
       case Routes.chat:
         child = ChatScreen();
       case Routes.call:
-        child = CallScreen();
+        child = const CallScreen();
       default:
         throw Exception('Invalid route: ${settings.name}');
     }

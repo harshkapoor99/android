@@ -49,7 +49,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             .toList();
     // Adjust the provider based on the image type
     Future.wait(precacheFutures).then((value) {
-      Future.delayed(Duration(seconds: 1)).then((value) {
+      Future.delayed(const Duration(seconds: 1)).then((value) {
         final hiveService = ref.read(hiveServiceProvider.notifier);
         final isOnboarded = hiveService.getOnboardingStatus();
         final userInfo = hiveService.getUserInfo();

@@ -12,7 +12,7 @@ void main() async {
   await Hive.openBox(AppHSC.authBox);
   await Hive.openBox(AppHSC.userBox);
   await Hive.openBox(AppHSC.appSettingsBox);
-  runApp(ProviderScope(child: const MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

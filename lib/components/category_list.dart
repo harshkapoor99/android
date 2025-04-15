@@ -40,7 +40,7 @@ class _CategoryListState extends State<CategoryList> {
     return SizedBox(
       height: 30,
       child: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemCount: categories.length,
         itemBuilder: (context, index) {
@@ -55,7 +55,7 @@ class _CategoryListState extends State<CategoryList> {
               duration: const Duration(milliseconds: 300), // Animation duration
               curve: Curves.easeInOut, // Animation curve
               decoration: BoxDecoration(
-                color: isSelected ? Color(0xFFB1B0BD) : Color(0xFF23222F),
+                color: isSelected ? const Color(0xFFB1B0BD) : const Color(0xFF23222F),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Material(
@@ -66,7 +66,7 @@ class _CategoryListState extends State<CategoryList> {
                   borderRadius: BorderRadius.circular(10),
                   onTap: () => selectCategoryTab(category),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
                         category,

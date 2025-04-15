@@ -44,7 +44,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 50),
+        padding: const EdgeInsets.symmetric(vertical: 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,7 +117,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
             // ),
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Wrap(
                   spacing: 10,
                   runSpacing: 14,
@@ -139,7 +139,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             });
                           },
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                               vertical: 10,
                             ),
@@ -162,7 +162,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             ),
                             child: Text(
                               type.toUpperCase(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -176,7 +176,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
 
             40.ph,
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GradientButton(
                 title: "done",
                 onTap:

@@ -49,12 +49,12 @@ class OtpScreen extends ConsumerWidget {
                 onPop: ref.read(authProvider).otpControler.clear,
               ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Spacer(),
+                  const Spacer(),
 
                   Align(
                     alignment: Alignment.center,
@@ -67,7 +67,7 @@ class OtpScreen extends ConsumerWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: RichText(
                         textAlign: TextAlign.center,
                         text: TextSpan(
@@ -117,34 +117,34 @@ class OtpScreen extends ConsumerWidget {
                   20.ph,
                   ResendTimer(pinCodeController: provider.otpControler),
 
-                  Spacer(),
+                  const Spacer(),
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: RichText(
                         textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: const TextStyle(
+                        text: const TextSpan(
+                          style: TextStyle(
                             fontSize: 12.0,
                             color: Colors.grey,
                             fontFamily: 'Arial', // Change as needed
                           ),
                           children: [
-                            const TextSpan(
+                            TextSpan(
                               text:
                                   "By continuing you're indicating that you accept\nour ",
                             ),
                             TextSpan(
                               text: "Terms of Use",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 decoration: TextDecoration.underline,
                               ),
                             ),
-                            const TextSpan(text: " and our "),
+                            TextSpan(text: " and our "),
                             TextSpan(
                               text: "Privacy Policy",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 decoration: TextDecoration.underline,
                               ),
                             ),

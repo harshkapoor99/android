@@ -64,7 +64,7 @@ class _PinputExampleState extends State<PinPutWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(bottom: 16),
                     width: 16,
                     height: 1,
                   ),
@@ -87,7 +87,7 @@ class _PinputExampleState extends State<PinPutWidget> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 16),
+                    margin: const EdgeInsets.only(bottom: 16),
                     width: 16,
                     height: 1,
                     color: context.colorExt.tertiary,

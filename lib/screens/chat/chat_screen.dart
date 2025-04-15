@@ -77,7 +77,7 @@ class ChatScreen extends ConsumerWidget {
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: Icon(Icons.chevron_left_rounded, size: 30),
+              icon: const Icon(Icons.chevron_left_rounded, size: 30),
               onPressed: () {
                 context.nav.pop();
               },
@@ -135,7 +135,7 @@ class ChatScreen extends ConsumerWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   return ChatBubble(
@@ -219,7 +219,7 @@ class _MessageBoxState extends State<MessageBox> {
       },
       child: AnimatedContainer(
         duration: Durations.short2,
-        padding: EdgeInsets.only(left: 12),
+        padding: const EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
           color: context.colorExt.border,
           borderRadius: BorderRadius.circular(
@@ -254,7 +254,7 @@ class _MessageBoxState extends State<MessageBox> {
                 style: context.appTextStyle.textSmall.copyWith(fontSize: 12),
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(top: 5, bottom: 5, left: 8),
+                  contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 8),
 
                   hintText: "Start your dream chatting",
                   hintStyle: context.appTextStyle.textSmall.copyWith(
@@ -262,11 +262,11 @@ class _MessageBoxState extends State<MessageBox> {
                     color: context.colorExt.textPrimary.withValues(alpha: 0.7),
                   ),
                   fillColor: context.colorExt.border,
-                  border: OutlineInputBorder(borderSide: BorderSide.none),
-                  focusedBorder: OutlineInputBorder(
+                  border: const OutlineInputBorder(borderSide: BorderSide.none),
+                  focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
                 ),
@@ -275,7 +275,7 @@ class _MessageBoxState extends State<MessageBox> {
             AnimatedContainer(
               height: 40,
               width: widget.hasMessage ? 0 : 40,
-              duration: Duration(milliseconds: 100),
+              duration: const Duration(milliseconds: 100),
               child: IconButton(
                 onPressed: widget.onPlusPressed,
                 icon: SvgPicture.asset(
@@ -320,8 +320,8 @@ class AnimatedSendButton extends StatelessWidget {
           },
           child:
               hasText
-                  ? SvgPicture.asset(Assets.svgs.icSend, key: ValueKey("send"))
-                  : SvgPicture.asset(Assets.svgs.icMic, key: ValueKey("mic")),
+                  ? SvgPicture.asset(Assets.svgs.icSend, key: const ValueKey("send"))
+                  : SvgPicture.asset(Assets.svgs.icMic, key: const ValueKey("mic")),
         ),
       ),
     );
@@ -344,7 +344,7 @@ class ChatBubble extends StatelessWidget {
         children: [
           if (!isMe)
             Container(
-              margin: EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10),
               width: 40,
               height: 40,
               decoration: BoxDecoration(
@@ -368,8 +368,8 @@ class ChatBubble extends StatelessWidget {
               color: isMe ? null : context.colorExt.border,
               borderRadius: BorderRadius.only(
                 //
-                topLeft: Radius.circular(10),
-                topRight: Radius.circular(10),
+                topLeft: const Radius.circular(10),
+                topRight: const Radius.circular(10),
                 bottomLeft: Radius.circular(isMe ? 10 : 0),
                 bottomRight: Radius.circular(isMe ? 0 : 10),
               ),

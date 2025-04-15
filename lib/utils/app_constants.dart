@@ -15,7 +15,7 @@ class AppConstants {
           SvgPicture.asset(Assets.svgs.logo, height: 50, width: 50),
           5.pw,
           Text('Guftagu', style: AppTextStyle(context).appBarText),
-          Spacer(),
+          const Spacer(),
           SvgPicture.asset(Assets.svgs.icCoins, height: 20),
           Text(
             '1200',
@@ -91,10 +91,10 @@ class AppConstants {
               InkWell(
                 onTap: pressGallery,
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 1),
+                  margin: const EdgeInsets.only(bottom: 1),
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: ListTile(
-                    leading: const Icon(Icons.attach_file),
+                  child: const ListTile(
+                    leading: Icon(Icons.attach_file),
                     title: Text("Upload from Gallery"),
                   ),
                 ),
@@ -103,8 +103,8 @@ class AppConstants {
                 onTap: pressCamera,
                 child: Container(
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: ListTile(
-                    leading: const Icon(Icons.add_a_photo),
+                  child: const ListTile(
+                    leading: Icon(Icons.add_a_photo),
                     title: Text("Take photo"),
                   ),
                 ),
