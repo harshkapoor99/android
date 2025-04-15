@@ -599,7 +599,7 @@ class _CreateTab extends State<CreateTab> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(24),
                         child: Image.asset(
-                          'assets/onboarding/ob_img6.webp',
+                          'assets/images/onboarding/ob_img6.webp',
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             print('Error loading image: $error');
@@ -643,41 +643,49 @@ class _CreateTab extends State<CreateTab> {
 
               // Image option selector for choosing from images
               // 3×2 grid layout with 6 image boxes
-              GridView.count(
-                crossAxisCount: 3, // 3 columns
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                childAspectRatio: 127.72 / 131, // Width/Height ratio
-                children: List.generate(6, (index) {
-                  return Container(
-                    width: 127.72,
-                    height: 131,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.92),
-                      color: const Color(0xFF272730), // Background color
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10.92),
-                      child: Image.asset(
-                        'assets/images/image${index + 1}.jpg', // Replace with your image paths
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Icon(
-                              Icons.image,
-                              size: 50,
-                              color: Color(0xFF5B5B69),
-                            ),
-                          );
-                        },
+              Column(
+                children: [
+                  GridView.count(
+                    crossAxisCount: 3,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 127.72 / 131,
+                    children: [
+                      'assets/images/model/mod_img11.jpg',
+                      'assets/images/onboarding/ob_img7.webp',
+                      'assets/images/model/mod_img1.jpeg',
+                      'assets/images/model/mod_img12.jpg',
+                      'assets/images/model/mod_img13.jpg',
+                      'assets/images/model/mod_img14.jpg',
+                    ].map(
+                          (imagePath) => Material(
+                        borderRadius: BorderRadius.circular(10.92),
+                        clipBehavior: Clip.antiAlias, // Ensures ripple clips inside rounded corners
+                        color: const Color(0xFF272730),
+                        child: Ink.image(
+                          image: AssetImage(imagePath),
+                          fit: BoxFit.cover,
+                          width: 127.72,
+                          height: 131,
+                          child: InkWell(
+                            onTap: () {
+                              debugPrint("Tapped on $imagePath");
+                              // Your action here
+                            },
+                            splashColor: Colors.white24,
+                            highlightColor: Colors.transparent,
+                          ),
+                        ),
                       ),
-                    ),
-                  );
-                }),
-              ),
+                    ).toList(),
+                  ),
+                ],
+              )
+
+
+
             ],
           ),
         );
