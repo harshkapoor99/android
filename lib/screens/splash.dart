@@ -57,7 +57,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         if (!isOnboarded) {
           context.nav.pushReplacementNamed(Routes.onboarding);
         } else if (userInfo == null) {
-          context.nav.pushReplacementNamed(Routes.interest);
+          context.nav.pushReplacementNamed(Routes.login);
         } else {
           context.nav.pushReplacementNamed(Routes.dashboard);
         }
