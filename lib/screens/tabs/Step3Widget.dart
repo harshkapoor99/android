@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../components/choice_option_selector.dart';
-import '../../components/image_option_selector.dart';
-import '../../components/labeled_text_field.dart';
 
 class Step3Widget extends StatefulWidget {
   const Step3Widget({super.key});
@@ -13,7 +9,6 @@ class Step3Widget extends StatefulWidget {
 }
 
 class _Step3WidgetState extends State<Step3Widget> {
-
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _backstoryController = TextEditingController();
   bool _isBackstoryEmpty = true;
@@ -25,15 +20,11 @@ class _Step3WidgetState extends State<Step3Widget> {
   @override
   void initState() {
     super.initState();
-
-    // Listen to changes in the backstory TextField
     _backstoryController.addListener(() {
       setState(() {
         _isBackstoryEmpty = _backstoryController.text.isEmpty;
       });
     });
-
-    // Listen to changes in the image description TextField
     _descriptionController.addListener(() {
       setState(() {
         _isDescriptionEmpty = _descriptionController.text.isEmpty;
@@ -43,17 +34,18 @@ class _Step3WidgetState extends State<Step3Widget> {
 
   @override
   void dispose() {
-    // Dispose the controllers and focus nodes
     _backstoryController.dispose();
     _backstoryFocusNode.dispose();
     _descriptionController.dispose();
     _descriptionFocusNode.dispose();
-    _pageController.dispose(); // Dispose the PageController
+    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,10 +55,8 @@ class _Step3WidgetState extends State<Step3Widget> {
             child: Column(
               children: [
                 Stack(
-                  clipBehavior:
-                  Clip.none, // Allow children to be placed outside the box
+                  clipBehavior: Clip.none,
                   children: [
-                    // Character image container
                     Container(
                       width: 167,
                       height: 167,
@@ -82,22 +72,19 @@ class _Step3WidgetState extends State<Step3Widget> {
                         ),
                       ),
                     ),
-                    // Edit icon positioned 10px outside the box to the right
                     Positioned(
-                      right:
-                      -23, // Positioning the icon 10px outside the container
+                      right: -23,
                       bottom: 0,
                       child: SvgPicture.asset(
-                        'assets/icons/solar_pen-2-bold.svg', // Your SVG asset path
+                        'assets/icons/solar_pen-2-bold.svg',
                         width: 26,
                         height: 26,
                       ),
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 10),
-                Text(
+                const Text(
                   'Character Image',
                   style: TextStyle(
                     fontSize: 16,
@@ -111,8 +98,7 @@ class _Step3WidgetState extends State<Step3Widget> {
 
           const SizedBox(height: 30),
 
-          // Image description section
-          Text(
+          const Text(
             'Image description (if any)',
             style: TextStyle(
               fontSize: 16,
@@ -122,20 +108,14 @@ class _Step3WidgetState extends State<Step3Widget> {
           ),
           const SizedBox(height: 10),
           Container(
-            width: 374,
+            width: double.infinity,
             height: 144,
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.transparent,
-              ), // Remove green border
-              borderRadius: BorderRadius.circular(
-                16,
-              ), // Keep other properties
-              color: const Color(0xFF272730), // Background color
+              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFF272730),
             ),
             child: Stack(
               children: [
-                // Text field with a nested Stack for layering
                 Stack(
                   children: [
                     TextField(
@@ -148,37 +128,27 @@ class _Step3WidgetState extends State<Step3Widget> {
                         border: InputBorder.none,
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
-                        hintText: '',
-                        hintStyle: TextStyle(color: Colors.grey),
                         contentPadding: EdgeInsets.all(16),
                       ),
                     ),
-
-                    // Conditionally show floating Random Prompt button
                     if (_isDescriptionEmpty)
                       Positioned(
                         bottom: 12,
                         right: 12,
                         child: SizedBox(
-                          width: 148,
                           height: 32,
                           child: ElevatedButton.icon(
-                            onPressed: () {
-                              // Your prompt logic here
-                            },
+                            onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1C1B2A),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               elevation: 0,
                             ),
                             icon: ShaderMask(
-                              shaderCallback:
-                                  (bounds) => const LinearGradient(
+                              shaderCallback: (bounds) => const LinearGradient(
                                 colors: [
                                   Color(0xFFAD00FF),
                                   Color(0xFF00E0FF),
@@ -190,7 +160,7 @@ class _Step3WidgetState extends State<Step3Widget> {
                                 'assets/svgs/ic_chat_prefix.svg',
                                 width: 18,
                                 height: 18,
-                                colorFilter: ColorFilter.mode(
+                                colorFilter: const ColorFilter.mode(
                                   Colors.white,
                                   BlendMode.srcIn,
                                 ),
@@ -209,8 +179,6 @@ class _Step3WidgetState extends State<Step3Widget> {
                       ),
                   ],
                 ),
-
-                // Feather icon when empty
                 if (_isDescriptionEmpty)
                   Positioned(
                     top: 16,
@@ -227,8 +195,7 @@ class _Step3WidgetState extends State<Step3Widget> {
 
           const SizedBox(height: 30),
 
-          // Back Story section
-          Text(
+          const Text(
             'Back Story if any (300 words)',
             style: TextStyle(
               fontSize: 16,
@@ -239,34 +206,27 @@ class _Step3WidgetState extends State<Step3Widget> {
           const SizedBox(height: 10),
           Container(
             height: 144,
-            width: 374,
+            width: double.infinity,
             decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.transparent,
-              ), // Remove green border
-              borderRadius: BorderRadius.circular(
-                16,
-              ), // Keep other properties
-              color: const Color(0xFF272730), // Background color
+              borderRadius: BorderRadius.circular(16),
+              color: const Color(0xFF272730),
             ),
             child: Stack(
               children: [
-                // Text field
                 TextField(
                   controller: _backstoryController,
-                  focusNode: _backstoryFocusNode, // Attach the FocusNode
+                  focusNode: _backstoryFocusNode,
                   style: const TextStyle(color: Colors.white),
                   maxLines: null,
                   expands: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     enabledBorder: InputBorder.none,
                     focusedBorder: InputBorder.none,
-                    hintText: '',
+                    contentPadding: EdgeInsets.all(16),
                   ),
                 ),
-                // Feather icon (conditionally displayed)
-                if (_isBackstoryEmpty) // Show icon only when the TextField is empty
+                if (_isBackstoryEmpty)
                   Positioned(
                     top: 16,
                     left: 16,
@@ -279,6 +239,7 @@ class _Step3WidgetState extends State<Step3Widget> {
               ],
             ),
           ),
+
           const SizedBox(height: 20),
         ],
       ),
