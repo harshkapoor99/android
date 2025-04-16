@@ -50,7 +50,7 @@ class _Step0WidgetState extends State<Step0Widget> {
           const SizedBox(height: 24),
           Text(
             'Choose Age',
-            style: GoogleFonts.openSans(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: const Color(0xFFF2F2F2),

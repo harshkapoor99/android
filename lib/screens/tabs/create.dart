@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:guftagu_mobile/screens/tabs/Step0Widget.dart';
 import 'package:guftagu_mobile/screens/tabs/Step1Widget.dart';
 import 'package:guftagu_mobile/screens/tabs/Step2Widget.dart';
@@ -54,7 +53,7 @@ class _CreateTab extends State<CreateTab> {
                 children: [
                   Text(
                     'Character Creation',
-                    style: GoogleFonts.openSans(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w600,
                       color: const Color(0xFFC9C9C9),
@@ -64,7 +63,7 @@ class _CreateTab extends State<CreateTab> {
                     children: [
                       Text(
                         'STEP',
-                        style: GoogleFonts.openSans(
+                        style: TextStyle(
                           fontSize: 16,
                           color: const Color(0xFFA3A3A3),
                         ),
@@ -72,7 +71,7 @@ class _CreateTab extends State<CreateTab> {
                       const SizedBox(width: 6),
                       Text(
                         '${currentStep + 1 > 4 ? 4 : currentStep + 1}/4', // Ensure it doesn't exceed 4
-                        style: GoogleFonts.openSans(
+                        style: TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                           fontWeight: FontWeight.w700,

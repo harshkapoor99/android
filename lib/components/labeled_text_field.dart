@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class LabeledTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -26,7 +25,7 @@ class LabeledTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final labelStyle = labelTextStyle ??
-        GoogleFonts.openSans(
+        TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
           height: 1.0,
