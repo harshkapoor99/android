@@ -16,6 +16,7 @@ class CreateTab extends StatefulWidget {
 
 class _CreateTab extends State<CreateTab> {
   final TextEditingController _nameController = TextEditingController();
+  final PageController _pageController = PageController(); // Add PageController
   String selectedAge = '';
   String selectedGender = '';
   String selectedStyle = '';
@@ -96,26 +97,28 @@ class _CreateTab extends State<CreateTab> {
     _backstoryFocusNode.dispose();
     _descriptionController.dispose();
     _descriptionFocusNode.dispose();
+    _pageController.dispose(); // Dispose the PageController
     super.dispose();
   }
 
   void _nextStep() {
     if (currentStep < 4) {
-      // Allow incrementing up to step 4
-      setState(() => currentStep++);
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     } else {
-      debugPrint("Name: ${_nameController.text}");
-      debugPrint("Age: $selectedAge");
-      debugPrint("Gender: $selectedGender");
-      debugPrint("Style: $selectedStyle");
-      debugPrint("Orientation: $selectedOrientation");
-      debugPrint("Language: $selectedLanguage");
-      // Navigate or finish action
+      debugPrint("Character Created!");
     }
   }
 
   void _prevStep() {
-    if (currentStep > 0) setState(() => currentStep--);
+    if (currentStep > 0) {
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   Widget _buildOptionTile(String title, String icon) {
@@ -540,13 +543,15 @@ class _CreateTab extends State<CreateTab> {
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       ).createShader(bounds),
-                                    child: SvgPicture.asset(
-                                      'assets/svgs/ic_chat_prefix.svg',
-                                      width: 18,
-                                      height: 18,
-                                      colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                                    )
-
+                                  child: SvgPicture.asset(
+                                    'assets/svgs/ic_chat_prefix.svg',
+                                    width: 18,
+                                    height: 18,
+                                    colorFilter: ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
                                 ),
                                 label: const Text(
                                   'Random Prompt',
@@ -798,7 +803,26 @@ class _CreateTab extends State<CreateTab> {
               ),
 
               const SizedBox(height: 32),
-              Expanded(child: buildStepContent(currentStep)),
+
+              // PageView for step content
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() {
+                      currentStep = index;
+                    });
+                  },
+                  children: [
+                    buildStepContent(0),
+                    buildStepContent(1),
+                    buildStepContent(2),
+                    buildStepContent(3),
+                    buildStepContent(4),
+                  ],
+                ),
+              ),
+
               const SizedBox(height: 20),
 
               Row(
@@ -824,13 +848,7 @@ class _CreateTab extends State<CreateTab> {
                         currentStep == 3
                             ? "Preview"
                             : (currentStep == 4 ? "Create" : "Next"),
-                    onPressed:
-                        currentStep == 4
-                            ? () {
-                              // Add your create functionality here
-                              debugPrint("Character Created!");
-                            }
-                            : _nextStep,
+                    onPressed: _nextStep,
                   ),
                 ],
               ),
