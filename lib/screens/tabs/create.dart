@@ -445,9 +445,6 @@ class _CreateTab extends State<CreateTab> {
                             'assets/icons/solar_pen-2-bold.svg', // Your SVG asset path
                             width: 26,
                             height: 26,
-                            color:
-                                Colors
-                                    .cyan, // If you want to apply color to the SVG
                           ),
                         ),
                       ],
@@ -492,22 +489,81 @@ class _CreateTab extends State<CreateTab> {
                 ),
                 child: Stack(
                   children: [
-                    // Text field
-                    TextField(
-                      controller: _descriptionController,
-                      focusNode: _descriptionFocusNode, // Attach the FocusNode
-                      style: const TextStyle(color: Colors.white),
-                      maxLines: null,
-                      expands: true,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        hintText: '',
-                      ),
+                    // Text field with a nested Stack for layering
+                    Stack(
+                      children: [
+                        TextField(
+                          controller: _descriptionController,
+                          focusNode: _descriptionFocusNode,
+                          style: const TextStyle(color: Colors.white),
+                          maxLines: null,
+                          expands: true,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            hintText: '',
+                            hintStyle: TextStyle(color: Colors.grey),
+                            contentPadding: EdgeInsets.all(16),
+                          ),
+                        ),
+
+                        // Conditionally show floating Random Prompt button
+                        if (_isDescriptionEmpty)
+                          Positioned(
+                            bottom: 12,
+                            right: 12,
+                            child: SizedBox(
+                              width: 148,
+                              height: 32,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  // Your prompt logic here
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF1C1B2A),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                icon: ShaderMask(
+                                  shaderCallback:
+                                      (bounds) => const LinearGradient(
+                                        colors: [
+                                          Color(0xFFAD00FF),
+                                          Color(0xFF00E0FF),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ).createShader(bounds),
+                                    child: SvgPicture.asset(
+                                      'assets/svgs/ic_chat_prefix.svg',
+                                      width: 18,
+                                      height: 18,
+                                      colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                    )
+
+                                ),
+                                label: const Text(
+                                  'Random Prompt',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFFE5E5E5),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
-                    // Feather icon (conditionally displayed)
-                    if (_isDescriptionEmpty) // Show icon only when the TextField is empty
+
+                    // Feather icon when empty
+                    if (_isDescriptionEmpty)
                       Positioned(
                         top: 16,
                         left: 16,
@@ -652,40 +708,41 @@ class _CreateTab extends State<CreateTab> {
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
                     childAspectRatio: 127.72 / 131,
-                    children: [
-                      'assets/images/model/mod_img11.jpg',
-                      'assets/images/onboarding/ob_img7.webp',
-                      'assets/images/model/mod_img1.jpeg',
-                      'assets/images/model/mod_img12.jpg',
-                      'assets/images/model/mod_img13.jpg',
-                      'assets/images/model/mod_img14.jpg',
-                    ].map(
-                          (imagePath) => Material(
-                        borderRadius: BorderRadius.circular(10.92),
-                        clipBehavior: Clip.antiAlias, // Ensures ripple clips inside rounded corners
-                        color: const Color(0xFF272730),
-                        child: Ink.image(
-                          image: AssetImage(imagePath),
-                          fit: BoxFit.cover,
-                          width: 127.72,
-                          height: 131,
-                          child: InkWell(
-                            onTap: () {
-                              debugPrint("Tapped on $imagePath");
-                              // Your action here
-                            },
-                            splashColor: Colors.white24,
-                            highlightColor: Colors.transparent,
-                          ),
-                        ),
-                      ),
-                    ).toList(),
+                    children:
+                        [
+                              'assets/images/model/mod_img11.jpg',
+                              'assets/images/onboarding/ob_img7.webp',
+                              'assets/images/model/mod_img1.jpeg',
+                              'assets/images/model/mod_img12.jpg',
+                              'assets/images/model/mod_img13.jpg',
+                              'assets/images/model/mod_img14.jpg',
+                            ]
+                            .map(
+                              (imagePath) => Material(
+                                borderRadius: BorderRadius.circular(10.92),
+                                clipBehavior:
+                                    Clip.antiAlias, // Ensures ripple clips inside rounded corners
+                                color: const Color(0xFF272730),
+                                child: Ink.image(
+                                  image: AssetImage(imagePath),
+                                  fit: BoxFit.cover,
+                                  width: 127.72,
+                                  height: 131,
+                                  child: InkWell(
+                                    onTap: () {
+                                      debugPrint("Tapped on $imagePath");
+                                      // Your action here
+                                    },
+                                    splashColor: Colors.white24,
+                                    highlightColor: Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
                 ],
-              )
-
-
-
+              ),
             ],
           ),
         );
