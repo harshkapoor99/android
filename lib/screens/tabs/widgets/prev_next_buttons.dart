@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guftagu_mobile/components/next_button.dart';
+import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 
 class PrevNextButtons extends ConsumerWidget {
@@ -48,12 +48,14 @@ class PrevNextButtons extends ConsumerWidget {
         else
           const SizedBox(),
 
-        NextButton(
-          label:
+        GradientButton(
+          disabled: !ref.watch(nextButtonStatusProvider),
+          width: 132,
+          title:
               currentStep == 3
                   ? "Preview"
                   : (currentStep == 4 ? "Create" : "Next"),
-          onPressed: () => _nextStep(provider.pageController, currentStep),
+          onTap: () => _nextStep(provider.pageController, currentStep),
         ),
       ],
     );

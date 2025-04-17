@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import '../../../components/choice_option_selector.dart';
 import '../../../components/image_option_selector.dart';
 
-class Step1Widget extends StatefulWidget {
-  const Step1Widget({super.key});
-
-  @override
-  State<Step1Widget> createState() => _Step1WidgetState();
-}
-
-class _Step1WidgetState extends State<Step1Widget> {
-  String selectedStyle = '';
+class Step1Widget extends ConsumerWidget {
+  Step1Widget({super.key});
   final List<Map<String, dynamic>> styleOptions = [
     {
       'label': 'Realistic',
@@ -25,12 +22,11 @@ class _Step1WidgetState extends State<Step1Widget> {
     },
   ];
   final List<String> orientationOptions = ['Straight', 'Gay', 'Lesbian'];
-  String selectedOrientation = '';
-  String selectedLanguage = '';
   final List<String> languageOptions = ['English', 'Hinglish'];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(characterCreationProvider);
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
@@ -47,8 +43,11 @@ class _Step1WidgetState extends State<Step1Widget> {
           12.ph,
           ImageOptionSelector(
             options: styleOptions,
-            selected: selectedStyle,
-            onChanged: (style) => setState(() => selectedStyle = style),
+            selected: provider.style ?? "",
+            onChanged:
+                (style) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(style: style),
           ),
           24.ph,
           const Text(
@@ -62,8 +61,11 @@ class _Step1WidgetState extends State<Step1Widget> {
           12.ph,
           ChoiceOptionSelector(
             options: orientationOptions,
-            selected: selectedOrientation,
-            onSelected: (value) => setState(() => selectedOrientation = value),
+            selected: provider.sexualOrientation ?? "",
+            onSelected:
+                (value) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(sexualOrientation: value),
           ),
           24.ph,
           const Text(
@@ -75,10 +77,14 @@ class _Step1WidgetState extends State<Step1Widget> {
             ),
           ),
           12.ph,
-          ChoiceOptionSelector(
-            options: languageOptions,
-            selected: selectedLanguage,
-            onSelected: (value) => setState(() => selectedLanguage = value),
+          ChoiceOptionSelector<Language>(
+            options: ref.read(masterDataProvider).languages,
+            selected: provider.language,
+            optionToString: (p0) => p0.title,
+            onSelected:
+                (value) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(language: value),
           ),
         ],
       ),

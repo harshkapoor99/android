@@ -6,12 +6,14 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 class GradientButton extends StatelessWidget {
   const GradientButton({
     super.key,
+    this.width = double.infinity,
     required this.title,
     required this.onTap,
     this.showLoading = false,
     this.disabled = false,
   });
 
+  final double width;
   final String title;
   final VoidCallback onTap;
   final bool showLoading, disabled;
@@ -19,7 +21,7 @@ class GradientButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Ink(
-      width: double.infinity,
+      width: width,
       height: 50,
       decoration: BoxDecoration(
         gradient:

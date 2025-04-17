@@ -78,6 +78,14 @@ class HiveService extends _$HiveService {
     return _appSettingsBox.get(AppHSC.onBoarded, defaultValue: false);
   }
 
+  bool getHasStartedChat() {
+    return _appSettingsBox.get(AppHSC.hasStartedChat, defaultValue: false);
+  }
+
+  Future<void> setHasStartedChat({required bool value}) async {
+    await _appSettingsBox.put(AppHSC.hasStartedChat, value);
+  }
+
   List<String> getSelectedInterests() {
     return _appSettingsBox.get(AppHSC.seletedInterests, defaultValue: []);
   }

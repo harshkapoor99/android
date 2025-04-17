@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:lottie/lottie.dart';
@@ -52,13 +53,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Future.delayed(const Duration(seconds: 1)).then((value) {
         final hiveService = ref.read(hiveServiceProvider.notifier);
         final isOnboarded = hiveService.getOnboardingStatus();
-        final userInfo = hiveService.getUserInfo();
+        final authToken = hiveService.getAuthToken();
+        print("authToken: $authToken");
 
         if (!isOnboarded) {
           context.nav.pushReplacementNamed(Routes.onboarding);
-        } else if (userInfo == null) {
+        } else if (authToken == null) {
           context.nav.pushReplacementNamed(Routes.login);
         } else {
+          ref.read(apiClientProvider).updateToken(authToken);
           context.nav.pushReplacementNamed(Routes.dashboard);
         }
       });

@@ -73,12 +73,12 @@ class CreateTab extends ConsumerWidget {
                         .read(characterCreationProvider.notifier)
                         .updateIndex(index);
                   },
-                  children: const [
-                    Step0Widget(key: PageStorageKey("0")),
-                    Step1Widget(key: PageStorageKey("1")),
-                    Step2Widget(key: PageStorageKey("2")),
-                    Step3Widget(key: PageStorageKey("3")),
-                    Step4Widget(key: PageStorageKey("4")),
+                  children: [
+                    Step0Widget(),
+                    Step1Widget(),
+                    Step2Widget(),
+                    Step3Widget(),
+                    Step4Widget(),
                   ],
                 ),
               ),

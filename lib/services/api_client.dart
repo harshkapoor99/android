@@ -8,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/services/api_client.gen.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 ApiClient apiClient(Ref ref) {
   return ApiClient();
 }
@@ -111,13 +111,5 @@ class ApiClient {
 
   void updateTokenDefault() {
     defaultHeaders[HttpHeaders.authorizationHeader] = null;
-  }
-
-  void addDeviceId({required String deviceId}) {
-    defaultHeaders["DeviceID"] = deviceId;
-  }
-
-  void setActiveCode({required int code}) {
-    activeCode = code;
   }
 }

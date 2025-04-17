@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/chat_provider.gen.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Chat extends _$Chat {
   @override
   ChatState build() {

@@ -1,12 +1,48 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/character_creation_provider.gen.dart';
+
+@riverpod
+bool nextButtonStatus(Ref ref) {
+  final provider = ref.watch(characterCreationProvider);
+  if (provider.index == 0 &&
+      provider.characterNameController.text.isNotEmpty &&
+      provider.age != null &&
+      provider.gender != null) {
+    return true;
+  } else if (provider.index == 1 &&
+      provider.style != null &&
+      provider.sexualOrientation != null &&
+      provider.language != null) {
+    return true;
+  } else if (provider.index == 2 &&
+      provider.personality != null &&
+      provider.relationship != null &&
+      provider.behaviour != null &&
+      provider.voice != null &&
+      provider.country != null &&
+      provider.city != null) {
+    return true;
+  } else if (provider.index == 3 &&
+      provider.refImageUrl != null &&
+      provider.descriptionController.text.isNotEmpty &&
+      provider.backstoryController.text.isNotEmpty) {
+    return true;
+  }
+  // REMOVE: remove this
+  return kDebugMode;
+}
 
 @Riverpod(keepAlive: true)
 class CharacterCreation extends _$CharacterCreation {
   @override
   CharacterCreationState build() {
+    ref.read(masterDataProvider.notifier).fetchAllMasterData();
     final initState = CharacterCreationState(
       pageController: PageController(keepPage: true),
       index: 0,
@@ -14,7 +50,52 @@ class CharacterCreation extends _$CharacterCreation {
       descriptionController: TextEditingController(),
       backstoryController: TextEditingController(),
     );
+    initState.characterNameController.addListener(() {
+      state = state._updateWith(
+        characterNameController: initState.characterNameController,
+      );
+    });
+    initState.descriptionController.addListener(() {
+      state = state._updateWith(
+        descriptionController: initState.descriptionController,
+      );
+    });
+    initState.backstoryController.addListener(() {
+      state = state._updateWith(
+        backstoryController: initState.backstoryController,
+      );
+    });
     return initState;
+  }
+
+  void updateWith({
+    String? age,
+    String? gender,
+    String? style,
+    String? sexualOrientation,
+    Language? language,
+    Personality? personality,
+    Relationship? relationship,
+    Behaviour? behaviour,
+    Voice? voice,
+    Country? country,
+    City? city,
+    String? refImageUrl,
+  }) {
+    state = state._updateWith(
+      age: age,
+      gender: gender,
+      style: style,
+      sexualOrientation: sexualOrientation,
+      language: language,
+      personality: personality,
+      relationship: relationship,
+      behaviour: behaviour,
+      voice: voice,
+      country: country,
+      city: city,
+      refImageUrl: refImageUrl,
+    );
   }
 
   void updateIndex(int index) {
@@ -51,13 +132,13 @@ class CharacterCreationState {
   final String? gender;
   final String? style;
   final String? sexualOrientation;
-  final String? language;
-  final String? personality;
-  final String? relationship;
-  final String? behaviour;
-  final String? voice;
-  final String? country;
-  final String? city;
+  final Language? language;
+  final Personality? personality;
+  final Relationship? relationship;
+  final Behaviour? behaviour;
+  final Voice? voice;
+  final Country? country;
+  final City? city;
   final String? refImageUrl;
   final TextEditingController descriptionController;
   final TextEditingController backstoryController;
@@ -71,13 +152,13 @@ class CharacterCreationState {
     String? gender,
     String? style,
     String? sexualOrientation,
-    String? language,
-    String? personality,
-    String? relationship,
-    String? behaviour,
-    String? voice,
-    String? country,
-    String? city,
+    Language? language,
+    Personality? personality,
+    Relationship? relationship,
+    Behaviour? behaviour,
+    Voice? voice,
+    Country? country,
+    City? city,
     String? refImageUrl,
     TextEditingController? descriptionController,
     TextEditingController? backstoryController,
