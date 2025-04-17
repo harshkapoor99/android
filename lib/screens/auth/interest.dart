@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class CharacterSelectionScreen extends StatefulWidget {
+class CharacterSelectionScreen extends ConsumerStatefulWidget {
   const CharacterSelectionScreen({super.key});
 
   @override
-  State<CharacterSelectionScreen> createState() =>
+  ConsumerState<CharacterSelectionScreen> createState() =>
       _CharacterSelectionScreenState();
 }
 
-class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
+class _CharacterSelectionScreenState
+    extends ConsumerState<CharacterSelectionScreen> {
   List<String> characterTypes = [
     "Scientists",
     "Fictional Characters",
@@ -179,13 +182,15 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GradientButton(
                 title: "done",
-                onTap:
-                    () => context.nav.pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (context) => DashboardScreen(),
-                      ),
-                      (Route<dynamic> route) => false,
-                    ),
+                onTap: () async {
+                  await ref
+                      .read(hiveServiceProvider.notifier)
+                      .setSelectedInterests(value: selectedTypes);
+                  context.nav.pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
               ),
             ),
           ],

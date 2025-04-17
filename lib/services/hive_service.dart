@@ -78,6 +78,14 @@ class HiveService extends _$HiveService {
     return _appSettingsBox.get(AppHSC.onBoarded, defaultValue: false);
   }
 
+  List<String> getSelectedInterests() {
+    return _appSettingsBox.get(AppHSC.seletedInterests, defaultValue: []);
+  }
+
+  Future<void> setSelectedInterests({required List<String> value}) async {
+    await _appSettingsBox.put(AppHSC.seletedInterests, value);
+  }
+
   // Combined Operations
   Future<List<dynamic>> loadTokenAndUser() async {
     return [getOnboardingStatus(), getAuthToken(), getUserInfo()];

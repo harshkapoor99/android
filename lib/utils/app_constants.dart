@@ -18,7 +18,8 @@ class AppConstants {
           5.pw,
           Text('Guftagu', style: AppTextStyle(context).appBarText),
           const Spacer(),
-          SvgPicture.asset(Assets.svgs.icCoins, height: 20),
+          SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+          5.pw,
           Text(
             '1200',
             style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
@@ -26,7 +27,7 @@ class AppConstants {
           15.pw,
           SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
           15.pw,
-          SvgPicture.asset(Assets.svgs.icMenu, height: 20, width: 20),
+          SvgPicture.asset(Assets.svgs.icSearch, height: 20, width: 20),
         ],
       ),
     );

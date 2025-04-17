@@ -13,6 +13,7 @@ class AppHSC {
 
   //Settings Variable Names
   static const String onBoarded = 'onBoarded';
+  static const String seletedInterests = 'seletedInterests';
   static const String isDarkTheme = 'isDarkTheme';
 
   static const String appLocal = 'appLocal';
