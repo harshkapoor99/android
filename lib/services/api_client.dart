@@ -35,6 +35,7 @@ class ApiClient {
     String url, {
     dynamic data,
     Map<String, dynamic>? headers,
+    Duration? timeout,
   }) async {
     return _dio.post(
       url,
@@ -45,6 +46,7 @@ class ApiClient {
         validateStatus: ((status) {
           return status! < 500;
         }),
+        receiveTimeout: timeout,
       ),
     );
   }

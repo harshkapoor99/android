@@ -16,7 +16,20 @@ enum RemoteEndpoint {
   fetchVoices(path: 'masterservice/voice/getallvoice/'),
   fetchCountries(path: 'masterservice/country/getallcountry/'),
   fetchCities(path: 'masterservice/city/getallcity/'),
-  fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/')
+  fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
+
+  // Character Creation
+  refImageUpload(
+    path: 'chatgenerationservice/character/characterimage/refimageupload/',
+  ),
+  createCharacter(path: 'chatgenerationservice/character/characterimage/gen/'),
+  imageSelection(path: 'chatgenerationservice/character/imageselection/'),
+  charactersByUser(path: 'chatgenerationservice/character/bycreatorid'),
+
+  // Chat with character
+  chatWithCharacter(path: 'chatgenerationservice/character/chat/'),
+  chatHistory(path: 'chatgenerationservice/character/chathistory/'),
+  chatList(path: 'chatgenerationservice/character/chatlist/')
   //
   ;
 

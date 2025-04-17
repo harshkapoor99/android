@@ -9,7 +9,6 @@ part '../gen/services/master_service.gen.dart';
 @riverpod
 MasterService masterService(Ref ref) {
   final apiClient = ref.watch(apiClientProvider);
-  print(apiClient.defaultHeaders);
   return MasterServiceImpl(apiClient);
 }
 

@@ -1,8 +1,10 @@
-import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/services/character_creation.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/character_creation_provider.gen.dart';
@@ -23,19 +25,23 @@ bool nextButtonStatus(Ref ref) {
   } else if (provider.index == 2 &&
       provider.personality != null &&
       provider.relationship != null &&
-      provider.behaviour != null &&
-      provider.voice != null &&
-      provider.country != null &&
-      provider.city != null) {
+      provider.behaviour != null
+  // uncomment to make it mandatory
+  // && provider.voice != null &&
+  // provider.country != null &&
+  // provider.city != null
+  ) {
     return true;
-  } else if (provider.index == 3 &&
-      provider.refImageUrl != null &&
-      provider.descriptionController.text.isNotEmpty &&
-      provider.backstoryController.text.isNotEmpty) {
+  } else if (provider.index == 3
+  // uncomment to make it mandatory
+  // && provider.refImageUrl != null &&
+  // provider.descriptionController.text.isNotEmpty &&
+  // provider.backstoryController.text.isNotEmpty
+  ) {
     return true;
   }
   // REMOVE: remove this
-  return kDebugMode;
+  return false;
 }
 
 @Riverpod(keepAlive: true)
@@ -101,6 +107,48 @@ class CharacterCreation extends _$CharacterCreation {
   void updateIndex(int index) {
     state = state._updateWith(index: index);
   }
+
+  void createCharacter() async {
+    state = state._updateWith(isCharacterGenerating: true);
+    try {
+      final Response response = await ref
+          .read(characterServiceProvider)
+          .createCharacter(
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+            creatorUserType: "user",
+            name: state.characterNameController.text,
+            age: state.age!,
+            gender: state.gender!,
+            style: state.style!,
+            languageId: state.language!.id,
+            behaviourId: state.behaviour!.id,
+            personalityId: state.personality!.id,
+            relationshipId: state.relationship!.id,
+            voiceId: state.voice?.id,
+            countryId: state.country?.id,
+            cityId: state.city?.id,
+            refImage: state.refImageUrl,
+            refImageDescription: state.descriptionController.text,
+            refImageBackstory: state.backstoryController.text,
+          );
+      print(response.data);
+      if (response.statusCode == 200) {
+        // Handle success
+        state = state._updateWith(
+          characterImages: List<String>.from(response.data['image_gallery']),
+          chracterId: response.data['character_id'],
+        );
+        print("Character created successfully");
+      } else {
+        // Handle error
+        print("Error creating character: ${response.data}");
+      }
+    } on DioException {
+      rethrow;
+    } finally {
+      state = state._updateWith(isCharacterGenerating: false);
+    }
+  }
 }
 
 class CharacterCreationState {
@@ -122,6 +170,9 @@ class CharacterCreationState {
     this.refImageUrl,
     required this.descriptionController,
     required this.backstoryController,
+    this.isCharacterGenerating = false,
+    this.characterImages = const [],
+    this.chracterId = "",
   });
 
   final PageController pageController;
@@ -143,6 +194,10 @@ class CharacterCreationState {
   final TextEditingController descriptionController;
   final TextEditingController backstoryController;
 
+  final bool isCharacterGenerating;
+  final String chracterId;
+  final List<String> characterImages;
+
   // _updateWith method to update the state
   CharacterCreationState _updateWith({
     PageController? pageController,
@@ -162,6 +217,9 @@ class CharacterCreationState {
     String? refImageUrl,
     TextEditingController? descriptionController,
     TextEditingController? backstoryController,
+    bool? isCharacterGenerating,
+    List<String>? characterImages,
+    String? chracterId,
   }) {
     return CharacterCreationState(
       pageController: pageController ?? this.pageController,
@@ -183,6 +241,10 @@ class CharacterCreationState {
       descriptionController:
           descriptionController ?? this.descriptionController,
       backstoryController: backstoryController ?? this.backstoryController,
+      isCharacterGenerating:
+          isCharacterGenerating ?? this.isCharacterGenerating,
+      characterImages: characterImages ?? this.characterImages,
+      chracterId: chracterId ?? this.chracterId,
     );
   }
 }

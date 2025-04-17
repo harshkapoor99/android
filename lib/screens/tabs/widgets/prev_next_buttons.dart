@@ -6,8 +6,15 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 class PrevNextButtons extends ConsumerWidget {
   const PrevNextButtons({super.key});
 
-  void _nextStep(PageController pageController, int currentStep) {
+  void _nextStep(
+    PageController pageController,
+    int currentStep,
+    WidgetRef ref,
+  ) {
     if (currentStep < 4) {
+      if (currentStep == 3) {
+        ref.read(characterCreationProvider.notifier).createCharacter();
+      }
       pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -55,7 +62,7 @@ class PrevNextButtons extends ConsumerWidget {
               currentStep == 3
                   ? "Preview"
                   : (currentStep == 4 ? "Create" : "Next"),
-          onTap: () => _nextStep(provider.pageController, currentStep),
+          onTap: () => _nextStep(provider.pageController, currentStep, ref),
         ),
       ],
     );
