@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 
 class Step4Widget extends StatefulWidget {
   const Step4Widget({super.key});
@@ -21,7 +22,7 @@ class _Step4WidgetState extends State<Step4Widget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16), // Optional padding
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,7 +42,10 @@ class _Step4WidgetState extends State<Step4Widget> {
                     child: Image.asset(
                       'assets/images/onboarding/ob_img6.webp',
                       fit: BoxFit.cover,
-                      alignment: const Alignment(0, -0.5), // move image slightly up
+                      alignment: const Alignment(
+                        0,
+                        -0.5,
+                      ), // move image slightly up
                       errorBuilder: (context, error, stackTrace) {
                         print('Error loading image: $error');
                         return const Center(
@@ -55,7 +59,7 @@ class _Step4WidgetState extends State<Step4Widget> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
+                10.ph,
                 const Text(
                   'Here is your Chat Partner',
                   style: TextStyle(
@@ -67,7 +71,7 @@ class _Step4WidgetState extends State<Step4Widget> {
               ],
             ),
           ),
-          const SizedBox(height: 30),
+          30.ph,
           const Text(
             'Or choose from images',
             style: TextStyle(
@@ -76,7 +80,7 @@ class _Step4WidgetState extends State<Step4Widget> {
               color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 10),
+          10.ph,
 
           // 3×2 grid layout with premium tag on 2nd and 6th
           GridView.count(

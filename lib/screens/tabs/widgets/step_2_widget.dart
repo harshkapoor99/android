@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 
 class Step2Widget extends StatefulWidget {
   const Step2Widget({super.key});
@@ -9,8 +10,7 @@ class Step2Widget extends StatefulWidget {
 }
 
 class _Step2WidgetState extends State<Step2Widget> {
-
-  Widget _buildOptionTile(String title, String icon, double width, {bool isLast = false}) {
+  Widget _buildOptionTile(String title, String icon, double width) {
     return Padding(
       padding: EdgeInsets.only(bottom: title == 'City' ? 0 : 24),
       child: Container(
@@ -28,15 +28,21 @@ class _Step2WidgetState extends State<Step2Widget> {
           ),
           title: Text(
             title,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
+          trailing: const Icon(
+            Icons.arrow_forward_ios,
+            color: Colors.white,
+            size: 16,
+          ),
           onTap: () => _showOptionPopup(context),
         ),
       ),
     );
   }
-
 
   void _showOptionPopup(BuildContext context) {
     showModalBottomSheet(
@@ -44,11 +50,12 @@ class _Step2WidgetState extends State<Step2Widget> {
       backgroundColor: Colors.transparent,
       builder: (context) {
         final screenWidth = MediaQuery.of(context).size.width;
-        final crossAxisCount = screenWidth < 400
-            ? 2
-            : screenWidth < 700
-            ? 3
-            : 4;
+        final crossAxisCount =
+            screenWidth < 400
+                ? 2
+                : screenWidth < 700
+                ? 3
+                : 4;
 
         return Container(
           height: 552,
@@ -59,8 +66,10 @@ class _Step2WidgetState extends State<Step2Widget> {
           child: Column(
             children: [
               Padding(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 child: Row(
                   children: [
                     const Expanded(
@@ -96,7 +105,9 @@ class _Step2WidgetState extends State<Step2Widget> {
                         onTap: () => Navigator.pop(context),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 16),
+                            vertical: 8,
+                            horizontal: 16,
+                          ),
                           decoration: BoxDecoration(
                             color: const Color(0xFF23222F),
                             borderRadius: BorderRadius.circular(100),
@@ -130,6 +141,7 @@ class _Step2WidgetState extends State<Step2Widget> {
     final maxContainerWidth = screenWidth * 0.9; // 90% of screen width
 
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -141,7 +153,7 @@ class _Step2WidgetState extends State<Step2Widget> {
               color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 25),
+          25.ph,
           Center(
             child: Container(
               width: maxContainerWidth,
@@ -149,20 +161,43 @@ class _Step2WidgetState extends State<Step2Widget> {
                 color: const Color(0xFF151519),
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
               child: Column(
                 children: [
-                  _buildOptionTile('Personality', 'assets/icons/solar_mask-sad-linear.svg', maxContainerWidth),
-                  _buildOptionTile('Relationship', 'assets/icons/carbon_friendship.svg', maxContainerWidth),
-                  _buildOptionTile('Behaviour', 'assets/icons/token_mind.svg', maxContainerWidth),
-                  _buildOptionTile('Voice', 'assets/icons/ri_voice-ai-fill.svg', maxContainerWidth),
-                  _buildOptionTile('Country', 'assets/icons/ci_flag.svg', maxContainerWidth),
-                  _buildOptionTile('City', 'assets/icons/mage_location.svg', maxContainerWidth),
+                  _buildOptionTile(
+                    'Personality',
+                    'assets/icons/solar_mask-sad-linear.svg',
+                    maxContainerWidth,
+                  ),
+                  _buildOptionTile(
+                    'Relationship',
+                    'assets/icons/carbon_friendship.svg',
+                    maxContainerWidth,
+                  ),
+                  _buildOptionTile(
+                    'Behaviour',
+                    'assets/icons/token_mind.svg',
+                    maxContainerWidth,
+                  ),
+                  _buildOptionTile(
+                    'Voice',
+                    'assets/icons/ri_voice-ai-fill.svg',
+                    maxContainerWidth,
+                  ),
+                  _buildOptionTile(
+                    'Country',
+                    'assets/icons/ci_flag.svg',
+                    maxContainerWidth,
+                  ),
+                  _buildOptionTile(
+                    'City',
+                    'assets/icons/mage_location.svg',
+                    maxContainerWidth,
+                  ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 25),
         ],
       ),
     );

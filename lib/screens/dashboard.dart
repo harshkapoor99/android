@@ -35,7 +35,10 @@ class DashboardScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: context.colorExt.background,
       appBar: AppConstants.appbar(context),
-      body: _screens[currentIndex],
+      body: IndexedStack(
+        index: ref.watch(tabIndexProvider),
+        children: _screens,
+      ),
 
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(

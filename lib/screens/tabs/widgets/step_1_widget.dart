@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../components/choice_option_selector.dart';
-import '../../components/image_option_selector.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
+import '../../../components/choice_option_selector.dart';
+import '../../../components/image_option_selector.dart';
 
 class Step1Widget extends StatefulWidget {
   const Step1Widget({super.key});
@@ -10,7 +11,6 @@ class Step1Widget extends StatefulWidget {
 }
 
 class _Step1WidgetState extends State<Step1Widget> {
-
   String selectedStyle = '';
   final List<Map<String, dynamic>> styleOptions = [
     {
@@ -32,49 +32,49 @@ class _Step1WidgetState extends State<Step1Widget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Style',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFF2F2F2),
+              color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 12),
+          12.ph,
           ImageOptionSelector(
             options: styleOptions,
             selected: selectedStyle,
             onChanged: (style) => setState(() => selectedStyle = style),
           ),
-          const SizedBox(height: 24),
-          Text(
+          24.ph,
+          const Text(
             'Sexual Orientation',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFF2F2F2),
+              color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 12),
+          12.ph,
           ChoiceOptionSelector(
             options: orientationOptions,
             selected: selectedOrientation,
-            onSelected:
-                (value) => setState(() => selectedOrientation = value),
+            onSelected: (value) => setState(() => selectedOrientation = value),
           ),
-          const SizedBox(height: 24),
-          Text(
+          24.ph,
+          const Text(
             'Primary Language',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFF2F2F2),
+              color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 12),
+          12.ph,
           ChoiceOptionSelector(
             options: languageOptions,
             selected: selectedLanguage,

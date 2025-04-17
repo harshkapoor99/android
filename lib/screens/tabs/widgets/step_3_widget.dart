@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 
 class Step3Widget extends StatefulWidget {
   const Step3Widget({super.key});
@@ -44,9 +45,8 @@ class _Step3WidgetState extends State<Step3Widget> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,7 +83,7 @@ class _Step3WidgetState extends State<Step3Widget> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                10.ph,
                 const Text(
                   'Character Image',
                   style: TextStyle(
@@ -96,7 +96,7 @@ class _Step3WidgetState extends State<Step3Widget> {
             ),
           ),
 
-          const SizedBox(height: 30),
+          30.ph,
 
           const Text(
             'Image description (if any)',
@@ -106,7 +106,7 @@ class _Step3WidgetState extends State<Step3Widget> {
               color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 10),
+          10.ph,
           Container(
             width: double.infinity,
             height: 144,
@@ -141,21 +141,24 @@ class _Step3WidgetState extends State<Step3Widget> {
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF1C1B2A),
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               elevation: 0,
                             ),
                             icon: ShaderMask(
-                              shaderCallback: (bounds) => const LinearGradient(
-                                colors: [
-                                  Color(0xFFAD00FF),
-                                  Color(0xFF00E0FF),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds),
+                              shaderCallback:
+                                  (bounds) => const LinearGradient(
+                                    colors: [
+                                      Color(0xFFAD00FF),
+                                      Color(0xFF00E0FF),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ).createShader(bounds),
                               child: SvgPicture.asset(
                                 'assets/svgs/ic_chat_prefix.svg',
                                 width: 18,
@@ -193,7 +196,7 @@ class _Step3WidgetState extends State<Step3Widget> {
             ),
           ),
 
-          const SizedBox(height: 30),
+          30.ph,
 
           const Text(
             'Back Story if any (300 words)',
@@ -203,7 +206,7 @@ class _Step3WidgetState extends State<Step3Widget> {
               color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 10),
+          10.ph,
           Container(
             height: 144,
             width: double.infinity,
@@ -239,8 +242,6 @@ class _Step3WidgetState extends State<Step3Widget> {
               ],
             ),
           ),
-
-          const SizedBox(height: 20),
         ],
       ),
     );

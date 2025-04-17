@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../components/choice_option_selector.dart';
-import '../../components/image_option_selector.dart';
-import '../../components/labeled_text_field.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
+import '../../../components/choice_option_selector.dart';
+import '../../../components/image_option_selector.dart';
+import '../../../components/labeled_text_field.dart';
 
 class Step0Widget extends StatefulWidget {
   const Step0Widget({super.key});
@@ -39,6 +40,7 @@ class _Step0WidgetState extends State<Step0Widget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,31 +48,31 @@ class _Step0WidgetState extends State<Step0Widget> {
             controller: _nameController,
             label: 'Character Name',
           ),
-          const SizedBox(height: 24),
-          Text(
+          24.ph,
+          const Text(
             'Choose Age',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFF2F2F2),
+              color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 20),
+          20.ph,
           ChoiceOptionSelector(
             options: ageOptions,
             selected: selectedAge,
             onSelected: (age) => setState(() => selectedAge = age),
           ),
-          const SizedBox(height: 24),
-          Text(
+          24.ph,
+          const Text(
             'Gender',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: const Color(0xFFF2F2F2),
+              color: Color(0xFFF2F2F2),
             ),
           ),
-          const SizedBox(height: 12),
+          12.ph,
           ImageOptionSelector(
             options: genderOptions,
             selected: selectedGender,

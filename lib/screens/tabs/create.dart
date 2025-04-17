@@ -1,139 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:guftagu_mobile/screens/tabs/Step0Widget.dart';
-import 'package:guftagu_mobile/screens/tabs/Step1Widget.dart';
-import 'package:guftagu_mobile/screens/tabs/Step2Widget.dart';
-import 'package:guftagu_mobile/screens/tabs/Step3Widget.dart';
-import 'package:guftagu_mobile/screens/tabs/Step4Widget.dart';
-import '../../components/next_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/prev_next_buttons.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_0_widget.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_1_widget.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_2_widget.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_3_widget.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_4_widget.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 
-class CreateTab extends StatefulWidget {
+class CreateTab extends ConsumerWidget {
   const CreateTab({super.key});
 
   @override
-  State<CreateTab> createState() => _CreateTab();
-}
-
-class _CreateTab extends State<CreateTab> {
-  final PageController _pageController = PageController(); // Add PageController
-  int currentStep = 0;
-
-  void _nextStep() {
-    if (currentStep < 4) {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    } else {
-      debugPrint("Character Created!");
-    }
-  }
-
-  void _prevStep() {
-    if (currentStep > 0) {
-      _pageController.previousPage(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(characterCreationProvider);
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          padding: const EdgeInsets.only(top: 14),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Header with title and current step number
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Character Creation',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: const Color(0xFFC9C9C9),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'STEP',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: const Color(0xFFA3A3A3),
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '${currentStep + 1 > 4 ? 4 : currentStep + 1}/4', // Ensure it doesn't exceed 4
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 32),
-
-              // PageView for step content
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentStep = index;
-                    });
-                  },
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Step0Widget(),
-                    Step1Widget(),
-                    Step2Widget(),
-                    Step3Widget(),
-                    Step4Widget(),
+                    const Text(
+                      'Character Creation',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFFC9C9C9),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'STEP',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFFA3A3A3),
+                          ),
+                        ),
+                        6.pw,
+                        Text(
+                          '${provider.index + 1 > 4 ? 4 : provider.index + 1}/4', // Ensure it doesn't exceed 4
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 20),
+              32.ph,
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (currentStep > 0)
-                    TextButton(
-                      onPressed: _prevStep,
-                      child: const Text(
-                        "Previous",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    )
-                  else
-                    const SizedBox(),
-
-                  NextButton(
-                    label:
-                        currentStep == 3
-                            ? "Preview"
-                            : (currentStep == 4 ? "Create" : "Next"),
-                    onPressed: _nextStep,
-                  ),
-                ],
+              // PageView for step content
+              Expanded(
+                child: PageView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  controller: provider.pageController,
+                  onPageChanged: (index) {
+                    ref
+                        .read(characterCreationProvider.notifier)
+                        .updateIndex(index);
+                  },
+                  children: const [
+                    Step0Widget(key: PageStorageKey("0")),
+                    Step1Widget(key: PageStorageKey("1")),
+                    Step2Widget(key: PageStorageKey("2")),
+                    Step3Widget(key: PageStorageKey("3")),
+                    Step4Widget(key: PageStorageKey("4")),
+                  ],
+                ),
               ),
 
-              const SizedBox(height: 20),
+              20.ph,
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 28),
+                child: PrevNextButtons(),
+              ),
+              20.ph,
             ],
           ),
         ),
