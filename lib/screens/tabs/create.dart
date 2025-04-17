@@ -125,9 +125,9 @@ class _CreateTab extends State<CreateTab> {
 
                   NextButton(
                     label:
-                        currentStep == 3
-                            ? "Preview"
-                            : (currentStep == 4 ? "Create" : "Next"),
+                    currentStep == 3
+                        ? "Preview"
+                        : (currentStep == 4 ? "Create" : "Next"),
                     onPressed: _nextStep,
                   ),
                 ],
