@@ -16,11 +16,13 @@ class ModelCard extends ConsumerWidget {
     required this.imageUrl,
     required this.name,
     this.persionality,
+    required this.onCharTap,
   });
 
   final String imageUrl;
   final String name;
   final String? persionality;
+  final void Function() onCharTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -100,6 +102,7 @@ class ModelCard extends ConsumerWidget {
                   height: 15,
                 ),
                 onPressed: () {
+                  onCharTap();
                   context.nav.pushNamed(Routes.chat);
                   Future.delayed(
                     const Duration(milliseconds: 500),

@@ -14,27 +14,27 @@ import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class ChatScreen extends ConsumerWidget {
+class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
   final ImagePicker picker = ImagePicker();
 
-  final List<Map<String, dynamic>> messages = [
-    {'isMe': false, 'text': "Hey, what's up?"},
-    {
-      'isMe': true,
-      'text': "Not much, just hanging out at home. How about you?",
-    },
-    {'isMe': false, 'text': "Hey, what's up?"},
-    {
-      'isMe': true,
-      'text': "Not much, just hanging out at home. How about you?",
-    },
-    {
-      'isMe': true,
-      'text': "Not much, just hanging out at home. How about you?",
-    },
-  ];
+  // final List<Map<String, dynamic>> messages = [
+  //   {'isMe': false, 'text': "Hey, what's up?"},
+  //   {
+  //     'isMe': true,
+  //     'text': "Not much, just hanging out at home. How about you?",
+  //   },
+  //   {'isMe': false, 'text': "Hey, what's up?"},
+  //   {
+  //     'isMe': true,
+  //     'text': "Not much, just hanging out at home. How about you?",
+  //   },
+  //   {
+  //     'isMe': true,
+  //     'text': "Not much, just hanging out at home. How about you?",
+  //   },
+  // ];
 
   getPermission(Permission permission) async {
     var checkStatus = await permission.status;
@@ -67,120 +67,155 @@ class ChatScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends ConsumerState<ChatScreen> {
+  // @override
+  // void initState() {
+  //   super.initState();
+  // }
+  @override
+  void didChangeDependencies() {
+    ref.read(chatProvider.notifier).fetchChatHistory();
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var provider = ref.watch(chatProvider);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: context.colorExt.background,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.chevron_left_rounded, size: 30),
-              onPressed: () {
-                context.nav.pop();
-              },
-            );
-          },
-        ),
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: Assets.images.model.modImg1.provider(),
-            ),
-            10.pw,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Jaan", style: context.appTextStyle.textBold),
-                Row(
-                  children: [
-                    5.pw,
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.green,
-                      ),
-                    ),
-                    5.pw,
-                    Text(
-                      "Online",
-                      style: context.appTextStyle.text.copyWith(fontSize: 14),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const Spacer(),
-            SvgPicture.asset(Assets.svgs.icCoins, height: 20),
-            5.pw,
-            Text(
-              '1200',
-              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-            ),
-            25.pw,
-            IconButton(
-              onPressed: () => context.nav.pushNamed(Routes.call),
-              icon: const Icon(Icons.call, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      body: GestureDetector(
-        onTap: () => _focusNodes.unfocus(),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  return ChatBubble(
-                    text: messages[index]['text'],
-                    isMe: messages[index]['isMe'],
-                  );
+    var image =
+        provider.character!.imageGallery
+            .where((element) => element.selected == true)
+            .first
+            .url;
+    // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+    if (image == null) {
+      image = provider.character!.imageGallery.first.url;
+    }
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          ref.read(chatProvider.notifier).clearHistory();
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: context.colorExt.background,
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.chevron_left_rounded, size: 30),
+                onPressed: () {
+                  context.nav.pop();
                 },
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(10),
-              child: Row(
+              );
+            },
+          ),
+          title: Row(
+            children: [
+              CircleAvatar(backgroundImage: Image.network(image).image),
+              10.pw,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: SizedBox(
-                      child: MessageBox(
-                        controller: ref.read(chatProvider).messageController,
-                        hasMessage: provider.hasMessage,
-                        focusNodes: _focusNodes,
-                        onPlusPressed: () {
-                          AppConstants.getPickImageAlert(
-                            context: context,
-                            pressCamera: () {
-                              getImage(ImageSource.camera, ref);
-                              Navigator.of(context).pop();
-                            },
-                            pressGallery: () {
-                              getImage(ImageSource.gallery, ref);
-                              Navigator.of(context).pop();
-                            },
-                          );
-                        },
-                      ),
-                    ),
+                  Text(
+                    provider.character!.name,
+                    style: context.appTextStyle.textBold,
                   ),
-                  10.pw,
-                  AnimatedSendButton(
-                    hasText: provider.hasMessage,
-                    onPressed: () {},
+                  Row(
+                    children: [
+                      5.pw,
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.green,
+                        ),
+                      ),
+                      5.pw,
+                      Text(
+                        "Online",
+                        style: context.appTextStyle.text.copyWith(fontSize: 14),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ),
-          ],
+              const Spacer(),
+              SvgPicture.asset(Assets.svgs.icCoins, height: 20),
+              5.pw,
+              Text(
+                '1200',
+                style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              ),
+              25.pw,
+              IconButton(
+                onPressed: () => context.nav.pushNamed(Routes.call),
+                icon: const Icon(Icons.call, color: Colors.white),
+              ),
+            ],
+          ),
         ),
+        body: GestureDetector(
+          onTap: () => widget._focusNodes.unfocus(),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: provider.messages.length,
+                  itemBuilder: (context, index) {
+                    return ChatBubble(
+                      text: provider.messages[index].text,
+                      isMe: provider.messages[index].isMe,
+                      imageUrl: image,
+                    );
+                  },
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SizedBox(
+                        child: MessageBox(
+                          controller: ref.read(chatProvider).messageController,
+                          hasMessage: provider.hasMessage,
+                          focusNodes: widget._focusNodes,
+                          onPlusPressed: () {
+                            AppConstants.getPickImageAlert(
+                              context: context,
+                              pressCamera: () {
+                                widget.getImage(ImageSource.camera, ref);
+                                Navigator.of(context).pop();
+                              },
+                              pressGallery: () {
+                                widget.getImage(ImageSource.gallery, ref);
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    10.pw,
+                    AnimatedSendButton(
+                      hasText: provider.hasMessage,
+                      onPressed: () {
+                        ref.read(chatProvider.notifier).chatWithCharacter();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: Colors.black,
       ),
-      backgroundColor: Colors.black,
     );
   }
 }
@@ -339,8 +374,14 @@ class AnimatedSendButton extends StatelessWidget {
 class ChatBubble extends StatelessWidget {
   final String text;
   final bool isMe;
+  final String imageUrl;
 
-  const ChatBubble({super.key, required this.text, required this.isMe});
+  const ChatBubble({
+    super.key,
+    required this.text,
+    required this.isMe,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -353,12 +394,12 @@ class ChatBubble extends StatelessWidget {
           if (!isMe)
             Container(
               margin: const EdgeInsets.only(right: 10),
-              width: 40,
-              height: 40,
+              width: 30,
+              height: 30,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
-                  image: Assets.images.model.modImg1.provider(),
+                  image: Image.network(imageUrl).image,
                   fit: BoxFit.cover,
                 ),
               ),

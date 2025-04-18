@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -103,15 +104,22 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                 ),
                 itemCount: provider.myAiList.length,
                 itemBuilder: (context, index) {
+                  var image =
+                      provider.myAiList[index].imageGallery
+                          .where((element) => element.selected == true)
+                          .first
+                          .url;
+                  // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+                  if (image == null) {
+                    image = provider.myAiList[index].imageGallery.first.url;
+                  }
                   return ModelCard(
-                    imageUrl:
-                        provider
-                            .myAiList[index]
-                            .imageGallery
-                            // .where((element) => element.selected == true)
-                            .first
-                            .url,
+                    imageUrl: image,
                     name: provider.myAiList[index].name,
+                    onCharTap:
+                        () => ref
+                            .read(chatProvider.notifier)
+                            .setCharacter(provider.myAiList[index]),
                   );
                 },
                 // children: List.generate(imagePaths.length, (index) {
