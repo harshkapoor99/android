@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:lottie/lottie.dart';
 
 class ModelCard extends ConsumerWidget {
-  const ModelCard({super.key, required this.imageUrl});
+  const ModelCard({
+    super.key,
+    required this.imageUrl,
+    required this.name,
+    this.persionality,
+  });
 
-  final AssetGenImage imageUrl;
+  final String imageUrl;
+  final String name;
+  final String? persionality;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,29 +28,29 @@ class ModelCard extends ConsumerWidget {
       borderRadius: BorderRadius.circular(12),
       child: Stack(
         children: [
-          // NetworkImageWithPlaceholder(
-          //   imageUrl: imageUrls[index],
-          //   placeholder: Center(
-          //     child: SizedBox(
-          //       width: 60,
-          //       height: 60,
-          //       child: Lottie.asset(
-          //         Assets.images.logoAnimation,
-          //         fit: BoxFit.contain,
-          //         width: 5,
-          //         height: 5,
-          //       ),
-          //     ),
-          //   ),
-          //   fit: BoxFit.cover,
-          //   width: double.infinity,
-          //   height: double.infinity,
-          // ),
-          imageUrl.image(
+          NetworkImageWithPlaceholder(
+            imageUrl: imageUrl,
+            placeholder: Center(
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: Lottie.asset(
+                  Assets.images.logoAnimation,
+                  fit: BoxFit.contain,
+                  width: 5,
+                  height: 5,
+                ),
+              ),
+            ),
             fit: BoxFit.cover,
             width: double.infinity,
             height: double.infinity,
           ),
+          // imageUrl.image(
+          //   fit: BoxFit.cover,
+          //   width: double.infinity,
+          //   height: double.infinity,
+          // ),
           Align(
             alignment: Alignment.bottomCenter,
 
@@ -65,13 +75,16 @@ class ModelCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Elina",
+                  name,
                   style: context.appTextStyle.buttonText.copyWith(fontSize: 14),
                 ),
-                Text(
-                  "Perfect girlfriend",
-                  style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
-                ),
+                if (persionality.hasValue)
+                  Text(
+                    "Perfect girlfriend",
+                    style: context.appTextStyle.textSmall.copyWith(
+                      fontSize: 10,
+                    ),
+                  ),
               ],
             ),
           ),

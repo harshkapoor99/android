@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
+import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class ProfileTab extends StatefulWidget {
+class ProfileTab extends ConsumerStatefulWidget {
   const ProfileTab({super.key});
 
   @override
-  State<ProfileTab> createState() => _ProfileTabState();
+  ConsumerState<ProfileTab> createState() => _ProfileTabState();
 }
 
-class _ProfileTabState extends State<ProfileTab> {
+class _ProfileTabState extends ConsumerState<ProfileTab> {
   bool isSwitched = true;
 
   @override
@@ -164,6 +169,15 @@ class _ProfileTabState extends State<ProfileTab> {
                   size: 18,
                   color: Colors.white,
                 ),
+                onTap: () {
+                  ref.read(hiveServiceProvider.notifier).removeAllData();
+                  context.nav
+                      .pushNamedAndRemoveUntil(Routes.login, (route) => false)
+                      .then(
+                        (value) =>
+                            ref.read(tabIndexProvider.notifier).changeTab(0),
+                      );
+                },
               ),
             ],
           ),
@@ -176,32 +190,37 @@ class _ProfileTabState extends State<ProfileTab> {
     required String icon,
     required String title,
     required Widget trailing,
+    void Function()? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.symmetric(horizontal: 21.29, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFF23222F),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        children: [
-          SvgPicture.asset(icon, height: 40, width: 42.57),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                height: 1.75, // line-height of 28px / font-size of 16px = 1.75
-                letterSpacing: 0, // 0px letter-spacing
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 21.29, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFF23222F),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            SvgPicture.asset(icon, height: 40, width: 42.57),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  height:
+                      1.75, // line-height of 28px / font-size of 16px = 1.75
+                  letterSpacing: 0, // 0px letter-spacing
+                ),
               ),
             ),
-          ),
-          trailing,
-        ],
+            trailing,
+          ],
+        ),
       ),
     );
   }

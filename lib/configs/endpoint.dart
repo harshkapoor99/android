@@ -1,5 +1,5 @@
-// const host = 'https://api.guftagu.net/api';
-const host = 'http://10.0.2.2:8000/api';
+const host = 'https://api.guftagu.net/api';
+// const host = 'http://10.0.2.2:8000/api';
 
 enum RemoteEndpoint {
   // Authentication
@@ -24,7 +24,7 @@ enum RemoteEndpoint {
   ),
   createCharacter(path: 'chatgenerationservice/character/characterimage/gen/'),
   imageSelection(path: 'chatgenerationservice/character/imageselection/'),
-  charactersByUser(path: 'chatgenerationservice/character/bycreatorid'),
+  charactersByUser(path: 'chatgenerationservice/character/bycreatorid/'),
 
   // Chat with character
   chatWithCharacter(path: 'chatgenerationservice/character/chat/'),

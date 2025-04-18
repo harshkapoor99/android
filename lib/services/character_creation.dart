@@ -109,8 +109,16 @@ class CharacterServiceImpl implements CharacterService {
     required String characterId,
     required String creatorId,
     required String imageId,
-  }) {
-    // TODO: implement selectImage
-    throw UnimplementedError();
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.imageSelection.url,
+      data: {
+        "character_id": characterId,
+        "creator_id": creatorId,
+        "image_id": imageId,
+      },
+      timeout: const Duration(seconds: 30),
+    );
+    return response;
   }
 }

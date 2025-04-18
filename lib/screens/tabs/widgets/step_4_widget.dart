@@ -108,30 +108,41 @@ class Step4Widget extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10.92),
                             clipBehavior: Clip.antiAlias,
                             color: const Color(0xFF272730),
-                            child: Ink.image(
-                              image:
-                                  Image.network(
-                                    proivider.characterImages[index].url,
-                                  ).image,
-                              fit: BoxFit.cover,
-                              width: 127.72,
-                              height: 131,
-                              child: InkWell(
-                                onTap: () {
-                                  ref
-                                      .read(characterCreationProvider.notifier)
-                                      .updateWith(
-                                        seletedCharacterImage:
-                                            proivider.characterImages[index],
-                                      );
-                                },
-                                splashColor: Colors.white24,
-                                highlightColor: Colors.transparent,
-                                customBorder: RoundedRectangleBorder(
-                                  side: BorderSide(
-                                    width: isSeleted ? 1 : 0,
-                                    color: context.colorExt.tertiary,
-                                  ),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2, // You can adjust this
+                                  color:
+                                      isSeleted
+                                          ? context.colorExt.tertiary
+                                          : Colors.transparent,
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                  10.92,
+                                ), // Ensure it matches the Material
+                              ),
+                              child: Ink.image(
+                                image:
+                                    Image.network(
+                                      proivider.characterImages[index].url,
+                                    ).image,
+                                fit: BoxFit.cover,
+                                width: 127.72,
+                                height: 131,
+                                child: InkWell(
+                                  onTap: () {
+                                    ref
+                                        .read(
+                                          characterCreationProvider.notifier,
+                                        )
+                                        .updateWith(
+                                          seletedCharacterImage:
+                                              proivider.characterImages[index],
+                                        );
+                                  },
+                                  splashColor: Colors.white24,
+                                  highlightColor: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(10.92),
                                 ),
                               ),
                             ),

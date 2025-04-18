@@ -131,7 +131,7 @@ class HomeTab extends StatelessWidget {
         ),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return ModelCard(imageUrl: imageUrls[index]);
+          // return ModelCard(imageUrl: imageUrls[index]);
         },
       ),
     );
@@ -146,7 +146,7 @@ class HomeTab extends StatelessWidget {
           buildHeader(context),
           buildGradientTexts(context),
           const CategoryList(),
-          buildCharacterGrid(context),
+          // buildCharacterGrid(context),
         ],
       ),
     );

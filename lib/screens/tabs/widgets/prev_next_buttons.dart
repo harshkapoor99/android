@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/providers/my_ai_provider.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
 
 class PrevNextButtons extends ConsumerWidget {
   const PrevNextButtons({super.key});
@@ -20,7 +22,14 @@ class PrevNextButtons extends ConsumerWidget {
         curve: Curves.easeInOut,
       );
     } else {
-      debugPrint("Character Created!");
+      ref.read(characterCreationProvider.notifier).selectCharacterImage().then((
+        res,
+      ) {
+        if (res.isSuccess) {
+          ref.read(myAiProvider.notifier).fetchMyAis();
+          ref.read(tabIndexProvider.notifier).changeTab(2);
+        }
+      });
     }
   }
 

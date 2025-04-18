@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
@@ -40,6 +41,8 @@ bool nextButtonStatus(Ref ref) {
   // provider.descriptionController.text.isNotEmpty &&
   // provider.backstoryController.text.isNotEmpty
   ) {
+    return true;
+  } else if (provider.index == 4 && provider.seletedCharacterImage != null) {
     return true;
   }
   // REMOVE: remove this
@@ -176,6 +179,31 @@ class CharacterCreation extends _$CharacterCreation {
         .catchError((error) {
           state = state._updateWith(isImageUploading: false);
         });
+  }
+
+  Future<CommonResponse> selectCharacterImage() async {
+    state = state._updateWith(isCharacterGenerating: true);
+    try {
+      final response = await ref
+          .read(characterServiceProvider)
+          .selectImage(
+            characterId: state.chracterId,
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+            imageId: state.seletedCharacterImage!.id,
+          );
+      if (response.statusCode == 200) {
+        return CommonResponse(
+          isSuccess: true,
+          message: response.data["message"],
+        );
+      } else {
+        return CommonResponse(isSuccess: false, message: "Could not create Ai");
+      }
+    } on DioException {
+      return CommonResponse(isSuccess: false, message: "Something went wrong");
+    } finally {
+      state = state._updateWith(isCharacterGenerating: false);
+    }
   }
 }
 

@@ -133,7 +133,7 @@ class ExploreScreen extends StatelessWidget {
         ),
         itemCount: imageUrls.length,
         itemBuilder: (context, index) {
-          return ModelCard(imageUrl: imageUrls[index]);
+          // return ModelCard(imageUrl: imageUrls[index]);
         },
       ),
     );
