@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
@@ -50,7 +53,7 @@ class ChatScreen extends ConsumerWidget {
     }
   }
 
-  Future getImage(ImageSource media) async {
+  Future getImage(ImageSource media, WidgetRef ref) async {
     if (media == ImageSource.camera) {
       getPermission(Permission.camera);
     } else {
@@ -59,12 +62,7 @@ class ChatScreen extends ConsumerWidget {
     var img = await picker.pickImage(source: media);
     if (img != null) {
       // var image = await compressImage(File(img.path));
-      // var image = File(img.path);
-      // if (image != null) {
-      //   ref.read(profileServiceProvider).uploadImage = XFile(image.path);
-      //   image = null;
-      //   setState(() {});
-      // }
+      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
     }
   }
 
@@ -159,11 +157,11 @@ class ChatScreen extends ConsumerWidget {
                           AppConstants.getPickImageAlert(
                             context: context,
                             pressCamera: () {
-                              getImage(ImageSource.camera);
+                              getImage(ImageSource.camera, ref);
                               Navigator.of(context).pop();
                             },
                             pressGallery: () {
-                              getImage(ImageSource.gallery);
+                              getImage(ImageSource.gallery, ref);
                               Navigator.of(context).pop();
                             },
                           );
@@ -254,7 +252,11 @@ class _MessageBoxState extends State<MessageBox> {
                 style: context.appTextStyle.textSmall.copyWith(fontSize: 12),
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(top: 5, bottom: 5, left: 8),
+                  contentPadding: const EdgeInsets.only(
+                    top: 5,
+                    bottom: 5,
+                    left: 8,
+                  ),
 
                   hintText: "Start your dream chatting",
                   hintStyle: context.appTextStyle.textSmall.copyWith(
@@ -320,8 +322,14 @@ class AnimatedSendButton extends StatelessWidget {
           },
           child:
               hasText
-                  ? SvgPicture.asset(Assets.svgs.icSend, key: const ValueKey("send"))
-                  : SvgPicture.asset(Assets.svgs.icMic, key: const ValueKey("mic")),
+                  ? SvgPicture.asset(
+                    Assets.svgs.icSend,
+                    key: const ValueKey("send"),
+                  )
+                  : SvgPicture.asset(
+                    Assets.svgs.icMic,
+                    key: const ValueKey("mic"),
+                  ),
         ),
       ),
     );

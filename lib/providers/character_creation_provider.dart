@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/services/character_creation.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/character_creation_provider.gen.dart';
@@ -87,6 +89,8 @@ class CharacterCreation extends _$CharacterCreation {
     Country? country,
     City? city,
     String? refImageUrl,
+    XFile? uploadImage,
+    GenImage? seletedCharacterImage,
   }) {
     state = state._updateWith(
       age: age,
@@ -101,6 +105,8 @@ class CharacterCreation extends _$CharacterCreation {
       country: country,
       city: city,
       refImageUrl: refImageUrl,
+      // uploadImage: uploadImage,
+      seletedCharacterImage: seletedCharacterImage,
     );
   }
 
@@ -133,9 +139,11 @@ class CharacterCreation extends _$CharacterCreation {
           );
       print(response.data);
       if (response.statusCode == 200) {
-        // Handle success
+        final List<dynamic> imageGallery = response.data['image_gallery'];
+        final List<GenImage> images =
+            imageGallery.map((image) => GenImage.fromMap(image)).toList();
         state = state._updateWith(
-          characterImages: List<String>.from(response.data['image_gallery']),
+          characterImages: images,
           chracterId: response.data['character_id'],
         );
         print("Character created successfully");
@@ -148,6 +156,26 @@ class CharacterCreation extends _$CharacterCreation {
     } finally {
       state = state._updateWith(isCharacterGenerating: false);
     }
+  }
+
+  void uploadImage({XFile? image}) {
+    state = state._updateWith(isImageUploading: true);
+    ref
+        .read(characterServiceProvider)
+        .uploadImage(image) // ?? state.uploadImage!
+        .then((response) {
+          if (response.statusCode == 200) {
+            state = state._updateWith(
+              refImageUrl: response.data['url'],
+              isImageUploading: false,
+            );
+          } else {
+            state = state._updateWith(isImageUploading: false);
+          }
+        })
+        .catchError((error) {
+          state = state._updateWith(isImageUploading: false);
+        });
   }
 }
 
@@ -167,12 +195,15 @@ class CharacterCreationState {
     this.voice,
     this.country,
     this.city,
+    // this.uploadImage,
+    this.isImageUploading = false,
     this.refImageUrl,
     required this.descriptionController,
     required this.backstoryController,
     this.isCharacterGenerating = false,
     this.characterImages = const [],
     this.chracterId = "",
+    this.seletedCharacterImage,
   });
 
   final PageController pageController;
@@ -190,13 +221,15 @@ class CharacterCreationState {
   final Voice? voice;
   final Country? country;
   final City? city;
+  // final XFile? uploadImage;
   final String? refImageUrl;
   final TextEditingController descriptionController;
   final TextEditingController backstoryController;
 
-  final bool isCharacterGenerating;
+  final bool isCharacterGenerating, isImageUploading;
   final String chracterId;
-  final List<String> characterImages;
+  final List<GenImage> characterImages;
+  final GenImage? seletedCharacterImage;
 
   // _updateWith method to update the state
   CharacterCreationState _updateWith({
@@ -215,11 +248,14 @@ class CharacterCreationState {
     Country? country,
     City? city,
     String? refImageUrl,
+    // XFile? uploadImage,
+    bool? isImageUploading,
     TextEditingController? descriptionController,
     TextEditingController? backstoryController,
     bool? isCharacterGenerating,
-    List<String>? characterImages,
+    List<GenImage>? characterImages,
     String? chracterId,
+    GenImage? seletedCharacterImage,
   }) {
     return CharacterCreationState(
       pageController: pageController ?? this.pageController,
@@ -238,6 +274,8 @@ class CharacterCreationState {
       country: country ?? this.country,
       city: city ?? this.city,
       refImageUrl: refImageUrl ?? this.refImageUrl,
+      // uploadImage: uploadImage ?? this.uploadImage,
+      isImageUploading: isImageUploading ?? this.isImageUploading,
       descriptionController:
           descriptionController ?? this.descriptionController,
       backstoryController: backstoryController ?? this.backstoryController,
@@ -245,6 +283,8 @@ class CharacterCreationState {
           isCharacterGenerating ?? this.isCharacterGenerating,
       characterImages: characterImages ?? this.characterImages,
       chracterId: chracterId ?? this.chracterId,
+      seletedCharacterImage:
+          seletedCharacterImage ?? this.seletedCharacterImage,
     );
   }
 }

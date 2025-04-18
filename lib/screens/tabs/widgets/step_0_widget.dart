@@ -58,10 +58,12 @@ class Step0Widget extends ConsumerWidget {
             ChoiceOptionSelector(
               options: ageOptions,
               selected: provider.age ?? "",
-              onSelected:
-                  (age) => ref
-                      .read(characterCreationProvider.notifier)
-                      .updateWith(age: age),
+              onSelected: (age) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(age: age);
+              },
             ),
             24.ph,
             const Text(

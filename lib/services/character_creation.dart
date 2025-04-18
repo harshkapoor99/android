@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/services/character_creation.gen.dart';
@@ -14,6 +15,7 @@ CharacterService characterService(Ref ref) {
 }
 
 abstract class CharacterService {
+  Future<Response> uploadImage(XFile? uploadImage);
   Future<Response> createCharacter({
     required String creatorId,
     required String creatorUserType,
@@ -32,11 +34,31 @@ abstract class CharacterService {
     String? refImageDescription,
     String? refImageBackstory,
   });
+
+  Future<Response> selectImage({
+    required String characterId,
+    required String creatorId,
+    required String imageId,
+  });
 }
 
 class CharacterServiceImpl implements CharacterService {
   final ApiClient _apiClient;
   CharacterServiceImpl(this._apiClient);
+
+  @override
+  Future<Response> uploadImage(XFile? uploadImage) async {
+    return _apiClient.post(
+      RemoteEndpoint.refImageUpload.url,
+      data: FormData.fromMap({
+        'image': await MultipartFile.fromFile(
+          uploadImage!.path,
+          filename: uploadImage.name,
+        ),
+      }),
+      timeout: const Duration(seconds: 30),
+    );
+  }
 
   @override
   Future<Response> createCharacter({
@@ -80,5 +102,15 @@ class CharacterServiceImpl implements CharacterService {
       timeout: const Duration(seconds: 30),
     );
     return response;
+  }
+
+  @override
+  Future<Response> selectImage({
+    required String characterId,
+    required String creatorId,
+    required String imageId,
+  }) {
+    // TODO: implement selectImage
+    throw UnimplementedError();
   }
 }

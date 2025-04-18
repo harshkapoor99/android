@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
 
@@ -99,6 +99,9 @@ class Step4Widget extends ConsumerWidget {
                       index,
                     ) {
                       // final isPremium = index == 1 || index == 5; // 2nd and 6th
+                      final isSeleted =
+                          proivider.seletedCharacterImage?.id ==
+                          proivider.characterImages[index].id;
                       return Stack(
                         children: [
                           Material(
@@ -108,19 +111,28 @@ class Step4Widget extends ConsumerWidget {
                             child: Ink.image(
                               image:
                                   Image.network(
-                                    proivider.characterImages[index],
+                                    proivider.characterImages[index].url,
                                   ).image,
                               fit: BoxFit.cover,
                               width: 127.72,
                               height: 131,
                               child: InkWell(
                                 onTap: () {
-                                  debugPrint(
-                                    "Tapped on ${proivider.characterImages[index]}",
-                                  );
+                                  ref
+                                      .read(characterCreationProvider.notifier)
+                                      .updateWith(
+                                        seletedCharacterImage:
+                                            proivider.characterImages[index],
+                                      );
                                 },
                                 splashColor: Colors.white24,
                                 highlightColor: Colors.transparent,
+                                customBorder: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                    width: isSeleted ? 1 : 0,
+                                    color: context.colorExt.tertiary,
+                                  ),
+                                ),
                               ),
                             ),
                           ),

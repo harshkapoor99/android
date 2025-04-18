@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class Step2Widget extends ConsumerWidget {
@@ -149,26 +150,13 @@ class Step2Widget extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ListTile(
-          leading: SizedBox(
-            // height: 16,
-            width: 16,
-            child: SvgPicture.asset(icon, height: 16, width: 16),
-          ),
-          title: Text(
-            title,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          leading: SvgPicture.asset(icon),
+          title: Text(title, style: context.appTextStyle.textSemibold),
           subtitle:
               selected != null
                   ? Text(
                     optionToString(selected),
-                    style: const TextStyle(
-                      color: Color(0xFFA3A3A3),
-                      fontSize: 12,
-                    ),
+                    style: context.appTextStyle.textSmall,
                   )
                   : null,
           trailing: const Icon(
@@ -218,14 +206,14 @@ class Step2Widget extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+                  horizontal: 33,
+                  vertical: 21,
                 ),
                 child: Row(
                   children: [
                     Expanded(
                       child: Text(
-                        title,
+                        "Choose a $title",
                         style: const TextStyle(
                           color: Color(0xFFF2F2F2),
                           fontSize: 18,
@@ -242,7 +230,7 @@ class Step2Widget extends ConsumerWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 33),
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: crossAxisCount,
