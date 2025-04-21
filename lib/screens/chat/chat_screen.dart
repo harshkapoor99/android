@@ -295,7 +295,7 @@ class _MessageBoxState extends State<MessageBox> {
                 minLines: 1,
                 maxLines: 5,
                 focusNode: widget.focusNodes,
-                style: context.appTextStyle.textSmall.copyWith(fontSize: 12),
+                style: context.appTextStyle.textSmall,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(
@@ -419,7 +419,7 @@ class ChatBubble extends StatelessWidget {
             ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               gradient:
                   isMe
@@ -441,7 +441,8 @@ class ChatBubble extends StatelessWidget {
             ),
             child: Text(
               text,
-              style: TextStyle(
+              style: context.appTextStyle.textSemibold.copyWith(
+                fontSize: 14,
                 color: Colors.white,
                 fontStyle: showTyping ? FontStyle.italic : FontStyle.normal,
               ),
