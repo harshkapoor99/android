@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/subscriptionPage.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -152,15 +153,24 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   color: Colors.white,
                 ),
               ),
-              _buildTile(
-                icon: 'assets/icons/profile07.svg',
-                title: 'Subscription',
-                trailing: const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 18,
-                  color: Colors.white,
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SubscriptionPage()),
+                  );
+                },
+                child: _buildTile(
+                  icon: 'assets/icons/profile07.svg',
+                  title: 'Subscription',
+                  trailing: const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 18,
+                    color: Colors.white,
+                  ),
                 ),
               ),
+
               _buildTile(
                 icon: 'assets/icons/profile08.svg',
                 title: 'Log out',
