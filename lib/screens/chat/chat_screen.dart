@@ -53,12 +53,12 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
+    ref.read(chatProvider.notifier).fetchChatHistory();
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    ref.read(chatProvider.notifier).fetchChatHistory();
     //
     super.didChangeDependencies();
   }
@@ -147,29 +147,43 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               Expanded(
                 child:
                     provider.isFetchingHistory
-                        ? const Center(child: Text("fetching history"))
+                        ? const SizedBox.shrink()
                         : ListView.builder(
                           reverse: true,
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: provider.messages.length,
+                          itemCount:
+                              provider.isTyping
+                                  ? provider.messages.length + 1
+                                  : provider.messages.length,
                           itemBuilder: (context, index) {
+                            // Handle typing indicator
+                            if (provider.isTyping && index == 0) {
+                              return ChatBubble(
+                                text: "Typing...",
+                                isMe: false,
+                                showTyping: true,
+                                imageUrl: image,
+                              );
+                            }
+
+                            // Adjust index if we're showing typing indicator
+                            final messageIndex =
+                                provider.isTyping
+                                    ? provider.messages.length - 1 - (index - 1)
+                                    : provider.messages.length - 1 - index;
+
                             return ChatBubble(
-                              text:
-                                  provider
-                                      .messages[provider.messages.length -
-                                          1 -
-                                          index]
-                                      .text,
-                              isMe:
-                                  provider
-                                      .messages[provider.messages.length -
-                                          1 -
-                                          index]
-                                      .isMe,
+                              text: provider.messages[messageIndex].text,
+                              isMe: provider.messages[messageIndex].isMe,
                               imageUrl: image,
                             );
                           },
                         ),
+              ),
+              AnimatedContainer(
+                duration: Durations.long2,
+                height: provider.isFetchingHistory ? 25 : 0,
+                child: const Text("Loading your chat history..."),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -372,12 +386,14 @@ class ChatBubble extends StatelessWidget {
   final String text;
   final bool isMe;
   final String imageUrl;
+  final bool showTyping;
 
   const ChatBubble({
     super.key,
     required this.text,
     required this.isMe,
     required this.imageUrl,
+    this.showTyping = false,
   });
 
   @override
@@ -423,7 +439,13 @@ class ChatBubble extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            child: Text(text, style: const TextStyle(color: Colors.white)),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.white,
+                fontStyle: showTyping ? FontStyle.italic : FontStyle.normal,
+              ),
+            ),
           ),
         ],
       ),

@@ -41,7 +41,6 @@ class Chat extends _$Chat {
   }
 
   void chatWithCharacter() async {
-    state = state._updateWith(isTyping: false);
     try {
       appendChat(isMe: true, text: state.messageController.text);
       String message = state.messageController.text;
@@ -60,7 +59,7 @@ class Chat extends _$Chat {
     } catch (e) {
       rethrow;
     } finally {
-      state = state._updateWith(isTyping: true);
+      state = state._updateWith(isTyping: false);
     }
   }
 
@@ -100,6 +99,7 @@ class Chat extends _$Chat {
     state = state._updateWith(
       messages: [ChatMessage(isMe: false, text: "Hey, What's up?")],
       isFetchingHistory: true,
+      isTyping: false,
     );
   }
 
@@ -110,6 +110,7 @@ class Chat extends _$Chat {
   void appendChat({required bool isMe, required String text}) {
     state = state._updateWith(
       messages: [...state.messages, ChatMessage(isMe: isMe, text: text)],
+      isTyping: isMe,
     );
   }
 }
