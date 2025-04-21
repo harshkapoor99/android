@@ -65,7 +65,6 @@ class Chat extends _$Chat {
   }
 
   void fetchChatHistory() async {
-    // state = state._updateWith(isFetchingHistory: false);
     try {
       final response = await ref
           .read(chatServiceProvider)
@@ -84,19 +83,23 @@ class Chat extends _$Chat {
           }).toList();
       if (chats.isNotEmpty) {
         state = state._updateWith(
-          messages: [...state.messages, ...parsedChats],
+          messages: [
+            ChatMessage(isMe: false, text: "Hey, What's up?"),
+            ...parsedChats,
+          ],
         );
       }
     } catch (e) {
       rethrow;
     } finally {
-      // state = state._updateWith(isFetchingHistory: true);
+      state = state._updateWith(isFetchingHistory: false);
     }
   }
 
   void clearHistory() {
     state = state._updateWith(
       messages: [ChatMessage(isMe: false, text: "Hey, What's up?")],
+      isFetchingHistory: true,
     );
   }
 
@@ -116,7 +119,7 @@ class ChatState {
     required this.messageController,
     this.hasMessage = false,
     this.isTyping = false,
-    this.isFetchingHistory = false,
+    this.isFetchingHistory = true,
     this.character,
     required this.messages,
   });

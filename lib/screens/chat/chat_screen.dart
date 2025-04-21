@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
@@ -18,23 +15,6 @@ class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
   final ImagePicker picker = ImagePicker();
-
-  // final List<Map<String, dynamic>> messages = [
-  //   {'isMe': false, 'text': "Hey, what's up?"},
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  //   {'isMe': false, 'text': "Hey, what's up?"},
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  // ];
 
   getPermission(Permission permission) async {
     var checkStatus = await permission.status;
@@ -71,13 +51,15 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   void didChangeDependencies() {
     ref.read(chatProvider.notifier).fetchChatHistory();
+    //
     super.didChangeDependencies();
   }
 
@@ -163,17 +145,31 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: provider.messages.length,
-                  itemBuilder: (context, index) {
-                    return ChatBubble(
-                      text: provider.messages[index].text,
-                      isMe: provider.messages[index].isMe,
-                      imageUrl: image,
-                    );
-                  },
-                ),
+                child:
+                    provider.isFetchingHistory
+                        ? const Center(child: Text("fetching history"))
+                        : ListView.builder(
+                          reverse: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: provider.messages.length,
+                          itemBuilder: (context, index) {
+                            return ChatBubble(
+                              text:
+                                  provider
+                                      .messages[provider.messages.length -
+                                          1 -
+                                          index]
+                                      .text,
+                              isMe:
+                                  provider
+                                      .messages[provider.messages.length -
+                                          1 -
+                                          index]
+                                      .isMe,
+                              imageUrl: image,
+                            );
+                          },
+                        ),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -279,6 +275,7 @@ class _MessageBoxState extends State<MessageBox> {
             ),
             Expanded(
               child: TextField(
+                textCapitalization: TextCapitalization.sentences,
                 controller: widget.controller,
                 keyboardType: TextInputType.multiline,
                 minLines: 1,
