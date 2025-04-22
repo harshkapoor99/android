@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -382,7 +383,7 @@ class AnimatedSendButton extends StatelessWidget {
   }
 }
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble extends StatefulWidget {
   final String text;
   final bool isMe;
   final String imageUrl;
@@ -397,14 +398,26 @@ class ChatBubble extends StatelessWidget {
   });
 
   @override
+  State<ChatBubble> createState() => _ChatBubbleState();
+}
+
+class _ChatBubbleState extends State<ChatBubble> {
+  Key textKey = UniqueKey();
+  void _deselectText() {
+    setState(() {
+      textKey = UniqueKey();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: widget.isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          if (!isMe)
+          if (!widget.isMe)
             Container(
               margin: const EdgeInsets.only(right: 10),
               width: 30,
@@ -412,7 +425,7 @@ class ChatBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 image: DecorationImage(
-                  image: Image.network(imageUrl).image,
+                  image: Image.network(widget.imageUrl).image,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -422,30 +435,53 @@ class ChatBubble extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               gradient:
-                  isMe
+                  widget.isMe
                       ? const LinearGradient(
                         colors: [Colors.purple, Colors.blue],
                       )
                       : null,
-              color: isMe ? null : context.colorExt.border,
+              color: widget.isMe ? null : context.colorExt.border,
               borderRadius: BorderRadius.only(
                 //
                 topLeft: const Radius.circular(10),
                 topRight: const Radius.circular(10),
-                bottomLeft: Radius.circular(isMe ? 10 : 0),
-                bottomRight: Radius.circular(isMe ? 0 : 10),
+                bottomLeft: Radius.circular(widget.isMe ? 10 : 0),
+                bottomRight: Radius.circular(widget.isMe ? 0 : 10),
               ),
             ),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            child: Text(
-              text,
+            child: SelectableText(
+              key: textKey,
+              widget.text,
               style: context.appTextStyle.textSemibold.copyWith(
                 fontSize: 14,
                 color: Colors.white,
-                fontStyle: showTyping ? FontStyle.italic : FontStyle.normal,
+                fontStyle:
+                    widget.showTyping ? FontStyle.italic : FontStyle.normal,
               ),
+              contextMenuBuilder:
+                  (
+                    context,
+                    editableTextState,
+                  ) => AdaptiveTextSelectionToolbar.buttonItems(
+                    buttonItems: [
+                      ContextMenuButtonItem(
+                        label: 'Copy',
+                        onPressed: () {
+                          // Handle copy action
+                          Clipboard.setData(ClipboardData(text: widget.text));
+                          _deselectText();
+                        },
+                      ),
+                    ],
+                    anchors: TextSelectionToolbarAnchors(
+                      primaryAnchor:
+                          editableTextState.contextMenuAnchors.primaryAnchor -
+                          const Offset(0, 0),
+                    ),
+                  ),
             ),
           ),
         ],
