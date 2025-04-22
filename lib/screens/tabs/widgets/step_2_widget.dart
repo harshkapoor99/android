@@ -188,7 +188,7 @@ class Step2Widget extends ConsumerWidget {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final screenWidth = MediaQuery.of(context).size.width;
+        // final screenWidth = MediaQuery.of(context).size.width;
         const crossAxisCount = 2;
         // screenWidth < 400
         //     ? 2
