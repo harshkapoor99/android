@@ -53,9 +53,10 @@ class PrevNextButtons extends ConsumerWidget {
           TextButton(
             onPressed: () => _prevStep(provider.pageController, currentStep),
             child: const Text(
+              // color changed to grey
               "Previous",
               style: TextStyle(
-                color: Colors.white,
+                color: Color(0xffa3a3a3),
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
               ),
