@@ -41,19 +41,6 @@ class Step2Widget extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
               child: Column(
                 children: [
-                  _buildOptionTile<Personality>(
-                    context,
-                    'Personality',
-                    'assets/icons/solar_mask-sad-linear.svg',
-                    maxContainerWidth,
-                    masterData.personalities,
-                    optionToString: (p) => p.title,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(personality: p0),
-                    selected: characterProvider.personality,
-                  ),
                   _buildOptionTile<Relationship>(
                     context,
                     'Relationship',
@@ -66,6 +53,19 @@ class Step2Widget extends ConsumerWidget {
                             .read(characterCreationProvider.notifier)
                             .updateWith(relationship: p0),
                     selected: characterProvider.relationship,
+                  ),
+                  _buildOptionTile<Personality>(
+                    context,
+                    'Personality',
+                    'assets/icons/solar_mask-sad-linear.svg',
+                    maxContainerWidth,
+                    masterData.personalities,
+                    optionToString: (p) => p.title,
+                    onSelect:
+                        (p0) => ref
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(personality: p0),
+                    selected: characterProvider.personality,
                   ),
                   _buildOptionTile<Behaviour>(
                     context,
@@ -189,12 +189,12 @@ class Step2Widget extends ConsumerWidget {
       backgroundColor: Colors.transparent,
       builder: (context) {
         final screenWidth = MediaQuery.of(context).size.width;
-        final crossAxisCount =
-            screenWidth < 400
-                ? 2
-                : screenWidth < 700
-                ? 3
-                : 4;
+        const crossAxisCount = 2;
+        // screenWidth < 400
+        //     ? 2
+        //     : screenWidth < 700
+        //     ? 3
+        //     : 4;
 
         return Container(
           height: 552,
@@ -232,12 +232,13 @@ class Step2Widget extends ConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 33),
                   child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: crossAxisCount,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
-                      childAspectRatio: 2.5,
-                    ),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                          childAspectRatio: 2.5,
+                        ),
                     itemCount: options.length,
                     itemBuilder: (context, index) {
                       final option = options[index];
@@ -259,6 +260,7 @@ class Step2Widget extends ConsumerWidget {
                           child: Center(
                             child: Text(
                               optionToString(option),
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Color(0xFFE5E5E5),
                                 fontSize: 14,

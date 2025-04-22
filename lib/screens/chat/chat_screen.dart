@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
@@ -18,23 +15,6 @@ class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
   final ImagePicker picker = ImagePicker();
-
-  // final List<Map<String, dynamic>> messages = [
-  //   {'isMe': false, 'text': "Hey, what's up?"},
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  //   {'isMe': false, 'text': "Hey, what's up?"},
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  //   {
-  //     'isMe': true,
-  //     'text': "Not much, just hanging out at home. How about you?",
-  //   },
-  // ];
 
   getPermission(Permission permission) async {
     var checkStatus = await permission.status;
@@ -71,13 +51,15 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    ref.read(chatProvider.notifier).fetchChatHistory();
+    super.initState();
+  }
+
   @override
   void didChangeDependencies() {
-    ref.read(chatProvider.notifier).fetchChatHistory();
+    //
     super.didChangeDependencies();
   }
 
@@ -163,17 +145,45 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: provider.messages.length,
-                  itemBuilder: (context, index) {
-                    return ChatBubble(
-                      text: provider.messages[index].text,
-                      isMe: provider.messages[index].isMe,
-                      imageUrl: image,
-                    );
-                  },
-                ),
+                child:
+                    provider.isFetchingHistory
+                        ? const SizedBox.shrink()
+                        : ListView.builder(
+                          reverse: true,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount:
+                              provider.isTyping
+                                  ? provider.messages.length + 1
+                                  : provider.messages.length,
+                          itemBuilder: (context, index) {
+                            // Handle typing indicator
+                            if (provider.isTyping && index == 0) {
+                              return ChatBubble(
+                                text: "Typing...",
+                                isMe: false,
+                                showTyping: true,
+                                imageUrl: image,
+                              );
+                            }
+
+                            // Adjust index if we're showing typing indicator
+                            final messageIndex =
+                                provider.isTyping
+                                    ? provider.messages.length - 1 - (index - 1)
+                                    : provider.messages.length - 1 - index;
+
+                            return ChatBubble(
+                              text: provider.messages[messageIndex].text,
+                              isMe: provider.messages[messageIndex].isMe,
+                              imageUrl: image,
+                            );
+                          },
+                        ),
+              ),
+              AnimatedContainer(
+                duration: Durations.long2,
+                height: provider.isFetchingHistory ? 25 : 0,
+                child: const Text("Loading your chat history..."),
               ),
               Container(
                 padding: const EdgeInsets.all(10),
@@ -279,12 +289,13 @@ class _MessageBoxState extends State<MessageBox> {
             ),
             Expanded(
               child: TextField(
+                textCapitalization: TextCapitalization.sentences,
                 controller: widget.controller,
                 keyboardType: TextInputType.multiline,
                 minLines: 1,
                 maxLines: 5,
                 focusNode: widget.focusNodes,
-                style: context.appTextStyle.textSmall.copyWith(fontSize: 12),
+                style: context.appTextStyle.textSmall,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(
@@ -375,12 +386,14 @@ class ChatBubble extends StatelessWidget {
   final String text;
   final bool isMe;
   final String imageUrl;
+  final bool showTyping;
 
   const ChatBubble({
     super.key,
     required this.text,
     required this.isMe,
     required this.imageUrl,
+    this.showTyping = false,
   });
 
   @override
@@ -406,7 +419,7 @@ class ChatBubble extends StatelessWidget {
             ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
               gradient:
                   isMe
@@ -426,7 +439,14 @@ class ChatBubble extends StatelessWidget {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            child: Text(text, style: const TextStyle(color: Colors.white)),
+            child: Text(
+              text,
+              style: context.appTextStyle.textSemibold.copyWith(
+                fontSize: 14,
+                color: Colors.white,
+                fontStyle: showTyping ? FontStyle.italic : FontStyle.normal,
+              ),
+            ),
           ),
         ],
       ),

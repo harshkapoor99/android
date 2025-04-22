@@ -7,6 +7,7 @@ import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/services/character_creation.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -117,6 +118,14 @@ class CharacterCreation extends _$CharacterCreation {
     state = state._updateWith(index: index);
   }
 
+  void resetState() {
+    state = state._clear();
+    state.pageController.jumpToPage(0);
+    state.characterNameController.clear();
+    state.descriptionController.clear();
+    state.backstoryController.clear();
+  }
+
   void createCharacter() async {
     state = state._updateWith(isCharacterGenerating: true);
     try {
@@ -140,7 +149,6 @@ class CharacterCreation extends _$CharacterCreation {
             refImageDescription: state.descriptionController.text,
             refImageBackstory: state.backstoryController.text,
           );
-      print(response.data);
       if (response.statusCode == 200) {
         final List<dynamic> imageGallery = response.data['image_gallery'];
         final List<GenImage> images =
@@ -149,10 +157,11 @@ class CharacterCreation extends _$CharacterCreation {
           characterImages: images,
           chracterId: response.data['character_id'],
         );
-        print("Character created successfully");
       } else {
-        // Handle error
-        print("Error creating character: ${response.data}");
+        AppConstants.showSnackbar(
+          message: "Unable to create character",
+          isSuccess: true,
+        );
       }
     } on DioException {
       rethrow;
@@ -313,6 +322,33 @@ class CharacterCreationState {
       chracterId: chracterId ?? this.chracterId,
       seletedCharacterImage:
           seletedCharacterImage ?? this.seletedCharacterImage,
+    );
+  }
+
+  CharacterCreationState _clear() {
+    return CharacterCreationState(
+      pageController: pageController,
+      index: 0,
+      characterNameController: characterNameController,
+      age: null,
+      gender: null,
+      style: null,
+      sexualOrientation: null,
+      language: null,
+      personality: null,
+      relationship: null,
+      behaviour: null,
+      voice: null,
+      country: null,
+      city: null,
+      refImageUrl: null,
+      isImageUploading: false,
+      descriptionController: descriptionController,
+      backstoryController: backstoryController,
+      isCharacterGenerating: false,
+      characterImages: [],
+      chracterId: "",
+      seletedCharacterImage: null,
     );
   }
 }
