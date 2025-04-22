@@ -181,6 +181,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     controller: provider.descriptionController,
                     focusNode: _descriptionFocusNode,
                     style: context.appTextStyle.text,
+                    textCapitalization: TextCapitalization.sentences,
                     maxLines: null,
                     // expands: true,
                     decoration: const InputDecoration(
@@ -287,6 +288,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                 children: [
                   TextField(
                     controller: provider.backstoryController,
+                    textCapitalization: TextCapitalization.sentences,
                     focusNode: _backstoryFocusNode,
                     style: context.appTextStyle.text,
                     maxLines: null,

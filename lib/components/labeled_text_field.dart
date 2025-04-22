@@ -24,7 +24,8 @@ class LabeledTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labelStyle = labelTextStyle ??
+    final labelStyle =
+        labelTextStyle ??
         TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w600,
@@ -42,6 +43,7 @@ class LabeledTextField extends StatelessWidget {
             TextField(
               controller: controller,
               style: inputTextStyle,
+              textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: fillColor,

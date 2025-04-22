@@ -96,6 +96,7 @@ class Chat extends _$Chat {
   }
 
   void clearHistory() {
+    state.messageController.clear();
     state = state._updateWith(
       messages: [ChatMessage(isMe: false, text: "Hey, What's up?")],
       isFetchingHistory: true,
