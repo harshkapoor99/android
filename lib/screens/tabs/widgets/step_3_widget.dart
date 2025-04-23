@@ -170,7 +170,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
             ),
             10.ph,
             Container(
-              constraints: const BoxConstraints(minHeight: 144),
+              // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: const Color(0xFF272730),
@@ -183,7 +183,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     style: context.appTextStyle.text,
                     textCapitalization: TextCapitalization.sentences,
                     maxLines: null,
-                    // expands: true,
+                    minLines: 5,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
@@ -278,7 +278,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
             ),
             10.ph,
             Container(
-              constraints: const BoxConstraints(minHeight: 144),
+              // constraints: const BoxConstraints(minHeight: 144),
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
@@ -292,6 +292,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     focusNode: _backstoryFocusNode,
                     style: context.appTextStyle.text,
                     maxLines: null,
+                    minLines: 5,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,

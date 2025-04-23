@@ -27,6 +27,7 @@ enum RemoteEndpoint {
   charactersByUser(path: 'chatgenerationservice/character/bycreatorid/'),
 
   // Chat with character
+  initiateChatWithCharacter(path: 'chatgenerationservice/character/initchat/'),
   chatWithCharacter(path: 'chatgenerationservice/character/chat/'),
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/')

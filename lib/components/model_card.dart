@@ -104,13 +104,6 @@ class ModelCard extends ConsumerWidget {
                 onPressed: () {
                   onCharTap();
                   context.nav.pushNamed(Routes.chat);
-                  Future.delayed(
-                    const Duration(milliseconds: 500),
-                    () =>
-                        ref
-                            .read(isHomeVisitedProvider.notifier)
-                            .setHomeViewed(),
-                  );
                 },
               ),
             ),
