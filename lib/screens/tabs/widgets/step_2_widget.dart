@@ -550,63 +550,56 @@ class Step2Widget extends ConsumerWidget {
 
                         ),
 
-                        trailing: Row(
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min, // Important to keep the Row compact
+                            children: [
+                              // This part only appears if isSelected is true
+                              if (isSelected)
+                                Container(
+                                  // This margin controls the space AFTER the SVG container
+                                  // and BEFORE the next widget in the Row (the arrow container).
+                                  margin: const EdgeInsets.only(right: 84),
 
-                          mainAxisSize: MainAxisSize.min,
-
-                          children: [
-
-                            if (isSelected)
-
-                              Container(
-
-                                height: 20,
-
-                                width: 40,
-
-                                margin: const EdgeInsets.only(right: 8),
-
-                                child: const Icon(
-
-                                  Icons.graphic_eq, // Sound wave icon
-
-                                  color: Color(0xFF9D93FF),
-
-                                  size: 24,
-
+                                  // The SvgPicture itself
+                                  child: SvgPicture.asset(
+                                      'assets/svgs/waves.svg',
+                                      colorFilter: ColorFilter.mode(
+                                        Color(0xFF9D93FF), // Your desired color
+                                        BlendMode.srcIn,    // Blend mode for tinting
+                                      ),
+                                      // Use the size you specified previously for the SVG
+                                      width: 26,
+                                      height: 26,
+                                      semanticsLabel: 'Waves icon' // Optional: for accessibility
+                                  ),
                                 ),
 
+                              // The black container with the arrow icon remains the same
+                              Container(
+                                width: 40,  // The container size remains 40x40
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: Colors.black, // Background color remains black
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                // Replace the Icon child with SvgPicture.asset
+                                child: Center( // Use Center to position the potentially smaller SVG within the container
+                                  child: SvgPicture.asset(
+                                    'assets/svgs/clarity_arrow-line.svg', // <-- Path to your clarity SVG. Verify this path is correct!
+                                    // Apply the white color like the original Icon
+                                    colorFilter: ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                    // Set the desired size for the SVG, similar to the original Icon's size
+                                    width: 20,
+                                    height: 20,
+                                    semanticsLabel: 'Arrow icon', // Or 'Arrow icon' if it represents that
+                                  ),
+                                ),
                               ),
-
-                            Container(
-
-                              width: 40,
-
-                              height: 40,
-
-                              decoration: BoxDecoration(
-
-                                color: Colors.black,
-
-                                borderRadius: BorderRadius.circular(5),
-
-                              ),
-
-                              child: const Icon(
-
-                                Icons.arrow_right,
-
-                                color: Colors.white,
-
-                                size: 16,
-
-                              ),
-
-                            ),
-
-                          ],
-
-                        ),
+                            ],
+                          ),
 
                         onTap: () {
 
