@@ -256,13 +256,13 @@ class Step2Widget extends ConsumerWidget {
                           width: 40,
                           height: 40,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF9D93FF),
+                            color: Color(0xFFA099FF),
                             shape: BoxShape.circle,
                           ),
                           child: Center(
                             child: Icon(
                               isSelected ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
+                              color: Color(0xFF16151E),
                             ),
                           ),
                         ),
@@ -296,7 +296,7 @@ class Step2Widget extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: const Icon(
-                                Icons.arrow_forward_ios,
+                                Icons.arrow_right,
                                 color: Colors.white,
                                 size: 16,
                               ),
