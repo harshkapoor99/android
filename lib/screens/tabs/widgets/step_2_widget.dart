@@ -4,342 +4,380 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/svg.dart';
 
-import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart'; // Assuming these models exist
 
-import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/providers/character_creation_provider.dart'; // Assuming this provider exists
 
-import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart'; // Assuming this provider exists
 
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
+// import 'package:guftagu_mobile/utils/context_less_nav.dart'; // If needed
 
-import 'package:guftagu_mobile/utils/entensions.dart';
+// import 'package:guftagu_mobile/utils/entensions.dart'; // Remove if .ph extension is no longer used
 
+// --- Helper for Responsive Padding/Margin ---
 
+// Adjust breakpoints and values based on your design needs
+
+double _getResponsiveHorizontalPadding(
+  double screenWidth, {
+  double small = 16.0,
+  double medium = 24.0,
+  double large = 28.0,
+}) {
+  if (screenWidth < 400) {
+    // Example breakpoint for small devices
+
+    return small;
+  } else if (screenWidth < 800) {
+    // Example breakpoint for medium devices
+
+    return medium;
+  } else {
+    // Large devices
+
+    return large;
+  }
+}
+
+// --- Helper for Responsive Vertical Spacing ---
+
+// Adjust factor based on design needs
+
+double _getResponsiveVerticalSpacing(
+  double screenHeight, {
+  double factor = 0.03,
+}) {
+  // Ensure factor is reasonable, perhaps clamp it
+
+  return (screenHeight * factor).clamp(
+    10.0,
+    40.0,
+  ); // Example clamp: min 10, max 40
+}
 
 class Step2Widget extends ConsumerWidget {
-
   const Step2Widget({super.key});
 
-
-
   @override
-
   Widget build(BuildContext context, WidgetRef ref) {
-
     final screenWidth = MediaQuery.sizeOf(context).width;
+
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    // Calculate responsive values
+
+    final horizontalPadding = _getResponsiveHorizontalPadding(screenWidth);
+
+    final verticalSpaceMedium = _getResponsiveVerticalSpacing(
+      screenHeight,
+      factor: 0.03,
+    ); // ~3% of height
+
+    final verticalSpaceSmall = _getResponsiveVerticalSpacing(
+      screenHeight,
+      factor: 0.015,
+    ); // ~1.5% of height
+
+    final containerInnerVPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 16,
+      medium: 20,
+      large: 24,
+    );
+
+    final containerInnerHPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 12,
+      medium: 15,
+      large: 18,
+    );
+
+    // Max width for the inner container remains responsive
 
     final maxContainerWidth = screenWidth * 0.9;
 
+    // Read providers
+
+    // Using read inside build is generally discouraged for data that changes.
+
+    // If masterData can change, consider using ref.watch.
+
     final masterData = ref.read(masterDataProvider);
 
-    final characterProvider = ref.watch(characterCreationProvider);
-
-
+    final characterProvider = ref.watch(
+      characterCreationProvider,
+    ); // Watch for state changes
 
     return SingleChildScrollView(
-
-      padding: const EdgeInsets.symmetric(horizontal: 28),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
 
       child: Column(
-
         crossAxisAlignment: CrossAxisAlignment.start,
 
         children: [
+          SizedBox(height: verticalSpaceSmall), // Responsive top spacing
 
-          const Text(
-
+          Text(
             'Choose Character\'s',
 
-            style: TextStyle(
+            // Use Theme for text styles if possible for consistency
+            style:
+                Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
 
-              fontSize: 16,
-
-              fontWeight: FontWeight.w600,
-
-              color: Color(0xFFF2F2F2),
-
-            ),
-
+                  color: const Color(0xFFF2F2F2),
+                ) ??
+                const TextStyle(
+                  // Fallback style
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFFF2F2F2),
+                ),
           ),
 
-          25.ph,
+          SizedBox(height: verticalSpaceMedium), // Responsive spacing
 
           Center(
-
             child: Container(
-
-              width: maxContainerWidth,
+              width: maxContainerWidth, // Responsive width
 
               decoration: BoxDecoration(
-
                 color: const Color(0xFF151519),
 
                 borderRadius: BorderRadius.circular(10),
-
               ),
 
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+              padding: EdgeInsets.symmetric(
+                vertical: containerInnerVPadding,
+
+                horizontal: containerInnerHPadding,
+              ),
 
               child: Column(
-
                 children: [
-
+                  // Pass ref to the builder function
                   _buildOptionTile<Personality>(
-
                     context,
-
+                    ref,
                     'Personality',
-
                     'assets/icons/solar_mask-sad-linear.svg',
 
                     maxContainerWidth,
-
                     masterData.personalities,
 
                     optionToString: (p) => p.title,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(personality: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(personality: p0),
 
                     selected: characterProvider.personality,
-
                   ),
 
                   _buildOptionTile<Relationship>(
-
                     context,
-
+                    ref,
                     'Relationship',
-
                     'assets/icons/carbon_friendship.svg',
 
                     maxContainerWidth,
-
                     masterData.relationships,
 
                     optionToString: (r) => r.title,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(relationship: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(relationship: p0),
 
                     selected: characterProvider.relationship,
-
                   ),
 
                   _buildOptionTile<Behaviour>(
-
                     context,
-
+                    ref,
                     'Behaviour',
-
                     'assets/icons/token_mind.svg',
 
                     maxContainerWidth,
-
                     masterData.behaviours,
 
                     optionToString: (b) => b.title,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(behaviour: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(behaviour: p0),
 
                     selected: characterProvider.behaviour,
-
                   ),
 
                   _buildOptionTile<Voice>(
-
                     context,
-
+                    ref,
                     'Voice',
-
                     'assets/icons/ri_voice-ai-fill.svg',
 
                     maxContainerWidth,
-
                     masterData.voices,
 
                     optionToString: (v) => v.fullName,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(voice: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(voice: p0),
 
                     selected: characterProvider.voice,
-
                   ),
 
                   _buildOptionTile<Country>(
-
                     context,
-
+                    ref,
                     'Country',
-
                     'assets/icons/ci_flag.svg',
 
                     maxContainerWidth,
-
                     masterData.countries,
 
                     optionToString: (c) => c.countryName,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(country: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(country: p0),
 
                     selected: characterProvider.country,
-
                   ),
 
                   _buildOptionTile<City>(
-
                     context,
-
+                    ref,
                     'City',
-
                     'assets/icons/mage_location.svg',
 
                     maxContainerWidth,
-
                     masterData.cities,
 
                     optionToString: (c) => c.cityName,
 
                     onSelect:
-
                         (p0) => ref
-
-                        .read(characterCreationProvider.notifier)
-
-                        .updateWith(city: p0),
+                            .read(characterCreationProvider.notifier)
+                            .updateWith(city: p0),
 
                     selected: characterProvider.city,
 
-                    isLast: true,
-
+                    isLast: true, // Mark the last one
                   ),
-
                 ],
-
               ),
-
             ),
-
           ),
 
+          SizedBox(height: verticalSpaceMedium), // Responsive bottom spacing
         ],
-
       ),
-
     );
-
   }
 
-
+  // --- Builder function for each option tile ---
 
   Widget _buildOptionTile<T>(
+    BuildContext context,
 
-      BuildContext context,
+    WidgetRef ref, // Accept ref
 
-      String title,
+    String title,
 
-      String icon,
+    String icon,
 
-      double width,
+    double
+    width, // This might not be strictly needed if ListTile fills container
 
-      List<T> options, {
+    List<T> options, {
 
-        required String Function(T) optionToString,
+    required String Function(T) optionToString,
 
-        bool isLast = false,
+    bool isLast = false,
 
-        T? selected,
+    T? selected,
 
-        required Function(T) onSelect,
+    required Function(T) onSelect,
+  }) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
-      }) {
+    // Responsive bottom padding between tiles
+
+    final responsiveBottomPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 12,
+      medium: 18,
+      large: 24,
+    );
+
+    // Use Theme text styles when possible
+
+    final titleStyle =
+        Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.w600,
+        ) ??
+        const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+        );
+
+    final subtitleStyle =
+        Theme.of(
+          context,
+        ).textTheme.bodySmall?.copyWith(color: Colors.white70) ??
+        const TextStyle(color: Colors.white70, fontSize: 12);
 
     return Padding(
-
-      padding: EdgeInsets.only(bottom: isLast ? 0 : 24),
+      padding: EdgeInsets.only(bottom: isLast ? 0 : responsiveBottomPadding),
 
       child: Container(
-
-        width: width,
-
         decoration: BoxDecoration(
-
           color: const Color(0xFF23222F),
 
           borderRadius: BorderRadius.circular(10),
-
         ),
 
         child: ListTile(
+          // Leading icon - NO unintended color change
+          leading: SvgPicture.asset(
+            icon,
+            width: 24,
+            height: 24,
+          ), // Default SVG colors
 
-          leading: SvgPicture.asset(icon),
-
-          title: Text(title, style: context.appTextStyle.textSemibold),
+          title: Text(title, style: titleStyle),
 
           subtitle:
+              selected != null
+                  ? Text(optionToString(selected), style: subtitleStyle)
+                  : null,
 
-          selected != null
-
-              ? Text(
-
-            optionToString(selected),
-
-            style: context.appTextStyle.textSmall,
-
-          )
-
-              : null,
-
+          // Trailing icon - Color as originally specified
           trailing: const Icon(
-
             Icons.arrow_forward_ios,
 
             color: Colors.white,
 
-            size: 16,
-
+            size: 16, // Kept fixed, make responsive if needed
           ),
 
           onTap: () {
+            // Determine which popup to show based on type T
 
-// Use specialized popup for Voice type
-
-            if (T.toString() == 'Voice') {
-
+            if (T == Voice) {
               _showVoiceOptionPopup(
-
                 context,
-
+                ref,
                 title,
-
                 options as List<Voice>,
 
                 optionToString: optionToString as String Function(Voice),
@@ -347,492 +385,476 @@ class Step2Widget extends ConsumerWidget {
                 onSelect: onSelect as Function(Voice),
 
                 selected: selected as Voice?,
-
               );
-
             } else {
-
-// Use regular popup for other types
-
               _showOptionPopup<T>(
-
                 context,
-
+                ref,
                 title,
-
                 options,
 
                 optionToString: optionToString,
 
                 onSelect: onSelect,
-
               );
-
             }
-
           },
 
+          // Consider adding visual density for tighter spacing on small screens
+
+          // visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-
       ),
-
     );
-
   }
 
-
-
-//voice pop up
+  // --- Voice Selection Popup (Responsive) ---
 
   void _showVoiceOptionPopup(
+    BuildContext context,
 
-      BuildContext context,
+    WidgetRef ref,
 
-      String title,
+    String title,
 
-      List<Voice> options, {
+    List<Voice> options, {
 
-        required String Function(Voice) optionToString,
+    required String Function(Voice) optionToString,
 
-        required Function(Voice) onSelect,
+    required Function(Voice) onSelect,
 
-        Voice? selected,
+    Voice? selected,
+  }) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
-      }) {
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    // Responsive padding/spacing
+
+    final horizontalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 16,
+      medium: 24,
+      large: 33,
+    );
+
+    final verticalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 12,
+      medium: 16,
+      large: 21,
+    ); // Use horizontal helper for consistency or create separate vertical
+
+    // --- Responsive margin logic for the trailing widget ---
+
+    double responsiveRightMargin;
+
+    // Adjust breakpoints and margin values as needed
+
+    if (screenWidth < 380) {
+      responsiveRightMargin = 24.0;
+    } else if (screenWidth < 600) {
+      responsiveRightMargin = 40.0;
+    } else if (screenWidth < 960) {
+      responsiveRightMargin = 64.0;
+    } else {
+      responsiveRightMargin = 64.0;
+    } // Capped margin
+
+    // --- End responsive margin logic ---
 
     showModalBottomSheet(
-
       context: context,
 
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.transparent, // Make container background visible
+
+      isScrollControlled: true, // Allows sheet to be taller than half screen
 
       builder: (context) {
+        // Limit the max height and allow it to shrink to content
 
-        return Container(
-
-          height: 552,
-
-          decoration: const BoxDecoration(
-
-            color: Color(0xFF141416),
-
-            borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: screenHeight * 0.8, // Max 80% of screen height
           ),
 
-          child: Column(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF141416), // Bottom sheet background
 
-            children: [
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
 
-              Padding(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Fit content height vertically
 
-                padding: const EdgeInsets.symmetric(
+              children: [
+                // --- Header ---
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
 
-                  horizontal: 33,
+                    right: horizontalPadding,
 
-                  vertical: 21,
+                    top: verticalPadding,
 
+                    bottom: verticalPadding / 2, // Less padding below header
+                  ),
+
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Choose from here",
+                          style: const TextStyle(
+                            color: Color(0xFFF2F2F2),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
 
-                child: Row(
+                // --- Scrollable List ---
+                Flexible(
+                  // Allows ListView to take available space and scroll
+                  child: ListView.builder(
+                    shrinkWrap: true, // Needed when inside Flexible/Column
 
-                  children: [
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: 10,
+                      top: 5,
+                    ), // Add padding for list
 
-                    Expanded(
+                    itemCount: options.length,
 
-                      child: Text(
+                    itemBuilder: (context, index) {
+                      final option = options[index];
 
-                        "Choose from here",
+                      final isSelected = selected == option;
 
-                        style: const TextStyle(
+                      return Container(
+                        margin: const EdgeInsets.only(
+                          bottom: 10,
+                        ), // Spacing between items
 
-                          color: Color(0xFFF2F2F2),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF23222F), // Item background
 
-                          fontSize: 18,
+                          borderRadius: BorderRadius.circular(10),
 
-                          fontWeight: FontWeight.w600,
-
+                          border:
+                              isSelected
+                                  ? Border.all(
+                                    color: const Color(0xFF5C67FF),
+                                    width: 1,
+                                  )
+                                  : null,
                         ),
 
-                      ),
+                        child: ListTile(
+                          // Leading Play/Pause Icon (kept fixed size)
+                          leading: Container(
+                            width: 40,
+                            height: 40,
 
-                    ),
-
-                    GestureDetector(
-
-                      onTap: () => Navigator.pop(context),
-
-                      child: const Icon(Icons.close, color: Colors.white),
-
-                    ),
-
-                  ],
-
-                ),
-
-              ),
-
-              Expanded(
-
-                child: ListView.builder(
-
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-
-                  itemCount: options.length,
-
-                  itemBuilder: (context, index) {
-
-                    final option = options[index];
-
-                    final isSelected = selected == option;
-
-
-
-                    return Container(
-
-                      margin: const EdgeInsets.only(bottom: 10),
-
-                      decoration: BoxDecoration(
-
-                        color: const Color(0xFF23222F),
-
-                        borderRadius: BorderRadius.circular(10),
-
-                        border: isSelected ?
-
-                        Border.all(color: Color(0xFF5C67FF), width: 1) : null,
-
-                      ),
-
-                      child: ListTile(
-
-                        leading: Container(
-
-                          width: 40,
-
-                          height: 40,
-
-                          decoration: const BoxDecoration(
-
-                            color: Color(0xFFA099FF),
-
-                            shape: BoxShape.circle,
-
-                          ),
-
-                          child: Center(
-
-                            child: Icon(
-
-                              isSelected ? Icons.pause : Icons.play_arrow,
-
-                              color: Color(0xFF16151E),
-
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFA099FF),
+                              shape: BoxShape.circle,
                             ),
 
+                            child: Center(
+                              child: Icon(
+                                isSelected ? Icons.pause : Icons.play_arrow,
+                                color: Color(0xFF16151E),
+                              ),
+                            ),
                           ),
 
-                        ),
-
-                        title: Text(
-
-                          optionToString(option),
-
-                          style: const TextStyle(
-
-                            color: Colors.white,
-
-                            fontSize: 16,
-
-                            fontWeight: FontWeight.w500,
-
+                          title: Text(
+                            optionToString(option),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
 
-                        ),
-
+                          // --- Responsive Trailing Widget ---
                           trailing: Row(
-                            mainAxisSize: MainAxisSize.min, // Important to keep the Row compact
+                            mainAxisSize: MainAxisSize.min,
+
                             children: [
-                              // This part only appears if isSelected is true
+                              // Conditional Waves icon
                               if (isSelected)
                                 Container(
-                                  // This margin controls the space AFTER the SVG container
-                                  // and BEFORE the next widget in the Row (the arrow container).
-                                  margin: const EdgeInsets.only(right: 84),
+                                  margin: EdgeInsets.only(
+                                    right: responsiveRightMargin,
+                                  ), // Apply responsive margin
 
-                                  // The SvgPicture itself
                                   child: SvgPicture.asset(
-                                      'assets/svgs/waves.svg',
-                                      colorFilter: ColorFilter.mode(
-                                        Color(0xFF9D93FF), // Your desired color
-                                        BlendMode.srcIn,    // Blend mode for tinting
-                                      ),
-                                      // Use the size you specified previously for the SVG
-                                      width: 26,
-                                      height: 26,
-                                      semanticsLabel: 'Waves icon' // Optional: for accessibility
+                                    'assets/svgs/waves.svg', // Verify path
+
+                                    colorFilter: const ColorFilter.mode(
+                                      Color(0xFF9D93FF),
+                                      BlendMode.srcIn,
+                                    ), // Original color
+
+                                    width: 26,
+                                    height: 26, // Kept fixed size
+
+                                    semanticsLabel: 'Waves icon',
                                   ),
                                 ),
 
-                              // The black container with the arrow icon remains the same
+                              // Arrow container (kept fixed size)
                               Container(
-                                width: 40,  // The container size remains 40x40
+                                width: 40,
                                 height: 40,
+
                                 decoration: BoxDecoration(
-                                  color: Colors.black, // Background color remains black
+                                  color: Colors.black,
                                   borderRadius: BorderRadius.circular(5),
                                 ),
-                                // Replace the Icon child with SvgPicture.asset
-                                child: Center( // Use Center to position the potentially smaller SVG within the container
+
+                                child: Center(
                                   child: SvgPicture.asset(
-                                    'assets/svgs/clarity_arrow-line.svg', // <-- Path to your clarity SVG. Verify this path is correct!
-                                    // Apply the white color like the original Icon
-                                    colorFilter: ColorFilter.mode(
+                                    'assets/svgs/clarity_arrow-line.svg', // Verify path
+
+                                    colorFilter: const ColorFilter.mode(
                                       Colors.white,
                                       BlendMode.srcIn,
-                                    ),
-                                    // Set the desired size for the SVG, similar to the original Icon's size
+                                    ), // Original color
+
                                     width: 20,
-                                    height: 20,
-                                    semanticsLabel: 'Arrow icon', // Or 'Arrow icon' if it represents that
+                                    height: 20, // Kept fixed size
+
+                                    semanticsLabel: 'Arrow icon',
                                   ),
                                 ),
                               ),
                             ],
                           ),
 
-                        onTap: () {
+                          // --- End Responsive Trailing ---
+                          onTap: () {
+                            onSelect(option);
 
-                          onSelect(option);
-
-                          Navigator.pop(context);
-
-                        },
-
-                      ),
-
-                    );
-
-                  },
-
+                            Navigator.pop(context); // Close sheet on selection
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
 
-              ),
-
-            ],
-
+                // Add padding at the very bottom if needed
+                SizedBox(
+                  height:
+                      MediaQuery.paddingOf(context).bottom > 0
+                          ? 0
+                          : verticalPadding,
+                ), // Add bottom padding only if no system bottom inset (like notch area)
+              ],
+            ),
           ),
-
         );
-
       },
-
     );
-
   }
 
-
+  // --- Generic Option Popup (Responsive Grid) ---
 
   void _showOptionPopup<T>(
+    BuildContext context,
 
-      BuildContext context,
+    WidgetRef ref,
 
-      String title,
+    String title,
 
-      List<T> options, {
+    List<T> options, {
 
-        required String Function(T) optionToString,
+    required String Function(T) optionToString,
 
-        required Function(T) onSelect,
+    required Function(T) onSelect,
+  }) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
-      }) {
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    // Responsive padding
+
+    final horizontalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 16,
+      medium: 24,
+      large: 33,
+    );
+
+    final verticalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 12,
+      medium: 16,
+      large: 21,
+    );
+
+    // Responsive crossAxisCount logic (already present)
+
+    final crossAxisCount =
+        screenWidth < 400
+            ? 2
+            : screenWidth < 700
+            ? 3
+            : 4;
 
     showModalBottomSheet(
-
       context: context,
 
       backgroundColor: Colors.transparent,
 
+      isScrollControlled: true, // Allow flexible height
+
       builder: (context) {
-
-        final screenWidth = MediaQuery.of(context).size.width;
-
-        final crossAxisCount =
-
-        screenWidth < 400
-
-            ? 2
-
-            : screenWidth < 700
-
-            ? 3
-
-            : 4;
-
-
-
-        return Container(
-
-          height: 552,
-
-          decoration: const BoxDecoration(
-
-            color: Color(0xFF141416),
-
-            borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-
+        return ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: screenHeight * 0.8, // Max height
           ),
 
-          child: Column(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF141416),
 
-            children: [
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
 
-              Padding(
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Fit content
 
-                padding: const EdgeInsets.symmetric(
+              children: [
+                // --- Header ---
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
 
-                  horizontal: 33,
+                    right: horizontalPadding,
 
-                  vertical: 21,
+                    top: verticalPadding,
 
-                ),
-
-                child: Row(
-
-                  children: [
-
-                    Expanded(
-
-                      child: Text(
-
-                        "Choose a $title",
-
-                        style: const TextStyle(
-
-                          color: Color(0xFFF2F2F2),
-
-                          fontSize: 18,
-
-                          fontWeight: FontWeight.w600,
-
-                        ),
-
-                      ),
-
-                    ),
-
-                    GestureDetector(
-
-                      onTap: () => Navigator.pop(context),
-
-                      child: const Icon(Icons.close, color: Colors.white),
-
-                    ),
-
-                  ],
-
-                ),
-
-              ),
-
-              Expanded(
-
-                child: Padding(
-
-                  padding: const EdgeInsets.symmetric(horizontal: 33),
-
-                  child: GridView.builder(
-
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-
-                      crossAxisCount: crossAxisCount,
-
-                      crossAxisSpacing: 12,
-
-                      mainAxisSpacing: 12,
-
-                      childAspectRatio: 2.5,
-
-                    ),
-
-                    itemCount: options.length,
-
-                    itemBuilder: (context, index) {
-
-                      final option = options[index];
-
-                      return GestureDetector(
-
-                        onTap: () {
-
-// Handle selection here
-
-                          onSelect(option);
-
-                          Navigator.pop(context);
-
-                        },
-
-                        child: Container(
-
-                          padding: const EdgeInsets.symmetric(
-
-                            vertical: 8,
-
-                            horizontal: 16,
-
-                          ),
-
-                          decoration: BoxDecoration(
-
-                            color: const Color(0xFF23222F),
-
-                            borderRadius: BorderRadius.circular(100),
-
-                          ),
-
-                          child: Center(
-
-                            child: Text(
-
-                              optionToString(option),
-
-                              style: const TextStyle(
-
-                                color: Color(0xFFE5E5E5),
-
-                                fontSize: 14,
-
-                                fontWeight: FontWeight.w600,
-
-                              ),
-
-                            ),
-
-                          ),
-
-                        ),
-
-                      );
-
-                    },
-
+                    bottom: verticalPadding / 2,
                   ),
 
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Choose a $title",
+                          style: const TextStyle(
+                            color: Color(0xFFF2F2F2),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: const Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
 
-              ),
+                // --- Scrollable Grid ---
+                Flexible(
+                  child: Padding(
+                    // Use horizontal padding for the grid area
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: 10,
+                      top: 5,
+                    ),
 
-            ],
+                    child: GridView.builder(
+                      shrinkWrap: true,
 
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount, // Responsive count
+
+                        crossAxisSpacing: 12, // Fixed spacing
+
+                        mainAxisSpacing: 12, // Fixed spacing
+
+                        childAspectRatio:
+                            2.5, // Fixed aspect ratio - TEST THIS across sizes
+                      ),
+
+                      itemCount: options.length,
+
+                      itemBuilder: (context, index) {
+                        final option = options[index];
+
+                        return GestureDetector(
+                          onTap: () {
+                            onSelect(option);
+                            Navigator.pop(context);
+                          },
+
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 12,
+                            ), // Adjusted horizontal padding slightly
+
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF23222F),
+                              borderRadius: BorderRadius.circular(100),
+                            ), // Pill shape
+
+                            child: Center(
+                              child: Text(
+                                optionToString(option),
+
+                                textAlign: TextAlign.center,
+
+                                overflow:
+                                    TextOverflow
+                                        .ellipsis, // Handle potential overflow
+
+                                style: const TextStyle(
+                                  color: Color(0xFFE5E5E5),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                SizedBox(
+                  height:
+                      MediaQuery.paddingOf(context).bottom > 0
+                          ? 0
+                          : verticalPadding,
+                ), // Bottom padding
+              ],
+            ),
           ),
-
         );
-
       },
-
     );
-
   }
-
 }
