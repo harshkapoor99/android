@@ -1,3 +1,4 @@
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/tab.gen.dart';
@@ -7,11 +8,7 @@ part '../gen/providers/tab.gen.dart';
 class IsHomeVisited extends _$IsHomeVisited {
   @override
   bool build() {
-    return false;
-  }
-
-  void setHomeViewed() {
-    state = true;
+    return ref.read(hiveServiceProvider.notifier).getHasStartedChat();
   }
 }
 

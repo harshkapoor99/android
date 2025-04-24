@@ -21,6 +21,7 @@ class TextInputWidget extends StatelessWidget {
     this.autofocus = false,
     this.prefixText,
     this.sufixText,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   final String? hint;
@@ -37,10 +38,12 @@ class TextInputWidget extends StatelessWidget {
   final bool readOnly;
   final bool disabled;
   final bool autofocus;
+  final TextCapitalization textCapitalization;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      textCapitalization: textCapitalization,
       autofocus: autofocus,
       enabled: !disabled,
       maxLines: maxLines,

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/models/user_model.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
+import 'package:guftagu_mobile/screens/subscriptionPage.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 
 class ProfileTab extends ConsumerStatefulWidget {
   const ProfileTab({super.key});
@@ -18,6 +23,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
+    User? userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -25,35 +31,52 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
           child: Column(
             children: [
               const SizedBox(height: 16),
-              SizedBox(
-                height: 126,
-                width: 126,
-                child: const CircleAvatar(
-                  backgroundImage: AssetImage(
-                    'assets/images/model/ayushImg.jpg',
+              ClipRRect(
+                borderRadius: BorderRadius.circular(70),
+                child: SizedBox(
+                  height: 126,
+                  width: 126,
+                  child: NetworkImageWithPlaceholder(
+                    imageUrl: userInfo!.profile.profilePicture,
+                    placeholder: SvgPicture.asset(
+                      Assets.svgs.icProfile2,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF47C8FC),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    fit: BoxFit.cover,
+                    errorWidget: SvgPicture.asset(
+                      Assets.svgs.icProfile2,
+                      colorFilter: const ColorFilter.mode(
+                        Color(0xFF47C8FC),
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ),
                 ),
               ),
 
               const SizedBox(height: 12),
-              const Text(
-                'Ayush Bhattarai',
-                style: TextStyle(
+              Text(
+                userInfo.profile.fullName,
+                style: context.appTextStyle.textBold.copyWith(
                   fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFFF2F2F2),
+                  // color: Color(0xFFF2F2F2),
                 ),
               ),
               Opacity(
                 opacity: 0.6,
                 child: Text(
-                  'bhattaraiayush2003@gmail.com',
-                  style: TextStyle(
+                  userInfo.email.hasValue
+                      ? userInfo.email
+                      : userInfo.mobileNumber.hasValue
+                      ? userInfo.mobileNumber
+                      : "",
+                  style: context.appTextStyle.text.copyWith(
                     fontSize: 14,
-                    fontWeight: FontWeight.w400,
                     height:
                         1.71, // Line height = fontSize × height = 14 × 1.71 ≈ 24
-                    color: Color(0xFFF2F2F2),
                   ),
                 ),
               ),
@@ -80,20 +103,27 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       isSwitched = val;
                     });
                   },
-                  activeColor: Color(
+                  activeColor: const Color(
                     0xFF47C8FC,
                   ), // This is the thumb default color unless overridden
-                  activeTrackColor: Color(
+                  activeTrackColor: const Color(
                     0xFF111016,
                   ), // Optional: track (background line) color
+                  inactiveThumbColor: const Color(0xFF47C8FC),
+                  inactiveTrackColor: const Color(0xFF111016),
+                  trackOutlineColor: WidgetStateProperty.resolveWith<Color?>((
+                    final Set<WidgetState> states,
+                  ) {
+                    return const Color(0xFF111016);
+                  }),
                 ),
               ),
               _buildTile(
                 icon: 'assets/icons/profile03.svg',
                 title: 'Language',
-                trailing: Row(
+                trailing: const Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Text('English', style: TextStyle(color: Color(0xFFF2F2F2))),
                     SizedBox(width: 8),
                     Icon(
@@ -115,7 +145,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   decoration: BoxDecoration(
                     color: const Color(0xFF23222F),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Color(0xFF47455E), width: 1),
+                    border: Border.all(
+                      color: const Color(0xFF47455E),
+                      width: 1,
+                    ),
                   ),
                   child: Row(
                     children: [
@@ -153,6 +186,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 ),
               ),
               _buildTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const SubscriptionPage(),
+                    ),
+                  );
+                },
                 icon: 'assets/icons/profile07.svg',
                 title: 'Subscription',
                 trailing: const Icon(
@@ -161,6 +202,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   color: Colors.white,
                 ),
               ),
+
               _buildTile(
                 icon: 'assets/icons/profile08.svg',
                 title: 'Log out',
@@ -192,34 +234,42 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
     required Widget trailing,
     void Function()? onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.symmetric(horizontal: 21.29, vertical: 10),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Ink(
         decoration: BoxDecoration(
           color: const Color(0xFF23222F),
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Row(
-          children: [
-            SvgPicture.asset(icon, height: 40, width: 42.57),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                title,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  height:
-                      1.75, // line-height of 28px / font-size of 16px = 1.75
-                  letterSpacing: 0, // 0px letter-spacing
-                ),
-              ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => Future.delayed(Durations.short4, onTap),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 21.29,
+              vertical: 10,
             ),
-            trailing,
-          ],
+            child: Row(
+              children: [
+                SvgPicture.asset(icon, height: 40, width: 42.57),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      height:
+                          1.75, // line-height of 28px / font-size of 16px = 1.75
+                      letterSpacing: 0, // 0px letter-spacing
+                    ),
+                  ),
+                ),
+                trailing,
+              ],
+            ),
+          ),
         ),
       ),
     );

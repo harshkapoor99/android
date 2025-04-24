@@ -24,7 +24,11 @@ class OtpScreen extends ConsumerWidget {
         .verifyOtp()
         .then((value) {
           if (value.isSuccess) {
-            context.nav.pushReplacementNamed(Routes.interest);
+            if (!value.response!.profile.fullName.hasValue) {
+              context.nav.pushReplacementNamed(Routes.name);
+            } else {
+              context.nav.pushReplacementNamed(Routes.interest);
+            }
             ref.read(authProvider.notifier).clearControllers();
           }
           AppConstants.showSnackbar(message: value.message, isSuccess: true);
@@ -109,7 +113,7 @@ class OtpScreen extends ConsumerWidget {
                   30.ph,
 
                   GradientButton(
-                    title: "confirm",
+                    title: "verify",
                     showLoading: provider.isLoading,
                     disabled: !provider.canVerify,
                     onTap: () => verify(context, ref),

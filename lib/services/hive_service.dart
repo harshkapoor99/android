@@ -53,6 +53,53 @@ class HiveService extends _$HiveService {
     return null;
   }
 
+  void updateUserInfo({
+    String? username,
+    String? email,
+    String? mobileNumber,
+    int? status,
+    String? fullName,
+    String? dateOfBirth,
+    String? gender,
+    String? profilePicture,
+    String? bio,
+    String? country,
+    String? city,
+    String? timezone,
+  }) {
+    // Get current user info
+    User? currentUser = getUserInfo();
+
+    if (currentUser != null) {
+      // Create updated profile
+      Profile updatedProfile = Profile(
+        fullName: fullName ?? currentUser.profile.fullName,
+        dateOfBirth: dateOfBirth ?? currentUser.profile.dateOfBirth,
+        gender: gender ?? currentUser.profile.gender,
+        profilePicture: profilePicture ?? currentUser.profile.profilePicture,
+        bio: bio ?? currentUser.profile.bio,
+        country: country ?? currentUser.profile.country,
+        city: city ?? currentUser.profile.city,
+        timezone: timezone ?? currentUser.profile.timezone,
+      );
+
+      // Create updated user
+      User updatedUser = User(
+        id: currentUser.id,
+        username: username ?? currentUser.username,
+        email: email ?? currentUser.email,
+        mobileNumber: mobileNumber ?? currentUser.mobileNumber,
+        createdDate: currentUser.createdDate,
+        updatedDate: DateTime.now(), // Update the updatedDate to current time
+        status: status ?? currentUser.status,
+        profile: updatedProfile,
+      );
+
+      // Save the updated user info back to the box
+      _userBox.put(AppHSC.userInfo, updatedUser.toMap());
+    }
+  }
+
   String? getUserId() {
     return getUserInfo()?.id;
   }

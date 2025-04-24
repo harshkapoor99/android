@@ -1,5 +1,4 @@
-const host = 'https://api.guftagu.net/api';
-// const host = 'http://10.0.2.2:8000/api';
+import 'package:guftagu_mobile/configs/host.dart';
 
 enum RemoteEndpoint {
   // Authentication
@@ -7,6 +6,7 @@ enum RemoteEndpoint {
   otpPhone(path: 'userservice/user/userotpverificationbyphonenumber/'),
   loginEmail(path: 'userservice/user/userloginwithemail/'),
   otpEmail(path: 'userservice/user/userotpverificationbyemail/'),
+  updateName(path: 'userservice/user/userupdatename/'),
 
   // Master Service
   fetchLanguages(path: 'masterservice/language/getalllanguage/'),
@@ -27,6 +27,7 @@ enum RemoteEndpoint {
   charactersByUser(path: 'chatgenerationservice/character/bycreatorid/'),
 
   // Chat with character
+  initiateChatWithCharacter(path: 'chatgenerationservice/character/initchat/'),
   chatWithCharacter(path: 'chatgenerationservice/character/chat/'),
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/')

@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:guftagu_mobile/screens/auth/interest.dart';
 import 'package:guftagu_mobile/screens/auth/login.dart';
 import 'package:guftagu_mobile/screens/auth/otp.dart';
-import 'package:guftagu_mobile/screens/auth/signup.dart';
+import 'package:guftagu_mobile/screens/auth/name.dart';
 import 'package:guftagu_mobile/screens/chat/call_screen.dart';
 import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
@@ -15,7 +15,7 @@ class Routes {
   Routes._();
 
   static const splash = "/";
-  static const signup = "/signup";
+  static const name = "/name";
   static const onboarding = "/onboarding";
   static const login = "/login";
   static const otp = "/otp";
@@ -33,8 +33,8 @@ class Routes {
         child = const SplashScreen();
       case Routes.onboarding:
         child = const Onboarding();
-      case Routes.signup:
-        child = const SignUpScreen();
+      case Routes.name:
+        child = const NameScreen();
       case Routes.login:
         child = const LoginScreen();
       case Routes.otp:

@@ -5,6 +5,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -54,15 +55,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         final hiveService = ref.read(hiveServiceProvider.notifier);
         final isOnboarded = hiveService.getOnboardingStatus();
         final authToken = hiveService.getAuthToken();
+        final user = hiveService.getUserInfo();
         print("authToken: $authToken");
 
         if (!isOnboarded) {
           context.nav.pushReplacementNamed(Routes.onboarding);
-        } else if (authToken == null) {
+        } else if (authToken == null || user == null) {
           context.nav.pushReplacementNamed(Routes.login);
         } else {
           ref.read(apiClientProvider).updateToken(authToken);
-          context.nav.pushReplacementNamed(Routes.dashboard);
+          if (!user.profile.fullName.hasValue) {
+            context.nav.pushReplacementNamed(Routes.name);
+          } else {
+            context.nav.pushReplacementNamed(Routes.dashboard);
+          }
         }
       });
     });
