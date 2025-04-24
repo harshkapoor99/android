@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -99,7 +98,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                     30.ph,
                     GradientButton(
-                      title: "continue",
+                      title: "next",
                       showLoading: provider.isLoading,
                       onTap: login,
                     ),
@@ -152,19 +151,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ],
                     ),
                     20.ph,
-                    if (kDebugMode)
-                      GestureDetector(
-                        onTap:
-                            () => context.nav.pushReplacementNamed(
-                              Routes.dashboard,
-                            ),
-                        child: Text(
-                          "Bypass Login (debug only)",
-                          style: AppTextStyle(
-                            context,
-                          ).textSmall.copyWith(color: context.colorExt.primary),
-                        ),
-                      ),
                   ],
                 ),
               ),

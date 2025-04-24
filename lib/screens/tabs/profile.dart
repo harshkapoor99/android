@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
-import 'package:guftagu_mobile/screens/tabs/widgets/subscriptionPage.dart';
+import 'package:guftagu_mobile/screens/subscriptionPage.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 

@@ -17,6 +17,7 @@ class Auth extends _$Auth {
   @override
   AuthState build() {
     final initialState = AuthState(
+      nameController: TextEditingController(),
       credentialControler: TextEditingController(),
       otpControler: TextEditingController(),
       isLoading: false,
@@ -86,7 +87,7 @@ class Auth extends _$Auth {
     }
   }
 
-  Future<CommonResponse> verifyOtp() async {
+  Future<CommonResponse<User>> verifyOtp() async {
     state = state._updateLoading(true);
     Response response;
     try {
@@ -108,7 +109,7 @@ class Auth extends _$Auth {
         state = state._updateLoggedIn();
       }
       if (response.data['status'] != 200) {
-        return CommonResponse(
+        return CommonResponse<User>(
           message: response.data['message'],
           isSuccess: false,
         );
@@ -125,19 +126,46 @@ class Auth extends _$Auth {
         refreshToken: authRefreshToken,
       );
 
-      return CommonResponse(
+      return CommonResponse<User>(
         message: response.data['message'],
         isSuccess: response.data['status'] == 200,
+        response: user,
       );
     } catch (e) {
       if (kDebugMode) {
         rethrow;
       } else {
-        return CommonResponse(
+        return CommonResponse<User>(
           message: "Something went wrong",
           isSuccess: false,
         );
       }
+    } finally {
+      state = state._updateLoading(false);
+    }
+  }
+
+  Future<CommonResponse> updateName() async {
+    state = state._updateLoading(true);
+    try {
+      final response = await ref
+          .read(authServiceProvider)
+          .updateName(
+            ref.read(hiveServiceProvider.notifier).getUserId()!,
+            state.nameController.text,
+          );
+      if (response.statusCode == 200) {
+        var userProfile = response.data["profile"];
+        ref
+            .read(hiveServiceProvider.notifier)
+            .updateUserInfo(fullName: userProfile["full_name"]);
+      }
+      return CommonResponse(
+        isSuccess: response.statusCode == 200,
+        message: response.data["message"],
+      );
+    } catch (e) {
+      return CommonResponse(isSuccess: false, message: "Some error occured");
     } finally {
       state = state._updateLoading(false);
     }
@@ -150,11 +178,13 @@ class AuthState {
     this.canVerify = false,
     this.isLoggedIn = false,
     this.isLoading = false,
+    required this.nameController,
     required this.credentialControler,
     required this.otpControler,
   });
 
   final bool isEmail, canVerify, isLoggedIn, isLoading;
+  final TextEditingController nameController;
   final TextEditingController credentialControler;
   final TextEditingController otpControler;
 
@@ -169,6 +199,7 @@ class AuthState {
       canVerify: canVerify ?? this.canVerify,
       isLoggedIn: isLoggedIn ?? this.isLoggedIn,
       isLoading: isLoading ?? this.isLoading,
+      nameController: nameController,
       credentialControler: credentialControler,
       otpControler: otpControler,
     );

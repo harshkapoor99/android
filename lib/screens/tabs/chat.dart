@@ -3,70 +3,53 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:lottie/lottie.dart';
 
-class ChatTab extends ConsumerWidget {
+class ChatTab extends ConsumerStatefulWidget {
   ChatTab({super.key});
 
-  final List<String> ais = [
-    "Maddy",
-    "Alia",
-    "John",
-    "Jaan",
-    "Fred",
-    "Tisha",
-    "Maddy",
-  ];
-  final List<Map<String, String>> chats = [
-    {
-      "name": "Jaan",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Alia",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Jaan",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Alia",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Jaan",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Alia",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Jaan",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
-    {
-      "name": "Alia",
-      "message": "Hey jaan missing you a lot.. tell me abt your exa....",
-      "time": "12:30 PM",
-    },
+  final List<Map<String, dynamic>> ais = [
+    {"name": "Maddy", "image": Assets.images.model.modImg4},
+    {"name": "Alia", "image": Assets.images.model.modImg1},
+    {"name": "John", "image": Assets.images.model.modImg3},
+    {"name": "Jaan", "image": Assets.images.model.modImg5},
+    {"name": "Fred", "image": Assets.images.onboarding.obImg8},
+    {"name": "Tisha", "image": Assets.images.model.modImg7},
+    {"name": "Maddy", "image": Assets.images.onboarding.obImg6},
   ];
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    if (!ref.watch(isHomeVisitedProvider)) {
+  ConsumerState<ChatTab> createState() => _ChatTabState();
+}
+
+class _ChatTabState extends ConsumerState<ChatTab> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
+    });
+    super.initState();
+  }
+
+  void init() {
+    ref.read(chatProvider.notifier).fetchChatList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = ref.watch(chatProvider);
+    if (!ref.watch(isHomeVisitedProvider) &&
+        provider.isFetchingChatList &&
+        provider.chatList.isEmpty) {
+      return Center(child: Lottie.asset(Assets.images.logoAnimation));
+    }
+    if (!ref.watch(isHomeVisitedProvider) && provider.chatList.isEmpty) {
       return const HomeTab();
     } else {
       return GestureDetector(
@@ -79,10 +62,12 @@ class ChatTab extends ConsumerWidget {
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
-                itemCount: ais.length + 1,
+                itemCount: widget.ais.length + 1,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(right: index < ais.length ? 8 : 0),
+                    padding: EdgeInsets.only(
+                      right: index < widget.ais.length ? 8 : 0,
+                    ),
                     child: Column(
                       children: [
                         Ink(
@@ -91,40 +76,45 @@ class ChatTab extends ConsumerWidget {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40),
                             color:
-                                index == ais.length
+                                index == widget.ais.length
                                     ? context.colorExt.border
                                     : null,
                             image:
-                                index < ais.length
+                                index < widget.ais.length
                                     ? DecorationImage(
                                       image:
-                                          Assets.images.model.modImg4
-                                              .provider(),
+                                          widget.ais[index]["image"].provider(),
                                       fit: BoxFit.cover,
                                     )
                                     : null,
                           ),
                           child: InkWell(
                             onTap: () {
-                              if (index == ais.length) {
+                              if (index == widget.ais.length) {
                                 context.nav.pushNamed(Routes.explore);
                               }
                             },
                             borderRadius: BorderRadius.circular(40),
                             child:
-                                index == ais.length
+                                index == widget.ais.length
                                     ? Center(
                                       child: SvgPicture.asset(
                                         Assets.svgs.icMyAi,
-                                        height: 25,
-                                        width: 25,
+                                        height: 30,
+                                        width: 30,
+                                        colorFilter: ColorFilter.mode(
+                                          context.colorExt.secondary,
+                                          BlendMode.srcIn,
+                                        ),
                                       ),
                                     )
                                     : null,
                           ),
                         ),
                         Text(
-                          index == ais.length ? "Explore" : ais[index],
+                          index == widget.ais.length
+                              ? "Explore"
+                              : widget.ais[index]["name"],
                           style: context.appTextStyle.textSemibold.copyWith(
                             fontSize: 12,
                           ),
@@ -137,92 +127,71 @@ class ChatTab extends ConsumerWidget {
             ),
             10.ph,
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SizedBox(
-                height: 45,
-                child: TextField(
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                    hintText: "Search",
-                    hintStyle: context.appTextStyle.textSmall.copyWith(
-                      color: context.colorExt.textPrimary.withValues(
-                        alpha: 0.7,
-                      ),
-                    ),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      child: SvgPicture.asset(
-                        Assets.svgs.icSearch,
-                        height: 10,
-                        width: 10,
-                      ),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey[900],
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(60),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            15.ph,
             const CategoryList(),
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
-                child: ListView.builder(
-                  itemCount: chats.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 5,
-                        horizontal: 16,
-                      ),
-                      onTap: () {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        Future.delayed(Durations.medium1).then((value) {
-                          context.nav.pushNamed(Routes.chat);
-                        });
-                      },
-                      leading: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: CircleAvatar(
-                          backgroundImage:
-                              Assets.images.model.modImg1.provider(),
-                        ),
-                      ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            chats[index]['name']!,
-                            style: context.appTextStyle.textSemibold.copyWith(
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            chats[index]['time']!,
-                            style: context.appTextStyle.textSemibold.copyWith(
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      subtitle: Text(
-                        chats[index]['message']!,
-                        style: context.appTextStyle.textSmall.copyWith(
-                          fontSize: 12,
-                        ),
-                      ),
-                    );
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    ref.read(chatProvider.notifier).fetchChatList();
                   },
+                  child: ListView.builder(
+                    itemCount: provider.chatList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 16,
+                        ),
+                        onTap: () {
+                          ref
+                              .read(chatProvider.notifier)
+                              .setCharacter(provider.chatList[index].character);
+                          Future.delayed(Durations.medium1).then((value) {
+                            context.nav.pushNamed(Routes.chat);
+                          });
+                        },
+                        leading: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: CircleAvatar(
+                            backgroundImage:
+                                Image.network(
+                                  provider
+                                      .chatList[index]
+                                      .character
+                                      .imageGallery
+                                      .first
+                                      .url,
+                                ).image,
+                          ),
+                        ),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              provider.chatList[index].character.name,
+                              style: context.appTextStyle.textSemibold.copyWith(
+                                fontSize: 12,
+                              ),
+                            ),
+                            Text(
+                              '${provider.chatList[index].lastMessageTime.hour}:${provider.chatList[index].lastMessageTime.minute}',
+                              style: context.appTextStyle.textSemibold.copyWith(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          provider.chatList[index].lastMessage,
+                          style: context.appTextStyle.textSmall.copyWith(
+                            fontSize: 12,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

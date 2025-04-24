@@ -78,8 +78,9 @@ class Step4Widget extends ConsumerWidget {
                     ),
                   30.ph,
                   Text(
-                    '${proivider.refImageUrl.hasValue ? "Or" : ""} Choose from images',
-                    style: const TextStyle(
+                    // '${proivider.refImageUrl.hasValue ? "Or" : ""} Choose from images',
+                    'Choose from images',
+                    style: context.appTextStyle.text.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFFF2F2F2),
@@ -89,12 +90,12 @@ class Step4Widget extends ConsumerWidget {
 
                   // 3×2 grid layout with premium tag on 2nd and 6th
                   GridView.count(
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     mainAxisSpacing: 10,
                     crossAxisSpacing: 10,
-                    childAspectRatio: 127.72 / 131,
+                    childAspectRatio: 1,
                     children: List.generate(proivider.characterImages.length, (
                       index,
                     ) {
@@ -127,8 +128,8 @@ class Step4Widget extends ConsumerWidget {
                                       proivider.characterImages[index].url,
                                     ).image,
                                 fit: BoxFit.cover,
-                                width: 127.72,
-                                height: 131,
+                                width: 200,
+                                height: 200,
                                 child: InkWell(
                                   onTap: () {
                                     ref
@@ -161,6 +162,7 @@ class Step4Widget extends ConsumerWidget {
                       );
                     }),
                   ),
+                  20.ph,
                 ],
               ),
     );

@@ -59,7 +59,7 @@ class ImageOptionSelector extends StatelessWidget {
                                   isSelected
                                       ? null
                                       : ColorFilter.mode(
-                                        Colors.black.withOpacity(0.4),
+                                        Colors.black.withValues(alpha: .4),
                                         BlendMode.darken,
                                       ),
                             ),
@@ -75,7 +75,10 @@ class ImageOptionSelector extends StatelessWidget {
                                     option['icon'],
                                     height: 16,
                                     width: 16,
-                                    color: Colors.white,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
                                   )
                                   : Image.asset(
                                     option['icon'],

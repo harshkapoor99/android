@@ -28,6 +28,7 @@ class PrevNextButtons extends ConsumerWidget {
         if (res.isSuccess) {
           ref.read(myAiProvider.notifier).fetchMyAis();
           ref.read(tabIndexProvider.notifier).changeTab(2);
+          ref.read(characterCreationProvider.notifier).resetState();
         }
       });
     }
