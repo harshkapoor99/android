@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
 
@@ -155,16 +157,32 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                         leading: SizedBox(
                           width: 50,
                           height: 50,
-                          child: CircleAvatar(
-                            backgroundImage:
-                                Image.network(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: NetworkImageWithPlaceholder(
+                              imageUrl:
                                   provider
                                       .chatList[index]
                                       .character
                                       .imageGallery
                                       .first
                                       .url,
-                                ).image,
+                              placeholder: SvgPicture.asset(
+                                Assets.svgs.icProfile2,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xFF47C8FC),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                              fit: BoxFit.cover,
+                              errorWidget: SvgPicture.asset(
+                                Assets.svgs.icProfile2,
+                                colorFilter: const ColorFilter.mode(
+                                  Color(0xFF47C8FC),
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         title: Row(
@@ -177,7 +195,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               ),
                             ),
                             Text(
-                              '${provider.chatList[index].lastMessageTime.hour}:${provider.chatList[index].lastMessageTime.minute}',
+                              formatTime(
+                                provider.chatList[index].lastMessageTime,
+                              ),
                               style: context.appTextStyle.textSemibold.copyWith(
                                 fontSize: 12,
                               ),

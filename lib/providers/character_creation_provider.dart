@@ -46,8 +46,14 @@ bool nextButtonStatus(Ref ref) {
   } else if (provider.index == 4 && provider.seletedCharacterImage != null) {
     return true;
   }
-  // REMOVE: remove this
+
   return false;
+}
+
+@riverpod
+double prevNextButtonHeight(Ref ref) {
+  // final provider = ref.watch(characterCreationProvider);
+  return FocusManager.instance.primaryFocus?.hasFocus ?? false ? 0 : 120;
 }
 
 @Riverpod(keepAlive: true)

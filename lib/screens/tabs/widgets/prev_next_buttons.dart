@@ -47,34 +47,40 @@ class PrevNextButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
     final currentStep = provider.index;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (currentStep > 0)
-          TextButton(
-            onPressed: () => _prevStep(provider.pageController, currentStep),
-            child: const Text(
-              "Previous",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
+    return AnimatedContainer(
+      duration: Durations.extralong4,
+      height: ref.watch(prevNextButtonHeightProvider),
+      color: Colors.red,
+      // height: 60,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          if (currentStep > 0)
+            TextButton(
+              onPressed: () => _prevStep(provider.pageController, currentStep),
+              child: const Text(
+                "Previous",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-          )
-        else
-          const SizedBox(),
+            )
+          else
+            const SizedBox(),
 
-        GradientButton(
-          disabled: !ref.watch(nextButtonStatusProvider),
-          width: 132,
-          title:
-              currentStep == 3
-                  ? "Preview"
-                  : (currentStep == 4 ? "Create" : "Next"),
-          onTap: () => _nextStep(provider.pageController, currentStep, ref),
-        ),
-      ],
+          GradientButton(
+            disabled: !ref.watch(nextButtonStatusProvider),
+            width: 132,
+            title:
+                currentStep == 3
+                    ? "Preview"
+                    : (currentStep == 4 ? "Create" : "Next"),
+            onTap: () => _nextStep(provider.pageController, currentStep, ref),
+          ),
+        ],
+      ),
     );
   }
 }
