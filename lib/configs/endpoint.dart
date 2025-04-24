@@ -1,5 +1,5 @@
-const host = 'https://api.guftagu.net/api';
-// const host = 'http://10.0.2.2:8000/api';
+// const host = 'https://api.guftagu.net/api';
+const host = 'http://10.0.2.2:8000/api';
 
 enum RemoteEndpoint {
   // Authentication
@@ -7,6 +7,7 @@ enum RemoteEndpoint {
   otpPhone(path: 'userservice/user/userotpverificationbyphonenumber/'),
   loginEmail(path: 'userservice/user/userloginwithemail/'),
   otpEmail(path: 'userservice/user/userotpverificationbyemail/'),
+  updateName(path: 'userservice/user/userupdatename/'),
 
   // Master Service
   fetchLanguages(path: 'masterservice/language/getalllanguage/'),

@@ -44,7 +44,9 @@ class Chat extends _$Chat {
 
   void initiateChatWithCharacter() async {
     try {
-      state._updateWith(isTyping: true);
+      Future.microtask(() {
+        state = state._updateWith(isFetchingChatList: true);
+      });
       state.messageController.clear();
       final response = await ref
           .read(chatServiceProvider)
@@ -66,7 +68,7 @@ class Chat extends _$Chat {
   void chatWithCharacter() async {
     try {
       appendChat(isMe: true, text: state.messageController.text);
-      state._updateWith(isTyping: true);
+      state = state._updateWith(isTyping: true);
       String message = state.messageController.text;
       state.messageController.clear();
       final response = await ref
@@ -89,6 +91,7 @@ class Chat extends _$Chat {
 
   void fetchChatList() async {
     try {
+      state = state._updateWith(isFetchingChatList: true);
       final response = await ref
           .read(chatServiceProvider)
           .chatList(
@@ -107,7 +110,7 @@ class Chat extends _$Chat {
     } catch (e) {
       rethrow;
     } finally {
-      state = state._updateWith(isFetchingHistory: false);
+      state = state._updateWith(isFetchingChatList: false);
     }
   }
 

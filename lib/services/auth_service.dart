@@ -68,4 +68,16 @@ class AuthService {
       throw Exception('Failed to verify email OTP: $e');
     }
   }
+
+  Future<Response> updateName(String userId, String name) async {
+    try {
+      final response = await _apiClient.post(
+        RemoteEndpoint.updateName.url,
+        data: {"user_id": userId, "user_name": name},
+      );
+      return response;
+    } catch (e) {
+      throw Exception('Failed to verify email OTP: $e');
+    }
+  }
 }

@@ -32,14 +32,22 @@ class ChatTab extends ConsumerStatefulWidget {
 class _ChatTabState extends ConsumerState<ChatTab> {
   @override
   void initState() {
-    ref.read(chatProvider.notifier).fetchChatList();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
+    });
     super.initState();
+  }
+
+  void init() {
+    ref.read(chatProvider.notifier).fetchChatList();
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
-    if (!ref.watch(isHomeVisitedProvider) && provider.isFetchingHistory) {
+    if (!ref.watch(isHomeVisitedProvider) &&
+        provider.isFetchingChatList &&
+        provider.chatList.isEmpty) {
       return Center(child: Lottie.asset(Assets.images.logoAnimation));
     }
     if (!ref.watch(isHomeVisitedProvider) && provider.chatList.isEmpty) {

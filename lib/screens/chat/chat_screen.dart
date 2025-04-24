@@ -54,14 +54,14 @@ class ChatScreen extends ConsumerStatefulWidget {
 class _ChatScreenState extends ConsumerState<ChatScreen> {
   @override
   void initState() {
-    ref.read(chatProvider.notifier).fetchChatHistory();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
+    });
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    //
-    super.didChangeDependencies();
+  void init() {
+    ref.read(chatProvider.notifier).fetchChatHistory();
   }
 
   @override
