@@ -49,8 +49,8 @@ class PrevNextButtons extends ConsumerWidget {
     final currentStep = provider.index;
     return AnimatedContainer(
       duration: Durations.extralong4,
-      height: ref.watch(prevNextButtonHeightProvider),
-      color: Colors.red,
+      // height: ref.watch(prevNextButtonHeightProvider),
+      // color: Colors.red,
       // height: 60,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
