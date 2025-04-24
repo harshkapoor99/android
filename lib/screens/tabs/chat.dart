@@ -180,6 +180,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               '${provider.chatList[index].lastMessageTime.hour}:${provider.chatList[index].lastMessageTime.minute}',
                               style: context.appTextStyle.textSemibold.copyWith(
                                 fontSize: 12,
+                                color: Color(0xFFA3A3A3)
                               ),
                             ),
                           ],
@@ -188,6 +189,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           provider.chatList[index].lastMessage,
                           style: context.appTextStyle.textSmall.copyWith(
                             fontSize: 12,
+                              color: Color(0xFFA3A3A3)
                           ),
                         ),
                       );
