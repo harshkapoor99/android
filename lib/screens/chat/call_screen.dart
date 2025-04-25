@@ -16,6 +16,7 @@ class CallScreen extends ConsumerWidget {
       backgroundColor: context.colorExt.background,
       appBar: AppBar(
         backgroundColor: context.colorExt.background,
+        leadingWidth: 40,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -61,7 +62,7 @@ class CallScreen extends ConsumerWidget {
               ],
             ),
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icCoins, height: 20),
+            SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
             5.pw,
             Text(
               '1200',
@@ -117,17 +118,20 @@ class CallScreen extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _buildCircleButton(
+                      context,
                       SvgPicture.asset(Assets.svgs.icChat, width: 20),
                       context.colorExt.border,
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
+                      context,
                       const Icon(Icons.call_end, color: Colors.white, size: 30),
                       const Color(0xFFFC015B),
                       size: 60,
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
+                      context,
                       provider.isSpeakerOn
                           ? SvgPicture.asset(
                             Assets.svgs.icSpeakerGrad,
@@ -137,6 +141,7 @@ class CallScreen extends ConsumerWidget {
                       context.colorExt.border,
                       onPressed:
                           () => ref.read(callProvider.notifier).toggleSpeaker(),
+                      enabled: provider.isSpeakerOn,
                     ),
                   ],
                 ),
@@ -150,15 +155,24 @@ class CallScreen extends ConsumerWidget {
   }
 
   Widget _buildCircleButton(
+    BuildContext context,
     Widget icon,
     Color color, {
     double size = 50,
     void Function()? onPressed,
+    bool enabled = false,
   }) {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(
+          width: 1,
+          color: enabled ? context.colorExt.tertiary : color,
+        ),
+      ),
       child: IconButton(icon: icon, onPressed: onPressed),
     );
   }

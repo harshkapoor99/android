@@ -78,9 +78,7 @@ class _CategoryListState extends State<CategoryList> {
                           color:
                               isSelected
                                   ? context.colorExt.background
-                                  : context.colorExt.textPrimary.withValues(
-                                    alpha: 0.6,
-                                  ),
+                                  : context.colorExt.textSecondary,
                           fontSize: 12,
                         ),
                       ),

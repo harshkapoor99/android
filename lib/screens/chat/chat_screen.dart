@@ -94,14 +94,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: context.colorExt.background,
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.chevron_left_rounded, size: 30),
-                onPressed: () {
-                  context.nav.pop();
-                },
-              );
+          // automaticallyImplyLeading: false,
+          leadingWidth: 40,
+          leading: IconButton(
+            splashColor: Colors.transparent,
+            icon: const Icon(Icons.chevron_left_rounded, size: 30),
+            onPressed: () {
+              context.nav.pop();
             },
           ),
           title: Row(
@@ -117,7 +116,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                   ),
                   Row(
                     children: [
-                      5.pw,
                       Container(
                         width: 7,
                         height: 7,
@@ -136,17 +134,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
               const Spacer(),
-              SvgPicture.asset(Assets.svgs.icCoins, height: 20),
+              SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
               5.pw,
               Text(
                 '1200',
                 style: context.appTextStyle.textBold.copyWith(fontSize: 12),
               ),
-              25.pw,
-              IconButton(
-                onPressed: () => context.nav.pushNamed(Routes.call),
-                icon: const Icon(Icons.call, color: Colors.white),
-              ),
+              // 25.pw,
+              // IconButton(
+              //   onPressed: () => context.nav.pushNamed(Routes.call),
+              //   icon: const Icon(Icons.call, color: Colors.white),
+              // ),
             ],
           ),
         ),
@@ -364,7 +362,7 @@ class _MessageBoxState extends State<MessageBox> {
                 minLines: 1,
                 maxLines: 5,
                 focusNode: widget.focusNodes,
-                style: context.appTextStyle.textSmall,
+                style: context.appTextStyle.text,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(
@@ -373,9 +371,9 @@ class _MessageBoxState extends State<MessageBox> {
                     left: 8,
                   ),
 
-                  hintText: "Start your dream chatting",
+                  hintText: "Chat here",
                   hintStyle: context.appTextStyle.textSmall.copyWith(
-                    fontSize: 12,
+                    fontSize: 16,
                     color: context.colorExt.textPrimary.withValues(alpha: 0.7),
                   ),
                   fillColor: context.colorExt.border,
@@ -394,11 +392,16 @@ class _MessageBoxState extends State<MessageBox> {
               width: widget.hasMessage ? 0 : 40,
               duration: const Duration(milliseconds: 100),
               child: IconButton(
+                padding: const EdgeInsets.only(right: 8),
                 onPressed: widget.onPlusPressed,
                 icon: SvgPicture.asset(
                   Assets.svgs.icPlus,
-                  height: 16,
-                  width: 16,
+                  height: 28,
+                  width: 28,
+                  colorFilter: ColorFilter.mode(
+                    context.colorExt.textSecondary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
@@ -484,10 +487,11 @@ class _ChatBubbleState extends State<ChatBubble> {
       child: Row(
         mainAxisAlignment:
             widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (!widget.isMe)
             Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.only(right: 10, top: 5),
               width: 30,
               height: 30,
               decoration: BoxDecoration(
@@ -523,9 +527,9 @@ class _ChatBubbleState extends State<ChatBubble> {
             child: SelectableText(
               key: textKey,
               widget.text,
-              style: context.appTextStyle.textSemibold.copyWith(
-                fontSize: 14,
-                color: Colors.white,
+              style: context.appTextStyle.text.copyWith(
+                fontSize: 16,
+                color: context.colorExt.textPrimary,
                 fontStyle:
                     widget.showTyping ? FontStyle.italic : FontStyle.normal,
               ),

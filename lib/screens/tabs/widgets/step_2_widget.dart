@@ -333,10 +333,10 @@ class Step2Widget extends ConsumerWidget {
                   ),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           "Choose from here",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Color(0xFFF2F2F2),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,

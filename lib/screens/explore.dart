@@ -23,7 +23,7 @@ class ExploreScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
       ),
       child: SizedBox(
-        height: 170,
+        height: 150,
         child: Row(
           children: [
             Flexible(
@@ -37,7 +37,7 @@ class ExploreScreen extends StatelessWidget {
                     Text(
                       "Let's create your first character Now!",
                       style: context.appTextStyle.textSemibold.copyWith(
-                        fontSize: 18,
+                        fontSize: 20,
                       ),
                     ),
                     Container(
@@ -51,7 +51,7 @@ class ExploreScreen extends StatelessWidget {
                       ),
                       child: Text(
                         "Create Now",
-                        style: context.appTextStyle.textSmall.copyWith(
+                        style: context.appTextStyle.textSemibold.copyWith(
                           fontSize: 12,
                         ),
                       ),
@@ -68,14 +68,14 @@ class ExploreScreen extends StatelessWidget {
                     alignment: Alignment.bottomRight,
                     child: Assets.images.imgTrans2.image(
                       fit: BoxFit.contain,
-                      height: 150,
+                      height: 130,
                     ),
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Assets.images.imgTrans1.image(
                       fit: BoxFit.contain,
-                      height: 150,
+                      height: 130,
                     ),
                   ),
                 ],
@@ -157,7 +157,7 @@ class ExploreScreen extends StatelessWidget {
         title: Row(
           children: [
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icCoins, height: 20),
+            SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
             5.pw,
             Text(
               '1200',
@@ -166,7 +166,7 @@ class ExploreScreen extends StatelessWidget {
             15.pw,
             SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
             15.pw,
-            SvgPicture.asset(Assets.svgs.icMenu, height: 20, width: 20),
+            SvgPicture.asset(Assets.svgs.icSearch, height: 20, width: 20),
           ],
         ),
       ),
