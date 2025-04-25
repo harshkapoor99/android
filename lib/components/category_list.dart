@@ -10,7 +10,7 @@ class CategoryList extends StatefulWidget {
 }
 
 class _CategoryListState extends State<CategoryList> {
-  String selectedCategoryTab = "";
+  String selectedCategoryTab = "All";
 
   void selectCategoryTab(String tab) {
     setState(() {
@@ -19,7 +19,7 @@ class _CategoryListState extends State<CategoryList> {
   }
 
   final categories = [
-    "Lover",
+    "All",
     "Sports",
     "Girlfriend",
     "Bollywood",
@@ -55,7 +55,10 @@ class _CategoryListState extends State<CategoryList> {
               duration: const Duration(milliseconds: 300), // Animation duration
               curve: Curves.easeInOut, // Animation curve
               decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFFB1B0BD) : const Color(0xFF23222F),
+                color:
+                    isSelected
+                        ? const Color(0xFFB1B0BD)
+                        : const Color(0xFF23222F),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Material(
