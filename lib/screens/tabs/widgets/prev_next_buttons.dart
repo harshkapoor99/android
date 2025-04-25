@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/providers/keyboard_aware_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 
@@ -47,11 +48,12 @@ class PrevNextButtons extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
     final currentStep = provider.index;
+    final height = ref.watch(keyboardAwareProvider);
     return AnimatedContainer(
-      duration: Durations.extralong4,
-      // height: ref.watch(prevNextButtonHeightProvider),
-      // color: Colors.red,
-      // height: 60,
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      curve: Curves.fastLinearToSlowEaseIn,
+      duration: Durations.short4,
+      height: height,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

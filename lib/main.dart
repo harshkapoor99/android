@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:guftagu_mobile/configs/hive_contants.dart';
@@ -20,18 +21,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: AppConstants.navigatorKey,
-      scaffoldMessengerKey: AppConstants.snackbarKey,
-      title: 'Guftagu',
-      // remove banner - Aryan
-      debugShowCheckedModeBanner: false,
-      // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-      themeMode: ThemeMode.dark,
-      theme: getAppTheme(context: context, isDarkTheme: false),
-      darkTheme: getAppTheme(context: context, isDarkTheme: true),
-      onGenerateRoute: Routes.generatedRoutes,
-      initialRoute: Routes.splash,
+    return KeyboardVisibilityProvider(
+      child: MaterialApp(
+        navigatorKey: AppConstants.navigatorKey,
+        scaffoldMessengerKey: AppConstants.snackbarKey,
+        title: 'Guftagu',
+        // remove banner - Aryan
+        debugShowCheckedModeBanner: false,
+        // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+        themeMode: ThemeMode.dark,
+        theme: getAppTheme(context: context, isDarkTheme: false),
+        darkTheme: getAppTheme(context: context, isDarkTheme: true),
+        onGenerateRoute: Routes.generatedRoutes,
+        initialRoute: Routes.splash,
+      ),
     );
   }
 }
