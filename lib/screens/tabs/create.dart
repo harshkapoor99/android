@@ -76,19 +76,14 @@ class CreateTab extends ConsumerWidget {
                   children: [
                     Step0Widget(),
                     Step1Widget(),
-                    Step2Widget(),
-                    Step3Widget(),
-                    Step4Widget(),
+                    const Step2Widget(),
+                    const Step3Widget(),
+                    const Step4Widget(),
                   ],
                 ),
               ),
 
-              20.ph,
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 28),
-                child: PrevNextButtons(),
-              ),
-              20.ph,
+              const PrevNextButtons(),
             ],
           ),
         ),

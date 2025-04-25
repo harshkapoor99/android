@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -42,8 +45,14 @@ class ChatScreen extends ConsumerStatefulWidget {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      // var image = await compressImage(File(img.path));
-      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+        // ref
+        //     .read(characterCreationProvider.notifier)
+        //     .uploadImage(image: XFile(image.path));
+        image = null;
+      }
     }
   }
 
