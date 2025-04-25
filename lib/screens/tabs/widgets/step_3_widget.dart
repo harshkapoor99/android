@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -5,6 +7,7 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -18,11 +21,13 @@ class Step3Widget extends ConsumerStatefulWidget {
 class _Step3WidgetState extends ConsumerState<Step3Widget> {
   final FocusNode _backstoryFocusNode = FocusNode();
   final FocusNode _descriptionFocusNode = FocusNode();
-  final PageController _pageController = PageController();
   final ImagePicker picker = ImagePicker();
 
   @override
   void initState() {
+    _backstoryFocusNode.addListener(() {
+      setState(() {});
+    });
     super.initState();
   }
 
@@ -30,7 +35,6 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
   void dispose() {
     _backstoryFocusNode.dispose();
     _descriptionFocusNode.dispose();
-    _pageController.dispose();
     super.dispose();
   }
 
@@ -59,8 +63,15 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
     var img = await picker.pickImage(source: media);
     if (img != null) {
       print(img.path);
-      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
-      ref.read(characterCreationProvider.notifier).uploadImage(image: img);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+        ref
+            .read(characterCreationProvider.notifier)
+            .uploadImage(image: XFile(image.path));
+        image = null;
+        setState(() {});
+      }
     }
   }
 
@@ -96,7 +107,12 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                     fit: BoxFit.cover,
                                     alignment: const Alignment(0, -0.5),
                                     colorFilter: ColorFilter.mode(
-                                      Colors.black.withOpacity(0.4),
+                                      Colors.black.withValues(
+                                        alpha:
+                                            provider.refImageUrl.hasValue
+                                                ? 0
+                                                : 0.4,
+                                      ),
                                       BlendMode.darken,
                                     ),
                                   )

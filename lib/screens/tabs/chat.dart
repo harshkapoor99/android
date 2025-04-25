@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
@@ -200,14 +199,18 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               ),
                               style: context.appTextStyle.textSemibold.copyWith(
                                 fontSize: 12,
+                                color: Color(0xFFA3A3A3)
                               ),
                             ),
                           ],
                         ),
                         subtitle: Text(
                           provider.chatList[index].lastMessage,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: context.appTextStyle.textSmall.copyWith(
                             fontSize: 12,
+                              color: Color(0xFFA3A3A3)
                           ),
                         ),
                       );

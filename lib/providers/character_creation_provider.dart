@@ -50,12 +50,6 @@ bool nextButtonStatus(Ref ref) {
   return false;
 }
 
-@riverpod
-double prevNextButtonHeight(Ref ref) {
-  // final provider = ref.watch(characterCreationProvider);
-  return FocusManager.instance.primaryFocus?.hasFocus ?? false ? 0 : 120;
-}
-
 @Riverpod(keepAlive: true)
 class CharacterCreation extends _$CharacterCreation {
   @override

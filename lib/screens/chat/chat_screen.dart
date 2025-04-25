@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -9,6 +11,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -42,8 +45,14 @@ class ChatScreen extends ConsumerStatefulWidget {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      // var image = await compressImage(File(img.path));
-      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+        // ref
+        //     .read(characterCreationProvider.notifier)
+        //     .uploadImage(image: XFile(image.path));
+        image = null;
+      }
     }
   }
 
@@ -148,35 +157,92 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               Expanded(
                 child:
                     provider.isFetchingHistory
-                        ? const SizedBox.shrink()
+                        ? const SizedBox.shrink() // Show nothing while fetching history
                         : ListView.builder(
-                          reverse: true,
+                          reverse:
+                              true, // Keep showing latest messages at the bottom
                           padding: const EdgeInsets.symmetric(horizontal: 16),
+                          // Adjust itemCount based on whether typing indicator should be shown
                           itemCount:
                               provider.isTyping
-                                  ? provider.messages.length + 1
+                                  ? provider.messages.length +
+                                      1 // +1 for the typing indicator
                                   : provider.messages.length,
                           itemBuilder: (context, index) {
-                            // Handle typing indicator
+                            // --- Handle typing indicator ---
                             if (provider.isTyping && index == 0) {
-                              return ChatBubble(
-                                text: "Typing...",
-                                isMe: false,
-                                showTyping: true,
-                                imageUrl: image,
+                              // Display Lottie animation when typing
+                              return Align(
+                                alignment:
+                                    Alignment
+                                        .centerLeft, // Align like incoming messages
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment
+                                          .end, // Align avatar bottom with animation
+                                  children: [
+                                    // Display the AI's avatar
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                        right: 10,
+                                        bottom: 5,
+                                      ), // Add bottom margin to align
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(15),
+                                        image: DecorationImage(
+                                          image:
+                                              Image.network(
+                                                image,
+                                              ).image, // Use the existing image url variable
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    // Display the Lottie animation
+                                    Container(
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 5,
+                                      ),
+                                      // Optional background/padding for Lottie:
+                                      // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                      // decoration: BoxDecoration(
+                                      //    color: context.colorExt.border,
+                                      //    borderRadius: BorderRadius.circular(10),
+                                      // ),
+                                      child: Lottie.asset(
+                                        'assets/animations/du.json', // <-- *** ADJUST THIS PATH TO YOUR FILE ***
+                                        width: 60, // Adjust width as needed
+                                        height: 40, // Adjust height as needed
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               );
                             }
+                            // --- End typing indicator ---
 
-                            // Adjust index if we're showing typing indicator
+                            // Adjust index to get the correct message from the list
+                            // This logic correctly accounts for the presence/absence of the typing indicator
                             final messageIndex =
                                 provider.isTyping
-                                    ? provider.messages.length - 1 - (index - 1)
-                                    : provider.messages.length - 1 - index;
+                                    ? provider.messages.length -
+                                        1 -
+                                        (index -
+                                            1) // Adjust index when typing indicator is present
+                                    : provider.messages.length -
+                                        1 -
+                                        index; // Normal index when no typing indicator
 
+                            // Return the actual chat message bubble
                             return ChatBubble(
                               text: provider.messages[messageIndex].text,
                               isMe: provider.messages[messageIndex].isMe,
-                              imageUrl: image,
+                              imageUrl:
+                                  image, // Pass the AI image url (used if isMe is false)
                             );
                           },
                         ),
