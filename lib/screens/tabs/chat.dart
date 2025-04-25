@@ -164,19 +164,11 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                                       .first
                                       .url,
                               placeholder: SvgPicture.asset(
-                                Assets.svgs.icProfile2,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF47C8FC),
-                                  BlendMode.srcIn,
-                                ),
+                                Assets.svgs.icProfilePlaceholder,
                               ),
                               fit: BoxFit.cover,
                               errorWidget: SvgPicture.asset(
-                                Assets.svgs.icProfile2,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF47C8FC),
-                                  BlendMode.srcIn,
-                                ),
+                                Assets.svgs.icProfilePlaceholder,
                               ),
                             ),
                           ),

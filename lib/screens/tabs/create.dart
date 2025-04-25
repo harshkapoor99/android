@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/prev_next_buttons.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_0_widget.dart';
@@ -29,13 +31,26 @@ class CreateTab extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Character Creation',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFC9C9C9),
-                      ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Character Creation',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFC9C9C9),
+                          ),
+                        ),
+                        5.pw,
+                        SvgPicture.asset(
+                          Assets.svgs.icArrowRight,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            Color(0xFFC9C9C9),
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
                     ),
                     Row(
                       children: [
@@ -61,7 +76,7 @@ class CreateTab extends ConsumerWidget {
                 ),
               ),
 
-              32.ph,
+              45.ph,
 
               // PageView for step content
               Expanded(

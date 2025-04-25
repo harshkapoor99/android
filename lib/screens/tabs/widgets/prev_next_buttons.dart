@@ -5,6 +5,7 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/keyboard_aware_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class PrevNextButtons extends ConsumerWidget {
   const PrevNextButtons({super.key});
@@ -63,14 +64,12 @@ class PrevNextButtons extends ConsumerWidget {
                 ? TextButton(
                   onPressed:
                       () => _prevStep(provider.pageController, currentStep),
-                  child: const Text(
+                  child: Text(
                     // The text is always "Previous" when the button is shown
                     // color changed to grey
                     "Previous",
-                    style: TextStyle(
-                      color: Color(0xffa3a3a3), // Use your desired style
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                    style: context.appTextStyle.buttonText.copyWith(
+                      color: const Color(0xffa3a3a3), // Use your desired style
                     ),
                   ),
                 )
@@ -84,8 +83,8 @@ class PrevNextButtons extends ConsumerWidget {
             width: 132,
             title:
                 currentStep == 3
-                    ? "Continue"
-                    : (currentStep == 4 ? "Create" : "Next"),
+                    ? "Create"
+                    : (currentStep == 4 ? "Done" : "Next"),
             onTap: () => _nextStep(provider.pageController, currentStep, ref),
           ),
         ],

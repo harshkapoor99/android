@@ -42,10 +42,11 @@ class DashboardScreen extends ConsumerWidget {
 
       // Bottom Navigation Bar
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.shifting,
+        type: BottomNavigationBarType.fixed,
         currentIndex: currentIndex,
         backgroundColor: const Color(0xFF171717),
         selectedItemColor: context.colorExt.textPrimary,
+        showUnselectedLabels: true,
         unselectedItemColor: Colors.grey,
         onTap: (index) => ref.read(tabIndexProvider.notifier).changeTab(index),
         items:

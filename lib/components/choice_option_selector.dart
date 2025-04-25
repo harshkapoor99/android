@@ -43,6 +43,7 @@ class ChoiceOptionSelector<T> extends StatelessWidget {
             final isSelected = selected == option;
 
             return ChoiceChip(
+              padding: const EdgeInsets.symmetric(horizontal: 7),
               label: Text(_getOptionText(option)),
               selected: isSelected,
               showCheckmark: false,

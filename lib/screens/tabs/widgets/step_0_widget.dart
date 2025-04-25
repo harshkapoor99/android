@@ -9,7 +9,7 @@ import '../../../components/labeled_text_field.dart';
 class Step0Widget extends ConsumerWidget {
   Step0Widget({super.key});
 
-  final List<String> ageOptions = ['Teen (+18)', '20s', '30s', '40-55s'];
+  final List<String> ageOptions = ['18+', '30+', '40+', '50+', '60+'];
   final List<Map<String, dynamic>> genderOptions = [
     {
       'label': 'Female',
@@ -42,19 +42,20 @@ class Step0Widget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LabeledTextField(
+              labelColor: const Color(0xFFA3A3A3),
               controller: provider.characterNameController,
               label: 'Character Name',
             ),
-            24.ph,
+            36.ph,
             const Text(
               'Choose Age',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFF2F2F2),
+                color: Color(0xFFA3A3A3),
               ),
             ),
-            20.ph,
+            5.ph,
             ChoiceOptionSelector(
               options: ageOptions,
               selected: provider.age ?? "",
@@ -65,13 +66,13 @@ class Step0Widget extends ConsumerWidget {
                     .updateWith(age: age);
               },
             ),
-            24.ph,
+            36.ph,
             const Text(
               'Gender',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFF2F2F2),
+                color: Color(0xFFA3A3A3),
               ),
             ),
             12.ph,

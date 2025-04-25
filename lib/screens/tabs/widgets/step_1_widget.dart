@@ -37,7 +37,7 @@ class Step1Widget extends ConsumerWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFF2F2F2),
+              color: Color(0xFFA3A3A3),
             ),
           ),
           12.ph,
@@ -49,16 +49,16 @@ class Step1Widget extends ConsumerWidget {
                     .read(characterCreationProvider.notifier)
                     .updateWith(style: style),
           ),
-          24.ph,
+          48.ph,
           const Text(
             'Sexual Orientation',
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFF2F2F2),
+              color: Color(0xFFA3A3A3),
             ),
           ),
-          12.ph,
+          5.ph,
           ChoiceOptionSelector(
             options: orientationOptions,
             selected: provider.sexualOrientation ?? "",
@@ -73,10 +73,10 @@ class Step1Widget extends ConsumerWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFF2F2F2),
+              color: Color(0xFFA3A3A3),
             ),
           ),
-          12.ph,
+          5.ph,
           ChoiceOptionSelector<Language>(
             options: ref.read(masterDataProvider).languages,
             selected: provider.language,

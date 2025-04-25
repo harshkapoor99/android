@@ -39,19 +39,11 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                   child: NetworkImageWithPlaceholder(
                     imageUrl: userInfo!.profile.profilePicture,
                     placeholder: SvgPicture.asset(
-                      Assets.svgs.icProfile2,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF47C8FC),
-                        BlendMode.srcIn,
-                      ),
+                      Assets.svgs.icProfilePlaceholder,
                     ),
                     fit: BoxFit.cover,
                     errorWidget: SvgPicture.asset(
-                      Assets.svgs.icProfile2,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFF47C8FC),
-                        BlendMode.srcIn,
-                      ),
+                      Assets.svgs.icProfilePlaceholder,
                     ),
                   ),
                 ),
