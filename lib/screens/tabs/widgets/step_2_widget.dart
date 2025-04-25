@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart'; // Assuming these models exist
 import 'package:guftagu_mobile/providers/character_creation_provider.dart'; // Assuming this provider exists
-import 'package:guftagu_mobile/providers/master_data_provider.dart'; // Assuming this provider exists
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/entensions.dart'; // Assuming this provider exists
 
 // --- Helper for Responsive Padding/Margin ---
 double _getResponsiveHorizontalPadding(
@@ -12,9 +15,9 @@ double _getResponsiveHorizontalPadding(
   double medium = 24.0,
   double large = 28.0,
 }) {
-  if (screenWidth < 400) {
+  if (screenWidth < 360) {
     return small;
-  } else if (screenWidth < 800) {
+  } else if (screenWidth < 600) {
     return medium;
   } else {
     return large;
@@ -68,19 +71,12 @@ class Step2Widget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: verticalSpaceSmall),
+          // SizedBox(height: verticalSpaceSmall),
           Text(
             'Choose Character\'s',
-            style:
-                Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFFF2F2F2),
-                ) ??
-                const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFFF2F2F2),
-                ),
+            style: context.appTextStyle.textSemibold.copyWith(
+              color: const Color(0xFFA3A3A3),
+            ),
           ),
           SizedBox(height: verticalSpaceMedium),
           Center(
@@ -290,14 +286,13 @@ class Step2Widget extends ConsumerWidget {
       screenWidth,
       small: 16,
       medium: 24,
-      large: 33,
+      large: 36,
     );
-
     final verticalPadding = _getResponsiveHorizontalPadding(
       screenWidth,
-      small: 12,
-      medium: 16,
-      large: 21,
+      small: 16,
+      medium: 24,
+      large: 36,
     );
 
     double responsiveRightMargin;
@@ -329,15 +324,15 @@ class Step2Widget extends ConsumerWidget {
                     left: horizontalPadding,
                     right: horizontalPadding,
                     top: verticalPadding,
-                    bottom: verticalPadding / 2,
+                    bottom: verticalPadding,
                   ),
                   child: Row(
                     children: [
-                      Expanded(
+                      const Expanded(
                         child: Text(
                           "Choose from here",
-                          style: const TextStyle(
-                            color: Color(0xFFF2F2F2),
+                          style: TextStyle(
+                            color: Color(0xFFA3A3A3),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -345,7 +340,10 @@ class Step2Widget extends ConsumerWidget {
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.close, color: Colors.white),
+                        child: const Icon(
+                          Icons.close,
+                          color: Color(0xFFA3A3A3),
+                        ),
                       ),
                     ],
                   ),
@@ -366,6 +364,10 @@ class Step2Widget extends ConsumerWidget {
 
                       return Container(
                         margin: const EdgeInsets.only(bottom: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF23222F),
                           borderRadius: BorderRadius.circular(10),
@@ -377,74 +379,72 @@ class Step2Widget extends ConsumerWidget {
                                   )
                                   : null,
                         ),
-                        child: ListTile(
-                          leading: Container(
-                            width: 40,
-                            height: 40,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFFA099FF),
-                              shape: BoxShape.circle,
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              isSelected
+                                  ? Assets.svgs.icPause
+                                  : Assets.svgs.icPlay,
                             ),
-                            child: Center(
-                              child: Icon(
-                                isSelected ? Icons.pause : Icons.play_arrow,
-                                color: const Color(0xFF16151E),
+                            12.pw,
+                            Text(
+                              optionToString(option),
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.85),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
-                          ),
-                          title: Text(
-                            optionToString(option),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                            const Spacer(),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if (isSelected)
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                      right: responsiveRightMargin,
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/svgs/waves.svg',
+                                      colorFilter: const ColorFilter.mode(
+                                        Color(0xFF9D93FF),
+                                        BlendMode.srcIn,
+                                      ),
+                                      width: 26,
+                                      height: 26,
+                                      semanticsLabel: 'Waves icon',
+                                    ),
+                                  ),
+                                GestureDetector(
+                                  onTap: () {
+                                    onSelect(option);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF16151E),
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: Center(
+                                      child: SvgPicture.asset(
+                                        'assets/svgs/clarity_arrow-line.svg',
+                                        colorFilter: const ColorFilter.mode(
+                                          Colors.white,
+                                          BlendMode.srcIn,
+                                        ),
+                                        width: 26,
+                                        height: 26,
+                                        semanticsLabel: 'Arrow icon',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (isSelected)
-                                Container(
-                                  margin: EdgeInsets.only(
-                                    right: responsiveRightMargin,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    'assets/svgs/waves.svg',
-                                    colorFilter: const ColorFilter.mode(
-                                      Color(0xFF9D93FF),
-                                      BlendMode.srcIn,
-                                    ),
-                                    width: 26,
-                                    height: 26,
-                                    semanticsLabel: 'Waves icon',
-                                  ),
-                                ),
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: Center(
-                                  child: SvgPicture.asset(
-                                    'assets/svgs/clarity_arrow-line.svg',
-                                    colorFilter: const ColorFilter.mode(
-                                      Colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                    width: 20,
-                                    height: 20,
-                                    semanticsLabel: 'Arrow icon',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            onSelect(option);
-                            Navigator.pop(context);
-                          },
+                          ],
                         ),
                       );
                     },
@@ -481,19 +481,19 @@ class Step2Widget extends ConsumerWidget {
       screenWidth,
       small: 16,
       medium: 24,
-      large: 33,
+      large: 36,
     );
     final verticalPadding = _getResponsiveHorizontalPadding(
       screenWidth,
-      small: 12,
-      medium: 16,
-      large: 21,
+      small: 16,
+      medium: 24,
+      large: 36,
     );
 
     final crossAxisCount =
-        screenWidth < 400
+        screenWidth < 360
             ? 2
-            : screenWidth < 700
+            : screenWidth < 600
             ? 3
             : 4;
 
@@ -517,15 +517,15 @@ class Step2Widget extends ConsumerWidget {
                     left: horizontalPadding,
                     right: horizontalPadding,
                     top: verticalPadding,
-                    bottom: verticalPadding / 2,
+                    bottom: verticalPadding,
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: Text(
-                          "Choose a $title",
+                          "Choose a $title $screenWidth",
                           style: const TextStyle(
-                            color: Color(0xFFF2F2F2),
+                            color: Color(0xFFA3A3A3),
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                           ),
@@ -533,12 +533,15 @@ class Step2Widget extends ConsumerWidget {
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(Icons.close, color: Colors.white),
+                        child: const Icon(
+                          Icons.close,
+                          color: Color(0xFFA3A3A3),
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Flexible(
+                Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: horizontalPadding,
@@ -546,46 +549,54 @@ class Step2Widget extends ConsumerWidget {
                       bottom: 10,
                       top: 5,
                     ),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: crossAxisCount,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 2.5,
-                      ),
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final option = options[index];
-                        return GestureDetector(
-                          onTap: () {
-                            onSelect(option);
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 8,
-                              horizontal: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF23222F),
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Center(
-                              child: Text(
-                                optionToString(option),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Color(0xFFE5E5E5),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                    child:
+                    // ListView.builder(
+                    //   shrinkWrap: true,
+                    //   // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    //   //   crossAxisCount: crossAxisCount,
+                    //   //   crossAxisSpacing: 12,
+                    //   //   mainAxisSpacing: 12,
+                    //   //   childAspectRatio: 2.5,
+                    //   // ),
+                    //   itemCount: options.length,
+                    //   itemBuilder: (context, index) {
+                    Wrap(
+                      // spacing: 10,
+                      // runSpacing: 14,
+                      alignment: WrapAlignment.start,
+                      crossAxisAlignment: WrapCrossAlignment.start,
+                      children:
+                          options.map((option) {
+                            // final option = options[index];
+                            return GestureDetector(
+                              onTap: () {
+                                onSelect(option);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF23222F),
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    optionToString(option),
+                                    // textAlign: TextAlign.center,
+                                    // overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      color: Color(0xFFE5E5E5),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        );
-                      },
+                            );
+                          }).toList(),
                     ),
                   ),
                 ),

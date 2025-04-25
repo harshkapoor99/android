@@ -83,7 +83,7 @@ class Step4Widget extends ConsumerWidget {
                     style: context.appTextStyle.text.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFF2F2F2),
+                      color: const Color(0xFFA3A3A3),
                     ),
                   ),
                   10.ph,
@@ -106,7 +106,7 @@ class Step4Widget extends ConsumerWidget {
                       return Stack(
                         children: [
                           Material(
-                            borderRadius: BorderRadius.circular(10.92),
+                            borderRadius: BorderRadius.circular(10),
                             clipBehavior: Clip.antiAlias,
                             color: const Color(0xFF272730),
                             child: Container(
@@ -119,31 +119,42 @@ class Step4Widget extends ConsumerWidget {
                                           : Colors.transparent,
                                 ),
                                 borderRadius: BorderRadius.circular(
-                                  10.92,
+                                  10,
                                 ), // Ensure it matches the Material
                               ),
-                              child: Ink.image(
-                                image:
-                                    Image.network(
-                                      proivider.characterImages[index].url,
-                                    ).image,
-                                fit: BoxFit.cover,
-                                width: 200,
-                                height: 200,
-                                child: InkWell(
-                                  onTap: () {
-                                    ref
-                                        .read(
-                                          characterCreationProvider.notifier,
-                                        )
-                                        .updateWith(
-                                          seletedCharacterImage:
-                                              proivider.characterImages[index],
-                                        );
-                                  },
-                                  splashColor: Colors.white24,
-                                  highlightColor: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(10.92),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Ink(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    image: DecorationImage(
+                                      image:
+                                          Image.network(
+                                            proivider
+                                                .characterImages[index]
+                                                .url,
+                                          ).image,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  width: 200,
+                                  height: 200,
+                                  child: InkWell(
+                                    onTap: () {
+                                      ref
+                                          .read(
+                                            characterCreationProvider.notifier,
+                                          )
+                                          .updateWith(
+                                            seletedCharacterImage:
+                                                proivider
+                                                    .characterImages[index],
+                                          );
+                                    },
+                                    splashColor: Colors.white24,
+                                    highlightColor: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
                               ),
                             ),

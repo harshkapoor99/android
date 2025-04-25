@@ -69,41 +69,51 @@ class ModelCard extends ConsumerWidget {
               ),
             ),
           ),
-          Positioned(
-            bottom: 12,
-            left: 12,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: context.appTextStyle.buttonText.copyWith(fontSize: 14),
-                ),
-                if (persionality.hasValue)
-                  Text(
-                    "Perfect girlfriend",
-                    style: context.appTextStyle.textSmall.copyWith(
-                      fontSize: 10,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12.0,
+              vertical: 8.0,
+            ),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        name,
+                        style: context.appTextStyle.buttonText.copyWith(
+                          fontSize: 14,
+                        ),
+                      ),
+                      // if (persionality.hasValue)
+                      Text(
+                        "Perfect girlfriend",
+                        style: context.appTextStyle.text.copyWith(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  const Spacer(),
+                  CircleAvatar(
+                    backgroundColor: const Color(
+                      0xFF414141,
+                    ).withValues(alpha: 0.6),
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        Assets.svgs.icChat,
+                        width: 15,
+                        height: 15,
+                      ),
+                      onPressed: () {
+                        onCharTap();
+                        context.nav.pushNamed(Routes.chat);
+                      },
                     ),
                   ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 12,
-            right: 12,
-            child: CircleAvatar(
-              backgroundColor: context.colorExt.border.withValues(alpha: 0.8),
-              child: IconButton(
-                icon: SvgPicture.asset(
-                  Assets.svgs.icChat,
-                  width: 15,
-                  height: 15,
-                ),
-                onPressed: () {
-                  onCharTap();
-                  context.nav.pushNamed(Routes.chat);
-                },
+                ],
               ),
             ),
           ),

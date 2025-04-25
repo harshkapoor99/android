@@ -19,9 +19,10 @@ class ImageOptionSelector extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const spacing = 12.0;
-        const totalSpacing = spacing * 2; // between 3 items
-        final itemWidth = (constraints.maxWidth - totalSpacing) / 3;
-        final imageHeight = itemWidth * 0.9;
+        final totalSpacing = spacing * (options.length - 1); // between 3 items
+        final itemWidth =
+            (constraints.maxWidth - totalSpacing) / options.length;
+        final imageHeight = itemWidth * 1;
 
         return Wrap(
           spacing: spacing,

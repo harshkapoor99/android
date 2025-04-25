@@ -95,8 +95,8 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     clipBehavior: Clip.none,
                     children: [
                       Container(
-                        width: 167,
-                        height: 167,
+                        width: 150,
+                        height: 150,
                         decoration: BoxDecoration(
                           color: const Color(0xFF272730),
                           borderRadius: BorderRadius.circular(24),
@@ -163,11 +163,11 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                   ),
                   10.ph,
                   const Text(
-                    'Character Image',
+                    'Reference Image (if any)',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: Color(0xFFA3A3A3),
                     ),
                   ),
                 ],
@@ -181,7 +181,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFF2F2F2),
+                color: Color(0xFFA3A3A3),
               ),
             ),
             10.ph,
@@ -289,7 +289,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFFF2F2F2),
+                color: Color(0xFFA3A3A3),
               ),
             ),
             10.ph,

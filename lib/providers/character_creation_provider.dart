@@ -149,7 +149,7 @@ class CharacterCreation extends _$CharacterCreation {
             refImageDescription: state.descriptionController.text,
             refImageBackstory: state.backstoryController.text,
           );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final List<dynamic> imageGallery = response.data['image_gallery'];
         final List<GenImage> images =
             imageGallery.map((image) => GenImage.fromMap(image)).toList();

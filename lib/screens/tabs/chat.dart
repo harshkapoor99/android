@@ -60,7 +60,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
           children: [
             const SizedBox(height: 10),
             SizedBox(
-              height: 140,
+              height: 120,
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
@@ -73,7 +73,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                     child: Column(
                       children: [
                         Ink(
-                          height: 120,
+                          height: 100,
                           width: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(40),
@@ -100,24 +100,21 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             child:
                                 index == widget.ais.length
                                     ? Center(
-                                      child: SvgPicture.asset(
-                                        Assets.svgs.icMyAi,
-                                        height: 30,
-                                        width: 30,
-                                        colorFilter: ColorFilter.mode(
-                                          context.colorExt.secondary,
-                                          BlendMode.srcIn,
-                                        ),
+                                      child: Icon(
+                                        Icons.arrow_outward_sharp,
+                                        color: context.colorExt.textSecondary,
+                                        size: 24,
                                       ),
                                     )
                                     : null,
                           ),
                         ),
+                        6.ph,
                         Text(
                           index == widget.ais.length
                               ? "Explore"
                               : widget.ais[index]["name"],
-                          style: context.appTextStyle.textSemibold.copyWith(
+                          style: context.appTextStyle.textBold.copyWith(
                             fontSize: 12,
                           ),
                         ),
@@ -127,7 +124,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                 },
               ),
             ),
-            10.ph,
+            24.ph,
 
             const CategoryList(),
             Expanded(
@@ -142,7 +139,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         contentPadding: const EdgeInsets.symmetric(
-                          vertical: 5,
+                          vertical: 2,
                           horizontal: 16,
                         ),
                         onTap: () {
@@ -167,19 +164,11 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                                       .first
                                       .url,
                               placeholder: SvgPicture.asset(
-                                Assets.svgs.icProfile2,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF47C8FC),
-                                  BlendMode.srcIn,
-                                ),
+                                Assets.svgs.icProfilePlaceholder,
                               ),
                               fit: BoxFit.cover,
                               errorWidget: SvgPicture.asset(
-                                Assets.svgs.icProfile2,
-                                colorFilter: const ColorFilter.mode(
-                                  Color(0xFF47C8FC),
-                                  BlendMode.srcIn,
-                                ),
+                                Assets.svgs.icProfilePlaceholder,
                               ),
                             ),
                           ),
@@ -190,7 +179,10 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             Text(
                               provider.chatList[index].character.name,
                               style: context.appTextStyle.textSemibold.copyWith(
-                                fontSize: 12,
+                                fontSize: 18,
+                                color: context.colorExt.textPrimary.withValues(
+                                  alpha: 0.85,
+                                ),
                               ),
                             ),
                             Text(
@@ -199,7 +191,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               ),
                               style: context.appTextStyle.textSemibold.copyWith(
                                 fontSize: 12,
-                                color: Color(0xFFA3A3A3)
+                                color: context.colorExt.textSecondary,
                               ),
                             ),
                           ],
@@ -209,8 +201,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.appTextStyle.textSmall.copyWith(
-                            fontSize: 12,
-                              color: Color(0xFFA3A3A3)
+                            fontSize: 14,
+                            color: context.colorExt.textSecondary,
                           ),
                         ),
                       );
