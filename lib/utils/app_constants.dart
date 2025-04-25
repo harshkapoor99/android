@@ -8,7 +8,11 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
 class AppConstants {
-  static appbar(BuildContext context, {bool implyLeading = true}) {
+  static appbar(
+    BuildContext context, {
+    bool implyLeading = true,
+    bool showSearchIcon = true,
+  }) {
     return AppBar(
       // commit - implyLeading
       automaticallyImplyLeading: implyLeading,
