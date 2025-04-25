@@ -58,18 +58,24 @@ class PrevNextButtons extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           if (currentStep > 0)
-            TextButton(
-              onPressed: () => _prevStep(provider.pageController, currentStep),
-              child: const Text(
-                // color changed to grey
-                "Previous",
-                style: TextStyle(
-                  color: Color(0xffa3a3a3),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            )
+            currentStep != 4
+                // If currentStep is NOT 4, build the TextButton
+                ? TextButton(
+                  onPressed:
+                      () => _prevStep(provider.pageController, currentStep),
+                  child: const Text(
+                    // The text is always "Previous" when the button is shown
+                    // color changed to grey
+                    "Previous",
+                    style: TextStyle(
+                      color: Color(0xffa3a3a3), // Use your desired style
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                )
+                // If currentStep IS 4, build an empty widget (like SizedBox.shrink)
+                : const SizedBox.shrink() // This effectively hides the button
           else
             const SizedBox(),
 
@@ -78,7 +84,7 @@ class PrevNextButtons extends ConsumerWidget {
             width: 132,
             title:
                 currentStep == 3
-                    ? "Preview"
+                    ? "Continue"
                     : (currentStep == 4 ? "Create" : "Next"),
             onTap: () => _nextStep(provider.pageController, currentStep, ref),
           ),

@@ -199,14 +199,18 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               ),
                               style: context.appTextStyle.textSemibold.copyWith(
                                 fontSize: 12,
+                                color: Color(0xFFA3A3A3)
                               ),
                             ),
                           ],
                         ),
                         subtitle: Text(
                           provider.chatList[index].lastMessage,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: context.appTextStyle.textSmall.copyWith(
                             fontSize: 12,
+                              color: Color(0xFFA3A3A3)
                           ),
                         ),
                       );
