@@ -24,6 +24,7 @@ class ChatTab extends ConsumerStatefulWidget {
     {"name": "Fred", "image": Assets.images.onboarding.obImg8},
     {"name": "Tisha", "image": Assets.images.model.modImg7},
     {"name": "Maddy", "image": Assets.images.onboarding.obImg6},
+    {"name": "Explore", "image": ""},
   ];
 
   @override
@@ -59,69 +60,71 @@ class _ChatTabState extends ConsumerState<ChatTab> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            SizedBox(
-              height: 120,
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                itemCount: widget.ais.length + 1,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      right: index < widget.ais.length ? 8 : 0,
-                    ),
-                    child: Column(
-                      children: [
-                        Ink(
-                          height: 100,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            color:
-                                index == widget.ais.length
-                                    ? context.colorExt.border
-                                    : null,
-                            image:
-                                index < widget.ais.length
-                                    ? DecorationImage(
-                                      image:
-                                          widget.ais[index]["image"].provider(),
-                                      fit: BoxFit.cover,
-                                    )
-                                    : null,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              if (index == widget.ais.length) {
-                                context.nav.pushNamed(Routes.explore);
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(40),
-                            child:
-                                index == widget.ais.length
-                                    ? Center(
-                                      child: Icon(
-                                        Icons.arrow_outward_sharp,
-                                        color: context.colorExt.textSecondary,
-                                        size: 24,
-                                      ),
-                                    )
-                                    : null,
-                          ),
+            SingleChildScrollView(
+              // height: MediaQuery.sizeOf(context).height * 0.18,
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                // shrinkWrap: true,
+                // scrollDirection: Axis.horizontal,
+                // itemCount: widget.ais.length + 1,
+                // itemBuilder: (context, index) {
+                children:
+                    widget.ais.map((ai) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          right: ai["name"] == "Explore" ? 0 : 8,
                         ),
-                        6.ph,
-                        Text(
-                          index == widget.ais.length
-                              ? "Explore"
-                              : widget.ais[index]["name"],
-                          style: context.appTextStyle.textBold.copyWith(
-                            fontSize: 12,
-                          ),
+                        child: Column(
+                          children: [
+                            Ink(
+                              height: 100,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                color:
+                                    ai["name"] == "Explore"
+                                        ? context.colorExt.border
+                                        : null,
+                                image:
+                                    ai["name"] != "Explore"
+                                        ? DecorationImage(
+                                          image: ai["image"].provider(),
+                                          fit: BoxFit.cover,
+                                        )
+                                        : null,
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  if (ai["name"] == "Explore") {
+                                    context.nav.pushNamed(Routes.explore);
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(40),
+                                child:
+                                    ai["name"] == "Explore"
+                                        ? Center(
+                                          child: Icon(
+                                            Icons.arrow_outward_sharp,
+                                            color:
+                                                context.colorExt.textSecondary,
+                                            size: 24,
+                                          ),
+                                        )
+                                        : null,
+                              ),
+                            ),
+                            6.ph,
+                            Text(
+                              ai["name"],
+                              style: context.appTextStyle.textBold.copyWith(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                },
+                      );
+                    }).toList(),
               ),
             ),
             24.ph,

@@ -273,8 +273,8 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                               ? null
                               : SvgPicture.asset(
                                 'assets/icons/mingcute_quill-pen-line.svg',
-                                width: 24,
-                                height: 24,
+                                width: 18,
+                                height: 18,
                               ),
                     ),
                   ),
@@ -327,8 +327,8 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                               ? null
                               : SvgPicture.asset(
                                 'assets/icons/mingcute_quill-pen-line.svg',
-                                width: 24,
-                                height: 24,
+                                width: 18,
+                                height: 18,
                               ),
                     ),
                   ),

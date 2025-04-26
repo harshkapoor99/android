@@ -152,11 +152,11 @@ class _CharacterSelectionScreenState
                                   isSelected
                                       ? const LinearGradient(
                                         colors: [
-                                          Color(0xFFFFE031),
-                                          Color(0xFFF04579),
+                                          Color(0xFFFC5159),
+                                          Color(0xFFF237EF),
                                         ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
+                                        begin: Alignment.bottomLeft,
+                                        end: Alignment.topRight,
                                         stops: [0, 0.6],
                                       )
                                       : null,
