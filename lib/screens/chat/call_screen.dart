@@ -16,7 +16,7 @@ class CallScreen extends ConsumerWidget {
       backgroundColor: context.colorExt.background,
       appBar: AppBar(
         backgroundColor: context.colorExt.background,
-        leadingWidth: 40,
+        titleSpacing: 0,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -68,6 +68,7 @@ class CallScreen extends ConsumerWidget {
               '1200',
               style: context.appTextStyle.textBold.copyWith(fontSize: 12),
             ),
+            20.pw,
           ],
         ),
       ),

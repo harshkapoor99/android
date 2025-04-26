@@ -45,10 +45,10 @@ class Step2Widget extends ConsumerWidget {
       screenHeight,
       factor: 0.03,
     );
-    final verticalSpaceSmall = _getResponsiveVerticalSpacing(
-      screenHeight,
-      factor: 0.015,
-    );
+    // final verticalSpaceSmall = _getResponsiveVerticalSpacing(
+    //   screenHeight,
+    //   factor: 0.015,
+    // );
     final containerInnerVPadding = _getResponsiveHorizontalPadding(
       screenWidth,
       small: 16,
@@ -254,6 +254,16 @@ class Step2Widget extends ConsumerWidget {
                 onSelect: onSelect as Function(Voice),
                 selected: selected as Voice?,
               );
+            } else if (T == Country || T == City) {
+              _showOptionPopupWithSearch<T>(
+                context,
+                ref,
+                title,
+                options,
+                optionToString: optionToString,
+                onSelect: onSelect,
+                selected: selected,
+              );
             } else {
               _showOptionPopup<T>(
                 context,
@@ -374,7 +384,7 @@ class Step2Widget extends ConsumerWidget {
                           border:
                               isSelected
                                   ? Border.all(
-                                    color: const Color(0xFF5C67FF),
+                                    color: const Color(0xFF47C8FC),
                                     width: 1,
                                   )
                                   : null,
@@ -490,12 +500,12 @@ class Step2Widget extends ConsumerWidget {
       large: 36,
     );
 
-    final crossAxisCount =
-        screenWidth < 360
-            ? 2
-            : screenWidth < 600
-            ? 3
-            : 4;
+    // final crossAxisCount =
+    //     screenWidth < 360
+    //         ? 2
+    //         : screenWidth < 600
+    //         ? 3
+    //         : 4;
 
     showModalBottomSheet(
       context: context,
@@ -523,7 +533,7 @@ class Step2Widget extends ConsumerWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          "Choose a $title $screenWidth",
+                          "Choose a $title",
                           style: const TextStyle(
                             color: Color(0xFFA3A3A3),
                             fontSize: 18,
@@ -541,7 +551,7 @@ class Step2Widget extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Expanded(
+                SingleChildScrollView(
                   child: Padding(
                     padding: EdgeInsets.only(
                       left: horizontalPadding,
@@ -549,44 +559,31 @@ class Step2Widget extends ConsumerWidget {
                       bottom: 10,
                       top: 5,
                     ),
-                    child:
-                    // ListView.builder(
-                    //   shrinkWrap: true,
-                    //   // gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    //   //   crossAxisCount: crossAxisCount,
-                    //   //   crossAxisSpacing: 12,
-                    //   //   mainAxisSpacing: 12,
-                    //   //   childAspectRatio: 2.5,
-                    //   // ),
-                    //   itemCount: options.length,
-                    //   itemBuilder: (context, index) {
-                    Wrap(
-                      // spacing: 10,
-                      // runSpacing: 14,
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      children:
-                          options.map((option) {
-                            // final option = options[index];
-                            return GestureDetector(
-                              onTap: () {
-                                onSelect(option);
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF23222F),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Center(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 14,
+                        alignment: WrapAlignment.start,
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        children:
+                            options.map((option) {
+                              return GestureDetector(
+                                onTap: () {
+                                  onSelect(option);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 18,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF23222F),
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
                                   child: Text(
                                     optionToString(option),
-                                    // textAlign: TextAlign.center,
-                                    // overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: Color(0xFFE5E5E5),
                                       fontSize: 14,
@@ -594,9 +591,9 @@ class Step2Widget extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                      ),
                     ),
                   ),
                 ),
@@ -612,5 +609,218 @@ class Step2Widget extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _showOptionPopupWithSearch<T>(
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    List<T> options, {
+    required String Function(T) optionToString,
+    required Function(T) onSelect,
+    T? selected,
+  }) {
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    final horizontalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 16,
+      medium: 24,
+      large: 36,
+    );
+    final verticalPadding = _getResponsiveHorizontalPadding(
+      screenWidth,
+      small: 16,
+      medium: 24,
+      large: 36,
+    );
+
+    final TextEditingController searchController = TextEditingController();
+    // Create a provider for the search text
+    final searchTextProvider = StateProvider<String>((ref) => '');
+
+    // Create a provider for filtered options
+    final filteredOptionsProvider = Provider<List<T>>((ref) {
+      final searchText = ref.watch(searchTextProvider).toLowerCase();
+      if (searchText.isEmpty) return options;
+
+      return options.where((option) {
+        return optionToString(option).toLowerCase().contains(searchText);
+      }).toList();
+    });
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+          child: GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Color(0xFF141416),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      top: verticalPadding,
+                      bottom: verticalPadding,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Choose a $title",
+                            style: const TextStyle(
+                              color: Color(0xFFA3A3A3),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(
+                            Icons.close,
+                            color: Color(0xFFA3A3A3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: verticalPadding,
+                    ),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          // Update the search text provider when text changes
+                          ref.read(searchTextProvider.notifier).state = value;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                          ),
+                          hintText: "Search",
+                          hintStyle: context.appTextStyle.text.copyWith(
+                            color: context.colorExt.textSecondary.withValues(
+                              // alpha: 0.7,
+                            ),
+                          ),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 13,
+                            ),
+                            child: SvgPicture.asset(
+                              Assets.svgs.icSearch,
+                              height: 5,
+                              width: 5,
+                              colorFilter: ColorFilter.mode(
+                                context.colorExt.textSecondary,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: context.colorExt.border,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(60),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF47C8FC),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final filteredOption = ref.watch(filteredOptionsProvider);
+                      return Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 10,
+                            top: 5,
+                          ),
+                          child: ListView.builder(
+                            // spacing: 10,
+                            // runSpacing: 14,
+                            // alignment: WrapAlignment.start,
+                            // crossAxisAlignment: WrapCrossAlignment.start,
+                            // children:
+                            itemCount: filteredOption.length,
+                            itemBuilder:
+                                (context, index) => GestureDetector(
+                                  onTap: () {
+                                    onSelect(filteredOption[index]);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 18,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          width: 1,
+                                          color: context.colorExt.border,
+                                        ),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      optionToString(filteredOption[index]),
+                                      style: const TextStyle(
+                                        color: Color(0xFFE5E5E5),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((value) {
+      // Wait for the bottom sheet to close
+      if (value != null) {
+        // Handle value returned by Navigator.pop()
+      }
+      // Dispose the controller here
+      // MyController controller = context.findAncestorWidgetOfExactType<MyBottomSheetWidget>().controller;
+      // controller?.dispose();
+      // searchController.dispose();
+    });
   }
 }

@@ -7,7 +7,6 @@ import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
-import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -95,7 +94,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         appBar: AppBar(
           backgroundColor: context.colorExt.background,
           // automaticallyImplyLeading: false,
-          leadingWidth: 40,
+          titleSpacing: 0,
           leading: IconButton(
             splashColor: Colors.transparent,
             icon: const Icon(Icons.chevron_left_rounded, size: 30),
@@ -145,6 +144,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
               //   onPressed: () => context.nav.pushNamed(Routes.call),
               //   icon: const Icon(Icons.call, color: Colors.white),
               // ),
+              20.pw,
             ],
           ),
         ),
