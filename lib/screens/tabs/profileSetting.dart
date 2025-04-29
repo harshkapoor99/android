@@ -219,12 +219,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 60,
-                      backgroundColor: inputBackgroundColor,
-                      backgroundImage: NetworkImage(
-                        'https://via.placeholder.com/150/FFFFFF/000000?text=User',
-                      ),
+                      backgroundImage: AssetImage('assets/images/model/ayushImg.jpg'),
                     ),
                     Positioned(
                       bottom: -10,
