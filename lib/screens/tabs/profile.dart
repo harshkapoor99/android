@@ -7,6 +7,7 @@ import 'package:guftagu_mobile/models/user_model.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/subscriptionPage.dart';
+import 'package:guftagu_mobile/screens/tabs/profileSetting.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -77,6 +78,14 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
               // All menu items
               _buildTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileSettingsPage(),
+                    ),
+                  );
+                },
                 icon: 'assets/icons/profile01.svg',
                 title: 'Profile setting',
                 trailing: const Icon(

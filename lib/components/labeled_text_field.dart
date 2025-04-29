@@ -9,6 +9,8 @@ class LabeledTextField extends StatelessWidget {
   final TextStyle? inputTextStyle;
   final EdgeInsetsGeometry contentPadding;
   final double borderRadius;
+  final TextInputType keyboardType; // <-- ADDED THIS LINE
+  final bool obscureText;
 
   const LabeledTextField({
     Key? key,
@@ -20,6 +22,8 @@ class LabeledTextField extends StatelessWidget {
     this.inputTextStyle = const TextStyle(color: Colors.white),
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.borderRadius = 10.0,
+    this.keyboardType = TextInputType.text, // <-- ADDED THIS LINE (with default)
+    this.obscureText = false,
   }) : super(key: key);
 
   @override
