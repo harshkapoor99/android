@@ -105,33 +105,6 @@ class ApiClient {
     );
   }
 
-  // Integrate api for character type Select api /api/userservice/user/selectcharactertype/
-
-  static const String _selectCharacterTypeEndpoint = '/api/userservice/user/selectcharactertype/';
-
-  Future<Response> selectCharacterType({
-    required String userId,
-    required List<String> characterTypeIds,
-    Map<String, dynamic>? customHeaders,
-  }) async {
-    final Map<String, dynamic> requestData = {
-      'user_id': userId,
-      'charactertype_id': characterTypeIds,
-    };
-
-    final Map<String, dynamic> headersToSend = Map<String, dynamic>.from(defaultHeaders);
-    headersToSend.addAll(authHeader);
-    if (customHeaders != null) {
-      headersToSend.addAll(customHeaders);
-    }
-
-    return post(
-      _selectCharacterTypeEndpoint,
-      data: requestData,
-      headers: headersToSend,
-    );
-  }
-
   void updateToken(String? token) {
     if (token.hasValue) {
       defaultHeaders[HttpHeaders.authorizationHeader] = 'Bearer $token';
