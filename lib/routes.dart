@@ -9,6 +9,7 @@ import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/step_0_widget.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Routes {

@@ -1,511 +1,233 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/models/master/master_models.dart'; // Assuming these models exist
+import 'package:guftagu_mobile/gen/assets.gen.dart'; // Assuming this exists for popup icons
+import 'package:guftagu_mobile/models/master/master_models.dart'; // Assuming these models exist (including Category)
 import 'package:guftagu_mobile/providers/character_creation_provider.dart'; // Assuming this provider exists
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart'; // Assuming this provider exists
+// import 'package:guftagu_mobile/utils/context_less_nav.dart'; // Not used directly in this snippet
+import 'package:guftagu_mobile/utils/entensions.dart'; // Keep for .pw extension used in popups
 
-// --- Helper for Responsive Padding/Margin ---
-double _getResponsiveHorizontalPadding(
-  double screenWidth, {
-  double small = 16.0,
-  double medium = 24.0,
-  double large = 28.0,
-}) {
-  if (screenWidth < 360) {
-    return small;
-  } else if (screenWidth < 600) {
-    return medium;
-  } else {
-    return large;
-  }
-}
-
-// --- Helper for Responsive Vertical Spacing ---
-double _getResponsiveVerticalSpacing(
-  double screenHeight, {
-  double factor = 0.03,
-}) {
-  return (screenHeight * factor).clamp(10.0, 40.0);
-}
+// --- Removed Responsive Helpers for Simplicity (Add back if needed) ---
+// You can add the _getResponsive... functions back if you prefer them over fixed values
 
 class Step2Widget extends ConsumerWidget {
   const Step2Widget({super.key});
 
+  // --- UI Constants based on image_cd8fa4.png ---
+  static const double _horizontalPadding = 24.0;
+  static const double _verticalItemSpacing = 28.0; // Space between each selection item
+  static const double _titleBottomSpacing = 12.0; // Space between title and selector bar
+  static const Color _titleColor = Color(0xFFE5E5E5); // Light grey/white for titles
+  static const Color _selectorBgColor = Color(0xFF3A2F4B); // Purple-ish selector box
+  static const Color _selectorIconColor = Color(0xFF47C8FC); // Cyan icon color
+  static const Color _selectorTextColor = Color(0xFFE5E5E5); // Light text in selector
+  static const Color _selectPlaceholderColor = Color(0xFFA3A3A3); // Grey for "Select" placeholder
+  static const Color _chevronColor = Color(0xFFA3A3A3); // Grey for chevron
+  static const double _iconSize = 24.0;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
+    final masterData = ref.read(masterDataProvider); // Read once for options list
+    final characterProvider = ref.watch(characterCreationProvider); // Watch for selected values
 
-    final horizontalPadding = _getResponsiveHorizontalPadding(screenWidth);
-    final verticalSpaceMedium = _getResponsiveVerticalSpacing(
-      screenHeight,
-      factor: 0.03,
-    );
-    // final verticalSpaceSmall = _getResponsiveVerticalSpacing(
-    //   screenHeight,
-    //   factor: 0.015,
-    // );
-    final containerInnerVPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 20,
-      large: 24,
-    );
-    final containerInnerHPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 12,
-      medium: 15,
-      large: 18,
-    );
-    final maxContainerWidth = screenWidth * 0.9;
+    // TODO: Ensure masterData has 'categories' and CharacterCreationState supports 'category'
+    // final List<Category> categoryOptions = masterData.categories ?? [];
+    // final Category? selectedCategory = characterProvider.category;
 
-    final masterData = ref.read(masterDataProvider);
-    final characterProvider = ref.watch(characterCreationProvider);
+    // Using dummy data for category as it's not in the original code
+    // Replace with actual data fetching and provider state
+    final List<String> categoryOptions = ["Friend", "Mentor", "Assistant", "Fictional"];
+    final String? selectedCategory = null; // Placeholder
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      padding: const EdgeInsets.symmetric(
+        horizontal: _horizontalPadding,
+        vertical: 20.0, // Add some vertical padding for the scroll view
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // SizedBox(height: verticalSpaceSmall),
-          Text(
-            'Choose Character\'s',
-            style: context.appTextStyle.textSemibold.copyWith(
-              color: const Color(0xFFA3A3A3),
-            ),
+          // --- Category ---
+          _buildSelectionItem<String>( // Use <Category> if you have the model
+            context: context,
+            ref: ref,
+            title: 'What type of category fits your companion',
+            iconPath: 'assets/icons/category_icon.svg', // ** UPDATE ICON PATH **
+            options: categoryOptions, // Replace with masterData.categories
+            selected: selectedCategory, // Replace with characterProvider.category
+            optionToString: (cat) => cat, // Adjust if using Category model (e.g., cat.title)
+            onSelect: (cat) {
+              print("Selected Category: $cat");
+              // TODO: Update provider: ref.read(characterCreationProvider.notifier).updateWith(category: cat);
+            },
           ),
-          SizedBox(height: verticalSpaceMedium),
-          Center(
-            child: Container(
-              width: maxContainerWidth,
-              decoration: BoxDecoration(
-                color: const Color(0xFF151519),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: EdgeInsets.symmetric(
-                vertical: containerInnerVPadding,
-                horizontal: containerInnerHPadding,
-              ),
-              child: Column(
-                children: [
-                  _buildOptionTile<Personality>(
-                    context,
-                    ref,
-                    'Personality',
-                    'assets/icons/solar_mask-sad-linear.svg',
-                    maxContainerWidth,
-                    masterData.personalities,
-                    optionToString: (p) => p.title,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(personality: p0),
-                    selected: characterProvider.personality,
-                  ),
-                  _buildOptionTile<Relationship>(
-                    context,
-                    ref,
-                    'Relationship',
-                    'assets/icons/carbon_friendship.svg',
-                    maxContainerWidth,
-                    masterData.relationships,
-                    optionToString: (r) => r.title,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(relationship: p0),
-                    selected: characterProvider.relationship,
-                  ),
-                  _buildOptionTile<Behaviour>(
-                    context,
-                    ref,
-                    'Behaviour',
-                    'assets/icons/token_mind.svg',
-                    maxContainerWidth,
-                    masterData.behaviours,
-                    optionToString: (b) => b.title,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(behaviour: p0),
-                    selected: characterProvider.behaviour,
-                  ),
-                  _buildOptionTile<Voice>(
-                    context,
-                    ref,
-                    'Voice',
-                    'assets/icons/ri_voice-ai-fill.svg',
-                    maxContainerWidth,
-                    masterData.voices,
-                    optionToString: (v) => v.fullName,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(voice: p0),
-                    selected: characterProvider.voice,
-                  ),
-                  _buildOptionTile<Country>(
-                    context,
-                    ref,
-                    'Country',
-                    'assets/icons/ci_flag.svg',
-                    maxContainerWidth,
-                    masterData.countries,
-                    optionToString: (c) => c.countryName,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(country: p0),
-                    selected: characterProvider.country,
-                  ),
-                  _buildOptionTile<City>(
-                    context,
-                    ref,
-                    'City',
-                    'assets/icons/mage_location.svg',
-                    maxContainerWidth,
-                    masterData.cities,
-                    optionToString: (c) => c.cityName,
-                    onSelect:
-                        (p0) => ref
-                            .read(characterCreationProvider.notifier)
-                            .updateWith(city: p0),
-                    selected: characterProvider.city,
-                    isLast: true,
-                  ),
-                ],
-              ),
-            ),
+          const SizedBox(height: _verticalItemSpacing),
+
+          // --- Relationship ---
+          _buildSelectionItem<Relationship>(
+            context: context,
+            ref: ref,
+            title: 'What\'s your companion\'s relationship to you',
+            iconPath: 'assets/icons/relationship_icon.svg', // ** UPDATE ICON PATH (e.g., carbon_friendship.svg?)**
+            options: masterData.relationships,
+            selected: characterProvider.relationship,
+            optionToString: (r) => r.title,
+            onSelect: (rel) => ref
+                .read(characterCreationProvider.notifier)
+                .updateWith(relationship: rel),
           ),
-          SizedBox(height: verticalSpaceMedium),
+          const SizedBox(height: _verticalItemSpacing),
+
+          // --- Personality ---
+          _buildSelectionItem<Personality>(
+            context: context,
+            ref: ref,
+            title: 'What\'s your companion\'s personality type',
+            iconPath: 'assets/icons/personality_icon.svg', // ** UPDATE ICON PATH (e.g., solar_mask-sad-linear.svg?) **
+            options: masterData.personalities,
+            selected: characterProvider.personality,
+            optionToString: (p) => p.title,
+            onSelect: (pers) => ref
+                .read(characterCreationProvider.notifier)
+                .updateWith(personality: pers),
+          ),
+          const SizedBox(height: _verticalItemSpacing),
+
+          // --- Behaviour ---
+          _buildSelectionItem<Behaviour>(
+            context: context,
+            ref: ref,
+            title: 'Which behaviour\'s match your companion', // Note: grammar in UI is behaviour's
+            iconPath: 'assets/icons/behaviour_icon.svg', // ** UPDATE ICON PATH (e.g., token_mind.svg?) **
+            options: masterData.behaviours,
+            selected: characterProvider.behaviour,
+            optionToString: (b) => b.title,
+            onSelect: (beh) => ref
+                .read(characterCreationProvider.notifier)
+                .updateWith(behaviour: beh),
+          ),
+          const SizedBox(height: _verticalItemSpacing), // Add space at the bottom
         ],
       ),
     );
   }
 
-  Widget _buildOptionTile<T>(
-    BuildContext context,
-    WidgetRef ref,
-    String title,
-    String icon,
-    double width,
-    List<T> options, {
+  // --- New Widget for the Selection Item (Title + Selector Bar) ---
+  Widget _buildSelectionItem<T>({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String title,
+    required String iconPath,
+    required List<T> options,
+    required T? selected,
     required String Function(T) optionToString,
-    bool isLast = false,
-    T? selected,
     required Function(T) onSelect,
   }) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final responsiveBottomPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 12,
-      medium: 18,
-      large: 24,
-    );
+    final String displayValue = selected != null ? optionToString(selected) : 'Select';
+    final Color displayColor = selected != null ? _selectorTextColor : _selectPlaceholderColor;
 
-    final titleStyle =
-        Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Colors.white,
-          fontWeight: FontWeight.w600,
-        ) ??
-        const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-        );
-
-    final subtitleStyle =
-        Theme.of(
-          context,
-        ).textTheme.bodySmall?.copyWith(color: Colors.white70) ??
-        const TextStyle(color: Colors.white70, fontSize: 12);
-
-    return Padding(
-      padding: EdgeInsets.only(bottom: isLast ? 0 : responsiveBottomPadding),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF23222F),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: ListTile(
-          leading: SvgPicture.asset(icon, width: 24, height: 24),
-          title: Text(title, style: titleStyle),
-          subtitle:
-              selected != null
-                  ? Text(optionToString(selected), style: subtitleStyle)
-                  : null,
-          trailing: const Icon(
-            Icons.arrow_forward_ios,
-            color: Colors.white,
-            size: 16,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title Text (Question)
+        Text(
+          title,
+          style: const TextStyle(
+            color: _titleColor,
+            fontSize: 16, // Adjust as needed
+            fontWeight: FontWeight.w400, // Adjust as needed
           ),
-          onTap: () {
-            if (T == Voice) {
-              _showVoiceOptionPopup(
-                context,
-                ref,
-                title,
-                options as List<Voice>,
-                optionToString: optionToString as String Function(Voice),
-                onSelect: onSelect as Function(Voice),
-                selected: selected as Voice?,
-              );
-            } else if (T == Country || T == City) {
-              _showOptionPopupWithSearch<T>(
-                context,
-                ref,
-                title,
-                options,
-                optionToString: optionToString,
-                onSelect: onSelect,
-                selected: selected,
-              );
-            } else {
+        ),
+        const SizedBox(height: _titleBottomSpacing),
+
+        // Selector Bar (Tappable)
+        Material(
+          color: Color(0xff23222F),
+          borderRadius: BorderRadius.circular(10.0),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10.0),
+            onTap: () {
+              // --- Determine which popup to show based on type T or title ---
+              // Using the generic popup for all these options by default
               _showOptionPopup<T>(
                 context,
                 ref,
-                title,
+                title.split(' ').last, // Use last word of title for popup title (e.g., "Category")
                 options,
                 optionToString: optionToString,
                 onSelect: onSelect,
+                // Pass selected if needed by the popup UI
               );
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showVoiceOptionPopup(
-    BuildContext context,
-    WidgetRef ref,
-    String title,
-    List<Voice> options, {
-    required String Function(Voice) optionToString,
-    required Function(Voice) onSelect,
-    Voice? selected,
-  }) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-
-    final horizontalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-    final verticalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-
-    double responsiveRightMargin;
-    if (screenWidth < 380) {
-      responsiveRightMargin = 24.0;
-    } else if (screenWidth < 600) {
-      responsiveRightMargin = 40.0;
-    } else {
-      responsiveRightMargin = 64.0;
-    }
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF141416),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    top: verticalPadding,
-                    bottom: verticalPadding,
-                  ),
-                  child: Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          "Choose from here",
-                          style: TextStyle(
-                            color: Color(0xFFA3A3A3),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: const Icon(
-                          Icons.close,
-                          color: Color(0xFFA3A3A3),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      bottom: 10,
-                      top: 5,
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              child: Row(
+                children: [
+                  // Icon
+                  SvgPicture.asset(
+                    iconPath,
+                    width: _iconSize,
+                    height: _iconSize,
+                    colorFilter: const ColorFilter.mode(
+                      _selectorIconColor,
+                      BlendMode.srcIn,
                     ),
-                    itemCount: options.length,
-                    itemBuilder: (context, index) {
-                      final option = options[index];
-                      final isSelected = selected == option;
-
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF23222F),
-                          borderRadius: BorderRadius.circular(10),
-                          border:
-                              isSelected
-                                  ? Border.all(
-                                    color: const Color(0xFF47C8FC),
-                                    width: 1,
-                                  )
-                                  : null,
-                        ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              isSelected
-                                  ? Assets.svgs.icPause
-                                  : Assets.svgs.icPlay,
-                            ),
-                            12.pw,
-                            Text(
-                              optionToString(option),
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.85),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                if (isSelected)
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      right: responsiveRightMargin,
-                                    ),
-                                    child: SvgPicture.asset(
-                                      'assets/svgs/waves.svg',
-                                      colorFilter: const ColorFilter.mode(
-                                        Color(0xFF9D93FF),
-                                        BlendMode.srcIn,
-                                      ),
-                                      width: 26,
-                                      height: 26,
-                                      semanticsLabel: 'Waves icon',
-                                    ),
-                                  ),
-                                GestureDetector(
-                                  onTap: () {
-                                    onSelect(option);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: const Color(0xFF16151E),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Center(
-                                      child: SvgPicture.asset(
-                                        'assets/svgs/clarity_arrow-line.svg',
-                                        colorFilter: const ColorFilter.mode(
-                                          Colors.white,
-                                          BlendMode.srcIn,
-                                        ),
-                                        width: 26,
-                                        height: 26,
-                                        semanticsLabel: 'Arrow icon',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                    // Optional: Add error builder
+                    placeholderBuilder: (context) => Icon(
+                      Icons.question_mark, // Placeholder icon
+                      size: _iconSize,
+                      color: _selectorIconColor,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height:
-                      MediaQuery.paddingOf(context).bottom > 0
-                          ? 0
-                          : verticalPadding,
-                ),
-              ],
+                  const SizedBox(width: 12), // Space between icon and text
+
+                  // Selected Value / Placeholder Text
+                  Expanded( // Allow text to expand
+                    child: Text(
+                      displayValue,
+                      style: TextStyle(
+                        color: Color(0xFF969696),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600
+                      ),
+                      overflow: TextOverflow.ellipsis, // Prevent overflow
+                    ),
+                  ),
+                  const SizedBox(width: 8), // Space before chevron
+
+                  // Chevron Icon
+                  const Icon(
+                    Icons.chevron_right,
+                    color: _chevronColor,
+                    size: 24.0,
+                  ),
+                ],
+              ),
             ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 
-  // --- Generic Option Popup (Responsive Grid) ---
+  // --- Popup Functions (Copied from original code, ensure they are compatible) ---
+  // Make sure the styles inside these popups also match your desired theme
 
+  // Generic Option Popup (using Wrap for chips - adjust if needed)
   void _showOptionPopup<T>(
-    BuildContext context,
-    WidgetRef ref,
-    String title,
-    List<T> options, {
-    required String Function(T) optionToString,
-    required Function(T) onSelect,
-  }) {
+      BuildContext context,
+      WidgetRef ref,
+      String title, // Changed to popup title (e.g., "Category")
+      List<T> options, {
+        required String Function(T) optionToString,
+        required Function(T) onSelect,
+        // T? selected, // Added selected parameter if needed for UI highlighting
+      }) {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
-
-    final horizontalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-    final verticalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-
-    // final crossAxisCount =
-    //     screenWidth < 360
-    //         ? 2
-    //         : screenWidth < 600
-    //         ? 3
-    //         : 4;
+    const double horizontalPadding = 24.0; // Use consistent padding
+    const double verticalPadding = 24.0;
 
     showModalBottomSheet(
       context: context,
@@ -516,18 +238,18 @@ class Step2Widget extends ConsumerWidget {
           constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
           child: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF141416),
+              color: Color(0xFF141416), // Dark background for popup
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: horizontalPadding,
                     right: horizontalPadding,
                     top: verticalPadding,
-                    bottom: verticalPadding,
+                    bottom: verticalPadding / 1.5, // Less bottom padding for title
                   ),
                   child: Row(
                     children: [
@@ -546,62 +268,67 @@ class Step2Widget extends ConsumerWidget {
                         child: const Icon(
                           Icons.close,
                           color: Color(0xFFA3A3A3),
+                          size: 24,
                         ),
                       ),
                     ],
                   ),
                 ),
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      bottom: 10,
-                      top: 5,
-                    ),
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 14,
-                        alignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children:
-                            options.map((option) {
-                              return GestureDetector(
-                                onTap: () {
-                                  onSelect(option);
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 18,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFF23222F),
-                                    borderRadius: BorderRadius.circular(100),
-                                  ),
-                                  child: Text(
-                                    optionToString(option),
-                                    style: const TextStyle(
-                                      color: Color(0xFFE5E5E5),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                // Use Flexible + SingleChildScrollView for scrollable content
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: horizontalPadding,
+                        right: horizontalPadding,
+                        bottom: 10, // Padding below wrap
+                        top: 5, // Padding above wrap
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Wrap(
+                          spacing: 10, // Horizontal space between chips
+                          runSpacing: 14, // Vertical space between chip lines
+                          alignment: WrapAlignment.start,
+                          children: options.map((option) {
+                            // final isSelected = selected == option; // Determine if current option is selected
+                            return GestureDetector(
+                              onTap: () {
+                                onSelect(option);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 18,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF23222F), // Chip background color
+                                  borderRadius: BorderRadius.circular(100), // Pill shape
+                                  // Optional: Add border if selected
+                                  // border: isSelected ? Border.all(color: _selectorIconColor, width: 1.5) : null,
+                                ),
+                                child: Text(
+                                  optionToString(option),
+                                  style: const TextStyle(
+                                    color: Color(0xFFE5E5E5), // Chip text color
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
                     ),
                   ),
                 ),
+                // Bottom padding to avoid system navigation
                 SizedBox(
-                  height:
-                      MediaQuery.paddingOf(context).bottom > 0
-                          ? 0
-                          : verticalPadding,
+                  height: MediaQuery.paddingOf(context).bottom > 0
+                      ? MediaQuery.paddingOf(context).bottom // Respect safe area
+                      : verticalPadding, // Fallback padding
                 ),
               ],
             ),
@@ -611,216 +338,4 @@ class Step2Widget extends ConsumerWidget {
     );
   }
 
-  void _showOptionPopupWithSearch<T>(
-    BuildContext context,
-    WidgetRef ref,
-    String title,
-    List<T> options, {
-    required String Function(T) optionToString,
-    required Function(T) onSelect,
-    T? selected,
-  }) {
-    final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-
-    final horizontalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-    final verticalPadding = _getResponsiveHorizontalPadding(
-      screenWidth,
-      small: 16,
-      medium: 24,
-      large: 36,
-    );
-
-    final TextEditingController searchController = TextEditingController();
-    // Create a provider for the search text
-    final searchTextProvider = StateProvider<String>((ref) => '');
-
-    // Create a provider for filtered options
-    final filteredOptionsProvider = Provider<List<T>>((ref) {
-      final searchText = ref.watch(searchTextProvider).toLowerCase();
-      if (searchText.isEmpty) return options;
-
-      return options.where((option) {
-        return optionToString(option).toLowerCase().contains(searchText);
-      }).toList();
-    });
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-          child: GestureDetector(
-            onTap: () {
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFF141416),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      top: verticalPadding,
-                      bottom: verticalPadding,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            "Choose a $title",
-                            style: const TextStyle(
-                              color: Color(0xFFA3A3A3),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: const Icon(
-                            Icons.close,
-                            color: Color(0xFFA3A3A3),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: horizontalPadding,
-                      right: horizontalPadding,
-                      bottom: verticalPadding,
-                    ),
-                    child: SizedBox(
-                      height: 45,
-                      child: TextField(
-                        controller: searchController,
-                        onChanged: (value) {
-                          // Update the search text provider when text changes
-                          ref.read(searchTextProvider.notifier).state = value;
-                        },
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                          ),
-                          hintText: "Search",
-                          hintStyle: context.appTextStyle.text.copyWith(
-                            color: context.colorExt.textSecondary.withValues(
-                              // alpha: 0.7,
-                            ),
-                          ),
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 13,
-                            ),
-                            child: SvgPicture.asset(
-                              Assets.svgs.icSearch,
-                              height: 5,
-                              width: 5,
-                              colorFilter: ColorFilter.mode(
-                                context.colorExt.textSecondary,
-                                BlendMode.srcIn,
-                              ),
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: context.colorExt.border,
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(60),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Color(0xFF47C8FC),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Consumer(
-                    builder: (context, ref, child) {
-                      final filteredOption = ref.watch(filteredOptionsProvider);
-                      return Flexible(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: horizontalPadding,
-                            bottom: 10,
-                            top: 5,
-                          ),
-                          child: ListView.builder(
-                            // spacing: 10,
-                            // runSpacing: 14,
-                            // alignment: WrapAlignment.start,
-                            // crossAxisAlignment: WrapCrossAlignment.start,
-                            // children:
-                            itemCount: filteredOption.length,
-                            itemBuilder:
-                                (context, index) => GestureDetector(
-                                  onTap: () {
-                                    onSelect(filteredOption[index]);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(bottom: 10),
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 18,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          width: 1,
-                                          color: context.colorExt.border,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      optionToString(filteredOption[index]),
-                                      style: const TextStyle(
-                                        color: Color(0xFFE5E5E5),
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    ).then((value) {
-      // Wait for the bottom sheet to close
-      if (value != null) {
-        // Handle value returned by Navigator.pop()
-      }
-      // Dispose the controller here
-      // MyController controller = context.findAncestorWidgetOfExactType<MyBottomSheetWidget>().controller;
-      // controller?.dispose();
-      // searchController.dispose();
-    });
-  }
 }
