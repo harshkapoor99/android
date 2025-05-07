@@ -11,6 +11,7 @@ class LabeledTextField extends StatelessWidget {
   final double borderRadius;
   final TextInputType keyboardType; // <-- ADDED THIS LINE
   final bool obscureText;
+  final String? hintText;
 
   const LabeledTextField({
     Key? key,
@@ -24,6 +25,7 @@ class LabeledTextField extends StatelessWidget {
     this.borderRadius = 10.0,
     this.keyboardType = TextInputType.text, // <-- ADDED THIS LINE (with default)
     this.obscureText = false,
+    this.hintText,
   }) : super(key: key);
 
   @override
@@ -43,12 +45,16 @@ class LabeledTextField extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: labelStyle),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             TextField(
               controller: controller,
               style: inputTextStyle,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: const TextStyle(
+                  color: Color(0xFF969696),
+                ),
                 filled: true,
                 fillColor: fillColor,
                 contentPadding: contentPadding,

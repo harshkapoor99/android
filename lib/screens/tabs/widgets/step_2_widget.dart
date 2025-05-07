@@ -43,70 +43,65 @@ class Step2Widget extends ConsumerWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
         horizontal: _horizontalPadding,
-        vertical: 20.0, // Add some vertical padding for the scroll view
+        vertical: 5.0, // Add some vertical padding for the scroll view
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // --- Category ---
-          _buildSelectionItem<String>( // Use <Category> if you have the model
+          _buildSelectionItem<String>(
             context: context,
             ref: ref,
             title: 'What type of category fits your companion',
-            iconPath: 'assets/icons/category_icon.svg', // ** UPDATE ICON PATH **
-            options: categoryOptions, // Replace with masterData.categories
-            selected: selectedCategory, // Replace with characterProvider.category
-            optionToString: (cat) => cat, // Adjust if using Category model (e.g., cat.title)
+            iconPath: 'assets/icons/mdi_category-outline.svg',
+            options: categoryOptions,
+            selected: selectedCategory,
+            optionToString: (cat) => cat,
             onSelect: (cat) {
               print("Selected Category: $cat");
-              // TODO: Update provider: ref.read(characterCreationProvider.notifier).updateWith(category: cat);
+              // ref.read(characterCreationProvider.notifier).updateWith(category: cat);
             },
           ),
           const SizedBox(height: _verticalItemSpacing),
 
-          // --- Relationship ---
+// --- Relationship ---
           _buildSelectionItem<Relationship>(
             context: context,
             ref: ref,
             title: 'What\'s your companion\'s relationship to you',
-            iconPath: 'assets/icons/relationship_icon.svg', // ** UPDATE ICON PATH (e.g., carbon_friendship.svg?)**
+            iconPath: 'assets/icons/carbon_friendship.svg',
             options: masterData.relationships,
             selected: characterProvider.relationship,
             optionToString: (r) => r.title,
-            onSelect: (rel) => ref
-                .read(characterCreationProvider.notifier)
-                .updateWith(relationship: rel),
+            onSelect: (rel) => ref.read(characterCreationProvider.notifier).updateWith(relationship: rel),
           ),
           const SizedBox(height: _verticalItemSpacing),
 
-          // --- Personality ---
+// --- Personality ---
           _buildSelectionItem<Personality>(
             context: context,
             ref: ref,
             title: 'What\'s your companion\'s personality type',
-            iconPath: 'assets/icons/personality_icon.svg', // ** UPDATE ICON PATH (e.g., solar_mask-sad-linear.svg?) **
+            iconPath: 'assets/icons/solar_mask-sad-linear.svg',
             options: masterData.personalities,
             selected: characterProvider.personality,
             optionToString: (p) => p.title,
-            onSelect: (pers) => ref
-                .read(characterCreationProvider.notifier)
-                .updateWith(personality: pers),
+            onSelect: (pers) => ref.read(characterCreationProvider.notifier).updateWith(personality: pers),
           ),
           const SizedBox(height: _verticalItemSpacing),
 
-          // --- Behaviour ---
+// --- Behaviour ---
           _buildSelectionItem<Behaviour>(
             context: context,
             ref: ref,
-            title: 'Which behaviour\'s match your companion', // Note: grammar in UI is behaviour's
-            iconPath: 'assets/icons/behaviour_icon.svg', // ** UPDATE ICON PATH (e.g., token_mind.svg?) **
+            title: 'Which behaviour\'s match your companion',
+            iconPath: 'assets/icons/material-symbols_mindfulness-outline.svg',
             options: masterData.behaviours,
             selected: characterProvider.behaviour,
             optionToString: (b) => b.title,
-            onSelect: (beh) => ref
-                .read(characterCreationProvider.notifier)
-                .updateWith(behaviour: beh),
+            onSelect: (beh) => ref.read(characterCreationProvider.notifier).updateWith(behaviour: beh),
           ),
+
           const SizedBox(height: _verticalItemSpacing), // Add space at the bottom
         ],
       ),
@@ -134,7 +129,7 @@ class Step2Widget extends ConsumerWidget {
         Text(
           title,
           style: const TextStyle(
-            color: _titleColor,
+            color: Color(0xFFF2F2F2),
             fontSize: 16, // Adjust as needed
             fontWeight: FontWeight.w400, // Adjust as needed
           ),

@@ -18,7 +18,7 @@ bool nextButtonStatus(Ref ref) {
   final provider = ref.watch(characterCreationProvider);
   if (provider.index == 0 &&
       provider.characterNameController.text.isNotEmpty &&
-      provider.age != null &&
+      provider.ageController.text.isNotEmpty &&
       provider.gender != null) {
     return true;
   } else if (provider.index == 1 &&
@@ -59,6 +59,7 @@ class CharacterCreation extends _$CharacterCreation {
       pageController: PageController(keepPage: true),
       index: 0,
       characterNameController: TextEditingController(),
+      ageController: TextEditingController(),
       descriptionController: TextEditingController(),
       backstoryController: TextEditingController(),
     );
@@ -67,6 +68,13 @@ class CharacterCreation extends _$CharacterCreation {
         characterNameController: initState.characterNameController,
       );
     });
+//change
+    initState.ageController.addListener(() {
+      state = state._updateWith(
+        ageController: initState.ageController,
+      );
+    });
+
     initState.descriptionController.addListener(() {
       state = state._updateWith(
         descriptionController: initState.descriptionController,
@@ -97,7 +105,7 @@ class CharacterCreation extends _$CharacterCreation {
     GenImage? seletedCharacterImage,
   }) {
     state = state._updateWith(
-      age: age,
+      // age: age,
       gender: gender,
       style: style,
       sexualOrientation: sexualOrientation,
@@ -122,6 +130,7 @@ class CharacterCreation extends _$CharacterCreation {
     state = state._clear();
     state.pageController.jumpToPage(0);
     state.characterNameController.clear();
+    state.ageController.clear();
     state.descriptionController.clear();
     state.backstoryController.clear();
   }
@@ -135,7 +144,7 @@ class CharacterCreation extends _$CharacterCreation {
             creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
             creatorUserType: "user",
             name: state.characterNameController.text,
-            age: state.age!,
+            age: state.ageController.text,
             gender: state.gender!,
             style: state.style!,
             languageId: state.language!.id,
@@ -221,7 +230,7 @@ class CharacterCreationState {
     required this.pageController,
     required this.index,
     required this.characterNameController,
-    this.age,
+    required this.ageController, // change
     this.gender,
     this.style,
     this.sexualOrientation,
@@ -247,7 +256,7 @@ class CharacterCreationState {
   final int index;
 
   final TextEditingController characterNameController;
-  final String? age;
+  final TextEditingController ageController; // change
   final String? gender;
   final String? style;
   final String? sexualOrientation;
@@ -273,7 +282,7 @@ class CharacterCreationState {
     PageController? pageController,
     int? index,
     TextEditingController? characterNameController,
-    String? age,
+    TextEditingController? ageController,
     String? gender,
     String? style,
     String? sexualOrientation,
@@ -299,7 +308,7 @@ class CharacterCreationState {
       index: index ?? this.index,
       characterNameController:
           characterNameController ?? this.characterNameController,
-      age: age ?? this.age,
+      ageController: ageController ?? this.ageController,
       gender: gender ?? this.gender,
       style: style ?? this.style,
       sexualOrientation: sexualOrientation ?? this.sexualOrientation,
@@ -330,7 +339,7 @@ class CharacterCreationState {
       pageController: pageController,
       index: 0,
       characterNameController: characterNameController,
-      age: null,
+      ageController: ageController,
       gender: null,
       style: null,
       sexualOrientation: null,
