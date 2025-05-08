@@ -35,7 +35,7 @@ bool nextButtonStatus(Ref ref) {
   } else if (provider.index == 2 &&
       provider.personality != null &&
       provider.relationship != null &&
-      provider.behaviour != null) {
+      provider.behaviours.isEmpty) {
     return true;
   } else if (provider.index == 3
   // uncomment to make it mandatory
@@ -95,12 +95,11 @@ class CharacterCreation extends _$CharacterCreation {
     Language? language,
     Personality? personality,
     Relationship? relationship,
-    Behaviour? behaviour,
+    List<Behaviour>? behaviours,
     Voice? voice,
-    CharacterType? charactertype,
+    CharacterType? characterType,
     Country? country,
     City? city,
-    CharacterType? characterType,
     String? refImageUrl,
     XFile? uploadImage,
     GenImage? seletedCharacterImage,
@@ -113,7 +112,8 @@ class CharacterCreation extends _$CharacterCreation {
       language: language,
       personality: personality,
       relationship: relationship,
-      behaviour: behaviour,
+      behaviours: behaviours,
+      characterType: characterType,
       voice: voice,
       country: country,
       city: city,
@@ -149,7 +149,7 @@ class CharacterCreation extends _$CharacterCreation {
             gender: state.gender!,
             style: state.style!,
             languageId: state.language!.id,
-            behaviourId: state.behaviour!.id,
+            behaviourId: state.behaviours.map((b) => b.id).toList(),
             personalityId: state.personality!.id,
             relationshipId: state.relationship!.id,
             voiceId: state.voice?.id,
@@ -238,7 +238,7 @@ class CharacterCreationState {
     this.language,
     this.personality,
     this.relationship,
-    this.behaviour,
+    this.behaviours = const [],
     this.voice,
     this.country,
     this.city,
@@ -265,7 +265,7 @@ class CharacterCreationState {
   final Language? language;
   final Personality? personality;
   final Relationship? relationship;
-  final Behaviour? behaviour;
+  final List<Behaviour> behaviours;
   final Voice? voice;
   final Country? country;
   final City? city;
@@ -292,11 +292,11 @@ class CharacterCreationState {
     Language? language,
     Personality? personality,
     Relationship? relationship,
-    Behaviour? behaviour,
+    List<Behaviour>? behaviours,
     Voice? voice,
     Country? country,
     City? city,
-    CharacterType? charactertype,
+    CharacterType? characterType,
     String? refImageUrl,
     // XFile? uploadImage,
     bool? isImageUploading,
@@ -319,10 +319,11 @@ class CharacterCreationState {
       language: language ?? this.language,
       personality: personality ?? this.personality,
       relationship: relationship ?? this.relationship,
-      behaviour: behaviour ?? this.behaviour,
+      behaviours: behaviours ?? this.behaviours,
       voice: voice ?? this.voice,
       country: country ?? this.country,
       city: city ?? this.city,
+      characterType: characterType ?? this.characterType,
       refImageUrl: refImageUrl ?? this.refImageUrl,
       // uploadImage: uploadImage ?? this.uploadImage,
       isImageUploading: isImageUploading ?? this.isImageUploading,
@@ -350,7 +351,7 @@ class CharacterCreationState {
       language: null,
       personality: null,
       relationship: null,
-      behaviour: null,
+      behaviours: [],
       voice: null,
       country: null,
       city: null,

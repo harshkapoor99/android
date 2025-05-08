@@ -17,6 +17,14 @@ enum RemoteEndpoint {
   fetchCountries(path: 'masterservice/country/getallcountry/'),
   fetchCities(path: 'masterservice/city/getallcity/'),
   fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
+  // MasterData by id
+  fetchBehaviousByPersonality(path: 'masterservice/behaviour/getallbehaviour/'),
+  fetchPersionalitiesByRelationship(
+    path: 'masterservice/personality/getallpersonality/',
+  ),
+  fetchRelationshipsByCharactertype(
+    path: 'masterservice/relationship/getallrelationship/',
+  ),
 
   // Character Creation
   refImageUpload(

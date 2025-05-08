@@ -8,14 +8,9 @@ import 'package:guftagu_mobile/utils/entensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../providers/character_creation_provider.dart';
 
-class Step1Widget extends ConsumerStatefulWidget {
-  const Step1Widget({super.key});
+class Step1Widget extends ConsumerWidget {
+  Step1Widget({super.key});
 
-  @override
-  ConsumerState<Step1Widget> createState() => _Step1WidgetState();
-}
-
-class _Step1WidgetState extends ConsumerState<Step1Widget> {
   final List<Map<String, dynamic>> styleOptions = [
     {
       'label': 'Realistic',
@@ -30,7 +25,7 @@ class _Step1WidgetState extends ConsumerState<Step1Widget> {
   ];
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
     final masterData = ref.watch(masterDataProvider);
     return SingleChildScrollView(

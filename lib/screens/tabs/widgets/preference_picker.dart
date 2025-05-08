@@ -17,7 +17,10 @@ Widget buildOptionTile<T>({
   required String Function(T) optionToString,
   bool isLast = false,
   T? selected,
+  List<T>? multiSelected,
   required Function(T) onSelect,
+  Function(List<T>)? onMultiSelect,
+  bool? isMultiple,
 }) {
   final titleStyle =
       Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -39,6 +42,10 @@ Widget buildOptionTile<T>({
       title:
           selected != null
               ? Text(optionToString(selected), style: titleStyle)
+              : isMultiple == true &&
+                  multiSelected != null &&
+                  multiSelected.isNotEmpty
+              ? Text("${multiSelected.length} Selected", style: titleStyle)
               : Text(
                 "Select",
                 style: titleStyle.copyWith(
@@ -72,15 +79,27 @@ Widget buildOptionTile<T>({
             selected: selected,
           );
         } else {
-          _showOptionPopup<T>(
-            context,
-            ref,
-            title,
-            options,
-            optionToString: optionToString,
-            onSelect: onSelect,
-            selected: selected,
-          );
+          if (isMultiple == true) {
+            _showOptionPopupWithMultiselect<T>(
+              context,
+              ref,
+              title,
+              options,
+              optionToString: optionToString,
+              onSelect: onMultiSelect!,
+              selected: multiSelected,
+            );
+          } else {
+            _showOptionPopup<T>(
+              context,
+              ref,
+              title,
+              options,
+              optionToString: optionToString,
+              onSelect: onSelect,
+              selected: selected,
+            );
+          }
         }
       },
     ),
@@ -344,50 +363,52 @@ void _showOptionPopup<T>(
                   ],
                 ),
               ),
-              SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    bottom: 10,
-                    top: 5,
-                  ),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 14,
-                      alignment: WrapAlignment.start,
-                      crossAxisAlignment: WrapCrossAlignment.start,
-                      children:
-                          options.map((option) {
-                            final isSelected = selected == option;
-                            return GestureDetector(
-                              onTap: () {
-                                onSelect(option);
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 18,
-                                ),
-                                decoration: BoxDecoration(
-                                  color:
-                                      isSelected
-                                          ? context.colorExt.textSecondary
-                                          : context.colorExt.border,
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Text(
-                                  optionToString(option),
-                                  style: context.appTextStyle.text.copyWith(
-                                    color: isSelected ? Colors.black : null,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: 10,
+                      top: 5,
+                    ),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 14,
+                        alignment: WrapAlignment.start,
+                        crossAxisAlignment: WrapCrossAlignment.start,
+                        children:
+                            options.map((option) {
+                              final isSelected = selected == option;
+                              return GestureDetector(
+                                onTap: () {
+                                  onSelect(option);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 18,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isSelected
+                                            ? context.colorExt.textSecondary
+                                            : context.colorExt.border,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child: Text(
+                                    optionToString(option),
+                                    style: context.appTextStyle.text.copyWith(
+                                      color: isSelected ? Colors.black : null,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          }).toList(),
+                              );
+                            }).toList(),
+                      ),
                     ),
                   ),
                 ),
@@ -399,6 +420,204 @@ void _showOptionPopup<T>(
                         : verticalPadding,
               ),
             ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _showOptionPopupWithMultiselect<T>(
+  BuildContext context,
+  WidgetRef ref,
+  String title,
+  List<T> options, {
+  required String Function(T) optionToString,
+  required Function(List<T>) onSelect,
+  List<T>? selected,
+}) {
+  final screenWidth = MediaQuery.sizeOf(context).width;
+  final screenHeight = MediaQuery.sizeOf(context).height;
+
+  final horizontalPadding = getResponsiveHorizontalPadding(
+    screenWidth,
+    small: 16,
+    medium: 24,
+    large: 36,
+  );
+  final verticalPadding = getResponsiveHorizontalPadding(
+    screenWidth,
+    small: 16,
+    medium: 24,
+    large: 36,
+  );
+
+  final multiSelectProvider = StateProvider<List<T>>((ref) => selected ?? []);
+
+  void toggleSelect(WidgetRef ref, T value) {
+    final currentSelection = ref.read(multiSelectProvider);
+    if (currentSelection.contains(value)) {
+      ref.read(multiSelectProvider.notifier).state =
+          currentSelection.where((item) => item != value).toList();
+    } else {
+      ref.read(multiSelectProvider.notifier).state = [
+        ...currentSelection,
+        value,
+      ];
+    }
+  }
+
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    isScrollControlled: true,
+    builder: (context) {
+      return PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) {
+            onSelect(ref.read(multiSelectProvider));
+          }
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF141416),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                    top: verticalPadding,
+                    bottom: verticalPadding,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Choose a $title",
+                          style: const TextStyle(
+                            color: Color(0xFFA3A3A3),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap:
+                            () => Navigator.pop<List<T>>(
+                              context,
+                              ref.read(multiSelectProvider),
+                            ),
+                        child: const Icon(
+                          Icons.close,
+                          color: Color(0xFFA3A3A3),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final seletedOptions = ref.watch(multiSelectProvider);
+                    return Flexible(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 10,
+                            top: 5,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 14,
+                              alignment: WrapAlignment.start,
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              children:
+                                  options.map((option) {
+                                    final isSelected = seletedOptions.contains(
+                                      option,
+                                    );
+                                    return GestureDetector(
+                                      onTap: () {
+                                        // onSelect(option);
+                                        toggleSelect(ref, option);
+                                        //   Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 18,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isSelected
+                                                  ? context
+                                                      .colorExt
+                                                      .textSecondary
+                                                  : context.colorExt.border,
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Radio<T>(
+                                              value: option,
+                                              groupValue:
+                                                  seletedOptions.contains(
+                                                        option,
+                                                      )
+                                                      ? option
+                                                      : null,
+                                              onChanged: (_) {
+                                                toggleSelect(ref, option);
+                                              },
+                                              fillColor: WidgetStatePropertyAll(
+                                                context.colorExt.primary,
+                                              ),
+                                              activeColor: Colors.red,
+                                            ),
+                                            Flexible(
+                                              child: Text(
+                                                optionToString(option),
+                                                style: context.appTextStyle.text
+                                                    .copyWith(
+                                                      color:
+                                                          isSelected
+                                                              ? Colors.black
+                                                              : null,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(
+                  height:
+                      MediaQuery.paddingOf(context).bottom > 0
+                          ? 0
+                          : verticalPadding,
+                ),
+              ],
+            ),
           ),
         ),
       );

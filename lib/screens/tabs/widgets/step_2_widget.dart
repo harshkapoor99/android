@@ -16,12 +16,7 @@ class Step2Widget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
-    final masterData = ref.read(
-      masterDataProvider,
-    ); // Read once for options list
-    final characterProvider = ref.watch(
-      characterCreationProvider,
-    ); // Watch for selected values
+    final masterData = ref.read(masterDataProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
@@ -43,8 +38,7 @@ class Step2Widget extends ConsumerWidget {
             options: masterData.characterTypes,
             optionToString: (c) => c.charactertypeName,
             onSelect:
-                (p0) =>
-                ref
+                (p0) => ref
                     .read(characterCreationProvider.notifier)
                     .updateWith(characterType: p0),
             selected: provider.characterType,
@@ -56,7 +50,7 @@ class Step2Widget extends ConsumerWidget {
           ),
           36.ph,
           Text(
-            "What\'s your companion\'s relationship to you",
+            "What's your companion's relationship to you",
             style: context.appTextStyle.characterGenLabel,
           ),
           16.ph,
@@ -64,11 +58,17 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Relationship",
-            options: masterData.relationships,
+            options:
+                masterData.relationships
+                    .where(
+                      (r) =>
+                          r.charactertypeId ==
+                          ref.read(characterCreationProvider).characterType?.id,
+                    )
+                    .toList(),
             optionToString: (c) => c.title,
             onSelect:
-                (p0) =>
-                ref
+                (p0) => ref
                     .read(characterCreationProvider.notifier)
                     .updateWith(relationship: p0),
             selected: provider.relationship,
@@ -80,7 +80,7 @@ class Step2Widget extends ConsumerWidget {
           ),
           36.ph,
           Text(
-            "What\'s your companion\'s personality type",
+            "What's your companion's personality type",
             style: context.appTextStyle.characterGenLabel,
           ),
           16.ph,
@@ -88,11 +88,17 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Personality",
-            options: masterData.personalities,
+            options:
+                masterData.personalities
+                    .where(
+                      (p) =>
+                          p.relationshipId ==
+                          ref.read(characterCreationProvider).relationship?.id,
+                    )
+                    .toList(),
             optionToString: (c) => c.title,
             onSelect:
-                (p0) =>
-                ref
+                (p0) => ref
                     .read(characterCreationProvider.notifier)
                     .updateWith(personality: p0),
             selected: provider.personality,
@@ -104,7 +110,7 @@ class Step2Widget extends ConsumerWidget {
           ),
           36.ph,
           Text(
-            "Which behaviour\'s match your companion",
+            "Which behaviour's match your companion",
             style: context.appTextStyle.characterGenLabel,
           ),
           16.ph,
@@ -112,19 +118,27 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Behaviour",
-            options: masterData.behaviours,
+            options:
+                masterData.behaviours
+                    .where(
+                      (b) =>
+                          b.personalityId ==
+                          ref.read(characterCreationProvider).personality?.id,
+                    )
+                    .toList(),
             optionToString: (c) => c.title,
-            onSelect:
-                (p0) =>
-                ref
+            onSelect: (p0) => {},
+            onMultiSelect:
+                (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(behaviour: p0),
-            selected: provider.behaviour,
+                    .updateWith(behaviours: p0),
+            multiSelected: provider.behaviours,
             icon: SvgPicture.asset(
               'assets/icons/material-symbols_mindfulness-outline.svg',
               width: 24,
               height: 24,
             ),
+            isMultiple: true,
           ),
           36.ph,
         ],
