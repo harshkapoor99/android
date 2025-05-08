@@ -97,8 +97,10 @@ class CharacterCreation extends _$CharacterCreation {
     Relationship? relationship,
     Behaviour? behaviour,
     Voice? voice,
+    CharacterType? charactertype,
     Country? country,
     City? city,
+    CharacterType? characterType,
     String? refImageUrl,
     XFile? uploadImage,
     GenImage? seletedCharacterImage,
@@ -240,6 +242,7 @@ class CharacterCreationState {
     this.voice,
     this.country,
     this.city,
+    this.characterType,
     // this.uploadImage,
     this.isImageUploading = false,
     this.refImageUrl,
@@ -266,6 +269,7 @@ class CharacterCreationState {
   final Voice? voice;
   final Country? country;
   final City? city;
+  final CharacterType? characterType;
   // final XFile? uploadImage;
   final String? refImageUrl;
   final TextEditingController descriptionController;
@@ -292,6 +296,7 @@ class CharacterCreationState {
     Voice? voice,
     Country? country,
     City? city,
+    CharacterType? charactertype,
     String? refImageUrl,
     // XFile? uploadImage,
     bool? isImageUploading,
