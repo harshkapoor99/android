@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 /// A reusable selector button that displays a label and current value
 /// with an arrow indicator for dropdowns/bottom sheets.
@@ -51,10 +52,12 @@ class BuildSelectorButton extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-            decoration: decoration ?? BoxDecoration(
-              color: const Color(0xFF2A2B38),
-              borderRadius: BorderRadius.circular(8),
-            ),
+            decoration:
+                decoration ??
+                BoxDecoration(
+                  color: context.colorExt.border,
+                  borderRadius: BorderRadius.circular(8),
+                ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -68,10 +71,7 @@ class BuildSelectorButton extends StatelessWidget {
                 ),
 
                 // Arrow icon
-                const Icon(
-                  Icons.chevron_right,
-                  color: Colors.white,
-                ),
+                const Icon(Icons.chevron_right, color: Colors.white),
               ],
             ),
           ),

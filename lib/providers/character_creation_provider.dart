@@ -19,22 +19,23 @@ bool nextButtonStatus(Ref ref) {
   if (provider.index == 0 &&
       provider.characterNameController.text.isNotEmpty &&
       provider.ageController.text.isNotEmpty &&
-      provider.gender != null) {
+      provider.sexualOrientation != null &&
+      provider.gender != null
+  // && provider.voice != null
+  ) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
-      provider.sexualOrientation != null &&
-      provider.language != null) {
+      provider.language != null
+  // uncomment to make it mandatory
+  // provider.country != null &&
+  // provider.city != null
+  ) {
     return true;
   } else if (provider.index == 2 &&
       provider.personality != null &&
       provider.relationship != null &&
-      provider.behaviour != null
-  // uncomment to make it mandatory
-  // && provider.voice != null &&
-  // provider.country != null &&
-  // provider.city != null
-  ) {
+      provider.behaviour != null) {
     return true;
   } else if (provider.index == 3
   // uncomment to make it mandatory
@@ -68,11 +69,9 @@ class CharacterCreation extends _$CharacterCreation {
         characterNameController: initState.characterNameController,
       );
     });
-//change
+    //change
     initState.ageController.addListener(() {
-      state = state._updateWith(
-        ageController: initState.ageController,
-      );
+      state = state._updateWith(ageController: initState.ageController);
     });
 
     initState.descriptionController.addListener(() {

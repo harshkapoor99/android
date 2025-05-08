@@ -14,7 +14,7 @@ class LabeledTextField extends StatelessWidget {
   final String? hintText;
 
   const LabeledTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     this.labelColor = const Color(0xFFF2F2F2),
@@ -23,21 +23,17 @@ class LabeledTextField extends StatelessWidget {
     this.inputTextStyle = const TextStyle(color: Colors.white),
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.borderRadius = 10.0,
-    this.keyboardType = TextInputType.text, // <-- ADDED THIS LINE (with default)
+    this.keyboardType =
+        TextInputType.text, // <-- ADDED THIS LINE (with default)
     this.obscureText = false,
     this.hintText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     final labelStyle =
         labelTextStyle ??
-        TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          height: 1.0,
-          color: labelColor,
-        );
+        TextStyle(fontSize: 16, height: 1.0, color: labelColor);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -49,12 +45,11 @@ class LabeledTextField extends StatelessWidget {
             TextField(
               controller: controller,
               style: inputTextStyle,
+              keyboardType: keyboardType,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
                 hintText: hintText,
-                hintStyle: const TextStyle(
-                  color: Color(0xFF969696),
-                ),
+                hintStyle: const TextStyle(color: Color(0xFF969696)),
                 filled: true,
                 fillColor: fillColor,
                 contentPadding: contentPadding,
