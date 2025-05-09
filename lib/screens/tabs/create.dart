@@ -11,6 +11,8 @@ import 'package:guftagu_mobile/screens/tabs/widgets/step_3_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_4_widget.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
+import 'chat.dart';
+
 class CreateTab extends ConsumerWidget {
   const CreateTab({super.key});
 
@@ -77,7 +79,6 @@ class CreateTab extends ConsumerWidget {
               ),
 
               45.ph,
-
               // PageView for step content
               Expanded(
                 child: PageView(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/screens/tabs/avatarProfile.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -14,6 +15,7 @@ import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 
 class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
@@ -105,7 +107,17 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
           title: Row(
             children: [
-              CircleAvatar(backgroundImage: Image.network(image).image),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AvatarProfile()),
+                  );
+                },
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(image),
+                ),
+              ),
               10.pw,
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
