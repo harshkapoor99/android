@@ -12,6 +12,7 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ChatTab extends ConsumerStatefulWidget {
   ChatTab({super.key});
@@ -33,11 +34,11 @@ class ChatTab extends ConsumerStatefulWidget {
 
 class _ChatTabState extends ConsumerState<ChatTab> {
   @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)?.isCurrent == true) {
       init();
-    });
-    super.initState();
+    }
   }
 
   void init() {
@@ -47,15 +48,26 @@ class _ChatTabState extends ConsumerState<ChatTab> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
-    if (!ref.watch(isHomeVisitedProvider) &&
-        provider.isFetchingChatList &&
-        provider.chatList.isEmpty) {
-      return Center(child: Lottie.asset(Assets.images.logoAnimation));
+    final isHomeVisited = ref.watch(isHomeVisitedProvider);
+    print(isHomeVisited);
+    print(provider.chatList.isEmpty);
+    if (!isHomeVisited) {
+      if (provider.isFetchingChatList && provider.chatList.isEmpty) {
+        // Case 1: Fetching and no chats yet - show loading animation
+        return Center(child: Lottie.asset(Assets.images.logoAnimation));
+      } else if (provider.chatList.isEmpty) {
+        // Case 2: Not fetching and no chats - show home
+        return const HomeTab();
+      }
     }
-    if (!ref.watch(isHomeVisitedProvider) && provider.chatList.isEmpty) {
-      return const HomeTab();
-    } else {
-      return GestureDetector(
+    return VisibilityDetector(
+      key: const Key("chat-screen"),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction == 1) {
+          init();
+        }
+      },
+      child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Column(
           children: [
@@ -217,7 +229,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
             ),
           ],
         ),
-      );
-    }
+      ),
+    );
   }
 }
