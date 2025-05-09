@@ -68,10 +68,12 @@ class Step0Widget extends ConsumerWidget {
             ImageOptionSelector(
               options: genderOptions,
               selected: provider.gender ?? "",
-              onChanged:
-                  (gender) => ref
-                      .read(characterCreationProvider.notifier)
-                      .updateWith(gender: gender),
+              onChanged: (gender) {
+                ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(gender: gender);
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
             ),
             36.ph,
             Text(

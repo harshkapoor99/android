@@ -74,7 +74,14 @@ class Step1Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "City",
-            options: masterData.cities,
+            options:
+                masterData.cities
+                    .where(
+                      (c) =>
+                          c.countryId ==
+                          ref.read(characterCreationProvider).country?.id,
+                    )
+                    .toList(),
             optionToString: (c) => c.cityName,
             onSelect:
                 (p0) => ref
