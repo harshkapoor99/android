@@ -1,10 +1,32 @@
 import 'package:intl/intl.dart';
 
+String formatChatTimestamp(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final oneWeekAgo = today.subtract(const Duration(days: 7));
+
+  final timeString = formatTime(date);
+
+  if (date.year == today.year && date.month == today.month && date.day == today.day) {
+    return 'Today, $timeString';
+  }
+
+  if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+    return 'Yesterday, $timeString';
+  }
+
+  if (date.isAfter(oneWeekAgo)) {
+    final dayName = DateFormat('EEEE').format(date);
+    return '$dayName, $timeString';
+  }
+
+  return '${formatDateWithSuffix(date)}, $timeString';
+}
+
 String formatDateWithSuffix(DateTime date) {
-  // Format the day as an integer
   String day = DateFormat.d().format(date);
 
-  // Determine the ordinal suffix
   String suffix;
   if (day.endsWith('1') && day != '11') {
     suffix = 'st';
@@ -16,10 +38,8 @@ String formatDateWithSuffix(DateTime date) {
     suffix = 'th';
   }
 
-  // Format the month as a short name
   String month = DateFormat.MMM().format(date);
 
-  // Combine day with suffix and month
   return '$day$suffix $month';
 }
 
@@ -28,7 +48,6 @@ String formatTime(DateTime time) {
   int minute = time.minute;
   String period = hour < 12 ? 'AM' : 'PM';
 
-  // Convert to 12-hour format
   hour = hour % 12;
   hour = hour == 0 ? 12 : hour;
 
