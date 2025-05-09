@@ -377,7 +377,8 @@ class _MessageBoxState extends State<MessageBox> {
 
                   hintText: "Chat here",
                   hintStyle: context.appTextStyle.textSmall.copyWith(
-                    fontSize: 16,
+                    // list item text font size reduced
+                    fontSize: 14,
                     color: context.colorExt.textPrimary.withValues(alpha: 0.7),
                   ),
                   fillColor: context.colorExt.border,
@@ -537,7 +538,8 @@ class _ChatBubbleState extends State<ChatBubble> {
                   key: textKey,
                   widget.text,
                   style: context.appTextStyle.text.copyWith(
-                    fontSize: 16,
+                    // list item text font size reduced
+                    fontSize: 14,
                     color: context.colorExt.textPrimary,
                     fontStyle:
                         widget.showTyping ? FontStyle.italic : FontStyle.normal,

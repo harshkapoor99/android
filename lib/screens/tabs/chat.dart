@@ -187,8 +187,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             Text(
                               provider.chatList[index].character.name,
                               style: context.appTextStyle.textSemibold.copyWith(
-                                // list item title font size reduced by 2
-                                fontSize: 16,
+                                // list item title font size reduced
+                                fontSize: 15,
                                 color: context.colorExt.textPrimary.withValues(
                                   alpha: 0.85,
                                 ),
@@ -210,7 +210,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.appTextStyle.textSmall.copyWith(
-                            fontSize: 14,
+                            // list item text font size reduced
+                            fontSize: 12,
                             color: context.colorExt.textSecondary,
                           ),
                         ),
