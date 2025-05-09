@@ -16,7 +16,6 @@ import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
@@ -114,9 +113,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     MaterialPageRoute(builder: (context) => AvatarProfile()),
                   );
                 },
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(image),
-                ),
+                child: CircleAvatar(backgroundImage: NetworkImage(image)),
               ),
               10.pw,
               Column(
@@ -506,11 +503,11 @@ class _ChatBubbleState extends State<ChatBubble> {
       child: Row(
         mainAxisAlignment:
             widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!widget.isMe)
             Container(
-              margin: const EdgeInsets.only(right: 10, top: 5),
+              margin: const EdgeInsets.only(right: 10, bottom: 5),
               width: 30,
               height: 30,
               decoration: BoxDecoration(
