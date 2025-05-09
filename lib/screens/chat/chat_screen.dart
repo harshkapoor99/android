@@ -542,29 +542,38 @@ class _ChatBubbleState extends State<ChatBubble> {
                     fontStyle:
                         widget.showTyping ? FontStyle.italic : FontStyle.normal,
                   ),
-                  contextMenuBuilder:
-                      (context, editableTextState) =>
-                          AdaptiveTextSelectionToolbar.buttonItems(
-                            buttonItems: [
-                              ContextMenuButtonItem(
-                                label: 'Copy',
-                                onPressed: () {
-                                  // Handle copy action
-                                  Clipboard.setData(
-                                    ClipboardData(text: widget.text),
-                                  );
-                                  _deselectText();
-                                },
-                              ),
-                            ],
-                            anchors: TextSelectionToolbarAnchors(
-                              primaryAnchor:
-                                  editableTextState
-                                      .contextMenuAnchors
-                                      .primaryAnchor -
-                                  const Offset(0, 0),
-                            ),
+                  contextMenuBuilder: (context, editableTextState) {
+                    final selectedText = editableTextState
+                        .textEditingValue
+                        .selection
+                        .textInside(widget.text);
+                    return AdaptiveTextSelectionToolbar.buttonItems(
+                      buttonItems: [
+                        if (selectedText.isNotEmpty)
+                          ContextMenuButtonItem(
+                            label: 'Copy',
+                            onPressed: () {
+                              Clipboard.setData(
+                                ClipboardData(text: selectedText),
+                              );
+                              _deselectText();
+                            },
                           ),
+                        ContextMenuButtonItem(
+                          label: 'Copy All',
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: widget.text));
+                            _deselectText();
+                          },
+                        ),
+                      ],
+                      anchors: TextSelectionToolbarAnchors(
+                        primaryAnchor:
+                            editableTextState.contextMenuAnchors.primaryAnchor -
+                            const Offset(0, 0),
+                      ),
+                    );
+                  },
                 ),
                 Align(
                   alignment: Alignment.bottomRight,
