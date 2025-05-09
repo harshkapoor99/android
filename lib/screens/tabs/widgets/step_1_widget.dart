@@ -1,44 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
-import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
-import '../../../components/choice_option_selector.dart';
 import '../../../components/image_option_selector.dart';
+import '../../../providers/character_creation_provider.dart';
 
 class Step1Widget extends ConsumerWidget {
   Step1Widget({super.key});
+
   final List<Map<String, dynamic>> styleOptions = [
     {
       'label': 'Realistic',
-      'image': 'assets/images/model/mod_img9.png',
+      'image': 'assets/images/model/realNew.png',
       'value': 'realistic',
     },
     {
       'label': 'Animie',
-      'image': 'assets/images/model/mod_img10.png',
+      'image': 'assets/images/model/animeNew.png',
       'value': 'anime',
     },
   ];
-  final List<String> orientationOptions = ['Straight', 'Gay', 'Lesbian'];
-  final List<String> languageOptions = ['English', 'Hinglish'];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
+    final masterData = ref.watch(masterDataProvider);
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Style',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFA3A3A3),
-            ),
+          Text(
+            'Character Style',
+            style: context.appTextStyle.characterGenLabel,
           ),
           12.ph,
           ImageOptionSelector(
@@ -49,43 +46,69 @@ class Step1Widget extends ConsumerWidget {
                     .read(characterCreationProvider.notifier)
                     .updateWith(style: style),
           ),
-          48.ph,
-          const Text(
-            'Sexual Orientation',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFA3A3A3),
-            ),
+          36.ph,
+          Text(
+            "Companion's Country",
+            style: context.appTextStyle.characterGenLabel,
           ),
-          5.ph,
-          ChoiceOptionSelector(
-            options: orientationOptions,
-            selected: provider.sexualOrientation ?? "",
-            onSelected:
-                (value) => ref
+          16.ph,
+          buildOptionTile<Country>(
+            context: context,
+            ref: ref,
+            title: "Country",
+            options: masterData.countries,
+            optionToString: (c) => c.countryName,
+            onSelect:
+                (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(sexualOrientation: value),
+                    .updateWith(country: p0),
+            selected: provider.country,
           ),
-          24.ph,
-          const Text(
-            'Primary Language',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFA3A3A3),
-            ),
+          36.ph,
+          Text(
+            "Companion's City",
+            style: context.appTextStyle.characterGenLabel,
           ),
-          5.ph,
-          ChoiceOptionSelector<Language>(
-            options: ref.read(masterDataProvider).languages,
+          16.ph,
+          buildOptionTile<City>(
+            context: context,
+            ref: ref,
+            title: "City",
+            options:
+                masterData.cities
+                    .where(
+                      (c) =>
+                          c.countryId ==
+                          ref.read(characterCreationProvider).country?.id,
+                    )
+                    .toList(),
+            optionToString: (c) => c.cityName,
+            onSelect:
+                (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(city: p0),
+            selected: provider.city,
+          ),
+          36.ph,
+          Text(
+            "Companion's Language",
+            style: context.appTextStyle.characterGenLabel,
+          ),
+
+          16.ph,
+          buildOptionTile<Language>(
+            context: context,
+            ref: ref,
+            title: "Language",
+            options: masterData.languages,
+            optionToString: (c) => c.title,
+            onSelect:
+                (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(language: p0),
             selected: provider.language,
-            optionToString: (p0) => p0.title,
-            onSelected:
-                (value) => ref
-                    .read(characterCreationProvider.notifier)
-                    .updateWith(language: value),
           ),
+          32.ph,
         ],
       ),
     );

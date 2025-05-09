@@ -69,7 +69,10 @@ class PrevNextButtons extends ConsumerWidget {
                     // color changed to grey
                     "Previous",
                     style: context.appTextStyle.buttonText.copyWith(
-                      color: const Color(0xffa3a3a3), // Use your desired style
+                      color:
+                          context
+                              .colorExt
+                              .textSecondary, // Use your desired style
                     ),
                   ),
                 )

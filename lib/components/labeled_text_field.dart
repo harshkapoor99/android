@@ -9,9 +9,12 @@ class LabeledTextField extends StatelessWidget {
   final TextStyle? inputTextStyle;
   final EdgeInsetsGeometry contentPadding;
   final double borderRadius;
+  final TextInputType keyboardType; // <-- ADDED THIS LINE
+  final bool obscureText;
+  final String? hintText;
 
   const LabeledTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.label,
     this.labelColor = const Color(0xFFF2F2F2),
@@ -20,18 +23,17 @@ class LabeledTextField extends StatelessWidget {
     this.inputTextStyle = const TextStyle(color: Colors.white),
     this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.borderRadius = 10.0,
-  }) : super(key: key);
+    this.keyboardType =
+        TextInputType.text, // <-- ADDED THIS LINE (with default)
+    this.obscureText = false,
+    this.hintText,
+  });
 
   @override
   Widget build(BuildContext context) {
     final labelStyle =
         labelTextStyle ??
-        TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w600,
-          height: 1.0,
-          color: labelColor,
-        );
+        TextStyle(fontSize: 16, height: 1.0, color: labelColor);
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -39,12 +41,15 @@ class LabeledTextField extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(label, style: labelStyle),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             TextField(
               controller: controller,
               style: inputTextStyle,
+              keyboardType: keyboardType,
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: const TextStyle(color: Color(0xFF969696)),
                 filled: true,
                 fillColor: fillColor,
                 contentPadding: contentPadding,

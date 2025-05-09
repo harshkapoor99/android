@@ -18,23 +18,25 @@ bool nextButtonStatus(Ref ref) {
   final provider = ref.watch(characterCreationProvider);
   if (provider.index == 0 &&
       provider.characterNameController.text.isNotEmpty &&
-      provider.age != null &&
-      provider.gender != null) {
+      provider.ageController.text.isNotEmpty &&
+      provider.sexualOrientation != null &&
+      provider.gender != null
+  // && provider.voice != null
+  ) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
-      provider.sexualOrientation != null &&
-      provider.language != null) {
-    return true;
-  } else if (provider.index == 2 &&
-      provider.personality != null &&
-      provider.relationship != null &&
-      provider.behaviour != null
+      provider.language != null
   // uncomment to make it mandatory
-  // && provider.voice != null &&
   // provider.country != null &&
   // provider.city != null
   ) {
+    return true;
+  } else if (provider.index == 2 &&
+      provider.characterType != null &&
+      provider.personality != null &&
+      provider.relationship != null &&
+      provider.behaviours.isNotEmpty) {
     return true;
   } else if (provider.index == 3
   // uncomment to make it mandatory
@@ -59,6 +61,7 @@ class CharacterCreation extends _$CharacterCreation {
       pageController: PageController(keepPage: true),
       index: 0,
       characterNameController: TextEditingController(),
+      ageController: TextEditingController(),
       descriptionController: TextEditingController(),
       backstoryController: TextEditingController(),
     );
@@ -67,6 +70,11 @@ class CharacterCreation extends _$CharacterCreation {
         characterNameController: initState.characterNameController,
       );
     });
+    //change
+    initState.ageController.addListener(() {
+      state = state._updateWith(ageController: initState.ageController);
+    });
+
     initState.descriptionController.addListener(() {
       state = state._updateWith(
         descriptionController: initState.descriptionController,
@@ -88,8 +96,9 @@ class CharacterCreation extends _$CharacterCreation {
     Language? language,
     Personality? personality,
     Relationship? relationship,
-    Behaviour? behaviour,
+    List<Behaviour>? behaviours,
     Voice? voice,
+    CharacterType? characterType,
     Country? country,
     City? city,
     String? refImageUrl,
@@ -97,14 +106,15 @@ class CharacterCreation extends _$CharacterCreation {
     GenImage? seletedCharacterImage,
   }) {
     state = state._updateWith(
-      age: age,
+      // age: age,
       gender: gender,
       style: style,
       sexualOrientation: sexualOrientation,
       language: language,
       personality: personality,
       relationship: relationship,
-      behaviour: behaviour,
+      behaviours: behaviours,
+      characterType: characterType,
       voice: voice,
       country: country,
       city: city,
@@ -112,6 +122,30 @@ class CharacterCreation extends _$CharacterCreation {
       // uploadImage: uploadImage,
       seletedCharacterImage: seletedCharacterImage,
     );
+  }
+
+  void updateRPBWith({
+    CharacterType? characterType,
+    Personality? personality,
+    Relationship? relationship,
+    List<Behaviour>? behaviours,
+  }) {
+    if (characterType != null) {
+      state.characterType = characterType;
+      state.relationship = null;
+      state.personality = null;
+      state.behaviours = [];
+    } else if (relationship != null) {
+      state.relationship = relationship;
+      state.personality = null;
+      state.behaviours = [];
+    } else if (personality != null) {
+      state.personality = personality;
+      state.behaviours = [];
+    } else if (behaviours != null) {
+      state.behaviours = behaviours;
+    }
+    state = state._updateWithState(state);
   }
 
   void updateIndex(int index) {
@@ -122,6 +156,7 @@ class CharacterCreation extends _$CharacterCreation {
     state = state._clear();
     state.pageController.jumpToPage(0);
     state.characterNameController.clear();
+    state.ageController.clear();
     state.descriptionController.clear();
     state.backstoryController.clear();
   }
@@ -135,11 +170,11 @@ class CharacterCreation extends _$CharacterCreation {
             creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
             creatorUserType: "user",
             name: state.characterNameController.text,
-            age: state.age!,
+            age: state.ageController.text,
             gender: state.gender!,
             style: state.style!,
             languageId: state.language!.id,
-            behaviourId: state.behaviour!.id,
+            behaviourId: state.behaviours.map((b) => b.id).toList(),
             personalityId: state.personality!.id,
             relationshipId: state.relationship!.id,
             voiceId: state.voice?.id,
@@ -217,21 +252,22 @@ class CharacterCreation extends _$CharacterCreation {
 }
 
 class CharacterCreationState {
-  const CharacterCreationState({
+  CharacterCreationState({
     required this.pageController,
     required this.index,
     required this.characterNameController,
-    this.age,
+    required this.ageController, // change
     this.gender,
     this.style,
     this.sexualOrientation,
     this.language,
     this.personality,
     this.relationship,
-    this.behaviour,
+    this.behaviours = const [],
     this.voice,
     this.country,
     this.city,
+    this.characterType,
     // this.uploadImage,
     this.isImageUploading = false,
     this.refImageUrl,
@@ -243,47 +279,49 @@ class CharacterCreationState {
     this.seletedCharacterImage,
   });
 
-  final PageController pageController;
-  final int index;
+  PageController pageController;
+  int index;
 
-  final TextEditingController characterNameController;
-  final String? age;
-  final String? gender;
-  final String? style;
-  final String? sexualOrientation;
-  final Language? language;
-  final Personality? personality;
-  final Relationship? relationship;
-  final Behaviour? behaviour;
-  final Voice? voice;
-  final Country? country;
-  final City? city;
-  // final XFile? uploadImage;
-  final String? refImageUrl;
-  final TextEditingController descriptionController;
-  final TextEditingController backstoryController;
+  TextEditingController characterNameController;
+  TextEditingController ageController; // change
+  String? gender;
+  String? style;
+  String? sexualOrientation;
+  Language? language;
+  Personality? personality;
+  Relationship? relationship;
+  List<Behaviour> behaviours;
+  Voice? voice;
+  Country? country;
+  City? city;
+  CharacterType? characterType;
+  //  XFile? uploadImage;
+  String? refImageUrl;
+  TextEditingController descriptionController;
+  TextEditingController backstoryController;
 
-  final bool isCharacterGenerating, isImageUploading;
-  final String chracterId;
-  final List<GenImage> characterImages;
-  final GenImage? seletedCharacterImage;
+  bool isCharacterGenerating, isImageUploading;
+  String chracterId;
+  List<GenImage> characterImages;
+  GenImage? seletedCharacterImage;
 
   // _updateWith method to update the state
   CharacterCreationState _updateWith({
     PageController? pageController,
     int? index,
     TextEditingController? characterNameController,
-    String? age,
+    TextEditingController? ageController,
     String? gender,
     String? style,
     String? sexualOrientation,
     Language? language,
     Personality? personality,
     Relationship? relationship,
-    Behaviour? behaviour,
+    List<Behaviour>? behaviours,
     Voice? voice,
     Country? country,
     City? city,
+    CharacterType? characterType,
     String? refImageUrl,
     // XFile? uploadImage,
     bool? isImageUploading,
@@ -299,17 +337,18 @@ class CharacterCreationState {
       index: index ?? this.index,
       characterNameController:
           characterNameController ?? this.characterNameController,
-      age: age ?? this.age,
+      ageController: ageController ?? this.ageController,
       gender: gender ?? this.gender,
       style: style ?? this.style,
       sexualOrientation: sexualOrientation ?? this.sexualOrientation,
       language: language ?? this.language,
       personality: personality ?? this.personality,
       relationship: relationship ?? this.relationship,
-      behaviour: behaviour ?? this.behaviour,
+      behaviours: behaviours ?? this.behaviours,
       voice: voice ?? this.voice,
       country: country ?? this.country,
       city: city ?? this.city,
+      characterType: characterType ?? this.characterType,
       refImageUrl: refImageUrl ?? this.refImageUrl,
       // uploadImage: uploadImage ?? this.uploadImage,
       isImageUploading: isImageUploading ?? this.isImageUploading,
@@ -325,19 +364,49 @@ class CharacterCreationState {
     );
   }
 
+  // _updateWith method to update the state
+  CharacterCreationState _updateWithState(CharacterCreationState state) {
+    return CharacterCreationState(
+      pageController: state.pageController,
+      index: state.index,
+      characterNameController: state.characterNameController,
+      ageController: state.ageController,
+      gender: state.gender,
+      style: state.style,
+      sexualOrientation: state.sexualOrientation,
+      language: state.language,
+      personality: state.personality,
+      relationship: state.relationship,
+      behaviours: state.behaviours,
+      voice: state.voice,
+      country: state.country,
+      city: state.city,
+      characterType: state.characterType,
+      refImageUrl: state.refImageUrl,
+      // uploadImage: state.uploadImage ,
+      isImageUploading: state.isImageUploading,
+      descriptionController: state.descriptionController,
+      backstoryController: state.backstoryController,
+      isCharacterGenerating: state.isCharacterGenerating,
+      characterImages: state.characterImages,
+      chracterId: state.chracterId,
+      seletedCharacterImage: state.seletedCharacterImage,
+    );
+  }
+
   CharacterCreationState _clear() {
     return CharacterCreationState(
       pageController: pageController,
       index: 0,
       characterNameController: characterNameController,
-      age: null,
+      ageController: ageController,
       gender: null,
       style: null,
       sexualOrientation: null,
       language: null,
       personality: null,
       relationship: null,
-      behaviour: null,
+      behaviours: [],
       voice: null,
       country: null,
       city: null,

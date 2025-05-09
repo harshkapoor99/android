@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
-import '../../../components/choice_option_selector.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../components/labeled_text_field.dart';
+import '../../../models/master/master_models.dart';
+import '../../../providers/master_data_provider.dart';
 
 class Step0Widget extends ConsumerWidget {
   Step0Widget({super.key});
 
-  final List<String> ageOptions = ['18+', '30+', '40+', '50+', '60+'];
+  final List<String> sexualOrientationOptions = ['Straight', 'Gay', 'Lesbian'];
+
   final List<Map<String, dynamic>> genderOptions = [
     {
       'label': 'Female',
-      'image': 'assets/images/model/mod_img5.jpeg',
+      'image': 'assets/images/model/femaleNew.jpg',
       'icon': 'assets/icons/female.svg',
       'value': 'female',
     },
     {
       'label': 'Male',
-      'image': 'assets/images/onboarding/ob_img14.webp',
+      'image': 'assets/images/model/maleNew.jpg',
       'icon': 'assets/icons/male.svg',
       'value': 'male',
     },
     {
       'label': 'Others',
-      'image': 'assets/images/les.png',
+      'image': 'assets/images/model/lesboNew.jpg',
       'icon': 'assets/icons/lesbo.svg',
       'value': 'others',
     },
@@ -33,6 +37,9 @@ class Step0Widget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final masterData = ref.watch(masterDataProvider);
+    final characterProvider = ref.watch(characterCreationProvider);
+
     final provider = ref.watch(characterCreationProvider);
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -42,48 +49,103 @@ class Step0Widget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LabeledTextField(
-              labelColor: const Color(0xFFA3A3A3),
+              labelColor: const Color(0xFFF2F2F2),
               controller: provider.characterNameController,
               label: 'Character Name',
+              hintText: 'Name',
             ),
             36.ph,
-            const Text(
-              'Choose Age',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
-            5.ph,
-            ChoiceOptionSelector(
-              options: ageOptions,
-              selected: provider.age ?? "",
-              onSelected: (age) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                ref
-                    .read(characterCreationProvider.notifier)
-                    .updateWith(age: age);
-              },
+            LabeledTextField(
+              labelColor: const Color(0xFFF2F2F2),
+              controller: provider.ageController,
+              label: 'Age (yrs)',
+              hintText: 'Eg. 26',
+              keyboardType: TextInputType.number,
             ),
             36.ph,
-            const Text(
-              'Gender',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
+            Text('Gender', style: context.appTextStyle.characterGenLabel),
             12.ph,
             ImageOptionSelector(
               options: genderOptions,
               selected: provider.gender ?? "",
-              onChanged:
-                  (gender) => ref
-                      .read(characterCreationProvider.notifier)
-                      .updateWith(gender: gender),
+              onChanged: (gender) {
+                ref
+                    .read(characterCreationProvider.notifier)
+                    .updateWith(gender: gender);
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
             ),
+            36.ph,
+            Text(
+              'Sexual Orientation',
+              style: context.appTextStyle.characterGenLabel,
+            ),
+            16.ph,
+            Row(
+              children:
+                  sexualOrientationOptions.map((option) {
+                    final isSelected = provider.sexualOrientation == option;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: InkWell(
+                        onTap: () {
+                          ref
+                              .read(characterCreationProvider.notifier)
+                              .updateWith(sexualOrientation: option);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                isSelected
+                                    ? Color(0xFFBEBEBE)
+                                    : const Color(0xFF23222F),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            option,
+                            style:
+                                isSelected
+                                    ? const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF000000),
+                                    )
+                                    : const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            ),
+            36.ph,
+            Text(
+              'Companion’s  Voice',
+              style: context.appTextStyle.textSemibold.copyWith(
+                color: const Color(0xFFF2F2F2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            buildOptionTile<Voice>(
+              context: context,
+              ref: ref,
+              title: 'Voice',
+              options: masterData.voices,
+              optionToString: (v) => v.fullName,
+              onSelect:
+                  (p0) => ref
+                      .read(characterCreationProvider.notifier)
+                      .updateWith(voice: p0),
+              selected: characterProvider.voice,
+            ),
+            32.ph,
           ],
         ),
       ),

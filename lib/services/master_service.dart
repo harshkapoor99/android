@@ -21,6 +21,11 @@ abstract class MasterService {
   Future<Response> fetchCountries();
   Future<Response> fetchCities();
   Future<Response> fetchCharacterTypes();
+
+  // By ID
+  Future<Response> fetchBehaviousByPersonality(String id);
+  Future<Response> fetchPersionalitiesByRelationship(String id);
+  Future<Response> fetchRelationshipsByCharactertype(String id);
 }
 
 class MasterServiceImpl implements MasterService {
@@ -78,6 +83,33 @@ class MasterServiceImpl implements MasterService {
   @override
   Future<Response> fetchVoices() async {
     final response = await _apiClient.get(RemoteEndpoint.fetchVoices.url);
+    return response;
+  }
+
+  @override
+  Future<Response> fetchBehaviousByPersonality(String id) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchBehaviousByPersonality.url,
+      data: {"personality_id": id},
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> fetchPersionalitiesByRelationship(String id) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchPersionalitiesByRelationship.url,
+      data: {"relationship_id": id},
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> fetchRelationshipsByCharactertype(String id) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchRelationshipsByCharactertype.url,
+      data: {"charactertype_id": id},
+    );
     return response;
   }
 }

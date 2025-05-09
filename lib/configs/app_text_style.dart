@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:guftagu_mobile/configs/theme.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class AppTextStyle {
   final BuildContext context;
@@ -65,4 +66,7 @@ class AppTextStyle {
     fontSize: 20,
     fontWeight: FontWeight.w700,
   );
+
+  TextStyle get characterGenLabel =>
+      TextStyle(fontSize: 16, color: context.colorExt.textPrimary);
 }

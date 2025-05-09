@@ -1,4 +1,5 @@
 import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/services/master_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -168,6 +169,73 @@ class MasterData extends _$MasterData {
     fetchVoices();
     fetchCountries();
     fetchCities();
+    fetchCharacterTypes();
+  }
+
+  void fetchBehaviousByPersonality() async {
+    final response = await ref
+        .read(masterServiceProvider)
+        .fetchBehaviousByPersonality(
+          ref.read(characterCreationProvider).personality!.id,
+        );
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<Behaviour> behaviours =
+            data.map((e) => Behaviour.fromMap(e)).toList().cast<Behaviour>();
+        state = state.copyWith(behaviours: behaviours);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  void fetchPersionalitiesByRelationship() async {
+    final response = await ref
+        .read(masterServiceProvider)
+        .fetchPersionalitiesByRelationship(
+          ref.read(characterCreationProvider).relationship!.id,
+        );
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<Personality> personalities =
+            data
+                .map((e) => Personality.fromMap(e))
+                .toList()
+                .cast<Personality>();
+        state = state.copyWith(personalities: personalities);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
+  void fetchRelationshipsByCharactertype() async {
+    final response = await ref
+        .read(masterServiceProvider)
+        .fetchRelationshipsByCharactertype(
+          ref.read(characterCreationProvider).characterType!.id,
+        );
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<Relationship> relationships =
+            data
+                .map((e) => Relationship.fromMap(e))
+                .toList()
+                .cast<Relationship>();
+        state = state.copyWith(relationships: relationships);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
   }
 }
 

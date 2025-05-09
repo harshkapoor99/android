@@ -1,3 +1,4 @@
+import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -21,5 +22,8 @@ class TabIndex extends _$TabIndex {
 
   void changeTab(int index) {
     state = index;
+    if (index == 0) {
+      ref.read(chatProvider.notifier).fetchChatList();
+    }
   }
 }
