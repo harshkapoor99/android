@@ -33,24 +33,18 @@ class ChatTab extends ConsumerStatefulWidget {
 }
 
 class _ChatTabState extends ConsumerState<ChatTab> {
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (ModalRoute.of(context)?.isCurrent == true) {
-      init();
-    }
-  }
-
-  void init() {
-    ref.read(chatProvider.notifier).fetchChatList();
-  }
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  //     init();
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
     final isHomeVisited = ref.watch(isHomeVisitedProvider);
-    print(isHomeVisited);
-    print(provider.chatList.isEmpty);
     if (!isHomeVisited) {
       if (provider.isFetchingChatList && provider.chatList.isEmpty) {
         // Case 1: Fetching and no chats yet - show loading animation
@@ -60,89 +54,88 @@ class _ChatTabState extends ConsumerState<ChatTab> {
         return const HomeTab();
       }
     }
-    return VisibilityDetector(
-      key: const Key("chat-screen"),
-      onVisibilityChanged: (info) {
-        if (info.visibleFraction == 1) {
-          init();
-        }
-      },
-      child: GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Column(
-          children: [
-            const SizedBox(height: 10),
-            SingleChildScrollView(
-              // height: MediaQuery.sizeOf(context).height * 0.18,
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                // shrinkWrap: true,
-                // scrollDirection: Axis.horizontal,
-                // itemCount: widget.ais.length + 1,
-                // itemBuilder: (context, index) {
-                children:
-                    widget.ais.map((ai) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          right: ai["name"] == "Explore" ? 0 : 8,
-                        ),
-                        child: Column(
-                          children: [
-                            Ink(
-                              height: 100,
-                              width: 80,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                color:
-                                    ai["name"] == "Explore"
-                                        ? context.colorExt.border
-                                        : null,
-                                image:
-                                    ai["name"] != "Explore"
-                                        ? DecorationImage(
-                                          image: ai["image"].provider(),
-                                          fit: BoxFit.cover,
-                                        )
-                                        : null,
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  if (ai["name"] == "Explore") {
-                                    context.nav.pushNamed(Routes.explore);
-                                  }
-                                },
-                                borderRadius: BorderRadius.circular(40),
-                                child:
-                                    ai["name"] == "Explore"
-                                        ? Center(
-                                          child: Icon(
-                                            Icons.arrow_outward_sharp,
-                                            color:
-                                                context.colorExt.textSecondary,
-                                            size: 24,
-                                          ),
-                                        )
-                                        : null,
-                              ),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Column(
+        children: [
+          const SizedBox(height: 10),
+          SingleChildScrollView(
+            // height: MediaQuery.sizeOf(context).height * 0.18,
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              // shrinkWrap: true,
+              // scrollDirection: Axis.horizontal,
+              // itemCount: widget.ais.length + 1,
+              // itemBuilder: (context, index) {
+              children:
+                  widget.ais.map((ai) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: ai["name"] == "Explore" ? 0 : 8,
+                      ),
+                      child: Column(
+                        children: [
+                          Ink(
+                            height: 100,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              color:
+                                  ai["name"] == "Explore"
+                                      ? context.colorExt.border
+                                      : null,
+                              image:
+                                  ai["name"] != "Explore"
+                                      ? DecorationImage(
+                                        image: ai["image"].provider(),
+                                        fit: BoxFit.cover,
+                                      )
+                                      : null,
                             ),
-                            6.ph,
-                            Text(
-                              ai["name"],
-                              style: context.appTextStyle.textBold.copyWith(
-                                fontSize: 12,
-                              ),
+                            child: InkWell(
+                              onTap: () {
+                                if (ai["name"] == "Explore") {
+                                  context.nav.pushNamed(Routes.explore);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(40),
+                              child:
+                                  ai["name"] == "Explore"
+                                      ? Center(
+                                        child: Icon(
+                                          Icons.arrow_outward_sharp,
+                                          color: context.colorExt.textSecondary,
+                                          size: 24,
+                                        ),
+                                      )
+                                      : null,
                             ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-              ),
+                          ),
+                          6.ph,
+                          Text(
+                            ai["name"],
+                            style: context.appTextStyle.textBold.copyWith(
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
             ),
-            24.ph,
+          ),
+          24.ph,
 
-            const CategoryList(),
-            Expanded(
+          const CategoryList(),
+          Expanded(
+            child: VisibilityDetector(
+              key: const Key("chat-screen"),
+              onVisibilityChanged: (info) {
+                if (info.visibleFraction == 1) {
+                  ref.read(chatProvider.notifier).fetchChatList();
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: RefreshIndicator(
@@ -194,8 +187,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             Text(
                               provider.chatList[index].character.name,
                               style: context.appTextStyle.textSemibold.copyWith(
-                                // list item title font size reduced by 2
-                                fontSize: 16,
+                                // list item title font size reduced
+                                fontSize: 15,
                                 color: context.colorExt.textPrimary.withValues(
                                   alpha: 0.85,
                                 ),
@@ -217,7 +210,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: context.appTextStyle.textSmall.copyWith(
-                            fontSize: 14,
+                            // list item text font size reduced
+                            fontSize: 12,
                             color: context.colorExt.textSecondary,
                           ),
                         ),
@@ -227,8 +221,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

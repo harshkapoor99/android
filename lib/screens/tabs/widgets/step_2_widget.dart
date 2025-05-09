@@ -36,7 +36,7 @@ class Step2Widget extends ConsumerWidget {
             ref: ref,
             title: "Category",
             options: masterData.characterTypes,
-            optionToString: (c) => c.charactertypeName,
+            optionToString: (c) => "${c.charactertypeName} ${c.emoji}",
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
@@ -66,7 +66,7 @@ class Step2Widget extends ConsumerWidget {
                           ref.read(characterCreationProvider).characterType?.id,
                     )
                     .toList(),
-            optionToString: (c) => c.title,
+            optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).characterType != null
                     ? "No relationship found for this Category"
@@ -100,7 +100,7 @@ class Step2Widget extends ConsumerWidget {
                           ref.read(characterCreationProvider).relationship?.id,
                     )
                     .toList(),
-            optionToString: (c) => c.title,
+            optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).relationship != null
                     ? "No personality found for this relationship"
@@ -134,7 +134,7 @@ class Step2Widget extends ConsumerWidget {
                           ref.read(characterCreationProvider).personality?.id,
                     )
                     .toList(),
-            optionToString: (c) => c.title,
+            optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"

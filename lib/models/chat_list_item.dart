@@ -20,7 +20,13 @@ class ChatListItem {
     creatorId: json["creator_id"],
     character: Character.fromMap(json["character"]),
     lastMessage: json["last_message"],
-    lastMessageTime: DateTime.parse(json["last_message_time"]),
+    lastMessageTime: DateTime.parse(
+      json["last_message_time"].runtimeType == String
+          ? json["last_message_time"].contains("Z")
+              ? json["last_message_time"]
+              : json["last_message_time"].padRight(26, "0") + ("Z")
+          : json["last_message_time"],
+    ),
   );
 
   Map<String, dynamic> toMap() => {

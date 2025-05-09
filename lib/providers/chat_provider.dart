@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
+import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -57,7 +58,7 @@ class Chat extends _$Chat {
 
       String reply = response.data["reply"];
 
-      appendChat(isMe: false, text: reply);
+      appendChat(isMe: false, text: reply, time: DateTime.now());
     } catch (e) {
       rethrow;
     } finally {
@@ -67,7 +68,11 @@ class Chat extends _$Chat {
 
   void chatWithCharacter() async {
     try {
-      appendChat(isMe: true, text: state.messageController.text);
+      appendChat(
+        isMe: true,
+        text: state.messageController.text,
+        time: DateTime.now(),
+      );
       state = state._updateWith(isTyping: true);
       String message = state.messageController.text;
       state.messageController.clear();
@@ -81,7 +86,7 @@ class Chat extends _$Chat {
 
       String reply = response.data["reply"];
 
-      appendChat(isMe: false, text: reply);
+      appendChat(isMe: false, text: reply, time: DateTime.now());
     } catch (e) {
       rethrow;
     } finally {
@@ -126,10 +131,7 @@ class Chat extends _$Chat {
       final List<dynamic> chats = response.data["chats"];
       final List<ChatMessage> parsedChats =
           chats.map((e) {
-            return ChatMessage(
-              isMe: e["sender"] == "user" ? true : false,
-              text: e['message'],
-            );
+            return ChatMessage.fromMap(e);
           }).toList();
       if (chats.isNotEmpty) {
         state = state._updateWith(messages: parsedChats);
@@ -156,9 +158,16 @@ class Chat extends _$Chat {
     state = state._updateWith(character: character);
   }
 
-  void appendChat({required bool isMe, required String text}) {
+  void appendChat({
+    required bool isMe,
+    required String text,
+    required DateTime time,
+  }) {
     state = state._updateWith(
-      messages: [...state.messages, ChatMessage(isMe: isMe, text: text)],
+      messages: [
+        ...state.messages,
+        ChatMessage(isMe: isMe, text: text, time: time),
+      ],
     );
   }
 }
@@ -203,16 +212,4 @@ class ChatState {
       chatList: chatList ?? this.chatList,
     );
   }
-}
-
-class ChatMessage {
-  final bool isMe;
-  final String text;
-
-  ChatMessage({required this.isMe, required this.text});
-
-  factory ChatMessage.fromMap(Map<String, dynamic> json) =>
-      ChatMessage(isMe: json["isMe"], text: json["text"]);
-
-  Map<String, dynamic> toMap() => {"isMe": isMe, "text": text};
 }

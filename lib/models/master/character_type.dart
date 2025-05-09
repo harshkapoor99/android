@@ -4,6 +4,7 @@ class CharacterType {
   final String id;
   final String charactertypeName;
   final String description;
+  final String emoji;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
@@ -12,6 +13,7 @@ class CharacterType {
     required this.id,
     required this.charactertypeName,
     required this.description,
+    required this.emoji,
     required this.createdDate,
     required this.updatedDate,
     required this.status,
@@ -21,6 +23,7 @@ class CharacterType {
     id: json["_id"],
     charactertypeName: json["charactertype_name"],
     description: json["description"],
+    emoji: json["emoji"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],
@@ -30,6 +33,7 @@ class CharacterType {
     "_id": id,
     "charactertype_name": charactertypeName,
     "description": description,
+    "emoji": emoji,
     "created_date": createdDate.toIso8601String(),
     "updated_date": updatedDate.toIso8601String(),
     "status": status,

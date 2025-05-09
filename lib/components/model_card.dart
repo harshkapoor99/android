@@ -90,10 +90,13 @@ class ModelCard extends ConsumerWidget {
                         ),
                       ),
                       // if (persionality.hasValue)
-                      Text(
-                        "Perfect girlfriend",
-                        style: context.appTextStyle.text.copyWith(fontSize: 10),
-                      ),
+                      if (persionality != null)
+                        Text(
+                          persionality!,
+                          style: context.appTextStyle.text.copyWith(
+                            fontSize: 10,
+                          ),
+                        ),
                     ],
                   ),
                   const Spacer(),
