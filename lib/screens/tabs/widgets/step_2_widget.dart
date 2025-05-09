@@ -40,7 +40,7 @@ class Step2Widget extends ConsumerWidget {
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(characterType: p0),
+                    .updateRPBWith(characterType: p0),
             selected: provider.characterType,
             icon: SvgPicture.asset(
               'assets/icons/mdi_category-outline.svg',
@@ -67,10 +67,14 @@ class Step2Widget extends ConsumerWidget {
                     )
                     .toList(),
             optionToString: (c) => c.title,
+            emptyOptionHint:
+                ref.read(characterCreationProvider).characterType != null
+                    ? "No relationship found for this Category"
+                    : "Choose a category to continue",
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(relationship: p0),
+                    .updateRPBWith(relationship: p0),
             selected: provider.relationship,
             icon: SvgPicture.asset(
               'assets/icons/carbon_friendship.svg',
@@ -97,10 +101,14 @@ class Step2Widget extends ConsumerWidget {
                     )
                     .toList(),
             optionToString: (c) => c.title,
+            emptyOptionHint:
+                ref.read(characterCreationProvider).relationship != null
+                    ? "No personality found for this relationship"
+                    : "Choose a relationship to continue",
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(personality: p0),
+                    .updateRPBWith(personality: p0),
             selected: provider.personality,
             icon: SvgPicture.asset(
               'assets/icons/solar_mask-sad-linear.svg',
@@ -127,11 +135,15 @@ class Step2Widget extends ConsumerWidget {
                     )
                     .toList(),
             optionToString: (c) => c.title,
+            emptyOptionHint:
+                ref.read(characterCreationProvider).personality != null
+                    ? "No Behaviour found for this personality"
+                    : "Choose a personality to continue",
             onSelect: (p0) => {},
             onMultiSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(behaviours: p0),
+                    .updateRPBWith(behaviours: p0),
             multiSelected: provider.behaviours,
             icon: SvgPicture.asset(
               'assets/icons/material-symbols_mindfulness-outline.svg',

@@ -11,7 +11,7 @@ class Character {
   final String languageId;
   final String personalityId;
   final String relationshipId;
-  final String behaviourId;
+  final List<String> behaviourIds;
   final dynamic voiceId;
   final dynamic countryId;
   final dynamic cityId;
@@ -35,7 +35,7 @@ class Character {
     required this.languageId,
     required this.personalityId,
     required this.relationshipId,
-    required this.behaviourId,
+    required this.behaviourIds,
     required this.voiceId,
     required this.countryId,
     required this.cityId,
@@ -60,7 +60,7 @@ class Character {
     languageId: json["language_id"],
     personalityId: json["personality_id"],
     relationshipId: json["relationship_id"],
-    behaviourId: json["behaviour_id"],
+    behaviourIds: List<String>.from(json["behaviour_ids"]),
     voiceId: json["voice_id"],
     countryId: json["country_id"],
     cityId: json["city_id"],
@@ -87,7 +87,7 @@ class Character {
     "language_id": languageId,
     "personality_id": personalityId,
     "relationship_id": relationshipId,
-    "behaviour_id": behaviourId,
+    "behaviour_ids": behaviourIds,
     "voice_id": voiceId,
     "country_id": countryId,
     "city_id": cityId,

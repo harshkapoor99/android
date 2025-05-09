@@ -89,7 +89,7 @@ class CharacterServiceImpl implements CharacterService {
         "gender": gender,
         "style": style,
         "language_id": languageId,
-        "behaviour_id": behaviourId,
+        "behaviour_ids": behaviourId,
         "personality_id": personalityId,
         "relationship_id": relationshipId,
         "voice_id": voiceId,

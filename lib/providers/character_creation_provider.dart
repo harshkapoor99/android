@@ -33,9 +33,10 @@ bool nextButtonStatus(Ref ref) {
   ) {
     return true;
   } else if (provider.index == 2 &&
+      provider.characterType != null &&
       provider.personality != null &&
       provider.relationship != null &&
-      provider.behaviours.isEmpty) {
+      provider.behaviours.isNotEmpty) {
     return true;
   } else if (provider.index == 3
   // uncomment to make it mandatory
@@ -121,6 +122,30 @@ class CharacterCreation extends _$CharacterCreation {
       // uploadImage: uploadImage,
       seletedCharacterImage: seletedCharacterImage,
     );
+  }
+
+  void updateRPBWith({
+    CharacterType? characterType,
+    Personality? personality,
+    Relationship? relationship,
+    List<Behaviour>? behaviours,
+  }) {
+    if (characterType != null) {
+      state.characterType = characterType;
+      state.relationship = null;
+      state.personality = null;
+      state.behaviours = [];
+    } else if (relationship != null) {
+      state.relationship = relationship;
+      state.personality = null;
+      state.behaviours = [];
+    } else if (personality != null) {
+      state.personality = personality;
+      state.behaviours = [];
+    } else if (behaviours != null) {
+      state.behaviours = behaviours;
+    }
+    state = state._updateWithState(state);
   }
 
   void updateIndex(int index) {
@@ -227,7 +252,7 @@ class CharacterCreation extends _$CharacterCreation {
 }
 
 class CharacterCreationState {
-  const CharacterCreationState({
+  CharacterCreationState({
     required this.pageController,
     required this.index,
     required this.characterNameController,
@@ -254,31 +279,31 @@ class CharacterCreationState {
     this.seletedCharacterImage,
   });
 
-  final PageController pageController;
-  final int index;
+  PageController pageController;
+  int index;
 
-  final TextEditingController characterNameController;
-  final TextEditingController ageController; // change
-  final String? gender;
-  final String? style;
-  final String? sexualOrientation;
-  final Language? language;
-  final Personality? personality;
-  final Relationship? relationship;
-  final List<Behaviour> behaviours;
-  final Voice? voice;
-  final Country? country;
-  final City? city;
-  final CharacterType? characterType;
-  // final XFile? uploadImage;
-  final String? refImageUrl;
-  final TextEditingController descriptionController;
-  final TextEditingController backstoryController;
+  TextEditingController characterNameController;
+  TextEditingController ageController; // change
+  String? gender;
+  String? style;
+  String? sexualOrientation;
+  Language? language;
+  Personality? personality;
+  Relationship? relationship;
+  List<Behaviour> behaviours;
+  Voice? voice;
+  Country? country;
+  City? city;
+  CharacterType? characterType;
+  //  XFile? uploadImage;
+  String? refImageUrl;
+  TextEditingController descriptionController;
+  TextEditingController backstoryController;
 
-  final bool isCharacterGenerating, isImageUploading;
-  final String chracterId;
-  final List<GenImage> characterImages;
-  final GenImage? seletedCharacterImage;
+  bool isCharacterGenerating, isImageUploading;
+  String chracterId;
+  List<GenImage> characterImages;
+  GenImage? seletedCharacterImage;
 
   // _updateWith method to update the state
   CharacterCreationState _updateWith({
@@ -336,6 +361,36 @@ class CharacterCreationState {
       chracterId: chracterId ?? this.chracterId,
       seletedCharacterImage:
           seletedCharacterImage ?? this.seletedCharacterImage,
+    );
+  }
+
+  // _updateWith method to update the state
+  CharacterCreationState _updateWithState(CharacterCreationState state) {
+    return CharacterCreationState(
+      pageController: state.pageController,
+      index: state.index,
+      characterNameController: state.characterNameController,
+      ageController: state.ageController,
+      gender: state.gender,
+      style: state.style,
+      sexualOrientation: state.sexualOrientation,
+      language: state.language,
+      personality: state.personality,
+      relationship: state.relationship,
+      behaviours: state.behaviours,
+      voice: state.voice,
+      country: state.country,
+      city: state.city,
+      characterType: state.characterType,
+      refImageUrl: state.refImageUrl,
+      // uploadImage: state.uploadImage ,
+      isImageUploading: state.isImageUploading,
+      descriptionController: state.descriptionController,
+      backstoryController: state.backstoryController,
+      isCharacterGenerating: state.isCharacterGenerating,
+      characterImages: state.characterImages,
+      chracterId: state.chracterId,
+      seletedCharacterImage: state.seletedCharacterImage,
     );
   }
 
