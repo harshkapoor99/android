@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -241,6 +242,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               isMe: provider.messages[messageIndex].isMe,
                               imageUrl:
                                   image, // Pass the AI image url (used if isMe is false)
+                              time:
+                                  provider.messages[messageIndex].time
+                                      .toLocal(),
                             );
                           },
                         ),
@@ -459,12 +463,14 @@ class ChatBubble extends StatefulWidget {
   final bool isMe;
   final String imageUrl;
   final bool showTyping;
+  final DateTime time;
 
   const ChatBubble({
     super.key,
     required this.text,
     required this.isMe,
     required this.imageUrl,
+    required this.time,
     this.showTyping = false,
   });
 
@@ -504,7 +510,7 @@ class _ChatBubbleState extends State<ChatBubble> {
             ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               gradient:
                   widget.isMe
@@ -524,36 +530,47 @@ class _ChatBubbleState extends State<ChatBubble> {
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.7,
             ),
-            child: SelectableText(
-              key: textKey,
-              widget.text,
-              style: context.appTextStyle.text.copyWith(
-                fontSize: 16,
-                color: context.colorExt.textPrimary,
-                fontStyle:
-                    widget.showTyping ? FontStyle.italic : FontStyle.normal,
-              ),
-              contextMenuBuilder:
-                  (
-                    context,
-                    editableTextState,
-                  ) => AdaptiveTextSelectionToolbar.buttonItems(
-                    buttonItems: [
-                      ContextMenuButtonItem(
-                        label: 'Copy',
-                        onPressed: () {
-                          // Handle copy action
-                          Clipboard.setData(ClipboardData(text: widget.text));
-                          _deselectText();
-                        },
-                      ),
-                    ],
-                    anchors: TextSelectionToolbarAnchors(
-                      primaryAnchor:
-                          editableTextState.contextMenuAnchors.primaryAnchor -
-                          const Offset(0, 0),
-                    ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SelectableText(
+                  key: textKey,
+                  widget.text,
+                  style: context.appTextStyle.text.copyWith(
+                    fontSize: 16,
+                    color: context.colorExt.textPrimary,
+                    fontStyle:
+                        widget.showTyping ? FontStyle.italic : FontStyle.normal,
                   ),
+                  contextMenuBuilder:
+                      (context, editableTextState) =>
+                          AdaptiveTextSelectionToolbar.buttonItems(
+                            buttonItems: [
+                              ContextMenuButtonItem(
+                                label: 'Copy',
+                                onPressed: () {
+                                  // Handle copy action
+                                  Clipboard.setData(
+                                    ClipboardData(text: widget.text),
+                                  );
+                                  _deselectText();
+                                },
+                              ),
+                            ],
+                            anchors: TextSelectionToolbarAnchors(
+                              primaryAnchor:
+                                  editableTextState
+                                      .contextMenuAnchors
+                                      .primaryAnchor -
+                                  const Offset(0, 0),
+                            ),
+                          ),
+                ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Text(formatTime(widget.time)),
+                ),
+              ],
             ),
           ),
         ],

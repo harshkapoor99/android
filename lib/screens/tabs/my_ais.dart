@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -114,6 +115,21 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                         return ModelCard(
                           imageUrl: image,
                           name: provider.myAiList[index].name,
+                          persionality:
+                              provider.myAiList[index].charactertypeId != null
+                                  ? ref
+                                      .read(masterDataProvider)
+                                      .characterTypes
+                                      .where(
+                                        (e) =>
+                                            e.id ==
+                                            provider
+                                                .myAiList[index]
+                                                .charactertypeId,
+                                      )
+                                      .first
+                                      .charactertypeName
+                                  : null,
                           onCharTap:
                               () => ref
                                   .read(chatProvider.notifier)
