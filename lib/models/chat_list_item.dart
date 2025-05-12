@@ -26,7 +26,7 @@ class ChatListItem {
               ? json["last_message_time"]
               : json["last_message_time"].padRight(26, "0") + ("Z")
           : json["last_message_time"],
-    ),
+    ).toLocal(),
   );
 
   Map<String, dynamic> toMap() => {
