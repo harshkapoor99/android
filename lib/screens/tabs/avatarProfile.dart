@@ -244,7 +244,7 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF2F2E41), // Match the darker card background
+            color: const Color(0xFF333147),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
