@@ -36,7 +36,7 @@ bool nextButtonStatus(Ref ref) {
       provider.characterType != null &&
       provider.personality != null &&
       provider.relationship != null &&
-      provider.behaviours.isNotEmpty) {
+      provider.behaviours.length == 3) {
     return true;
   } else if (provider.index == 3
   // uncomment to make it mandatory
