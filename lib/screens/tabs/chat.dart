@@ -48,7 +48,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
     if (!isHomeVisited) {
       if (provider.isFetchingChatList && provider.chatList.isEmpty) {
         // Case 1: Fetching and no chats yet - show loading animation
-        return Center(child: Lottie.asset(Assets.images.logoAnimation));
+        return Center(child: Lottie.asset(Assets.animations.logo));
       } else if (provider.chatList.isEmpty) {
         // Case 2: Not fetching and no chats - show home
         return const HomeTab();

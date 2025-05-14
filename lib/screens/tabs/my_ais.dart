@@ -37,7 +37,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.asset(
-                      Assets.images.logoAnimation,
+                      Assets.animations.logo,
                       width: 200,
                       height: 200,
                       animate: false,
