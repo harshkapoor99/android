@@ -25,6 +25,30 @@ String formatChatTimestamp(DateTime date) {
   return '${formatDateWithSuffix(date)}, $timeString';
 }
 
+String formatChatDivider(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.day, now.month, now.year);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final oneWeekAgo = today.subtract(const Duration(days: 7));
+
+  final messageDate = DateTime(date.day, date.month, date.year);
+
+  if (messageDate.isAtSameMomentAs(today)) {
+    return 'Today';
+  }
+
+  if (messageDate.isAtSameMomentAs(yesterday)) {
+    return 'Yesterday';
+  }
+
+  if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
+    final dayName = DateFormat('EEEE').format(date);
+    return dayName;
+  }
+
+  return formatDateWithSuffix(date);
+}
+
 String formatDateWithSuffix(DateTime date) {
   String day = DateFormat.d().format(date);
 

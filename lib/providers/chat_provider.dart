@@ -165,8 +165,8 @@ class Chat extends _$Chat {
   }) {
     state = state._updateWith(
       messages: [
-        ...state.messages,
         ChatMessage(isMe: isMe, text: text, time: time),
+        ...state.messages,
       ],
     );
   }

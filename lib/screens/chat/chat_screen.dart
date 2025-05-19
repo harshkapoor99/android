@@ -5,6 +5,7 @@ import 'package:guftagu_mobile/components/chat_bubble.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
+import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -238,22 +239,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // This logic correctly accounts for the presence/absence of the typing indicator
                             final messageIndex =
                                 provider.isTyping
-                                    ? provider.messages.length -
-                                        1 -
-                                        (index -
-                                            1) // Adjust index when typing indicator is present
-                                    : provider.messages.length -
-                                        1 -
-                                        index; // Normal index when no typing indicator
+                                    ?
+                                    // provider.messages.length -
+                                    //     1 -
+                                    (index -
+                                        1) // Adjust index when typing indicator is present
+                                    :
+                                    // provider.messages.length -
+                                    //     1 -
+                                    index; // Normal index when no typing indicator
 
                             bool showDateSeparator = false;
-                            bool isInElse = false;
-                            if (messageIndex == 0) {
-                              print("top $messageIndex");
+                            if (messageIndex == provider.messages.length - 1) {
                               showDateSeparator = true;
                             } else if (messageIndex <
                                 provider.messages.length - 1) {
-                              isInElse = true;
                               final prevMessage =
                                   provider.messages[messageIndex + 1];
                               showDateSeparator =
@@ -267,8 +267,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (showDateSeparator &&
-                                    messageIndex < provider.messages.length - 1)
+                                if (showDateSeparator
+                                // && messageIndex < provider.messages.length - 1
+                                )
                                   _buildDateSeparator(
                                     context,
                                     provider.messages[messageIndex].time,
@@ -340,7 +341,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 }
 
 Widget _buildDateSeparator(BuildContext context, DateTime date) {
-  final formatted = DateFormat.yMMMd().format(date);
+  // final formatted = DateFormat.yMMMd().format(date);
+  final formatted = formatChatDivider(date);
   return Center(
     child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
