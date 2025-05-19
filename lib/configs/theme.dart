@@ -32,7 +32,7 @@ ThemeData getAppTheme({
                 : AppStaticColors.grayColor,
         textHint:
             isDarkTheme
-                ? AppStaticColors.accentColor
+                ? AppStaticColors.lightWhiteColor
                 : AppStaticColors.grayColor,
         background: isDarkTheme ? Colors.black : const Color(0xFFF3F4F6),
         border:
