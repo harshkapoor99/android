@@ -3,7 +3,7 @@ part of 'master_models.dart';
 class City {
   final String id;
   final String cityName;
-  final String countryId;
+  final String? countryId;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
@@ -11,7 +11,7 @@ class City {
   City({
     required this.id,
     required this.cityName,
-    required this.countryId,
+    this.countryId,
     required this.createdDate,
     required this.updatedDate,
     required this.status,

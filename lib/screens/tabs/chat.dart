@@ -124,6 +124,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                       ),
                       child: InkWell(
                         onTap: () {
+                          ref
+                              .read(masterDataProvider.notifier)
+                              .fetchMasterCharacters();
                           context.nav.pushNamed(Routes.explore);
                         },
                         borderRadius: BorderRadius.circular(40),
