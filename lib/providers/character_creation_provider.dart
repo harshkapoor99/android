@@ -130,22 +130,44 @@ class CharacterCreation extends _$CharacterCreation {
     Relationship? relationship,
     List<Behaviour>? behaviours,
   }) {
-    if (characterType != null) {
+    bool doUpdate = false;
+    if (characterType != null && state.characterType != characterType) {
+      doUpdate = true;
       state.characterType = characterType;
       state.relationship = null;
       state.personality = null;
       state.behaviours = [];
-    } else if (relationship != null) {
+    } else if (relationship != null && state.relationship != relationship) {
+      doUpdate = true;
       state.relationship = relationship;
       state.personality = null;
       state.behaviours = [];
-    } else if (personality != null) {
+    } else if (personality != null && state.personality != personality) {
+      doUpdate = true;
       state.personality = personality;
       state.behaviours = [];
-    } else if (behaviours != null) {
+    } else if (behaviours != null && state.behaviours != behaviours) {
+      doUpdate = true;
       state.behaviours = behaviours;
     }
-    state = state._updateWithState(state);
+    if (doUpdate) {
+      state = state._updateWithState(state);
+    }
+  }
+
+  void updateCountryCityWith({Country? country, City? city}) {
+    bool doUpdate = false;
+    if (country != null && state.country != country) {
+      doUpdate = true;
+      state.country = country;
+      state.city = null;
+    } else if (city != null && state.city != city) {
+      doUpdate = true;
+      state.city = city;
+    }
+    if (doUpdate) {
+      state = state._updateWithState(state);
+    }
   }
 
   void updateIndex(int index) {

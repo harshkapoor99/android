@@ -61,7 +61,7 @@ class Step1Widget extends ConsumerWidget {
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(country: p0),
+                    .updateCountryCityWith(country: p0),
             selected: provider.country,
           ),
           36.ph,
@@ -86,7 +86,7 @@ class Step1Widget extends ConsumerWidget {
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateWith(city: p0),
+                    .updateCountryCityWith(city: p0),
             selected: provider.city,
           ),
           36.ph,

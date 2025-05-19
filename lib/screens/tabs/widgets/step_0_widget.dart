@@ -61,6 +61,7 @@ class Step0Widget extends ConsumerWidget {
               label: 'Age (yrs)',
               hintText: 'Eg. 26',
               keyboardType: TextInputType.number,
+              maxLength: 2,
             ),
             36.ph,
             Text('Gender', style: context.appTextStyle.characterGenLabel),
