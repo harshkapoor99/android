@@ -6,3 +6,4 @@ part 'language.dart';
 part 'personality.dart';
 part 'relationship.dart';
 part 'voice.dart';
+part 'character_details.dart';
