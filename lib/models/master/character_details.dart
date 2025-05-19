@@ -2,11 +2,16 @@ part of 'master_models.dart';
 
 class CharacterDetail {
   final String id;
+  final String creatorId;
+  final String creatorUserType;
+
   final String name;
   final String? bio;
   final String age;
   final String gender;
+  final String style;
 
+  final Language language;
   final Voice? voice;
   final Country country;
   final City city;
@@ -16,17 +21,24 @@ class CharacterDetail {
   final List<Behaviour> behaviours;
   final List<GenImage> imageGallery;
 
+  final String prompt;
+
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
 
   CharacterDetail({
     required this.id,
+    required this.creatorId,
+    required this.creatorUserType,
+
     required this.name,
     this.bio,
     required this.age,
     required this.gender,
+    required this.style,
 
+    required this.language,
     this.voice,
     required this.country,
     required this.city,
@@ -36,6 +48,8 @@ class CharacterDetail {
     required this.behaviours,
     required this.imageGallery,
 
+    required this.prompt,
+
     required this.createdDate,
     required this.updatedDate,
     required this.status,
@@ -43,11 +57,15 @@ class CharacterDetail {
 
   factory CharacterDetail.fromMap(Map<String, dynamic> json) => CharacterDetail(
     id: json["_id"] ?? json["id"] ?? json["character_id"],
+    creatorId: json["creator_id"],
+    creatorUserType: json["creator_user_type"],
     name: json["name"],
     bio: json["bio"],
     age: json["age"],
     gender: json["gender"],
+    style: json["style"],
 
+    language: Language.fromMap(json["language"]),
     voice: json["voice"] != null ? Voice.fromMap(json["voice"]) : null,
     country: Country.fromMap(json["country"]),
     city: City.fromMap(json["city"]),
@@ -64,6 +82,8 @@ class CharacterDetail {
       json["image_gallery"].map((x) => GenImage.fromMap(x)),
     ),
 
+    prompt: json["prompt"],
+
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],
@@ -71,11 +91,16 @@ class CharacterDetail {
 
   Map<String, dynamic> toMap() => {
     "id": id,
+    "creatorId": creatorId,
+    "creatorUserType": creatorUserType,
+
     "name": name,
     "bio": bio,
     "age": age,
     "gender": gender,
+    "style": style,
 
+    "language": country.toMap(),
     "voice": voice?.toMap(),
     "country": country.toMap(),
     "city": city.toMap(),
@@ -85,6 +110,8 @@ class CharacterDetail {
     "behaviour": List<GenImage>.from(behaviours.map((b) => b.toMap())),
     "image_gallery": List<dynamic>.from(imageGallery.map((x) => x.toMap())),
 
+    "prompt": prompt,
+
     "created_date": createdDate.toIso8601String(),
     "updated_date": updatedDate.toIso8601String(),
     "status": status,
@@ -92,11 +119,16 @@ class CharacterDetail {
 
   CharacterDetail copyWith({
     String? id,
+    String? creatorId,
+    String? creatorUserType,
+
     String? name,
     String? bio,
     String? age,
     String? gender,
+    String? style,
 
+    Language? language,
     Voice? voice,
     Country? country,
     City? city,
@@ -106,17 +138,24 @@ class CharacterDetail {
     List<Behaviour>? behaviour,
     List<GenImage>? imageGallery,
 
+    String? prompt,
+
     DateTime? createdDate,
     DateTime? updatedDate,
     int? status,
   }) {
     return CharacterDetail(
       id: id ?? this.id,
+      creatorId: creatorId ?? this.creatorId,
+      creatorUserType: creatorUserType ?? this.creatorUserType,
+
       name: name ?? this.name,
       bio: bio ?? this.bio,
       age: age ?? this.age,
       gender: gender ?? this.gender,
+      style: style ?? this.style,
 
+      language: language ?? this.language,
       voice: voice ?? this.voice,
       country: country ?? this.country,
       city: city ?? this.city,
@@ -126,9 +165,36 @@ class CharacterDetail {
       behaviours: behaviour ?? this.behaviours,
       imageGallery: imageGallery ?? this.imageGallery,
 
+      prompt: prompt ?? this.prompt,
+
       createdDate: createdDate ?? this.createdDate,
       updatedDate: updatedDate ?? this.updatedDate,
       status: status ?? this.status,
     );
   }
+
+  Character toCharacter() => Character(
+    id: id,
+    creatorId: creatorId,
+    creatorUserType: creatorUserType,
+    name: name,
+    age: age,
+    gender: gender,
+    style: style,
+    languageId: language.id,
+    charactertypeId: characterType?.id ?? "",
+    relationshipId: relationship.id,
+    personalityId: personality.id,
+    behaviourIds: behaviours.map((e) => e.id).toList(),
+    voiceId: voice?.id,
+    countryId: country.id,
+    cityId: city.id,
+    refImage: null,
+    refImageDescription: null,
+    refImageBackstory: null,
+    prompt: prompt,
+    imageGallery: imageGallery,
+    createdDate: createdDate,
+    updatedDate: updatedDate,
+  );
 }

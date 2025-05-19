@@ -93,9 +93,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           ),
                           child: InkWell(
                             onTap: () {
-                              // ref
-                              //     .read(chatProvider.notifier)
-                              //     .setCharacter(provider.myAiList[index])
+                              ref
+                                  .read(chatProvider.notifier)
+                                  .setCharacter(ai.toCharacter());
                               context.nav.pushNamed(Routes.chat);
                             },
                             borderRadius: BorderRadius.circular(40),

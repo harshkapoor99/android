@@ -18,7 +18,7 @@ class Language {
   });
 
   factory Language.fromMap(Map<String, dynamic> json) => Language(
-    id: json["id"],
+    id: json["id"] ?? json["_id"],
     title: json["title"],
     description: json["description"],
     createdDate: DateTime.parse(json["created_date"]),

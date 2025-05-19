@@ -58,7 +58,7 @@ class Character {
     gender: json["gender"],
     style: json["style"],
     languageId: json["language_id"],
-    charactertypeId: json["charactertype_id"],
+    charactertypeId: json["charactertype_id"] ?? "",
     relationshipId: json["relationship_id"],
     personalityId: json["personality_id"],
     behaviourIds: List<String>.from(json["behaviour_ids"]),

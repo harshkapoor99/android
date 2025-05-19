@@ -1,3 +1,4 @@
+import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 
 part 'behaviour.dart';
