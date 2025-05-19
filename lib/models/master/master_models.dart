@@ -1,3 +1,5 @@
+import 'package:guftagu_mobile/models/gen_image.dart';
+
 part 'behaviour.dart';
 part 'character_type.dart';
 part 'city.dart';

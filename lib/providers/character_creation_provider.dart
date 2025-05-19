@@ -248,6 +248,44 @@ class CharacterCreation extends _$CharacterCreation {
         });
   }
 
+  void generateRandomPrompt() async {
+    state = state._updateWith(isCharacterGenerating: true);
+    try {
+      final Response response = await ref
+          .read(characterServiceProvider)
+          .generateRandomPrompt(
+            name: state.characterNameController.text,
+            age: state.ageController.text,
+            gender: state.gender!,
+            style: state.style!,
+            languageId: state.language!.id,
+            charactertypeId: state.characterType!.id,
+            relationshipId: state.relationship!.id,
+            personalityId: state.personality!.id,
+            behaviourIds: state.behaviours.map((b) => b.id).toList(),
+            voiceId: state.voice?.id,
+            countryId: state.country?.id,
+            cityId: state.city?.id,
+          );
+      if (response.statusCode == 200) {
+        // final List<dynamic> imageGallery = response.data['image_gallery'];
+        // final List<GenImage> images =
+        //     imageGallery.map((image) => GenImage.fromMap(image)).toList();
+        final randomPrompt = response.data['random_prompt'];
+        state.descriptionController.text = randomPrompt;
+      } else {
+        AppConstants.showSnackbar(
+          message: "Unable to create character",
+          isSuccess: true,
+        );
+      }
+    } on DioException {
+      rethrow;
+    } finally {
+      state = state._updateWith(isCharacterGenerating: false);
+    }
+  }
+
   Future<CommonResponse> selectCharacterImage() async {
     state = state._updateWith(isCharacterGenerating: true);
     try {

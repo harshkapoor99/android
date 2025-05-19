@@ -18,6 +18,7 @@ class MasterData extends _$MasterData {
       countries: [],
       cities: [],
       characterTypes: [],
+      characterDetails: [],
     );
   }
 
@@ -171,6 +172,7 @@ class MasterData extends _$MasterData {
       fetchCountries(),
       fetchCities(),
       fetchCharacterTypes(),
+      fetchMasterCharacters(),
     ]);
   }
 
@@ -239,6 +241,26 @@ class MasterData extends _$MasterData {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  Future<void> fetchMasterCharacters() async {
+    final response =
+        await ref.read(masterServiceProvider).fetchMasterCharacters();
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<CharacterDetail> character =
+            data
+                .map((e) => CharacterDetail.fromMap(e))
+                .toList()
+                .cast<CharacterDetail>();
+        state = state.copyWith(characterDetails: character);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 }
 
 class MasterDataState {
@@ -252,6 +274,7 @@ class MasterDataState {
     required this.countries,
     required this.cities,
     required this.characterTypes,
+    required this.characterDetails,
   });
 
   final bool isLoading;
@@ -264,6 +287,7 @@ class MasterDataState {
   final List<Country> countries;
   final List<City> cities;
   final List<CharacterType> characterTypes;
+  final List<CharacterDetail> characterDetails;
 
   MasterDataState copyWith({
     bool? isLoading,
@@ -275,6 +299,7 @@ class MasterDataState {
     List<Country>? countries,
     List<City>? cities,
     List<CharacterType>? characterTypes,
+    final List<CharacterDetail>? characterDetails,
   }) {
     return MasterDataState(
       isLoading: isLoading ?? this.isLoading,
@@ -286,6 +311,7 @@ class MasterDataState {
       countries: countries ?? this.countries,
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
+      characterDetails: characterDetails ?? this.characterDetails,
     );
   }
 }

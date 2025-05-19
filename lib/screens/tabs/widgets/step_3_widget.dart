@@ -219,7 +219,13 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                               : SizedBox(
                                 height: 32,
                                 child: ElevatedButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    ref
+                                        .read(
+                                          characterCreationProvider.notifier,
+                                        )
+                                        .generateRandomPrompt();
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1C1B2A),
                                     padding: const EdgeInsets.symmetric(

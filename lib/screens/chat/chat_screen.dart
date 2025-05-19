@@ -6,7 +6,6 @@ import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
