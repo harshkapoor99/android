@@ -20,7 +20,7 @@ class City {
   factory City.fromMap(Map<String, dynamic> json) => City(
     id: json["_id"],
     cityName: json["city_name"],
-    countryId: json["country_id"],
+    countryId: json["country_id"] ?? json["country"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],

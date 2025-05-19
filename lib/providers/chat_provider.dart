@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -145,6 +146,27 @@ class Chat extends _$Chat {
     }
   }
 
+  void fetchCharacterDetails() async {
+    state = state._updateWith(isFetchingCharacterDetails: true);
+    try {
+      final response = await ref
+          .read(chatServiceProvider)
+          .fetchCharacterDetails(characterId: state.character!.id);
+
+      if (response.statusCode == 200) {
+        final characterDetail = CharacterDetail.fromMap(response.data["data"]);
+
+        state = state._updateWith(characterDetail: characterDetail);
+      } else {
+        initiateChatWithCharacter();
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state._updateWith(isFetchingCharacterDetails: false);
+    }
+  }
+
   void clearHistory() {
     state.messageController.clear();
     state = state._updateWith(
@@ -165,8 +187,8 @@ class Chat extends _$Chat {
   }) {
     state = state._updateWith(
       messages: [
-        ...state.messages,
         ChatMessage(isMe: isMe, text: text, time: time),
+        ...state.messages,
       ],
     );
   }
@@ -179,16 +201,23 @@ class ChatState {
     this.isTyping = false,
     this.isFetchingHistory = true,
     this.isFetchingChatList = true,
+    this.isFetchingCharacterDetails = true,
     this.character,
+    this.characterDetail,
     required this.messages,
     required this.chatList,
   });
-  final bool hasMessage, isTyping, isFetchingHistory, isFetchingChatList;
+  final bool hasMessage,
+      isTyping,
+      isFetchingHistory,
+      isFetchingChatList,
+      isFetchingCharacterDetails;
   final TextEditingController messageController;
   final List<ChatMessage> messages;
   final List<ChatListItem> chatList;
 
   final Character? character;
+  final CharacterDetail? characterDetail;
 
   // ignore: unused_element
   ChatState _updateWith({
@@ -196,8 +225,10 @@ class ChatState {
     bool? isTyping,
     bool? isFetchingHistory,
     bool? isFetchingChatList,
+    bool? isFetchingCharacterDetails,
     TextEditingController? messageController,
     Character? character,
+    CharacterDetail? characterDetail,
     List<ChatMessage>? messages,
     List<ChatListItem>? chatList,
   }) {
@@ -206,8 +237,11 @@ class ChatState {
       isTyping: isTyping ?? this.isTyping,
       isFetchingHistory: isFetchingHistory ?? this.isFetchingHistory,
       isFetchingChatList: isFetchingChatList ?? this.isFetchingChatList,
+      isFetchingCharacterDetails:
+          isFetchingCharacterDetails ?? this.isFetchingCharacterDetails,
       messageController: messageController ?? this.messageController,
       character: character ?? this.character,
+      characterDetail: characterDetail ?? this.characterDetail,
       messages: messages ?? this.messages,
       chatList: chatList ?? this.chatList,
     );

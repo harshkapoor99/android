@@ -125,7 +125,7 @@ class Step2Widget extends ConsumerWidget {
           buildOptionTile<Behaviour>(
             context: context,
             ref: ref,
-            title: "Behaviour",
+            title: "Behaviours",
             options:
                 masterData.behaviours
                     .where(
@@ -151,6 +151,7 @@ class Step2Widget extends ConsumerWidget {
               height: 24,
             ),
             isMultiple: true,
+            maxSelectToClose: 3,
           ),
           36.ph,
         ],

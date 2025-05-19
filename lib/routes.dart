@@ -9,7 +9,7 @@ import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
-import 'package:guftagu_mobile/screens/tabs/widgets/step_0_widget.dart';
+import 'package:guftagu_mobile/screens/avatarProfile.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Routes {
@@ -24,6 +24,7 @@ class Routes {
   static const dashboard = "/dashboard";
   static const explore = "/explore";
   static const chat = "/chat";
+  static const characterProfile = "/characterProfile";
   static const call = "/call";
 
   static Route generatedRoutes(RouteSettings settings) {
@@ -48,6 +49,8 @@ class Routes {
         child = const ExploreScreen();
       case Routes.chat:
         child = ChatScreen();
+      case Routes.characterProfile:
+        child = const CharacterProfile();
       case Routes.call:
         child = const CallScreen();
       default:

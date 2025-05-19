@@ -19,7 +19,7 @@ class Step4Widget extends ConsumerWidget {
               ? Center(
                 child: Column(
                   children: [
-                    Lottie.asset(Assets.images.logoAnimation),
+                    Lottie.asset(Assets.animations.logo),
                     const Text(
                       "Generating Character...",
                       textAlign: TextAlign.center,

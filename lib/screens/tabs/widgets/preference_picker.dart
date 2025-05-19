@@ -22,6 +22,7 @@ Widget buildOptionTile<T>({
   required Function(T) onSelect,
   Function(List<T>)? onMultiSelect,
   bool? isMultiple,
+  int? maxSelectToClose,
 }) {
   final titleStyle =
       Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -46,7 +47,10 @@ Widget buildOptionTile<T>({
               : isMultiple == true &&
                   multiSelected != null &&
                   multiSelected.isNotEmpty
-              ? Text("${multiSelected.length} Selected", style: titleStyle)
+              ? Text(
+                "${multiSelected.length} $title Selected",
+                style: titleStyle,
+              )
               : Text(
                 "Select",
                 style: titleStyle.copyWith(
@@ -69,7 +73,7 @@ Widget buildOptionTile<T>({
             onSelect: onSelect as Function(Voice),
             selected: selected as Voice?,
           );
-        } else if (T == Country || T == City) {
+        } else if (T == Country || T == City || T == Language) {
           _showOptionPopupWithSearch<T>(
             context,
             ref,
@@ -90,6 +94,7 @@ Widget buildOptionTile<T>({
               optionToString: optionToString,
               onSelect: onMultiSelect!,
               selected: multiSelected,
+              maxSelectToClose: maxSelectToClose,
             );
           } else {
             _showOptionPopup<T>(
@@ -286,12 +291,7 @@ void _showVoiceOptionPopup(
                   },
                 ),
               ),
-              SizedBox(
-                height:
-                    MediaQuery.paddingOf(context).bottom > 0
-                        ? 0
-                        : verticalPadding,
-              ),
+              SizedBox(height: verticalPadding),
             ],
           ),
         ),
@@ -425,12 +425,7 @@ void _showOptionPopup<T>(
                       ),
                     ),
                   ),
-              SizedBox(
-                height:
-                    MediaQuery.paddingOf(context).bottom > 0
-                        ? 0
-                        : verticalPadding,
-              ),
+              SizedBox(height: verticalPadding),
             ],
           ),
         ),
@@ -448,6 +443,7 @@ void _showOptionPopupWithMultiselect<T>(
   required String Function(T) optionToString,
   required Function(List<T>) onSelect,
   List<T>? selected,
+  int? maxSelectToClose,
 }) {
   final screenWidth = MediaQuery.sizeOf(context).width;
   final screenHeight = MediaQuery.sizeOf(context).height;
@@ -473,10 +469,18 @@ void _showOptionPopupWithMultiselect<T>(
       ref.read(multiSelectProvider.notifier).state =
           currentSelection.where((item) => item != value).toList();
     } else {
+      if (maxSelectToClose != null &&
+          currentSelection.length == maxSelectToClose) {
+        return;
+      }
       ref.read(multiSelectProvider.notifier).state = [
         ...currentSelection,
         value,
       ];
+    }
+    if (maxSelectToClose != null &&
+        ref.read(multiSelectProvider).length == maxSelectToClose) {
+      Navigator.pop<List<T>>(context, ref.read(multiSelectProvider));
     }
   }
 
@@ -512,7 +516,7 @@ void _showOptionPopupWithMultiselect<T>(
                     children: [
                       Expanded(
                         child: Text(
-                          "Choose a $title",
+                          "Choose upto $maxSelectToClose $title",
                           style: const TextStyle(
                             color: Color(0xFFA3A3A3),
                             fontSize: 18,
@@ -631,12 +635,7 @@ void _showOptionPopupWithMultiselect<T>(
                         );
                       },
                     ),
-                SizedBox(
-                  height:
-                      MediaQuery.paddingOf(context).bottom > 0
-                          ? 0
-                          : verticalPadding,
-                ),
+                SizedBox(height: verticalPadding),
               ],
             ),
           ),

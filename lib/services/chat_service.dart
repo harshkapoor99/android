@@ -29,6 +29,8 @@ abstract class ChatSerice {
     required String creatorId,
   });
   Future<Response> chatList({required String creatorId});
+
+  Future<Response> fetchCharacterDetails({required String characterId});
 }
 
 class ChatSericeImpl implements ChatSerice {
@@ -91,6 +93,15 @@ class ChatSericeImpl implements ChatSerice {
     final response = await _apiClient.post(
       RemoteEndpoint.chatList.url,
       data: {"creator_id": creatorId},
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> fetchCharacterDetails({required String characterId}) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.charactersDetails.url,
+      data: {"character_id": characterId},
     );
     return response;
   }

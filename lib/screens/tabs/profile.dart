@@ -7,7 +7,7 @@ import 'package:guftagu_mobile/models/user_model.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/subscriptionPage.dart';
-import 'package:guftagu_mobile/screens/tabs/profileSetting.dart';
+import 'package:guftagu_mobile/screens/profileSetting.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';

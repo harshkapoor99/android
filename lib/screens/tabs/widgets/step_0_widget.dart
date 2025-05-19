@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/utils/age_input_formatter.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import '../../../components/image_option_selector.dart';
@@ -61,6 +63,12 @@ class Step0Widget extends ConsumerWidget {
               label: 'Age (yrs)',
               hintText: 'Eg. 26',
               keyboardType: TextInputType.number,
+              // maxLength: 2,
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                // LengthLimitingTextInputFormatter(2),
+                TwoDigitRangeTextInputFormatter(min: 18, max: 99),
+              ],
             ),
             36.ph,
             Text('Gender', style: context.appTextStyle.characterGenLabel),

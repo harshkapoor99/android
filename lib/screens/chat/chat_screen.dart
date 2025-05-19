@@ -1,9 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guftagu_mobile/screens/tabs/avatarProfile.dart';
+import 'package:guftagu_mobile/components/chat_bubble.dart';
+import 'package:guftagu_mobile/components/message_box.dart';
+import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/screens/avatarProfile.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -110,7 +111,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AvatarProfile()),
+                    MaterialPageRoute(builder: (context) => CharacterProfile()),
                   );
                 },
                 child: CircleAvatar(backgroundImage: NetworkImage(image)),
@@ -237,23 +238,51 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // This logic correctly accounts for the presence/absence of the typing indicator
                             final messageIndex =
                                 provider.isTyping
-                                    ? provider.messages.length -
-                                        1 -
-                                        (index -
-                                            1) // Adjust index when typing indicator is present
-                                    : provider.messages.length -
-                                        1 -
-                                        index; // Normal index when no typing indicator
+                                    ?
+                                    // provider.messages.length -
+                                    //     1 -
+                                    (index -
+                                        1) // Adjust index when typing indicator is present
+                                    :
+                                    // provider.messages.length -
+                                    //     1 -
+                                    index; // Normal index when no typing indicator
+
+                            bool showDateSeparator = false;
+                            if (messageIndex == provider.messages.length - 1) {
+                              showDateSeparator = true;
+                            } else if (messageIndex <
+                                provider.messages.length - 1) {
+                              final prevMessage =
+                                  provider.messages[messageIndex + 1];
+                              showDateSeparator =
+                                  !isSameDay(
+                                    provider.messages[messageIndex].time,
+                                    prevMessage.time,
+                                  );
+                            }
 
                             // Return the actual chat message bubble
-                            return ChatBubble(
-                              text: provider.messages[messageIndex].text,
-                              isMe: provider.messages[messageIndex].isMe,
-                              imageUrl:
-                                  image, // Pass the AI image url (used if isMe is false)
-                              time:
-                                  provider.messages[messageIndex].time
-                                      .toLocal(),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (showDateSeparator
+                                // && messageIndex < provider.messages.length - 1
+                                )
+                                  _buildDateSeparator(
+                                    context,
+                                    provider.messages[messageIndex].time,
+                                  ),
+                                ChatBubble(
+                                  text: provider.messages[messageIndex].text,
+                                  isMe: provider.messages[messageIndex].isMe,
+                                  imageUrl:
+                                      image, // Pass the AI image url (used if isMe is false)
+                                  time:
+                                      provider.messages[messageIndex].time
+                                          .toLocal(),
+                                ),
+                              ],
                             );
                           },
                         ),
@@ -310,291 +339,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
   }
 }
 
-class MessageBox extends StatefulWidget {
-  const MessageBox({
-    super.key,
-    this.controller,
-    this.focusNodes,
-    required this.hasMessage,
-    this.onStarPressed,
-    this.onPlusPressed,
-  });
-
-  final bool hasMessage;
-  final FocusNode? focusNodes;
-  final TextEditingController? controller;
-  final VoidCallback? onStarPressed;
-  final VoidCallback? onPlusPressed;
-
-  @override
-  State<MessageBox> createState() => _MessageBoxState();
-}
-
-class _MessageBoxState extends State<MessageBox> {
-  bool isFocused = false;
-  @override
-  Widget build(BuildContext context) {
-    return Focus(
-      onFocusChange: (value) {
-        setState(() {
-          isFocused = value;
-        });
-      },
-      child: AnimatedContainer(
-        duration: Durations.short2,
-        padding: const EdgeInsets.only(left: 12),
-        decoration: BoxDecoration(
-          color: context.colorExt.border,
-          borderRadius: BorderRadius.circular(
-            widget.hasMessage || isFocused ? 10 : 60,
-          ),
-          border: Border.all(
-            color:
-                isFocused ? context.colorExt.primary : context.colorExt.border,
-            width: 1.5,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 16,
-              width: 16,
-              alignment: Alignment.center,
-              child: SvgPicture.asset(
-                Assets.svgs.icChatPrefix,
-                height: 16,
-                width: 16,
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                textCapitalization: TextCapitalization.sentences,
-                controller: widget.controller,
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 5,
-                focusNode: widget.focusNodes,
-                style: context.appTextStyle.text,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(
-                    top: 5,
-                    bottom: 5,
-                    left: 8,
-                  ),
-
-                  hintText: "Chat here",
-                  hintStyle: context.appTextStyle.textSmall.copyWith(
-                    // list item text font size reduced
-                    fontSize: 14,
-                    color: context.colorExt.textPrimary.withValues(alpha: 0.7),
-                  ),
-                  fillColor: context.colorExt.border,
-                  border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-            AnimatedContainer(
-              height: 40,
-              width: widget.hasMessage ? 0 : 40,
-              duration: const Duration(milliseconds: 100),
-              child: IconButton(
-                padding: const EdgeInsets.only(right: 8),
-                onPressed: widget.onPlusPressed,
-                icon: SvgPicture.asset(
-                  Assets.svgs.icPlus,
-                  height: 28,
-                  width: 28,
-                  colorFilter: ColorFilter.mode(
-                    context.colorExt.textSecondary,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class AnimatedSendButton extends StatelessWidget {
-  final bool hasText;
-  final VoidCallback onPressed;
-
-  const AnimatedSendButton({
-    required this.hasText,
-    required this.onPressed,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 45,
-      height: 45,
+Widget _buildDateSeparator(BuildContext context, DateTime date) {
+  // final formatted = DateFormat.yMMMd().format(date);
+  final formatted = formatChatDivider(date);
+  return Center(
+    child: Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: context.colorExt.border,
-        borderRadius: BorderRadius.circular(100),
+        borderRadius: BorderRadius.circular(20),
       ),
-      child: IconButton(
-        onPressed: onPressed,
-        icon: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return ScaleTransition(scale: animation, child: child);
-          },
-          child:
-              hasText
-                  ? SvgPicture.asset(
-                    Assets.svgs.icSend,
-                    key: const ValueKey("send"),
-                  )
-                  : SvgPicture.asset(
-                    Assets.svgs.icMic,
-                    key: const ValueKey("mic"),
-                  ),
-        ),
+      child: Text(
+        formatted,
+        style: context.appTextStyle.text.copyWith(fontSize: 10),
       ),
-    );
-  }
+    ),
+  );
 }
 
-class ChatBubble extends StatefulWidget {
-  final String text;
-  final bool isMe;
-  final String imageUrl;
-  final bool showTyping;
-  final DateTime time;
-
-  const ChatBubble({
-    super.key,
-    required this.text,
-    required this.isMe,
-    required this.imageUrl,
-    required this.time,
-    this.showTyping = false,
-  });
-
-  @override
-  State<ChatBubble> createState() => _ChatBubbleState();
-}
-
-class _ChatBubbleState extends State<ChatBubble> {
-  Key textKey = UniqueKey();
-  void _deselectText() {
-    setState(() {
-      textKey = UniqueKey();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: widget.isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Row(
-        mainAxisAlignment:
-            widget.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (!widget.isMe)
-            Container(
-              margin: const EdgeInsets.only(right: 10, bottom: 5),
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                  image: Image.network(widget.imageUrl).image,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              gradient:
-                  widget.isMe
-                      ? const LinearGradient(
-                        colors: [Colors.purple, Colors.blue],
-                      )
-                      : null,
-              color: widget.isMe ? null : context.colorExt.border,
-              borderRadius: BorderRadius.only(
-                //
-                topLeft: const Radius.circular(10),
-                topRight: const Radius.circular(10),
-                bottomLeft: Radius.circular(widget.isMe ? 10 : 0),
-                bottomRight: Radius.circular(widget.isMe ? 0 : 10),
-              ),
-            ),
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.7,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SelectableText(
-                  key: textKey,
-                  widget.text,
-                  style: context.appTextStyle.text.copyWith(
-                    // list item text font size reduced
-                    fontSize: 14,
-                    color: context.colorExt.textPrimary,
-                    fontStyle:
-                        widget.showTyping ? FontStyle.italic : FontStyle.normal,
-                  ),
-                  contextMenuBuilder: (context, editableTextState) {
-                    final selectedText = editableTextState
-                        .textEditingValue
-                        .selection
-                        .textInside(widget.text);
-                    return AdaptiveTextSelectionToolbar.buttonItems(
-                      buttonItems: [
-                        if (selectedText.isNotEmpty)
-                          ContextMenuButtonItem(
-                            label: 'Copy',
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(text: selectedText),
-                              );
-                              _deselectText();
-                            },
-                          ),
-                        ContextMenuButtonItem(
-                          label: 'Copy All',
-                          onPressed: () {
-                            Clipboard.setData(ClipboardData(text: widget.text));
-                            _deselectText();
-                          },
-                        ),
-                      ],
-                      anchors: TextSelectionToolbarAnchors(
-                        primaryAnchor:
-                            editableTextState.contextMenuAnchors.primaryAnchor -
-                            const Offset(0, 0),
-                      ),
-                    );
-                  },
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Text(formatTime(widget.time)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+bool isSameDay(DateTime d1, DateTime d2) {
+  return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
 }

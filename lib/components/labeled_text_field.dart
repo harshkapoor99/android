@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class LabeledTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -12,6 +13,8 @@ class LabeledTextField extends StatelessWidget {
   final TextInputType keyboardType; // <-- ADDED THIS LINE
   final bool obscureText;
   final String? hintText;
+  final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
 
   const LabeledTextField({
     super.key,
@@ -27,6 +30,8 @@ class LabeledTextField extends StatelessWidget {
         TextInputType.text, // <-- ADDED THIS LINE (with default)
     this.obscureText = false,
     this.hintText,
+    this.maxLength,
+    this.inputFormatters,
   });
 
   @override
@@ -43,10 +48,12 @@ class LabeledTextField extends StatelessWidget {
             Text(label, style: labelStyle),
             const SizedBox(height: 16),
             TextField(
+              inputFormatters: inputFormatters,
               controller: controller,
               style: inputTextStyle,
               keyboardType: keyboardType,
               textCapitalization: TextCapitalization.sentences,
+              maxLength: maxLength,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: const TextStyle(color: Color(0xFF969696)),

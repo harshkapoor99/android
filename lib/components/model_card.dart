@@ -6,7 +6,6 @@ import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
 
 class ModelCard extends ConsumerWidget {
@@ -14,13 +13,13 @@ class ModelCard extends ConsumerWidget {
     super.key,
     required this.imageUrl,
     required this.name,
-    this.persionality,
+    this.characterType,
     required this.onCharTap,
   });
 
   final String imageUrl;
   final String name;
-  final String? persionality;
+  final String? characterType;
   final void Function() onCharTap;
 
   @override
@@ -36,7 +35,7 @@ class ModelCard extends ConsumerWidget {
                 width: 60,
                 height: 60,
                 child: Lottie.asset(
-                  Assets.images.logoAnimation,
+                  Assets.animations.logo,
                   fit: BoxFit.contain,
                   width: 5,
                   height: 5,
@@ -90,9 +89,9 @@ class ModelCard extends ConsumerWidget {
                         ),
                       ),
                       // if (persionality.hasValue)
-                      if (persionality != null)
+                      if (characterType != null)
                         Text(
-                          persionality!,
+                          characterType!,
                           style: context.appTextStyle.text.copyWith(
                             fontSize: 10,
                           ),

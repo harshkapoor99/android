@@ -2,26 +2,51 @@ import 'package:intl/intl.dart';
 
 String formatChatTimestamp(DateTime date) {
   final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
+  final today = DateTime(now.day, now.month, now.year);
   final yesterday = today.subtract(const Duration(days: 1));
   final oneWeekAgo = today.subtract(const Duration(days: 7));
 
   final timeString = formatTime(date);
+  final messageDate = DateTime(date.day, date.month, date.year);
 
-  if (date.year == today.year && date.month == today.month && date.day == today.day) {
+  if (messageDate.isAtSameMomentAs(today)) {
     return 'Today, $timeString';
   }
 
-  if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+  if (messageDate.isAtSameMomentAs(yesterday)) {
     return 'Yesterday, $timeString';
   }
 
-  if (date.isAfter(oneWeekAgo)) {
+  if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
     final dayName = DateFormat('EEEE').format(date);
     return '$dayName, $timeString';
   }
 
   return '${formatDateWithSuffix(date)}, $timeString';
+}
+
+String formatChatDivider(DateTime date) {
+  final now = DateTime.now();
+  final today = DateTime(now.day, now.month, now.year);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final oneWeekAgo = today.subtract(const Duration(days: 7));
+
+  final messageDate = DateTime(date.day, date.month, date.year);
+
+  if (messageDate.isAtSameMomentAs(today)) {
+    return 'Today';
+  }
+
+  if (messageDate.isAtSameMomentAs(yesterday)) {
+    return 'Yesterday';
+  }
+
+  if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
+    final dayName = DateFormat('EEEE').format(date);
+    return dayName;
+  }
+
+  return formatDateWithSuffix(date);
 }
 
 String formatDateWithSuffix(DateTime date) {

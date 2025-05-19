@@ -37,7 +37,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Lottie.asset(
-                      Assets.images.logoAnimation,
+                      Assets.animations.logo,
                       width: 200,
                       height: 200,
                       animate: false,
@@ -115,8 +115,18 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                         return ModelCard(
                           imageUrl: image,
                           name: provider.myAiList[index].name,
-                          persionality:
-                              provider.myAiList[index].charactertypeId != null
+                          characterType:
+                              ref
+                                      .read(masterDataProvider)
+                                      .characterTypes
+                                      .where(
+                                        (e) =>
+                                            e.id ==
+                                            provider
+                                                .myAiList[index]
+                                                .charactertypeId,
+                                      )
+                                      .isNotEmpty
                                   ? ref
                                       .read(masterDataProvider)
                                       .characterTypes

@@ -18,10 +18,11 @@ class MasterData extends _$MasterData {
       countries: [],
       cities: [],
       characterTypes: [],
+      characterDetails: [],
     );
   }
 
-  void fetchLanguages() async {
+  Future<void> fetchLanguages() async {
     final response = await ref.read(masterServiceProvider).fetchLanguages();
     try {
       if (response.statusCode == 200) {
@@ -38,7 +39,7 @@ class MasterData extends _$MasterData {
   }
 
   // 25, 64, 73, API
-  void fetchBehaviours() async {
+  Future<void> fetchBehaviours() async {
     final response = await ref.read(masterServiceProvider).fetchBehavious();
     try {
       if (response.statusCode == 200) {
@@ -54,7 +55,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchPersonalities() async {
+  Future<void> fetchPersonalities() async {
     final response =
         await ref.read(masterServiceProvider).fetchPersionalities();
     try {
@@ -74,7 +75,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchRelationships() async {
+  Future<void> fetchRelationships() async {
     final response = await ref.read(masterServiceProvider).fetchRelationships();
     try {
       if (response.statusCode == 200) {
@@ -93,7 +94,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchVoices() async {
+  Future<void> fetchVoices() async {
     final response = await ref.read(masterServiceProvider).fetchVoices();
     try {
       if (response.statusCode == 200) {
@@ -109,7 +110,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCountries() async {
+  Future<void> fetchCountries() async {
     final response = await ref.read(masterServiceProvider).fetchCountries();
     try {
       if (response.statusCode == 200) {
@@ -125,7 +126,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCities() async {
+  Future<void> fetchCities() async {
     final response = await ref.read(masterServiceProvider).fetchCities();
     try {
       if (response.statusCode == 200) {
@@ -141,7 +142,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCharacterTypes() async {
+  Future<void> fetchCharacterTypes() async {
     final response =
         await ref.read(masterServiceProvider).fetchCharacterTypes();
     try {
@@ -162,17 +163,20 @@ class MasterData extends _$MasterData {
   }
 
   void fetchAllMasterData() async {
-    fetchLanguages();
-    fetchBehaviours();
-    fetchPersonalities();
-    fetchRelationships();
-    fetchVoices();
-    fetchCountries();
-    fetchCities();
-    fetchCharacterTypes();
+    Future.wait([
+      fetchLanguages(),
+      fetchBehaviours(),
+      fetchPersonalities(),
+      fetchRelationships(),
+      fetchVoices(),
+      fetchCountries(),
+      fetchCities(),
+      fetchCharacterTypes(),
+      fetchMasterCharacters(),
+    ]);
   }
 
-  void fetchBehaviousByPersonality() async {
+  Future<void> fetchBehaviousByPersonality() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchBehaviousByPersonality(
@@ -192,7 +196,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchPersionalitiesByRelationship() async {
+  Future<void> fetchPersionalitiesByRelationship() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchPersionalitiesByRelationship(
@@ -215,7 +219,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchRelationshipsByCharactertype() async {
+  Future<void> fetchRelationshipsByCharactertype() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchRelationshipsByCharactertype(
@@ -237,6 +241,26 @@ class MasterData extends _$MasterData {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  Future<void> fetchMasterCharacters() async {
+    final response =
+        await ref.read(masterServiceProvider).fetchMasterCharacters();
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<CharacterDetail> character =
+            data
+                .map((e) => CharacterDetail.fromMap(e))
+                .toList()
+                .cast<CharacterDetail>();
+        state = state.copyWith(characterDetails: character);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 }
 
 class MasterDataState {
@@ -250,6 +274,7 @@ class MasterDataState {
     required this.countries,
     required this.cities,
     required this.characterTypes,
+    required this.characterDetails,
   });
 
   final bool isLoading;
@@ -262,6 +287,7 @@ class MasterDataState {
   final List<Country> countries;
   final List<City> cities;
   final List<CharacterType> characterTypes;
+  final List<CharacterDetail> characterDetails;
 
   MasterDataState copyWith({
     bool? isLoading,
@@ -273,6 +299,7 @@ class MasterDataState {
     List<Country>? countries,
     List<City>? cities,
     List<CharacterType>? characterTypes,
+    final List<CharacterDetail>? characterDetails,
   }) {
     return MasterDataState(
       isLoading: isLoading ?? this.isLoading,
@@ -284,6 +311,7 @@ class MasterDataState {
       countries: countries ?? this.countries,
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
+      characterDetails: characterDetails ?? this.characterDetails,
     );
   }
 }
