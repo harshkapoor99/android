@@ -13,7 +13,7 @@ class Character {
   final String relationshipId;
   final String personalityId;
   final List<String> behaviourIds;
-  final String voiceId;
+  final String? voiceId;
   final String countryId;
   final String cityId;
   final String? refImage;
