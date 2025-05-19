@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -33,13 +32,17 @@ class ChatTab extends ConsumerStatefulWidget {
 }
 
 class _ChatTabState extends ConsumerState<ChatTab> {
-  // @override
-  // void initState() {
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //     init();
-  //   });
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      init();
+    });
+    super.initState();
+  }
+
+  void init() {
+    ref.read(chatProvider.notifier).fetchChatList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,99 +128,105 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                   }).toList(),
             ),
           ),
-          24.ph,
-
-          const CategoryList(),
+          16.ph,
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 8.0),
+          //   child: Divider(),
+          // ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text("Chats", style: context.appTextStyle.textSemibold),
+            ),
+          ),
           Expanded(
             child: VisibilityDetector(
               key: const Key("chat-screen"),
               onVisibilityChanged: (info) {
-                if (info.visibleFraction == 1) {
+                if (info.visibleFraction < 1) {
                   ref.read(chatProvider.notifier).fetchChatList();
                 }
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    ref.read(chatProvider.notifier).fetchChatList();
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  ref.read(chatProvider.notifier).fetchChatList();
+                },
+                child: ListView.builder(
+                  itemCount: provider.chatList.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 2,
+                        horizontal: 16,
+                      ),
+                      onTap: () {
+                        ref
+                            .read(chatProvider.notifier)
+                            .setCharacter(provider.chatList[index].character);
+                        Future.delayed(Durations.medium1).then((value) {
+                          context.nav.pushNamed(Routes.chat);
+                        });
+                      },
+                      leading: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(26),
+                          child: NetworkImageWithPlaceholder(
+                            imageUrl:
+                                provider
+                                    .chatList[index]
+                                    .character
+                                    .imageGallery
+                                    .first
+                                    .url,
+                            placeholder: SvgPicture.asset(
+                              Assets.svgs.icProfilePlaceholder,
+                            ),
+                            fit: BoxFit.cover,
+                            errorWidget: SvgPicture.asset(
+                              Assets.svgs.icProfilePlaceholder,
+                            ),
+                          ),
+                        ),
+                      ),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            provider.chatList[index].character.name,
+                            style: context.appTextStyle.textSemibold.copyWith(
+                              // list item title font size reduced
+                              fontSize: 15,
+                              color: context.colorExt.textPrimary.withValues(
+                                alpha: 0.85,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            formatTime(
+                              provider.chatList[index].lastMessageTime,
+                            ),
+                            style: context.appTextStyle.textSemibold.copyWith(
+                              fontSize: 12,
+                              color: context.colorExt.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      subtitle: Text(
+                        provider.chatList[index].lastMessage,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.appTextStyle.textSmall.copyWith(
+                          // list item text font size reduced
+                          fontSize: 12,
+                          color: context.colorExt.textSecondary,
+                        ),
+                      ),
+                    );
                   },
-                  child: ListView.builder(
-                    itemCount: provider.chatList.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 16,
-                        ),
-                        onTap: () {
-                          ref
-                              .read(chatProvider.notifier)
-                              .setCharacter(provider.chatList[index].character);
-                          Future.delayed(Durations.medium1).then((value) {
-                            context.nav.pushNamed(Routes.chat);
-                          });
-                        },
-                        leading: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(26),
-                            child: NetworkImageWithPlaceholder(
-                              imageUrl:
-                                  provider
-                                      .chatList[index]
-                                      .character
-                                      .imageGallery
-                                      .first
-                                      .url,
-                              placeholder: SvgPicture.asset(
-                                Assets.svgs.icProfilePlaceholder,
-                              ),
-                              fit: BoxFit.cover,
-                              errorWidget: SvgPicture.asset(
-                                Assets.svgs.icProfilePlaceholder,
-                              ),
-                            ),
-                          ),
-                        ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              provider.chatList[index].character.name,
-                              style: context.appTextStyle.textSemibold.copyWith(
-                                // list item title font size reduced
-                                fontSize: 15,
-                                color: context.colorExt.textPrimary.withValues(
-                                  alpha: 0.85,
-                                ),
-                              ),
-                            ),
-                            Text(
-                              formatTime(
-                                provider.chatList[index].lastMessageTime,
-                              ),
-                              style: context.appTextStyle.textSemibold.copyWith(
-                                fontSize: 12,
-                                color: context.colorExt.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        subtitle: Text(
-                          provider.chatList[index].lastMessage,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: context.appTextStyle.textSmall.copyWith(
-                            // list item text font size reduced
-                            fontSize: 12,
-                            color: context.colorExt.textSecondary,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
                 ),
               ),
             ),

@@ -12,6 +12,7 @@ class LabeledTextField extends StatelessWidget {
   final TextInputType keyboardType; // <-- ADDED THIS LINE
   final bool obscureText;
   final String? hintText;
+  final int? maxLength;
 
   const LabeledTextField({
     super.key,
@@ -27,6 +28,7 @@ class LabeledTextField extends StatelessWidget {
         TextInputType.text, // <-- ADDED THIS LINE (with default)
     this.obscureText = false,
     this.hintText,
+    this.maxLength,
   });
 
   @override
@@ -47,6 +49,7 @@ class LabeledTextField extends StatelessWidget {
               style: inputTextStyle,
               keyboardType: keyboardType,
               textCapitalization: TextCapitalization.sentences,
+              maxLength: maxLength,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: const TextStyle(color: Color(0xFF969696)),

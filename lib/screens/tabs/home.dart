@@ -49,9 +49,7 @@ class HomeTab extends StatelessWidget {
                       ),
                       child: Text(
                         "Create Now",
-                        style: context.appTextStyle.textSmall.copyWith(
-                          fontSize: 12,
-                        ),
+                        style: context.appTextStyle.text.copyWith(fontSize: 12),
                       ),
                     ),
                   ],
