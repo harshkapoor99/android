@@ -2,17 +2,17 @@ import 'package:intl/intl.dart';
 
 String formatChatTimestamp(DateTime date) {
   final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
+  final today = DateTime(now.day, now.month, now.year);
   final yesterday = today.subtract(const Duration(days: 1));
   final oneWeekAgo = today.subtract(const Duration(days: 7));
 
   final timeString = formatTime(date);
 
-  if (date.year == today.year && date.month == today.month && date.day == today.day) {
+  if (date.day == today.day && date.month == today.month && date.year == today.year) {
     return 'Today, $timeString';
   }
 
-  if (date.year == yesterday.year && date.month == yesterday.month && date.day == yesterday.day) {
+  if (date.day == yesterday.day && date.month == yesterday.month && date.year == yesterday.year) {
     return 'Yesterday, $timeString';
   }
 
