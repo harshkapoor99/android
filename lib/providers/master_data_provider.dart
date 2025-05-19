@@ -21,7 +21,7 @@ class MasterData extends _$MasterData {
     );
   }
 
-  void fetchLanguages() async {
+  Future<void> fetchLanguages() async {
     final response = await ref.read(masterServiceProvider).fetchLanguages();
     try {
       if (response.statusCode == 200) {
@@ -38,7 +38,7 @@ class MasterData extends _$MasterData {
   }
 
   // 25, 64, 73, API
-  void fetchBehaviours() async {
+  Future<void> fetchBehaviours() async {
     final response = await ref.read(masterServiceProvider).fetchBehavious();
     try {
       if (response.statusCode == 200) {
@@ -54,7 +54,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchPersonalities() async {
+  Future<void> fetchPersonalities() async {
     final response =
         await ref.read(masterServiceProvider).fetchPersionalities();
     try {
@@ -74,7 +74,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchRelationships() async {
+  Future<void> fetchRelationships() async {
     final response = await ref.read(masterServiceProvider).fetchRelationships();
     try {
       if (response.statusCode == 200) {
@@ -93,7 +93,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchVoices() async {
+  Future<void> fetchVoices() async {
     final response = await ref.read(masterServiceProvider).fetchVoices();
     try {
       if (response.statusCode == 200) {
@@ -109,7 +109,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCountries() async {
+  Future<void> fetchCountries() async {
     final response = await ref.read(masterServiceProvider).fetchCountries();
     try {
       if (response.statusCode == 200) {
@@ -125,7 +125,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCities() async {
+  Future<void> fetchCities() async {
     final response = await ref.read(masterServiceProvider).fetchCities();
     try {
       if (response.statusCode == 200) {
@@ -141,7 +141,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchCharacterTypes() async {
+  Future<void> fetchCharacterTypes() async {
     final response =
         await ref.read(masterServiceProvider).fetchCharacterTypes();
     try {
@@ -162,17 +162,19 @@ class MasterData extends _$MasterData {
   }
 
   void fetchAllMasterData() async {
-    fetchLanguages();
-    fetchBehaviours();
-    fetchPersonalities();
-    fetchRelationships();
-    fetchVoices();
-    fetchCountries();
-    fetchCities();
-    fetchCharacterTypes();
+    Future.wait([
+      fetchLanguages(),
+      fetchBehaviours(),
+      fetchPersonalities(),
+      fetchRelationships(),
+      fetchVoices(),
+      fetchCountries(),
+      fetchCities(),
+      fetchCharacterTypes(),
+    ]);
   }
 
-  void fetchBehaviousByPersonality() async {
+  Future<void> fetchBehaviousByPersonality() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchBehaviousByPersonality(
@@ -192,7 +194,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchPersionalitiesByRelationship() async {
+  Future<void> fetchPersionalitiesByRelationship() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchPersionalitiesByRelationship(
@@ -215,7 +217,7 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchRelationshipsByCharactertype() async {
+  Future<void> fetchRelationshipsByCharactertype() async {
     final response = await ref
         .read(masterServiceProvider)
         .fetchRelationshipsByCharactertype(
