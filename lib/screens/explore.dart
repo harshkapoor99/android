@@ -117,17 +117,6 @@ class ExploreScreen extends ConsumerWidget {
     WidgetRef ref,
     List<Character> characters,
   ) {
-    // final imageUrls = [
-    //   Assets.images.onboarding.obImg3,
-    //   Assets.images.model.modImg5,
-    //   Assets.images.model.modImg7,
-    //   Assets.images.onboarding.obImg10,
-    //   Assets.images.onboarding.obImg15,
-    //   Assets.images.onboarding.obImg2,
-    //   Assets.images.onboarding.obImg7,
-    //   Assets.images.onboarding.obImg8,
-    // ];
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
