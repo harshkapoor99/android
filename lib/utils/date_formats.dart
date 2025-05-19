@@ -7,16 +7,17 @@ String formatChatTimestamp(DateTime date) {
   final oneWeekAgo = today.subtract(const Duration(days: 7));
 
   final timeString = formatTime(date);
+  final messageDate = DateTime(date.day, date.month, date.year);
 
-  if (date.day == today.day && date.month == today.month && date.year == today.year) {
+  if (messageDate.isAtSameMomentAs(today)) {
     return 'Today, $timeString';
   }
 
-  if (date.day == yesterday.day && date.month == yesterday.month && date.year == yesterday.year) {
+  if (messageDate.isAtSameMomentAs(yesterday)) {
     return 'Yesterday, $timeString';
   }
 
-  if (date.isAfter(oneWeekAgo)) {
+  if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
     final dayName = DateFormat('EEEE').format(date);
     return '$dayName, $timeString';
   }
