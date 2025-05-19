@@ -9,16 +9,16 @@ class Character {
   final String gender;
   final String style;
   final String languageId;
-  final String personalityId;
+  final String charactertypeId;
   final String relationshipId;
+  final String personalityId;
   final List<String> behaviourIds;
-  final dynamic voiceId;
-  final dynamic countryId;
-  final dynamic cityId;
-  final dynamic charactertypeId;
-  final dynamic refImage;
-  final dynamic refImageDescription;
-  final dynamic refImageBackstory;
+  final String voiceId;
+  final String countryId;
+  final String cityId;
+  final String? refImage;
+  final String? refImageDescription;
+  final String? refImageBackstory;
   final String prompt;
   final List<GenImage> imageGallery;
   final DateTime createdDate;
@@ -33,13 +33,13 @@ class Character {
     required this.gender,
     required this.style,
     required this.languageId,
-    required this.personalityId,
+    required this.charactertypeId,
     required this.relationshipId,
+    required this.personalityId,
     required this.behaviourIds,
     required this.voiceId,
     required this.countryId,
     required this.cityId,
-    required this.charactertypeId,
     required this.refImage,
     required this.refImageDescription,
     required this.refImageBackstory,
@@ -58,13 +58,13 @@ class Character {
     gender: json["gender"],
     style: json["style"],
     languageId: json["language_id"],
-    personalityId: json["personality_id"],
+    charactertypeId: json["charactertype_id"],
     relationshipId: json["relationship_id"],
+    personalityId: json["personality_id"],
     behaviourIds: List<String>.from(json["behaviour_ids"]),
     voiceId: json["voice_id"],
     countryId: json["country_id"],
     cityId: json["city_id"],
-    charactertypeId: json["charactertype_id"],
     refImage: json["ref_image"],
     refImageDescription: json["ref_image_description"],
     refImageBackstory: json["ref_image_backstory"],
@@ -85,13 +85,13 @@ class Character {
     "gender": gender,
     "style": style,
     "language_id": languageId,
-    "personality_id": personalityId,
+    "charactertype_id": charactertypeId,
     "relationship_id": relationshipId,
+    "personality_id": personalityId,
     "behaviour_ids": behaviourIds,
     "voice_id": voiceId,
     "country_id": countryId,
     "city_id": cityId,
-    "charactertype_id": charactertypeId,
     "ref_image": refImage,
     "ref_image_description": refImageDescription,
     "ref_image_backstory": refImageBackstory,
