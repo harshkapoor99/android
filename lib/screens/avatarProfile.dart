@@ -1,15 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/configs/theme.dart';
-import 'package:intl/intl.dart';
-import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import '../../components/labeled_text_field.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
-
-import '../../providers/chat_provider.dart'; // If .pw is here
+import '../providers/chat_provider.dart'; // If .pw is here
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -29,14 +21,14 @@ class BottomBarIconLabel {
   String label;
 }
 
-class AvatarProfile extends ConsumerStatefulWidget {
-  const AvatarProfile({super.key});
+class CharacterProfile extends ConsumerStatefulWidget {
+  const CharacterProfile({super.key});
 
   @override
-  ConsumerState<AvatarProfile> createState() => _AvatarProfile();
+  ConsumerState<CharacterProfile> createState() => _CharacterProfile();
 }
 
-class _AvatarProfile extends ConsumerState<AvatarProfile> {
+class _CharacterProfile extends ConsumerState<CharacterProfile> {
   @override
   void initState() {
     super.initState();
@@ -104,38 +96,6 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
               ),
               const SizedBox(height: 40),
               Center(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                double screenWidth = constraints.maxWidth;
-                return Container(
-                  width: screenWidth * 0.98,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF23222F),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildAlignedRow("Name", provider.character!.name),
-                      const SizedBox(height: 16),
-                      _buildAlignedRow("Age", provider.character!.age.toString()),
-                      const SizedBox(height: 16),
-                      _buildAlignedRow("Gender", provider.character!.gender),
-                      const SizedBox(height: 16),
-                      _buildAlignedRow("Country", provider.character!.countryId),
-                      const SizedBox(height: 16),
-                      _buildAlignedRow("State", provider.character!.countryId),
-                      const SizedBox(height: 16),
-                      _buildAlignedRow("City", provider.character!.cityId),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-              const SizedBox(height: 20),
-              Center(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     double screenWidth = constraints.maxWidth;
@@ -147,14 +107,31 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          buildProfileField("Sexual Orientation", provider.character!.style),
+                          _buildAlignedRow("Name", provider.character!.name),
                           const SizedBox(height: 16),
-                          buildProfileField("Voice", provider.character!.voiceId),
+                          _buildAlignedRow(
+                            "Age",
+                            provider.character!.age.toString(),
+                          ),
                           const SizedBox(height: 16),
-                          buildProfileField("Language", provider.character!.languageId),
+                          _buildAlignedRow(
+                            "Gender",
+                            provider.character!.gender,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildAlignedRow(
+                            "Country",
+                            provider.character!.countryId,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildAlignedRow(
+                            "State",
+                            provider.character!.countryId,
+                          ),
+                          const SizedBox(height: 16),
+                          _buildAlignedRow("City", provider.character!.cityId),
                         ],
                       ),
                     );
@@ -177,11 +154,56 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          buildProfileField("What type of category fits your companion", provider.character!.creatorId),
+                          buildProfileField(
+                            "Sexual Orientation",
+                            provider.character!.style,
+                          ),
                           const SizedBox(height: 16),
-                          buildProfileField("What’s your companion’s relationship to you", provider.character!.relationshipId),
+                          buildProfileField(
+                            "Voice",
+                            provider.character!.voiceId,
+                          ),
                           const SizedBox(height: 16),
-                          buildProfileField("What's your companion's personality type", provider.character!.personalityId),
+                          buildProfileField(
+                            "Language",
+                            provider.character!.languageId,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    double screenWidth = constraints.maxWidth;
+                    return Container(
+                      width: screenWidth * 0.98,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF23222F),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          buildProfileField(
+                            "What type of category fits your companion",
+                            provider.character!.creatorId,
+                          ),
+                          const SizedBox(height: 16),
+                          buildProfileField(
+                            "What’s your companion’s relationship to you",
+                            provider.character!.relationshipId,
+                          ),
+                          const SizedBox(height: 16),
+                          buildProfileField(
+                            "What's your companion's personality type",
+                            provider.character!.personalityId,
+                          ),
                           const SizedBox(height: 16),
                           buildProfileField(
                             "Which behaviour’s match your companion",
@@ -209,11 +231,20 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          buildProfileField("Image description (if any)", provider.character!.refImageDescription ?? "N/A"),
+                          buildProfileField(
+                            "Image description (if any)",
+                            provider.character!.refImageDescription ?? "N/A",
+                          ),
                           const SizedBox(height: 16),
-                          buildProfileField("Back Story if any (300 words)", provider.character!.refImageBackstory ?? "N/A"),
+                          buildProfileField(
+                            "Back Story if any (300 words)",
+                            provider.character!.refImageBackstory ?? "N/A",
+                          ),
                           const SizedBox(height: 16),
-                          buildProfileField("Prompts", provider.character!.prompt),
+                          buildProfileField(
+                            "Prompts",
+                            provider.character!.prompt,
+                          ),
                         ],
                       ),
                     );
@@ -227,7 +258,8 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
       ),
     );
   }
-  Widget buildProfileField(String label, String value) {
+
+  Widget buildProfileField(String label, String? value) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -248,14 +280,13 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            value,
+            value ?? "Select one",
             style: context.appTextStyle.textSemibold,
           ),
         ),
       ],
     );
   }
-
 
   Widget _buildAlignedRow(String label, String value) {
     return Row(
@@ -282,13 +313,9 @@ class _AvatarProfile extends ConsumerState<AvatarProfile> {
         const SizedBox(width: 8),
         Expanded(
           flex: 3,
-          child: Text(
-            value,
-            style: context.appTextStyle.textSemibold,
-          ),
+          child: Text(value, style: context.appTextStyle.textSemibold),
         ),
       ],
     );
   }
-
 }

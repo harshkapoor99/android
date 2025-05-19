@@ -18,7 +18,7 @@ class Step1Widget extends ConsumerWidget {
       'value': 'realistic',
     },
     {
-      'label': 'Animie',
+      'label': 'Animated',
       'image': 'assets/images/model/animeNew.png',
       'value': 'anime',
     },

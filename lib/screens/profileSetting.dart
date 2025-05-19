@@ -5,9 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import '../../components/labeled_text_field.dart';
+import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart'; // If .pw is here
-
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -56,7 +55,12 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   };
   List<String> _currentCities = [];
   // --- New Gender Data ---
-  final List<String> _genders = ['Male', 'Female', 'Other', 'Prefer not to say'];
+  final List<String> _genders = [
+    'Male',
+    'Female',
+    'Other',
+    'Prefer not to say',
+  ];
   // --- End New Gender Data ---
 
   // --- Text Editing Controllers ---
@@ -99,29 +103,33 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   // --- New Date Picker Logic ---
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
-        context: context,
-        // Sensible initial date (e.g., 20 years ago)
-        initialDate: _selectedDate ?? DateTime.now().subtract(const Duration(days: 365 * 20)),
-        // Allow selection from 100 years ago up to today
-        firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
-        lastDate: DateTime.now(), // User cannot select future date for birthday
-        builder: (context, child) { // Optional: Theme the date picker
-          return Theme(
-            data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.dark( // Example dark theme
-                primary: Colors.blueAccent, // header background color
-                onPrimary: Colors.white, // header text color
-                onSurface: Colors.white, // body text color
-              ),
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.blueAccent, // button text color
-                ),
+      context: context,
+      // Sensible initial date (e.g., 20 years ago)
+      initialDate:
+          _selectedDate ??
+          DateTime.now().subtract(const Duration(days: 365 * 20)),
+      // Allow selection from 100 years ago up to today
+      firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
+      lastDate: DateTime.now(), // User cannot select future date for birthday
+      builder: (context, child) {
+        // Optional: Theme the date picker
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              // Example dark theme
+              primary: Colors.blueAccent, // header background color
+              onPrimary: Colors.white, // header text color
+              onSurface: Colors.white, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.blueAccent, // button text color
               ),
             ),
-            child: child!,
-          );
-        }
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -130,7 +138,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     }
   }
   // --- End New Date Picker Logic ---
-
 
   InputDecoration _buildInputDecoration() {
     // (logic kept as is)
@@ -191,7 +198,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              Align( // Save Button
+              Align(
+                // Save Button
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
@@ -215,13 +223,16 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 ),
               ),
               const SizedBox(height: 10),
-              Center( // Profile Picture
+              Center(
+                // Profile Picture
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage: AssetImage('assets/images/model/ayushImg.jpg'),
+                      backgroundImage: AssetImage(
+                        'assets/images/model/ayushImg.jpg',
+                      ),
                     ),
                     Positioned(
                       bottom: -10,
@@ -262,7 +273,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 ),
               ),
               // Age Dropdown
-              _buildDatePickerField( // Using helper method
+              _buildDatePickerField(
+                // Using helper method
                 label: 'Age',
                 selectedDate: _selectedDate,
                 onTap: () => _selectDate(context),
@@ -273,7 +285,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 value: _selectedGender,
                 items: _genders,
                 onChanged: (value) {
-                  setState(() { _selectedGender = value; });
+                  setState(() {
+                    _selectedGender = value;
+                  });
                 },
               ),
               // Country Dropdown
@@ -289,10 +303,17 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 value: _selectedCity,
                 items: _currentCities,
                 onChanged:
-                (_selectedCountry == null || _currentCities.isEmpty)
-                    ? null
-                    : (value) { setState(() { _selectedCity = value; }); },
-                hintText: _selectedCountry == null ? 'Select Country First' : 'Select City',
+                    (_selectedCountry == null || _currentCities.isEmpty)
+                        ? null
+                        : (value) {
+                          setState(() {
+                            _selectedCity = value;
+                          });
+                        },
+                hintText:
+                    _selectedCountry == null
+                        ? 'Select Country First'
+                        : 'Select City',
               ),
               // Email
               Padding(
@@ -326,7 +347,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar( // Kept as is
+      bottomNavigationBar: BottomNavigationBar(
+        // Kept as is
         type: BottomNavigationBarType.fixed,
         currentIndex: 3,
         backgroundColor: const Color(0xFF171717),
@@ -341,27 +363,31 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           ref.read(tabIndexProvider.notifier).changeTab(index);
         },
         items:
-        _tabWidgets
-            .map(
-              (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              iconLabel.assetName,
-              height: 18, width: 18,
-              colorFilter: ColorFilter.mode(
-                context.colorExt.textPrimary, BlendMode.srcIn,
-              ),
-            ),
-            icon: SvgPicture.asset(
-              iconLabel.assetName,
-              height: 18, width: 18,
-              colorFilter: ColorFilter.mode(
-                context.colorExt.textPrimary.withOpacity(0.6), BlendMode.srcIn,
-              ),
-            ),
-            label: iconLabel.label,
-          ),
-        )
-            .toList(),
+            _tabWidgets
+                .map(
+                  (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
+                    activeIcon: SvgPicture.asset(
+                      iconLabel.assetName,
+                      height: 18,
+                      width: 18,
+                      colorFilter: ColorFilter.mode(
+                        context.colorExt.textPrimary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    icon: SvgPicture.asset(
+                      iconLabel.assetName,
+                      height: 18,
+                      width: 18,
+                      colorFilter: ColorFilter.mode(
+                        context.colorExt.textPrimary.withOpacity(0.6),
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    label: iconLabel.label,
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -391,12 +417,15 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           DropdownButtonFormField<String>(
             value: value,
             items:
-            items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text( item, style: const TextStyle(color: primaryTextColor)),
-              );
-            }).toList(),
+                items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: const TextStyle(color: primaryTextColor),
+                    ),
+                  );
+                }).toList(),
             onChanged: onChanged,
             decoration: _buildInputDecoration().copyWith(
               hintText: hintText ?? 'Select $label',
@@ -422,10 +451,11 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     required VoidCallback onTap,
   }) {
     // Format the date, handle null
-    final String displayDate = selectedDate == null
-        ? 'Select Age'
-    // Using intl package for formatting - ensure imported
-        : DateFormat('dd MMM yyyy').format(selectedDate);
+    final String displayDate =
+        selectedDate == null
+            ? 'Select Age'
+            // Using intl package for formatting - ensure imported
+            : DateFormat('dd MMM yyyy').format(selectedDate);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -441,9 +471,11 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             ),
           ),
           const SizedBox(height: 8),
-          InkWell( // Makes the whole area tappable
+          InkWell(
+            // Makes the whole area tappable
             onTap: onTap,
-            child: InputDecorator( // Provides the input field look
+            child: InputDecorator(
+              // Provides the input field look
               decoration: _buildInputDecoration().copyWith(
                 hintText: 'Select Birthday', // Hint if needed
               ),
@@ -453,9 +485,12 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                   Text(
                     displayDate,
                     style: TextStyle(
-                      color: selectedDate == null
-                          ? secondaryTextColor.withOpacity(0.5) // Hint color
-                          : primaryTextColor, // Selected date color
+                      color:
+                          selectedDate == null
+                              ? secondaryTextColor.withOpacity(
+                                0.5,
+                              ) // Hint color
+                              : primaryTextColor, // Selected date color
                     ),
                   ),
                   const Icon(
