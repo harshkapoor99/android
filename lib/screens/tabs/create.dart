@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -22,12 +23,19 @@ class CreateTab extends ConsumerWidget {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (bool didPop, result) {
+        final currentTab = ref.read(tabIndexProvider);
         if (!didPop) {
-          ref.read(tabIndexProvider.notifier).changeTab(0);
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => DashboardScreen()),
-                (route) => false,
-          );
+          if (currentTab == 0) {
+            Future.delayed(Duration.zero, () {
+              SystemNavigator.pop();
+            });
+          } else {
+            ref.read(tabIndexProvider.notifier).changeTab(0);
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => DashboardScreen()),
+                  (route) => false,
+            );
+          }
         }
       },
       child: Scaffold(

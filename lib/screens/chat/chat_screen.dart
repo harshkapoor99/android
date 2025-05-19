@@ -1,13 +1,10 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/chat_bubble.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
-import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -361,5 +358,5 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
 }
 
 bool isSameDay(DateTime d1, DateTime d2) {
-  return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
+  return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
 }

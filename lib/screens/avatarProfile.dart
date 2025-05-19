@@ -123,7 +123,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                           const SizedBox(height: 16),
                           _buildAlignedRow(
                             "Country",
-                            provider.character!.countryId,
+                            provider.character!.countryId
                           ),
                           const SizedBox(height: 16),
                           _buildAlignedRow(
