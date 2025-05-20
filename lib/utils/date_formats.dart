@@ -2,27 +2,29 @@ import 'package:intl/intl.dart';
 
 String formatChatTimestamp(DateTime date) {
   final now = DateTime.now();
-  final today = DateTime(now.day, now.month, now.year);
+  final today = DateTime(now.year, now.month, now.day);
   final yesterday = today.subtract(const Duration(days: 1));
   final oneWeekAgo = today.subtract(const Duration(days: 7));
 
-  final timeString = formatTime(date);
-  final messageDate = DateTime(date.day, date.month, date.year);
+  final localDate = date.toLocal();
+  final messageDate = DateTime(localDate.year, localDate.month, localDate.day);
 
-  if (messageDate.isAtSameMomentAs(today)) {
+  final timeString = formatTime(localDate);
+
+  if (messageDate == today) {
     return 'Today, $timeString';
   }
 
-  if (messageDate.isAtSameMomentAs(yesterday)) {
+  if (messageDate == yesterday) {
     return 'Yesterday, $timeString';
   }
 
   if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
-    final dayName = DateFormat('EEEE').format(date);
+    final dayName = DateFormat('EEEE').format(localDate);
     return '$dayName, $timeString';
   }
 
-  return '${formatDateWithSuffix(date)}, $timeString';
+  return '${formatDateWithSuffix(localDate)}, $timeString';
 }
 
 String formatDateWithSuffix(DateTime date) {

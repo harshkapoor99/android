@@ -17,6 +17,8 @@ import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../utils/date_formats.dart';
+
 class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
@@ -340,7 +342,25 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 }
 
 Widget _buildDateSeparator(BuildContext context, DateTime date) {
-  final formatted = DateFormat.yMMMd().format(date);
+  final now = DateTime.now();
+  final today = DateTime(now.year, now.month, now.day);
+  final yesterday = today.subtract(const Duration(days: 1));
+  final oneWeekAgo = today.subtract(const Duration(days: 7));
+
+  final localDate = date.toLocal();
+  final messageDate = DateTime(localDate.year, localDate.month, localDate.day);
+
+  String label;
+
+  if (messageDate.isAtSameMomentAs(today)) {
+    label = 'Today';
+  } else if (messageDate.isAtSameMomentAs(yesterday)) {
+    label = 'Yesterday';
+  } else if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
+    label = DateFormat('EEEE').format(localDate);
+  } else {
+    label = formatDateWithSuffix(localDate);
+  }
   return Center(
     child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -350,7 +370,8 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        formatted,
+        label,
+        // formatted,
         style: context.appTextStyle.text.copyWith(fontSize: 10),
       ),
     ),
@@ -358,5 +379,5 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
 }
 
 bool isSameDay(DateTime d1, DateTime d2) {
-  return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
+  return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
 }

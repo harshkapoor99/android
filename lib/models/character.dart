@@ -17,7 +17,6 @@ class Character {
   final List<String> behaviourIds;
   final String? voiceId;
   final String countryId;
-  final Country countryName;
   final String cityId;
   final String? refImage;
   final String? refImageDescription;
@@ -42,7 +41,6 @@ class Character {
     required this.behaviourIds,
     required this.voiceId,
     required this.countryId,
-    required this.countryName,
     required this.cityId,
     required this.refImage,
     required this.refImageDescription,
@@ -68,7 +66,6 @@ class Character {
     behaviourIds: List<String>.from(json["behaviour_ids"]),
     voiceId: json["voice_id"],
     countryId: json["country_id"],
-    countryName: json["country_name"],
     cityId: json["city_id"],
     refImage: json["ref_image"],
     refImageDescription: json["ref_image_description"],
@@ -96,7 +93,6 @@ class Character {
     "behaviour_ids": behaviourIds,
     "voice_id": voiceId,
     "country_id": countryId,
-    "country_name": countryName,
     "city_id": cityId,
     "ref_image": refImage,
     "ref_image_description": refImageDescription,
