@@ -3,7 +3,8 @@ part of 'master_models.dart';
 class Voice {
   final String id;
   final String fullName;
-  final String voice;
+  final String vocalId;
+  final String vocalType;
   final String gender;
   final String voicetextUrl;
   final DateTime createdDate;
@@ -13,7 +14,8 @@ class Voice {
   Voice({
     required this.id,
     required this.fullName,
-    required this.voice,
+    required this.vocalId,
+    required this.vocalType,
     required this.gender,
     required this.voicetextUrl,
     required this.createdDate,
@@ -24,7 +26,8 @@ class Voice {
   factory Voice.fromMap(Map<String, dynamic> json) => Voice(
     id: json["_id"],
     fullName: json["full_name"],
-    voice: json["voice"],
+    vocalId: json["vocal_id"],
+    vocalType: json["vocal_type"],
     gender: json["gender"],
     voicetextUrl: json["voicetext_url"],
     createdDate: DateTime.parse(json["created_date"]),
@@ -35,7 +38,8 @@ class Voice {
   Map<String, dynamic> toMap() => {
     "_id": id,
     "full_name": fullName,
-    "voice": voice,
+    "vocal_id": vocalId,
+    "vocal_type": vocalType,
     "gender": gender,
     "voicetext_url": voicetextUrl,
     "created_date": createdDate.toIso8601String(),
