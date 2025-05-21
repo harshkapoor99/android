@@ -20,9 +20,8 @@ bool nextButtonStatus(Ref ref) {
       provider.characterNameController.text.isNotEmpty &&
       provider.ageController.text.isNotEmpty &&
       provider.sexualOrientation != null &&
-      provider.gender != null
-  // && provider.voice != null
-  ) {
+      provider.gender != null &&
+      provider.voice != null) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
@@ -194,6 +193,7 @@ class CharacterCreation extends _$CharacterCreation {
             name: state.characterNameController.text,
             age: state.ageController.text,
             gender: state.gender!,
+            sexualOrientation: state.sexualOrientation!,
             style: state.style!,
             languageId: state.language!.id,
             charactertypeId: state.characterType!.id,
