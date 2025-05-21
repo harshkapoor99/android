@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,6 +21,7 @@ abstract class MasterService {
   Future<Response> fetchVoices();
   Future<Response> fetchCountries();
   Future<Response> fetchCities();
+  Future<Response> fetchCitiesByCountry({required String countryId});
   Future<Response> fetchCharacterTypes();
 
   // By ID
@@ -52,6 +54,15 @@ class MasterServiceImpl implements MasterService {
   @override
   Future<Response> fetchCities() async {
     final response = await _apiClient.get(RemoteEndpoint.fetchCities.url);
+    return response;
+  }
+
+  @override
+  Future<Response> fetchCitiesByCountry({required String countryId}) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchCitiesByCountry.url,
+      data: {"country_id": countryId},
+    );
     return response;
   }
 

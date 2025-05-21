@@ -10,6 +10,7 @@ class CharacterDetail {
   final String age;
   final String gender;
   final String style;
+  final String sexualOrientation;
 
   final Language language;
   final Voice? voice;
@@ -37,6 +38,7 @@ class CharacterDetail {
     required this.age,
     required this.gender,
     required this.style,
+    required this.sexualOrientation,
 
     required this.language,
     this.voice,
@@ -64,6 +66,7 @@ class CharacterDetail {
     age: json["age"],
     gender: json["gender"],
     style: json["style"],
+    sexualOrientation: json["sexual_orientation"],
 
     language: Language.fromMap(json["language"]),
     voice: json["voice"] != null ? Voice.fromMap(json["voice"]) : null,
@@ -99,6 +102,7 @@ class CharacterDetail {
     "age": age,
     "gender": gender,
     "style": style,
+    "sexual_orientation": sexualOrientation,
 
     "language": country.toMap(),
     "voice": voice?.toMap(),
@@ -127,6 +131,7 @@ class CharacterDetail {
     String? age,
     String? gender,
     String? style,
+    String? sexualOrientation,
 
     Language? language,
     Voice? voice,
@@ -154,6 +159,7 @@ class CharacterDetail {
       age: age ?? this.age,
       gender: gender ?? this.gender,
       style: style ?? this.style,
+      sexualOrientation: sexualOrientation ?? this.sexualOrientation,
 
       language: language ?? this.language,
       voice: voice ?? this.voice,
@@ -181,6 +187,7 @@ class CharacterDetail {
     age: age,
     gender: gender,
     style: style,
+    sexualOrientation: sexualOrientation,
     languageId: language.id,
     charactertypeId: characterType?.id ?? "",
     relationshipId: relationship.id,

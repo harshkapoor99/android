@@ -35,7 +35,6 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
-  String? _selectedAge;
   String? _selectedCountry;
   String? _selectedCity;
   // --- New State Variables ---
@@ -44,7 +43,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   // --- End New State Variables ---
 
   // --- Dropdown Data ---
-  final List<String> _ageRanges = ['18-24', '25-34', '35-44', '45+'];
   final List<String> _countries = ['India', 'USA', 'Canada', 'UK', 'Australia'];
   final Map<String, List<String>> _cities = {
     'India': ['Mumbai', 'Delhi', 'Bangalore', 'Imphal'],

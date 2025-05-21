@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'dart:math' as math; // Import math for clamp
+// Import math for clamp
 
 class SubscriptionPage extends StatefulWidget {
   const SubscriptionPage({Key? key}) : super(key: key);
@@ -57,7 +57,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
-    final safePadding = MediaQuery.of(context).padding;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -260,7 +259,9 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                                               isSelected
                                                   ? null
                                                   : Colors.grey[800],
-                                          borderRadius: BorderRadius.circular(9),
+                                          borderRadius: BorderRadius.circular(
+                                            9,
+                                          ),
                                         ),
                                         child: Column(
                                           children: [

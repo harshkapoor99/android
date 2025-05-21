@@ -159,6 +159,9 @@ class CharacterCreation extends _$CharacterCreation {
     if (country != null && state.country != country) {
       doUpdate = true;
       state.country = country;
+      ref
+          .read(masterDataProvider.notifier)
+          .fetchCitiesByCountry(country: country);
       state.city = null;
     } else if (city != null && state.city != city) {
       doUpdate = true;
