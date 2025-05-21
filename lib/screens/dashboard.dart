@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -32,49 +33,61 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     int currentIndex = ref.watch(tabIndexProvider);
 
-    return Scaffold(
-      backgroundColor: context.colorExt.background,
-      appBar: AppConstants.appbar(context),
-      body: IndexedStack(
-        index: ref.watch(tabIndexProvider),
-        children: _screens,
-      ),
+    return PopScope(
+      canPop: ref.read(tabIndexProvider) == 0,
+      onPopInvokedWithResult: (bool didPop, result) {
+        final currentTab = ref.read(tabIndexProvider);
+        if (!didPop) {
+          if (currentTab != 0) {
+            ref.read(tabIndexProvider.notifier).changeTab(0);
+          }
+        }
+      },
+      child: Scaffold(
+        backgroundColor: context.colorExt.background,
+        appBar: AppConstants.appbar(context),
+        body: IndexedStack(
+          index: ref.watch(tabIndexProvider),
+          children: _screens,
+        ),
 
-      // Bottom Navigation Bar
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: currentIndex,
-        backgroundColor: const Color(0xFF171717),
-        selectedItemColor: context.colorExt.textPrimary,
-        showUnselectedLabels: true,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) => ref.read(tabIndexProvider.notifier).changeTab(index),
-        items:
-            _tabWidgets
-                .map(
-                  (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary,
-                        BlendMode.srcIn,
+        // Bottom Navigation Bar
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: currentIndex,
+          backgroundColor: const Color(0xFF171717),
+          selectedItemColor: context.colorExt.textPrimary,
+          showUnselectedLabels: true,
+          unselectedItemColor: Colors.grey,
+          onTap:
+              (index) => ref.read(tabIndexProvider.notifier).changeTab(index),
+          items:
+              _tabWidgets
+                  .map(
+                    (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
+                      activeIcon: SvgPicture.asset(
+                        iconLabel.assetName,
+                        height: 18,
+                        width: 18,
+                        colorFilter: ColorFilter.mode(
+                          context.colorExt.textPrimary,
+                          BlendMode.srcIn,
+                        ),
                       ),
-                    ),
-                    icon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary.withValues(alpha: 0.6),
-                        BlendMode.srcIn,
+                      icon: SvgPicture.asset(
+                        iconLabel.assetName,
+                        height: 18,
+                        width: 18,
+                        colorFilter: ColorFilter.mode(
+                          context.colorExt.textPrimary.withValues(alpha: 0.6),
+                          BlendMode.srcIn,
+                        ),
                       ),
+                      label: iconLabel.label,
                     ),
-                    label: iconLabel.label,
-                  ),
-                )
-                .toList(),
+                  )
+                  .toList(),
+        ),
       ),
     );
   }
