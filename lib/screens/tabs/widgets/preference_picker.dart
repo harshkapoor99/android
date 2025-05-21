@@ -23,6 +23,7 @@ Widget buildOptionTile<T>({
   Function(List<T>)? onMultiSelect,
   bool? isMultiple,
   int? maxSelectToClose,
+  bool showLoading = false,
 }) {
   final titleStyle =
       Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -57,12 +58,23 @@ Widget buildOptionTile<T>({
                   color: context.colorExt.textSecondary,
                 ),
               ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        color: Colors.white,
-        size: 16,
-      ),
+      trailing:
+          showLoading
+              ? SizedBox(
+                height: 16,
+                width: 16,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: context.colorExt.textPrimary,
+                ),
+              )
+              : const Icon(
+                Icons.arrow_forward_ios,
+                color: Colors.white,
+                size: 16,
+              ),
       onTap: () {
+        if (showLoading) return;
         if (T == Voice) {
           _showVoiceOptionPopup(
             context,

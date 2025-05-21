@@ -142,6 +142,25 @@ class MasterData extends _$MasterData {
     }
   }
 
+  Future<void> fetchCitiesByCountry({required Country country}) async {
+    state = state.copyWith(isLoading: true);
+    final response = await ref
+        .read(masterServiceProvider)
+        .fetchCitiesByCountry(countryId: country.id);
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<City> cities =
+            data.map((e) => City.fromMap(e)).toList().cast<City>();
+        state = state.copyWith(cities: cities);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
   Future<void> fetchCharacterTypes() async {
     final response =
         await ref.read(masterServiceProvider).fetchCharacterTypes();
@@ -170,7 +189,6 @@ class MasterData extends _$MasterData {
       fetchRelationships(),
       fetchVoices(),
       fetchCountries(),
-      fetchCities(),
       fetchCharacterTypes(),
       fetchMasterCharacters(),
     ]);

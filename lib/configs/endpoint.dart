@@ -16,6 +16,7 @@ enum RemoteEndpoint {
   fetchVoices(path: 'masterservice/voice/getallvoice/'),
   fetchCountries(path: 'masterservice/country/getallcountry/'),
   fetchCities(path: 'masterservice/city/getallcity/'),
+  fetchCitiesByCountry(path: 'masterservice/city/citiesdetailsbycountryid/'),
   fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
 
   // MasterData by id
