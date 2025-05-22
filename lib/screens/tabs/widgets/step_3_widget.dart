@@ -56,14 +56,14 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
 
   Future getImage(ImageSource media) async {
     if (media == ImageSource.camera) {
-      getPermission(Permission.camera);
+      await getPermission(Permission.camera);
     } else {
-      getPermission(Permission.storage);
+      await getPermission(Permission.photos);
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
       print(img.path);
-      var image = await compressImage(File(img.path));
+        var image = await compressImage(File(img.path));
       if (image != null) {
         // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
         ref
