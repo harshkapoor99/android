@@ -22,12 +22,12 @@ class AppConstants {
           5.pw,
           Text('Guftagu', style: AppTextStyle(context).appBarText),
           const Spacer(),
-          SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-          5.pw,
-          Text(
-            '1200',
-            style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
-          ),
+          // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+          // 5.pw,
+          // Text(
+          //   '1200',
+          //   style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
+          // ),
           15.pw,
           SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
           15.pw,

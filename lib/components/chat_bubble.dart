@@ -64,7 +64,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                     CustomPaint(
                       size: const Size(6, 6),
                       painter: _BubbleNipPainter(
-                        color: context.colorExt.border,
+                        color: Color(0xFF3D3D3D),
                         isMe: widget.isMe,
                       ),
                     ),
@@ -81,7 +81,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                                 colors: [Color(0xFF9D00C6), Color(0xFF00B1A4)],
                               )
                               : null,
-                      color: widget.isMe ? null : context.colorExt.border,
+                      color: widget.isMe ? null : Color(0xFF3D3D3D),
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10),
                         topRight: const Radius.circular(10),

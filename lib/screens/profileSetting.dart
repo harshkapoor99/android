@@ -6,7 +6,9 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import '../components/labeled_text_field.dart';
-import 'package:guftagu_mobile/utils/entensions.dart'; // If .pw is here
+import 'package:guftagu_mobile/utils/entensions.dart';
+
+import '../services/hive_service.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -35,16 +37,11 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
-  String? _selectedAge;
   String? _selectedCountry;
   String? _selectedCity;
-  // --- New State Variables ---
   String? _selectedGender;
   DateTime? _selectedDate;
-  // --- End New State Variables ---
 
-  // --- Dropdown Data ---
-  final List<String> _ageRanges = ['18-24', '25-34', '35-44', '45+'];
   final List<String> _countries = ['India', 'USA', 'Canada', 'UK', 'Australia'];
   final Map<String, List<String>> _cities = {
     'India': ['Mumbai', 'Delhi', 'Bangalore', 'Imphal'],
@@ -61,9 +58,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     'Other',
     'Prefer not to say',
   ];
-  // --- End New Gender Data ---
 
-  // --- Text Editing Controllers ---
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -79,7 +74,41 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _updateCities(_selectedCountry);
+
+    final userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
+
+    if (userInfo != null) {
+      _nameController.text = userInfo.profile.fullName;
+      _emailController.text = userInfo.email.hasValue ? userInfo.email : '';
+      _phoneController.text =
+          userInfo.mobileNumber.hasValue ? userInfo.mobileNumber : '';
+      if (userInfo.profile.gender != null &&
+          _genders.contains(userInfo.profile.gender!)) {
+        _selectedGender = userInfo.profile.gender;
+      } else {
+        _selectedGender =
+            null; // Ensure it's null if not found or null initially
+      }
+
+      // Set _selectedCountry only if userInfo.profile.country exists in _countries
+      if (userInfo.profile.country != null &&
+          _countries.contains(userInfo.profile.country!)) {
+        _selectedCountry = userInfo.profile.country;
+      } else {
+        _selectedCountry =
+            null; // Ensure it's null if not found or null initially
+      }
+
+      _updateCities(_selectedCountry);
+
+      // Set _selectedCity only if _currentCities has been populated and it contains the user's city
+      if (_currentCities.contains(userInfo.profile.city)) {
+        _selectedCity = userInfo.profile.city;
+      } else {
+        _selectedCity =
+            null; // Clear if user's city isn't in the current country's list
+      }
+    }
   }
 
   @override
@@ -204,13 +233,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: TextButton(
                   onPressed: () {
                     print('Save button pressed');
-                    print('Name: ${_nameController.text}');
-                    print('Age: $_selectedDate');
-                    print('Gender: $_selectedGender');
-                    print('Country: $_selectedCountry');
-                    print('City: $_selectedCity');
-                    print('Email: ${_emailController.text}');
-                    print('Phone: ${_phoneController.text}');
                   },
                   child: const Text(
                     'Save',

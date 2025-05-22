@@ -7,8 +7,6 @@ import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -146,12 +144,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
               const Spacer(),
-              SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              5.pw,
-              Text(
-                '1200',
-                style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              ),
+              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              // 5.pw,
+              // Text(
+              //   '1200',
+              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              // ),
               // 25.pw,
               // IconButton(
               //   onPressed: () => context.nav.pushNamed(Routes.call),
@@ -326,6 +324,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onPressed: () {
                         if (provider.hasMessage) {
                           ref.read(chatProvider.notifier).chatWithCharacter();
+                        }else {
+                          ref.read(chatProvider.notifier).sendStaticVoiceMessage();
                         }
                       },
                     ),

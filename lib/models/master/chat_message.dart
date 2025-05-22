@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
+
 class ChatMessage {
   final bool isMe;
   final String text;
   final DateTime time;
 
-  ChatMessage({required this.isMe, required this.text, required this.time});
+  ChatMessage({required this.isMe,required this.text, required this.time});
 
   factory ChatMessage.fromMap(Map<String, dynamic> json) => ChatMessage(
     isMe: json["sender"] == "user" ? true : false,

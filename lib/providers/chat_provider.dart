@@ -94,6 +94,23 @@ class Chat extends _$Chat {
     }
   }
 
+  void sendStaticVoiceMessage() {
+    appendChat(
+      isMe: true,
+      text: "🎤 This is a static voice message.",
+      time: DateTime.now(),
+    );
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      appendChat(
+        isMe: false,
+        text: "🤖 Got your voice message!",
+        time: DateTime.now(),
+      );
+    });
+  }
+
+
   void fetchChatList() async {
     try {
       state = state._updateWith(isFetchingChatList: true);

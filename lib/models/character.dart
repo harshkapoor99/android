@@ -1,7 +1,5 @@
 import 'package:guftagu_mobile/models/gen_image.dart';
 
-import 'master/master_models.dart';
-
 class Character {
   final String id;
   final String creatorId;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import '../providers/chat_provider.dart'; // If .pw is here
+import '../providers/chat_provider.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -14,7 +14,6 @@ const Gradient editIconGradient = LinearGradient(
   end: Alignment.bottomRight,
 );
 
-// Helper class for Bottom Navigation Bar items
 class BottomBarIconLabel {
   BottomBarIconLabel({required this.assetName, required this.label});
   String assetName;
@@ -123,7 +122,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                           const SizedBox(height: 16),
                           _buildAlignedRow(
                             "Country",
-                            provider.character!.countryId,
+                            provider.character!.gender,
                           ),
                           const SizedBox(height: 16),
                           _buildAlignedRow(
