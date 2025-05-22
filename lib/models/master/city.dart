@@ -3,7 +3,7 @@ part of 'master_models.dart';
 class City {
   final String id;
   final String cityName;
-  final String countryId;
+  final String? countryId;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
@@ -11,7 +11,7 @@ class City {
   City({
     required this.id,
     required this.cityName,
-    required this.countryId,
+    this.countryId,
     required this.createdDate,
     required this.updatedDate,
     required this.status,
@@ -20,7 +20,7 @@ class City {
   factory City.fromMap(Map<String, dynamic> json) => City(
     id: json["_id"],
     cityName: json["city_name"],
-    countryId: json["country_id"],
+    countryId: json["country_id"] ?? json["country"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],

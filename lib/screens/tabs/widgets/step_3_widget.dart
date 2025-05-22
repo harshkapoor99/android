@@ -200,11 +200,16 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     textCapitalization: TextCapitalization.sentences,
                     maxLines: null,
                     minLines: 5,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      hintStyle: context.appTextStyle.hintText.copyWith(
+                        fontSize: 16,
+                      ),
+                      hintText:
+                          "Eg. A confident South Indian woman in her late 20s, wearing a mustard saree, standing in a sunlit street in Kochi. Curly hair, brown eyes, soft smile, golden hour lighting.",
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16),
+                      contentPadding: const EdgeInsets.all(16),
                     ),
                   ),
                   Positioned(
@@ -219,7 +224,13 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                               : SizedBox(
                                 height: 32,
                                 child: ElevatedButton.icon(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    ref
+                                        .read(
+                                          characterCreationProvider.notifier,
+                                        )
+                                        .generateRandomPrompt();
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF1C1B2A),
                                     padding: const EdgeInsets.symmetric(
@@ -309,11 +320,16 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     style: context.appTextStyle.text,
                     maxLines: null,
                     minLines: 5,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
+                      hintStyle: context.appTextStyle.hintText.copyWith(
+                        fontSize: 16,
+                      ),
+                      hintText:
+                          "Meera is a 28-year-old fashion illustrator from Kochi who left her corporate job to follow her passion. She's deeply empathetic and often journals about her dreams of starting a design school for underprivileged girls. She met you during an online art workshop and you’ve stayed close ever since, sharing dreams and late-night calls.",
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      contentPadding: EdgeInsets.all(16),
+                      contentPadding: const EdgeInsets.all(16),
                     ),
                   ),
                   Positioned(

@@ -5,8 +5,10 @@ import 'package:guftagu_mobile/components/chat_bubble.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
-import 'package:intl/intl.dart';
+import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -14,8 +16,6 @@ import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../utils/date_formats.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
@@ -144,12 +144,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
               const Spacer(),
-              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              // 5.pw,
-              // Text(
-              //   '1200',
-              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              // ),
+              SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              5.pw,
+              Text(
+                '1200',
+                style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              ),
               // 25.pw,
               // IconButton(
               //   onPressed: () => context.nav.pushNamed(Routes.call),
@@ -238,22 +238,21 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // This logic correctly accounts for the presence/absence of the typing indicator
                             final messageIndex =
                                 provider.isTyping
-                                    ? provider.messages.length -
-                                        1 -
-                                        (index -
-                                            1) // Adjust index when typing indicator is present
-                                    : provider.messages.length -
-                                        1 -
-                                        index; // Normal index when no typing indicator
+                                    ?
+                                    // provider.messages.length -
+                                    //     1 -
+                                    (index -
+                                        1) // Adjust index when typing indicator is present
+                                    :
+                                    // provider.messages.length -
+                                    //     1 -
+                                    index; // Normal index when no typing indicator
 
                             bool showDateSeparator = false;
-                            bool isInElse = false;
-                            if (messageIndex == 0) {
-                              print("top $messageIndex");
+                            if (messageIndex == provider.messages.length - 1) {
                               showDateSeparator = true;
                             } else if (messageIndex <
                                 provider.messages.length - 1) {
-                              isInElse = true;
                               final prevMessage =
                                   provider.messages[messageIndex + 1];
                               showDateSeparator =
@@ -267,8 +266,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (showDateSeparator &&
-                                    messageIndex < provider.messages.length - 1)
+                                if (showDateSeparator
+                                // && messageIndex < provider.messages.length - 1
+                                )
                                   _buildDateSeparator(
                                     context,
                                     provider.messages[messageIndex].time,
@@ -324,8 +324,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       onPressed: () {
                         if (provider.hasMessage) {
                           ref.read(chatProvider.notifier).chatWithCharacter();
-                        }else {
-                          ref.read(chatProvider.notifier).sendStaticVoiceMessage();
                         }
                       },
                     ),
@@ -342,25 +340,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 }
 
 Widget _buildDateSeparator(BuildContext context, DateTime date) {
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(const Duration(days: 1));
-  final oneWeekAgo = today.subtract(const Duration(days: 7));
-
-  final localDate = date.toLocal();
-  final messageDate = DateTime(localDate.year, localDate.month, localDate.day);
-
-  String label;
-
-  if (messageDate.isAtSameMomentAs(today)) {
-    label = 'Today';
-  } else if (messageDate.isAtSameMomentAs(yesterday)) {
-    label = 'Yesterday';
-  } else if (messageDate.isAfter(oneWeekAgo) && messageDate.isBefore(yesterday)) {
-    label = DateFormat('EEEE').format(localDate);
-  } else {
-    label = formatDateWithSuffix(localDate);
-  }
+  // final formatted = DateFormat.yMMMd().format(date);
+  final formatted = formatChatDivider(date);
   return Center(
     child: Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -370,8 +351,7 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        label,
-        // formatted,
+        formatted,
         style: context.appTextStyle.text.copyWith(fontSize: 10),
       ),
     ),
@@ -379,5 +359,5 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
 }
 
 bool isSameDay(DateTime d1, DateTime d2) {
-  return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
+  return d1.day == d2.day && d1.month == d2.month && d1.year == d2.year;
 }

@@ -20,9 +20,8 @@ bool nextButtonStatus(Ref ref) {
       provider.characterNameController.text.isNotEmpty &&
       provider.ageController.text.isNotEmpty &&
       provider.sexualOrientation != null &&
-      provider.gender != null
-  // && provider.voice != null
-  ) {
+      provider.gender != null &&
+      provider.voice != null) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
@@ -160,6 +159,9 @@ class CharacterCreation extends _$CharacterCreation {
     if (country != null && state.country != country) {
       doUpdate = true;
       state.country = country;
+      ref
+          .read(masterDataProvider.notifier)
+          .fetchCitiesByCountry(country: country);
       state.city = null;
     } else if (city != null && state.city != city) {
       doUpdate = true;
@@ -194,6 +196,7 @@ class CharacterCreation extends _$CharacterCreation {
             name: state.characterNameController.text,
             age: state.ageController.text,
             gender: state.gender!,
+            sexualOrientation: state.sexualOrientation!,
             style: state.style!,
             languageId: state.language!.id,
             charactertypeId: state.characterType!.id,
@@ -246,6 +249,44 @@ class CharacterCreation extends _$CharacterCreation {
         .catchError((error) {
           state = state._updateWith(isImageUploading: false);
         });
+  }
+
+  void generateRandomPrompt() async {
+    state = state._updateWith(isCharacterGenerating: true);
+    try {
+      final Response response = await ref
+          .read(characterServiceProvider)
+          .generateRandomPrompt(
+            name: state.characterNameController.text,
+            age: state.ageController.text,
+            gender: state.gender!,
+            style: state.style!,
+            languageId: state.language!.id,
+            charactertypeId: state.characterType!.id,
+            relationshipId: state.relationship!.id,
+            personalityId: state.personality!.id,
+            behaviourIds: state.behaviours.map((b) => b.id).toList(),
+            voiceId: state.voice?.id,
+            countryId: state.country?.id,
+            cityId: state.city?.id,
+          );
+      if (response.statusCode == 200) {
+        // final List<dynamic> imageGallery = response.data['image_gallery'];
+        // final List<GenImage> images =
+        //     imageGallery.map((image) => GenImage.fromMap(image)).toList();
+        final randomPrompt = response.data['random_prompt'];
+        state.descriptionController.text = randomPrompt;
+      } else {
+        AppConstants.showSnackbar(
+          message: "Unable to create character",
+          isSuccess: true,
+        );
+      }
+    } on DioException {
+      rethrow;
+    } finally {
+      state = state._updateWith(isCharacterGenerating: false);
+    }
   }
 
   Future<CommonResponse> selectCharacterImage() async {

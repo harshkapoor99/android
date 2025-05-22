@@ -3,7 +3,7 @@ part of 'master_models.dart';
 class Country {
   final String id;
   final String countryName;
-  final String flag;
+  final String? flag;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;

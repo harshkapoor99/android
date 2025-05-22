@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
@@ -49,6 +49,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
     final isHomeVisited = ref.watch(isHomeVisitedProvider);
+    final masterProvider = ref.watch(masterDataProvider);
     if (!isHomeVisited) {
       if (provider.isFetchingChatList && provider.chatList.isEmpty) {
         // Case 1: Fetching and no chats yet - show loading animation
@@ -72,61 +73,82 @@ class _ChatTabState extends ConsumerState<ChatTab> {
               // scrollDirection: Axis.horizontal,
               // itemCount: widget.ais.length + 1,
               // itemBuilder: (context, index) {
-              children:
-                  widget.ais.map((ai) {
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        right: ai["name"] == "Explore" ? 0 : 8,
-                      ),
-                      child: Column(
-                        children: [
-                          Ink(
-                            height: 100,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              color:
-                                  ai["name"] == "Explore"
-                                      ? context.colorExt.border
-                                      : null,
+              children: [
+                ...masterProvider.characterDetails.map((ai) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Column(
+                      children: [
+                        Ink(
+                          height: 100,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(40),
+                            color: null,
+                            image: DecorationImage(
                               image:
-                                  ai["name"] != "Explore"
-                                      ? DecorationImage(
-                                        image: ai["image"].provider(),
-                                        fit: BoxFit.cover,
-                                      )
-                                      : null,
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                if (ai["name"] == "Explore") {
-                                  context.nav.pushNamed(Routes.explore);
-                                }
-                              },
-                              borderRadius: BorderRadius.circular(40),
-                              child:
-                                  ai["name"] == "Explore"
-                                      ? Center(
-                                        child: Icon(
-                                          Icons.arrow_outward_sharp,
-                                          color: context.colorExt.textSecondary,
-                                          size: 24,
-                                        ),
-                                      )
-                                      : null,
+                                  Image.network(ai.imageGallery[0].url).image,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          6.ph,
-                          Text(
-                            ai["name"],
-                            style: context.appTextStyle.textBold.copyWith(
-                              fontSize: 12,
-                            ),
+                          child: InkWell(
+                            onTap: () {
+                              ref
+                                  .read(chatProvider.notifier)
+                                  .setCharacter(ai.toCharacter());
+                              context.nav.pushNamed(Routes.chat);
+                            },
+                            borderRadius: BorderRadius.circular(40),
+                            child: null,
                           ),
-                        ],
+                        ),
+                        6.ph,
+                        Text(
+                          ai.name,
+                          style: context.appTextStyle.textBold.copyWith(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+                Column(
+                  children: [
+                    Ink(
+                      height: 100,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: context.colorExt.border,
                       ),
-                    );
-                  }).toList(),
+                      child: InkWell(
+                        onTap: () {
+                          ref
+                              .read(masterDataProvider.notifier)
+                              .fetchMasterCharacters();
+                          context.nav.pushNamed(Routes.explore);
+                        },
+                        borderRadius: BorderRadius.circular(40),
+                        child: Center(
+                          child: Icon(
+                            Icons.arrow_outward_sharp,
+                            color: context.colorExt.textSecondary,
+                            size: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                    6.ph,
+                    Text(
+                      "Explore",
+                      style: context.appTextStyle.textBold.copyWith(
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           16.ph,

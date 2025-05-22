@@ -8,6 +8,7 @@ class Character {
   final String age;
   final String gender;
   final String style;
+  final String sexualOrientation;
   final String languageId;
   final String charactertypeId;
   final String relationshipId;
@@ -32,6 +33,7 @@ class Character {
     required this.age,
     required this.gender,
     required this.style,
+    required this.sexualOrientation,
     required this.languageId,
     required this.charactertypeId,
     required this.relationshipId,
@@ -57,8 +59,9 @@ class Character {
     age: json["age"],
     gender: json["gender"],
     style: json["style"],
+    sexualOrientation: json["sexual_orientation"],
     languageId: json["language_id"],
-    charactertypeId: json["charactertype_id"],
+    charactertypeId: json["charactertype_id"] ?? "",
     relationshipId: json["relationship_id"],
     personalityId: json["personality_id"],
     behaviourIds: List<String>.from(json["behaviour_ids"]),
@@ -84,6 +87,7 @@ class Character {
     "age": age,
     "gender": gender,
     "style": style,
+    "sexual_orientation": sexualOrientation,
     "language_id": languageId,
     "charactertype_id": charactertypeId,
     "relationship_id": relationshipId,

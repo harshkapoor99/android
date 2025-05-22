@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/providers/chat_provider.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
 
   Widget buildHeader(BuildContext context) {
@@ -108,18 +112,11 @@ class ExploreScreen extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterGrid(BuildContext context) {
-    final imageUrls = [
-      Assets.images.onboarding.obImg3,
-      Assets.images.model.modImg5,
-      Assets.images.model.modImg7,
-      Assets.images.onboarding.obImg10,
-      Assets.images.onboarding.obImg15,
-      Assets.images.onboarding.obImg2,
-      Assets.images.onboarding.obImg7,
-      Assets.images.onboarding.obImg8,
-    ];
-
+  Widget buildCharacterGrid(
+    BuildContext context,
+    WidgetRef ref,
+    List<Character> characters,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: GridView.builder(
@@ -131,16 +128,34 @@ class ExploreScreen extends StatelessWidget {
           mainAxisSpacing: 12,
           childAspectRatio: 0.9,
         ),
-        itemCount: imageUrls.length,
+        itemCount: characters.length,
         itemBuilder: (context, index) {
-          // return ModelCard(imageUrl: imageUrls[index]);
+          var image =
+              characters[index].imageGallery
+                  .where((element) => element.selected == true)
+                  .first
+                  .url;
+          // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+          if (image == null) {
+            image = characters[index].imageGallery.first.url;
+          }
+          return ModelCard(
+            imageUrl: image,
+            name: characters[index].name,
+            characterType: null,
+            onCharTap:
+                () => ref
+                    .read(chatProvider.notifier)
+                    .setCharacter(characters[index]),
+          );
         },
       ),
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final masterProvider = ref.watch(masterDataProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorExt.background,
@@ -177,7 +192,13 @@ class ExploreScreen extends StatelessWidget {
             buildHeader(context),
             buildGradientTexts(context),
             const CategoryList(),
-            buildCharacterGrid(context),
+            buildCharacterGrid(
+              context,
+              ref,
+              masterProvider.characterDetails
+                  .map((c) => c.toCharacter())
+                  .toList(),
+            ),
           ],
         ),
       ),

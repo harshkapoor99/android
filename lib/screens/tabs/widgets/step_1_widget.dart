@@ -70,24 +70,30 @@ class Step1Widget extends ConsumerWidget {
             style: context.appTextStyle.characterGenLabel,
           ),
           16.ph,
-          buildOptionTile<City>(
-            context: context,
-            ref: ref,
-            title: "City",
-            options:
-                masterData.cities
-                    .where(
-                      (c) =>
-                          c.countryId ==
-                          ref.read(characterCreationProvider).country?.id,
-                    )
-                    .toList(),
-            optionToString: (c) => c.cityName,
-            onSelect:
-                (p0) => ref
-                    .read(characterCreationProvider.notifier)
-                    .updateCountryCityWith(city: p0),
-            selected: provider.city,
+          Consumer(
+            builder: (context, ref, child) {
+              final masterData = ref.watch(masterDataProvider);
+              return buildOptionTile<City>(
+                context: context,
+                ref: ref,
+                title: "City",
+                showLoading: masterData.isLoading,
+                options:
+                    masterData.cities
+                        .where(
+                          (c) =>
+                              c.countryId ==
+                              ref.read(characterCreationProvider).country?.id,
+                        )
+                        .toList(),
+                optionToString: (c) => c.cityName,
+                onSelect:
+                    (p0) => ref
+                        .read(characterCreationProvider.notifier)
+                        .updateCountryCityWith(city: p0),
+                selected: provider.city,
+              );
+            },
           ),
           36.ph,
           Text(

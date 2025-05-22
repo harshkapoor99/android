@@ -22,6 +22,7 @@ abstract class CharacterService {
     required String name,
     required String age,
     required String gender,
+    required String sexualOrientation,
     required String style,
     required String languageId,
     required String charactertypeId,
@@ -40,6 +41,21 @@ abstract class CharacterService {
     required String characterId,
     required String creatorId,
     required String imageId,
+  });
+
+  Future<Response> generateRandomPrompt({
+    required String name,
+    required String age,
+    required String gender,
+    required String style,
+    required String languageId,
+    required String charactertypeId,
+    required String relationshipId,
+    required String personalityId,
+    required List<String> behaviourIds,
+    String? voiceId,
+    String? countryId,
+    String? cityId,
   });
 }
 
@@ -68,6 +84,7 @@ class CharacterServiceImpl implements CharacterService {
     required String name,
     required String age,
     required String gender,
+    required String sexualOrientation,
     required String style,
     required String languageId,
     required String charactertypeId,
@@ -89,6 +106,7 @@ class CharacterServiceImpl implements CharacterService {
         "name": name,
         "age": age,
         "gender": gender,
+        "sexual_orientation": sexualOrientation,
         "style": style,
         "language_id": languageId,
         "charactertype_id": charactertypeId,
@@ -119,6 +137,42 @@ class CharacterServiceImpl implements CharacterService {
         "character_id": characterId,
         "creator_id": creatorId,
         "image_id": imageId,
+      },
+      timeout: const Duration(seconds: 30),
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> generateRandomPrompt({
+    required String name,
+    required String age,
+    required String gender,
+    required String style,
+    required String languageId,
+    required String charactertypeId,
+    required String relationshipId,
+    required String personalityId,
+    required List<String> behaviourIds,
+    String? voiceId,
+    String? countryId,
+    String? cityId,
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.generateRandomPrompt.url,
+      data: {
+        "name": name,
+        "age": age,
+        "gender": gender,
+        "style": style,
+        "language": languageId,
+        "charactertype": charactertypeId,
+        "relationship": relationshipId,
+        "personality": personalityId,
+        "behaviours": behaviourIds,
+        "voice": voiceId,
+        "country": countryId,
+        "city": cityId,
       },
       timeout: const Duration(seconds: 30),
     );
