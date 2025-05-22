@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -8,7 +9,10 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 
+import '../models/master/master_models.dart';
 import '../models/user_model.dart';
+import '../providers/character_creation_provider.dart';
+import '../providers/master_data_provider.dart';
 import '../services/hive_service.dart'; // If .pw is here
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
@@ -38,40 +42,21 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
-  String? _selectedCountry;
-  String? _selectedCity;
-  // --- New State Variables ---
-  String? _selectedGender;
   DateTime? _selectedDate;
   User? _userInfo;
+  String? _selectedGender;
 
-  // --- End New State Variables ---
-
-  // --- Dropdown Data ---
-  final List<String> _countries = ['India', 'USA', 'Canada', 'UK', 'Australia'];
-  final Map<String, List<String>> _cities = {
-    'India': ['Mumbai', 'Delhi', 'Bangalore', 'Imphal'],
-    'USA': ['New York', 'Los Angeles', 'Chicago'],
-    'Canada': ['Toronto', 'Vancouver', 'Montreal'],
-    'UK': ['London', 'Manchester', 'Birmingham'],
-    'Australia': ['Sydney', 'Melbourne', 'Brisbane'],
-  };
-  List<String> _currentCities = [];
-  // --- New Gender Data ---
   final List<String> _genders = [
     'Male',
     'Female',
     'Other',
     'Prefer not to say',
   ];
-  // --- End New Gender Data ---
 
-  // --- Text Editing Controllers ---
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
 
-  // --- Bottom Bar Tab Data ---
   final List<BottomBarIconLabel> _tabWidgets = [
     BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
     BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
@@ -83,7 +68,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   void initState() {
     super.initState();
     _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
-    _updateCities(_selectedCountry);
     _nameController.text = _userInfo?.profile.fullName ?? '';
     _emailController.text = _userInfo!.email.hasValue
         ? _userInfo!.email
@@ -102,17 +86,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     super.dispose();
   }
 
-  void _updateCities(String? selectedCountry) {
-    setState(() {
-      _selectedCountry = selectedCountry;
-      _currentCities = _cities[selectedCountry] ?? [];
-      if (!_currentCities.contains(_selectedCity)) {
-        _selectedCity = null;
-      }
-    });
-  }
-
-  // --- New Date Picker Logic ---
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -149,7 +122,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
       });
     }
   }
-  // --- End New Date Picker Logic ---
 
   InputDecoration _buildInputDecoration() {
     // (logic kept as is)
@@ -179,6 +151,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = ref.watch(characterCreationProvider);
+    final masterData = ref.watch(masterDataProvider);
     return Scaffold(
       backgroundColor: darkBackgroundColor,
       appBar: AppBar(
@@ -216,13 +190,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: TextButton(
                   onPressed: () {
                     print('Save button pressed');
-                    print('Name: ${_nameController.text}');
-                    print('Age: $_selectedDate');
-                    print('Gender: $_selectedGender');
-                    print('Country: $_selectedCountry');
-                    print('City: $_selectedCity');
-                    print('Email: ${_emailController.text}');
-                    print('Phone: ${_phoneController.text}');
                   },
                   child: const Text(
                     'Save',
@@ -291,7 +258,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 selectedDate: _selectedDate,
                 onTap: () => _selectDate(context),
               ),
-              // Gender Dropdown (NEW)
               _buildDropdownField(
                 label: 'Gender',
                 value: _selectedGender,
@@ -302,32 +268,57 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                   });
                 },
               ),
-              // Country Dropdown
-              _buildDropdownField(
-                label: 'Country',
-                value: _selectedCountry,
-                items: _countries,
-                onChanged: _updateCities,
+              Text(
+                "Country",
+                style: context.appTextStyle.characterGenLabel,
               ),
-              // City Dropdown
-              _buildDropdownField(
-                label: 'City',
-                value: _selectedCity,
-                items: _currentCities,
-                onChanged:
-                    (_selectedCountry == null || _currentCities.isEmpty)
-                        ? null
-                        : (value) {
-                          setState(() {
-                            _selectedCity = value;
-                          });
-                        },
-                hintText:
-                    _selectedCountry == null
-                        ? 'Select Country First'
-                        : 'Select City',
+              16.ph,
+              buildOptionTile<Country>(
+                context: context,
+                ref: ref,
+                title: "Country",
+                options: masterData.countries,
+                optionToString: (c) => c.countryName,
+                onSelect:
+                    (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateCountryCityWith(country: p0),
+                selected: provider.country,
               ),
-              // Email
+              16.ph,
+              Text(
+                "City",
+                style: context.appTextStyle.characterGenLabel,
+              ),
+              16.ph,
+              Consumer(
+                builder: (context, ref, child) {
+                  final masterData = ref.watch(masterDataProvider);
+                  return buildOptionTile<City>(
+                    context: context,
+                    ref: ref,
+                    title: "City",
+                    showLoading: masterData.isLoading,
+                    options:
+                    masterData.cities
+                        .where(
+                          (c) =>
+                      c.countryId ==
+                          ref.read(characterCreationProvider).country?.id,
+                    )
+                        .toList(),
+                    optionToString: (c) => c.cityName,
+                    onSelect:
+                        (p0) => ref
+                        .read(characterCreationProvider.notifier)
+                        .updateCountryCityWith(city: p0),
+                    selected: provider.city,
+                  );
+                },
+              ),
+
+              16.ph,
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
@@ -404,7 +395,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     );
   }
 
-  // Helper for Dropdowns (Unchanged)
   Widget _buildDropdownField({
     required String label,
     required String? value,
@@ -413,50 +403,49 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     String? hintText,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        padding: const EdgeInsets.only(bottom: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
           Text(
-            label,
-            style: const TextStyle(
-              color: primaryTextColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+          label,
+          style: const TextStyle(
+            color: primaryTextColor,
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
           ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<String>(
+        ),
+        const SizedBox(height: 8),
+        DropdownButtonFormField<String>(
             value: value,
             items:
-                items.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(color: primaryTextColor),
-                    ),
-                  );
-                }).toList(),
-            onChanged: onChanged,
-            decoration: _buildInputDecoration().copyWith(
-              hintText: hintText ?? 'Select $label',
-            ),
-            dropdownColor: inputBackgroundColor,
-            iconEnabledColor: iconColor,
-            style: const TextStyle(color: primaryTextColor),
-            isExpanded: true,
-            disabledHint: Text(
-              hintText ?? 'Select $label',
-              style: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
-            ),
+            items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: const TextStyle(color: primaryTextColor),
+                ),
+              );
+            }).toList(),
+          onChanged: onChanged,
+          decoration: _buildInputDecoration().copyWith(
+            hintText: hintText ?? 'Select $label',
           ),
-        ],
-      ),
+          dropdownColor: inputBackgroundColor,
+          iconEnabledColor: iconColor,
+          style: const TextStyle(color: primaryTextColor),
+          isExpanded: true,
+          disabledHint: Text(
+            hintText ?? 'Select $label',
+            style: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
+          ),
+        ),
+          ],
+        ),
     );
   }
 
-  // --- New Helper Widget for Date Picker Field ---
   Widget _buildDatePickerField({
     required String label,
     required DateTime? selectedDate,
@@ -479,10 +468,10 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             style: const TextStyle(
               color: primaryTextColor,
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w400,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           InkWell(
             // Makes the whole area tappable
             onTap: onTap,

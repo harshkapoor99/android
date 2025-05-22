@@ -144,12 +144,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
               const Spacer(),
-              SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              5.pw,
-              Text(
-                '1200',
-                style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              ),
+              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              // 5.pw,
+              // Text(
+              //   '1200',
+              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              // ),
               // 25.pw,
               // IconButton(
               //   onPressed: () => context.nav.pushNamed(Routes.call),
