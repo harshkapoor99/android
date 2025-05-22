@@ -6,7 +6,10 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import '../components/labeled_text_field.dart';
-import 'package:guftagu_mobile/utils/entensions.dart'; // If .pw is here
+import 'package:guftagu_mobile/utils/entensions.dart';
+
+import '../models/user_model.dart';
+import '../services/hive_service.dart'; // If .pw is here
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -40,6 +43,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   // --- New State Variables ---
   String? _selectedGender;
   DateTime? _selectedDate;
+  User? _userInfo;
+
   // --- End New State Variables ---
 
   // --- Dropdown Data ---
@@ -77,7 +82,16 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void initState() {
     super.initState();
+    _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
     _updateCities(_selectedCountry);
+    _nameController.text = _userInfo?.profile.fullName ?? '';
+    _emailController.text = _userInfo!.email.hasValue
+        ? _userInfo!.email
+        : "N/A";
+    _phoneController.text = _userInfo!.mobileNumber.hasValue
+        ? _userInfo!.mobileNumber
+        : "N/A";
+
   }
 
   @override
