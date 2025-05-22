@@ -8,12 +8,11 @@ import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
-
 import '../models/master/master_models.dart';
 import '../models/user_model.dart';
 import '../providers/character_creation_provider.dart';
 import '../providers/master_data_provider.dart';
-import '../services/hive_service.dart'; // If .pw is here
+import '../services/hive_service.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -26,7 +25,6 @@ const Gradient editIconGradient = LinearGradient(
   end: Alignment.bottomRight,
 );
 
-// Helper class for Bottom Navigation Bar items
 class BottomBarIconLabel {
   BottomBarIconLabel({required this.assetName, required this.label});
   String assetName;
@@ -42,6 +40,7 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
+  bool _isSaving = false;
   DateTime? _selectedDate;
   User? _userInfo;
   String? _selectedGender;
@@ -67,15 +66,62 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
-    _nameController.text = _userInfo?.profile.fullName ?? '';
-    _emailController.text = _userInfo!.email.hasValue
-        ? _userInfo!.email
-        : "N/A";
-    _phoneController.text = _userInfo!.mobileNumber.hasValue
-        ? _userInfo!.mobileNumber
-        : "N/A";
+    _loadUserData();
+  }
 
+  void _loadUserData() {
+    _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
+
+    if (_userInfo != null) {
+      _nameController.text = _userInfo?.profile.fullName ?? '';
+      _emailController.text = _userInfo!.email.hasValue ? _userInfo!.email : "N/A";
+      _phoneController.text = _userInfo!.mobileNumber.hasValue ? _userInfo!.mobileNumber : "N/A";
+
+      // Set gender if available
+      if (_userInfo!.profile.gender != null && _userInfo!.profile.gender!.isNotEmpty) {
+        _selectedGender = _userInfo!.profile.gender;
+      }
+
+      // Set date of birth if available
+      if (_userInfo!.profile.dateOfBirth != null && _userInfo!.profile.dateOfBirth!.isNotEmpty) {
+        try {
+          _selectedDate = DateTime.parse(_userInfo!.profile.dateOfBirth!);
+        } catch (e) {
+          _selectedDate = null;
+        }
+      }
+
+      _loadLocationData();
+    }
+  }
+
+  void _loadLocationData() {
+    if (_userInfo?.profile.country != null || _userInfo?.profile.city != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final masterData = ref.read(masterDataProvider);
+
+        if (_userInfo!.profile.country != null && _userInfo!.profile.country!.isNotEmpty) {
+          final country = masterData.countries.where((c) =>
+          c.countryName.toLowerCase() == _userInfo!.profile.country!.toLowerCase()
+          ).firstOrNull;
+
+          if (country != null) {
+            ref.read(characterCreationProvider.notifier).updateCountryCityWith(country: country);
+
+            if (_userInfo!.profile.city != null && _userInfo!.profile.city!.isNotEmpty) {
+              final city = masterData.cities.where((c) =>
+              c.cityName.toLowerCase() == _userInfo!.profile.city!.toLowerCase() &&
+                  c.countryId == country.id
+              ).firstOrNull;
+
+              if (city != null) {
+                ref.read(characterCreationProvider.notifier).updateCountryCityWith(city: city);
+              }
+            }
+          }
+        }
+      });
+    }
   }
 
   @override
@@ -123,8 +169,75 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     }
   }
 
+  Future<void> _saveProfileData() async {
+    if (_userInfo == null) return;
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      final provider = ref.read(characterCreationProvider);
+
+      ref.read(hiveServiceProvider.notifier).updateUserInfo(
+        username: _userInfo!.username,
+        email: _emailController.text.trim() != "N/A" ? _emailController.text.trim() : _userInfo!.email,
+        mobileNumber: _phoneController.text.trim() != "N/A" ? _phoneController.text.trim() : _userInfo!.mobileNumber,
+        fullName: _nameController.text.trim(),
+        gender: _selectedGender,
+        dateOfBirth: _selectedDate?.toIso8601String(),
+        country: provider.country?.countryName,
+        city: provider.city?.cityName,
+        profilePicture: _userInfo!.profile.profilePicture,
+        bio: _userInfo!.profile.bio,
+        timezone: _userInfo!.profile.timezone,
+        status: _userInfo!.status,
+      );
+
+      _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Profile updated successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save profile: $error'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
+
+  bool _hasUnsavedChanges() {
+    if (_userInfo == null) return false;
+
+    final provider = ref.read(characterCreationProvider);
+
+    return _nameController.text.trim() != (_userInfo!.profile.fullName ?? '') ||
+        _selectedGender != _userInfo!.profile.gender ||
+        _emailController.text.trim() != "N/A" && _emailController.text.trim() != _userInfo!.email ||
+        _phoneController.text.trim() != "N/A" && _phoneController.text.trim() != _userInfo!.mobileNumber ||
+        provider.country?.countryName != _userInfo!.profile.country ||
+        provider.city?.cityName != _userInfo!.profile.city;
+  }
+
   InputDecoration _buildInputDecoration() {
-    // (logic kept as is)
     return InputDecoration(
       filled: true,
       fillColor: inputBackgroundColor,
@@ -145,7 +258,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         borderSide: BorderSide.none,
       ),
       hintStyle: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
-      suffixIconColor: iconColor, // Ensure suffix icons are visible
+      suffixIconColor: iconColor,
     );
   }
 
@@ -175,7 +288,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             const Spacer(),
           ],
         ),
-        // Save button moved below
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -185,16 +297,22 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             children: [
               const SizedBox(height: 10),
               Align(
-                // Save Button
                 alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    print('Save button pressed');
-                  },
-                  child: const Text(
+                child: _isSaving
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryTextColor),
+                  ),
+                )
+                    : TextButton(
+                  onPressed: _hasUnsavedChanges() ? _saveProfileData : null,
+                  child: Text(
                     'Save',
                     style: TextStyle(
-                      color: primaryTextColor,
+                      color: _hasUnsavedChanges() ? primaryTextColor : secondaryTextColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -238,8 +356,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ),
               const SizedBox(height: 40),
 
-              // --- Form Fields ---
-              // Name
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
@@ -253,7 +369,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ),
               // Age Dropdown
               _buildDatePickerField(
-                // Using helper method
                 label: 'Age',
                 selectedDate: _selectedDate,
                 onTap: () => _selectDate(context),
@@ -345,13 +460,12 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 ),
               ),
 
-              const SizedBox(height: 20), // Bottom padding inside Column
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // Kept as is
         type: BottomNavigationBarType.fixed,
         currentIndex: 3,
         backgroundColor: const Color(0xFF171717),
@@ -451,11 +565,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     required DateTime? selectedDate,
     required VoidCallback onTap,
   }) {
-    // Format the date, handle null
     final String displayDate =
         selectedDate == null
             ? 'Select Age'
-            // Using intl package for formatting - ensure imported
             : DateFormat('dd MMM yyyy').format(selectedDate);
 
     return Padding(
@@ -476,7 +588,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             // Makes the whole area tappable
             onTap: onTap,
             child: InputDecorator(
-              // Provides the input field look
               decoration: _buildInputDecoration().copyWith(
                 hintText: 'Select Birthday', // Hint if needed
               ),
@@ -490,13 +601,13 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                           selectedDate == null
                               ? secondaryTextColor.withOpacity(
                                 0.5,
-                              ) // Hint color
-                              : primaryTextColor, // Selected date color
+                              )
+                              : primaryTextColor,
                     ),
                   ),
                   const Icon(
                     Icons.calendar_today,
-                    color: iconColor, // Use defined icon color
+                    color: iconColor,
                   ),
                 ],
               ),
