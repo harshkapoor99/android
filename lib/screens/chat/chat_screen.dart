@@ -322,8 +322,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     AnimatedSendButton(
                       hasText: provider.hasMessage,
                       onPressed: () {
+                        final chatNotifier = ref.read(chatProvider.notifier);
+
                         if (provider.hasMessage) {
-                          ref.read(chatProvider.notifier).chatWithCharacter();
+                          chatNotifier.chatWithCharacter();
+                        } else {
+                          chatNotifier.sendStaticVoiceMessage();
                         }
                       },
                     ),
