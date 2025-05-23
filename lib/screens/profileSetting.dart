@@ -523,11 +523,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           children: [
           Text(
           label,
-          style: const TextStyle(
-            color: primaryTextColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-          ),
+            style: context.appTextStyle.characterGenLabel,
         ),
         const SizedBox(height: 8),
         DropdownButtonFormField<String>(
@@ -538,7 +534,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 value: item,
                 child: Text(
                   item,
-                  style: const TextStyle(color: primaryTextColor),
+                  style: context.appTextStyle.characterGenLabel,
                 ),
               );
             }).toList(),
@@ -577,33 +573,21 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              color: primaryTextColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-            ),
+            style: context.appTextStyle.characterGenLabel,
           ),
           const SizedBox(height: 16),
           InkWell(
-            // Makes the whole area tappable
             onTap: onTap,
             child: InputDecorator(
               decoration: _buildInputDecoration().copyWith(
-                hintText: 'Select Birthday', // Hint if needed
+                hintText: 'Select Birthday',
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
                     displayDate,
-                    style: TextStyle(
-                      color:
-                          selectedDate == null
-                              ? secondaryTextColor.withOpacity(
-                                0.5,
-                              )
-                              : primaryTextColor,
-                    ),
+                    style: context.appTextStyle.characterGenLabel,
                   ),
                   const Icon(
                     Icons.calendar_today,
