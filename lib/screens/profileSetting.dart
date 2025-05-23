@@ -137,7 +137,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
       context: context,
       // Sensible initial date (e.g., 20 years ago)
       initialDate:
-          _selectedDate ??
+      _selectedDate ??
           DateTime.now().subtract(const Duration(days: 365 * 20)),
       // Allow selection from 100 years ago up to today
       firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
@@ -480,31 +480,31 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           ref.read(tabIndexProvider.notifier).changeTab(index);
         },
         items:
-            _tabWidgets
-                .map(
-                  (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    icon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary.withOpacity(0.6),
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    label: iconLabel.label,
-                  ),
-                )
-                .toList(),
+        _tabWidgets
+            .map(
+              (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              iconLabel.assetName,
+              height: 18,
+              width: 18,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.textPrimary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              iconLabel.assetName,
+              height: 18,
+              width: 18,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.textPrimary.withOpacity(0.6),
+                BlendMode.srcIn,
+              ),
+            ),
+            label: iconLabel.label,
+          ),
+        )
+            .toList(),
       ),
     );
   }
@@ -517,16 +517,16 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     String? hintText,
   }) {
     return Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-          label,
+            label,
             style: context.appTextStyle.characterGenLabel,
-        ),
-        const SizedBox(height: 8),
-        DropdownButtonFormField<String>(
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<String>(
             value: value,
             items:
             items.map((String item) {
@@ -538,21 +538,21 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 ),
               );
             }).toList(),
-          onChanged: onChanged,
-          decoration: _buildInputDecoration().copyWith(
-            hintText: hintText ?? 'Select $label',
+            onChanged: onChanged,
+            decoration: _buildInputDecoration().copyWith(
+              hintText: hintText ?? 'Select $label',
+            ),
+            dropdownColor: inputBackgroundColor,
+            iconEnabledColor: iconColor,
+            style: const TextStyle(color: primaryTextColor),
+            isExpanded: true,
+            disabledHint: Text(
+              hintText ?? 'Select $label',
+              style: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
+            ),
           ),
-          dropdownColor: inputBackgroundColor,
-          iconEnabledColor: iconColor,
-          style: const TextStyle(color: primaryTextColor),
-          isExpanded: true,
-          disabledHint: Text(
-            hintText ?? 'Select $label',
-            style: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
-          ),
-        ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 
@@ -562,9 +562,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     required VoidCallback onTap,
   }) {
     final String displayDate =
-        selectedDate == null
-            ? 'Select Age'
-            : DateFormat('dd MMM yyyy').format(selectedDate);
+    selectedDate == null
+        ? 'Select Age'
+        : DateFormat('dd MMM yyyy').format(selectedDate);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
