@@ -3,7 +3,7 @@ part of 'master_models.dart';
 class Relationship {
   final String id;
   final String title;
-  final String description;
+  final String? description;
   final String emoji;
   final String charactertypeId;
   final DateTime createdDate;
@@ -13,7 +13,7 @@ class Relationship {
   Relationship({
     required this.id,
     required this.title,
-    required this.description,
+    this.description,
     required this.emoji,
     required this.charactertypeId,
     required this.createdDate,

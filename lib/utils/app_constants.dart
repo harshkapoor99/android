@@ -53,7 +53,12 @@ class AppConstants {
               : AppStaticColors.redColor.withValues(alpha: 1),
       content: Text(
         message,
-        style: snackbarKey.currentContext!.appTextStyle.textSmall,
+        style: snackbarKey.currentContext!.appTextStyle.textSmall.copyWith(
+          color:
+              isSuccess
+                  ? null
+                  : snackbarKey.currentContext!.colorExt.background,
+        ),
       ),
       margin:
           isTop

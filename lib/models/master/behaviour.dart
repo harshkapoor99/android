@@ -3,8 +3,8 @@ part of 'master_models.dart';
 class Behaviour {
   final String id;
   final String title;
-  final String description;
-  final String emoji;
+  final String? description;
+  final String? emoji;
   final String personalityId;
   final DateTime createdDate;
   final DateTime updatedDate;
@@ -13,8 +13,8 @@ class Behaviour {
   Behaviour({
     required this.id,
     required this.title,
-    required this.description,
-    required this.emoji,
+    this.description,
+    this.emoji,
     required this.personalityId,
     required this.createdDate,
     required this.updatedDate,
