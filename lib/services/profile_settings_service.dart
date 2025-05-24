@@ -8,7 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part '../gen/services/profile_settings_service.gen.dart';
 
 @riverpod
-ProfileService profileService(Ref ref) {
+ProfileService profileService(ProfileServiceRef ref) {
   final apiClient = ref.watch(apiClientProvider);
   return ProfileServiceImpl(apiClient);
 }
@@ -30,6 +30,7 @@ abstract class ProfileService {
 
 class ProfileServiceImpl implements ProfileService {
   final ApiClient _apiClient;
+
   ProfileServiceImpl(this._apiClient);
 
   @override
@@ -52,8 +53,8 @@ class ProfileServiceImpl implements ProfileService {
         "date_of_birth": dateOfBirth,
         "email": email,
         "phone": phone,
-        "country_id": countryId,
-        "city_id": cityId,
+        "country": countryId,
+        "city": cityId,
       },
       timeout: const Duration(seconds: 30),
     );

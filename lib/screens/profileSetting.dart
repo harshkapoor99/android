@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/services/profile_settings_service.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -10,7 +12,6 @@ import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import '../models/master/master_models.dart';
 import '../models/user_model.dart';
-import '../providers/character_creation_provider.dart';
 import '../providers/master_data_provider.dart';
 import '../services/hive_service.dart';
 
@@ -106,7 +107,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           ).firstOrNull;
 
           if (country != null) {
-            ref.read(characterCreationProvider.notifier).updateCountryCityWith(country: country);
+            ref.read(profileSettingsProvider.notifier).updateCountryCityWith(country: country);
 
             if (_userInfo!.profile.city != null && _userInfo!.profile.city!.isNotEmpty) {
               final city = masterData.cities.where((c) =>
@@ -115,7 +116,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ).firstOrNull;
 
               if (city != null) {
-                ref.read(characterCreationProvider.notifier).updateCountryCityWith(city: city);
+                ref.read(profileSettingsProvider.notifier).updateCountryCityWith(city: city);
               }
             }
           }
@@ -177,7 +178,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     });
 
     try {
-      final provider = ref.read(characterCreationProvider);
+      final provider = ref.read(profileServiceProvider);
 
       ref.read(hiveServiceProvider.notifier).updateUserInfo(
         username: _userInfo!.username,
@@ -186,8 +187,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         fullName: _nameController.text.trim(),
         gender: _selectedGender,
         dateOfBirth: _selectedDate?.toIso8601String(),
-        country: provider.country?.countryName,
-        city: provider.city?.cityName,
+        // country: provider.country?.countryName,
+        // city: provider.city?.cityName,
         profilePicture: _userInfo!.profile.profilePicture,
         bio: _userInfo!.profile.bio,
         timezone: _userInfo!.profile.timezone,
@@ -227,7 +228,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   bool _hasUnsavedChanges() {
     if (_userInfo == null) return false;
 
-    final provider = ref.read(characterCreationProvider);
+    final provider = ref.read(profileSettingsProvider);
 
     return _nameController.text.trim() != (_userInfo!.profile.fullName ?? '') ||
         _selectedGender != _userInfo!.profile.gender ||
@@ -264,7 +265,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.watch(characterCreationProvider);
+    final provider = ref.watch(profileSettingsProvider);
     final masterData = ref.watch(masterDataProvider);
     return Scaffold(
       backgroundColor: darkBackgroundColor,
@@ -396,7 +397,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 optionToString: (c) => c.countryName,
                 onSelect:
                     (p0) => ref
-                    .read(characterCreationProvider.notifier)
+                    .read(profileSettingsProvider.notifier)
                     .updateCountryCityWith(country: p0),
                 selected: provider.country,
               ),
@@ -419,13 +420,13 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                         .where(
                           (c) =>
                       c.countryId ==
-                          ref.read(characterCreationProvider).country?.id,
+                          ref.read(profileSettingsProvider).country?.id,
                     )
                         .toList(),
                     optionToString: (c) => c.cityName,
                     onSelect:
                         (p0) => ref
-                        .read(characterCreationProvider.notifier)
+                        .read(profileSettingsProvider.notifier)
                         .updateCountryCityWith(city: p0),
                     selected: provider.city,
                   );
