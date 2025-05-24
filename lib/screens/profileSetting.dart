@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
-import 'package:guftagu_mobile/services/profile_settings_service.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -11,9 +10,7 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import '../models/master/master_models.dart';
-import '../models/user_model.dart';
 import '../providers/master_data_provider.dart';
-import '../services/hive_service.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -41,22 +38,6 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
-  bool _isSaving = false;
-  DateTime? _selectedDate;
-  User? _userInfo;
-  String? _selectedGender;
-
-  final List<String> _genders = [
-    'Male',
-    'Female',
-    'Other',
-    'Prefer not to say',
-  ];
-
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-
   final List<BottomBarIconLabel> _tabWidgets = [
     BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
     BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
@@ -67,175 +48,11 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-  }
-
-  void _loadUserData() {
-    _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
-
-    if (_userInfo != null) {
-      _nameController.text = _userInfo?.profile.fullName ?? '';
-      _emailController.text = _userInfo!.email.hasValue ? _userInfo!.email : "N/A";
-      _phoneController.text = _userInfo!.mobileNumber.hasValue ? _userInfo!.mobileNumber : "N/A";
-
-      // Set gender if available
-      if (_userInfo!.profile.gender != null && _userInfo!.profile.gender!.isNotEmpty) {
-        _selectedGender = _userInfo!.profile.gender;
-      }
-
-      // Set date of birth if available
-      if (_userInfo!.profile.dateOfBirth != null && _userInfo!.profile.dateOfBirth!.isNotEmpty) {
-        try {
-          _selectedDate = DateTime.parse(_userInfo!.profile.dateOfBirth!);
-        } catch (e) {
-          _selectedDate = null;
-        }
-      }
-
-      _loadLocationData();
-    }
-  }
-
-  void _loadLocationData() {
-    if (_userInfo?.profile.country != null || _userInfo?.profile.city != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final masterData = ref.read(masterDataProvider);
-
-        if (_userInfo!.profile.country != null && _userInfo!.profile.country!.isNotEmpty) {
-          final country = masterData.countries.where((c) =>
-          c.countryName.toLowerCase() == _userInfo!.profile.country!.toLowerCase()
-          ).firstOrNull;
-
-          if (country != null) {
-            ref.read(profileSettingsProvider.notifier).updateCountryCityWith(country: country);
-
-            if (_userInfo!.profile.city != null && _userInfo!.profile.city!.isNotEmpty) {
-              final city = masterData.cities.where((c) =>
-              c.cityName.toLowerCase() == _userInfo!.profile.city!.toLowerCase() &&
-                  c.countryId == country.id
-              ).firstOrNull;
-
-              if (city != null) {
-                ref.read(profileSettingsProvider.notifier).updateCountryCityWith(city: city);
-              }
-            }
-          }
-        }
-      });
-    }
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
     super.dispose();
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      // Sensible initial date (e.g., 20 years ago)
-      initialDate:
-      _selectedDate ??
-          DateTime.now().subtract(const Duration(days: 365 * 20)),
-      // Allow selection from 100 years ago up to today
-      firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
-      lastDate: DateTime.now(), // User cannot select future date for birthday
-      builder: (context, child) {
-        // Optional: Theme the date picker
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              // Example dark theme
-              primary: Colors.blueAccent, // header background color
-              onPrimary: Colors.white, // header text color
-              onSurface: Colors.white, // body text color
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blueAccent, // button text color
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _saveProfileData() async {
-    if (_userInfo == null) return;
-
-    setState(() {
-      _isSaving = true;
-    });
-
-    try {
-      final provider = ref.read(profileServiceProvider);
-
-      ref.read(hiveServiceProvider.notifier).updateUserInfo(
-        username: _userInfo!.username,
-        email: _emailController.text.trim() != "N/A" ? _emailController.text.trim() : _userInfo!.email,
-        mobileNumber: _phoneController.text.trim() != "N/A" ? _phoneController.text.trim() : _userInfo!.mobileNumber,
-        fullName: _nameController.text.trim(),
-        gender: _selectedGender,
-        dateOfBirth: _selectedDate?.toIso8601String(),
-        // country: provider.country?.countryName,
-        // city: provider.city?.cityName,
-        profilePicture: _userInfo!.profile.profilePicture,
-        bio: _userInfo!.profile.bio,
-        timezone: _userInfo!.profile.timezone,
-        status: _userInfo!.status,
-      );
-
-      _userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully!'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
-      }
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to save profile: $error'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
-    }
-  }
-
-  bool _hasUnsavedChanges() {
-    if (_userInfo == null) return false;
-
-    final provider = ref.read(profileSettingsProvider);
-
-    return _nameController.text.trim() != (_userInfo!.profile.fullName ?? '') ||
-        _selectedGender != _userInfo!.profile.gender ||
-        _emailController.text.trim() != "N/A" && _emailController.text.trim() != _userInfo!.email ||
-        _phoneController.text.trim() != "N/A" && _phoneController.text.trim() != _userInfo!.mobileNumber ||
-        provider.country?.countryName != _userInfo!.profile.country ||
-        provider.city?.cityName != _userInfo!.profile.city;
   }
 
   InputDecoration _buildInputDecoration() {
@@ -265,8 +82,22 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.watch(profileSettingsProvider);
+    final profileState = ref.watch(profileSettingsProvider);
+    final profileNotifier = ref.read(profileSettingsProvider.notifier);
     final masterData = ref.watch(masterDataProvider);
+
+    ref.listen<ProfileSettingsState>(profileSettingsProvider, (previous, current) {
+      if (current.error != null && current.error != previous?.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${current.error}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       backgroundColor: darkBackgroundColor,
       appBar: AppBar(
@@ -299,7 +130,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
-                child: _isSaving
+                child: profileState.isLoading
                     ? const SizedBox(
                   width: 20,
                   height: 20,
@@ -309,11 +140,26 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                   ),
                 )
                     : TextButton(
-                  onPressed: _hasUnsavedChanges() ? _saveProfileData : null,
+                  onPressed: profileNotifier.hasUnsavedChanges()
+                      ? () async {
+                    final success = await profileNotifier.updateProfile();
+                    if (success && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Profile updated successfully!'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  }
+                      : null,
                   child: Text(
                     'Save',
                     style: TextStyle(
-                      color: _hasUnsavedChanges() ? primaryTextColor : secondaryTextColor,
+                      color: profileNotifier.hasUnsavedChanges()
+                          ? primaryTextColor
+                          : secondaryTextColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -326,7 +172,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 60,
                       backgroundImage: AssetImage(
                         'assets/images/model/ayushImg.jpg',
@@ -338,7 +184,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                       child: Container(
                         child: IconButton(
                           icon: SvgPicture.asset(
-                            'assets/icons/solar_pen-2-bold.svg', // Your icon path
+                            'assets/icons/solar_pen-2-bold.svg',
                             width: 30,
                             height: 30,
                           ),
@@ -360,7 +206,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _nameController,
+                  controller: profileState.nameController,
                   label: 'Name',
                   fillColor: inputBackgroundColor,
                   labelColor: primaryTextColor,
@@ -371,17 +217,43 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               // Age Dropdown
               _buildDatePickerField(
                 label: 'Age',
-                selectedDate: _selectedDate,
-                onTap: () => _selectDate(context),
+                selectedDate: profileState.dob,
+                onTap: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: profileState.dob ??
+                        DateTime.now().subtract(const Duration(days: 20 * 365)),
+                    firstDate: DateTime.now().subtract(const Duration(days: 100 * 365)),
+                    lastDate: DateTime.now(), // Today
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: const ColorScheme.dark(
+                            primary: Colors.blueAccent,
+                            onPrimary: Colors.white,
+                            onSurface: Colors.white,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.blueAccent,
+                            ),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (picked != null && picked != profileState.dob) {
+                    profileNotifier.setDob(picked);
+                  }
+                },
               ),
               _buildDropdownField(
                 label: 'Gender',
-                value: _selectedGender,
-                items: _genders,
+                value: profileState.gender,
+                items: profileNotifier.genders,
                 onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value;
-                  });
+                  profileNotifier.setGender(value);
                 },
               ),
               Text(
@@ -395,11 +267,8 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 title: "Country",
                 options: masterData.countries,
                 optionToString: (c) => c.countryName,
-                onSelect:
-                    (p0) => ref
-                    .read(profileSettingsProvider.notifier)
-                    .updateCountryCityWith(country: p0),
-                selected: provider.country,
+                onSelect: (p0) => profileNotifier.updateCountryCityWith(country: p0),
+                selected: profileState.country,
               ),
               16.ph,
               Text(
@@ -409,26 +278,25 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               16.ph,
               Consumer(
                 builder: (context, ref, child) {
-                  final masterData = ref.watch(masterDataProvider);
+                  final masterDataCities = ref.watch(masterDataProvider.select((data) => data.cities));
+                  final selectedCountryId = ref.watch(profileSettingsProvider.select((state) => state.country?.id));
+                  final selectedCity = ref.watch(profileSettingsProvider.select((state) => state.city));
+                  final profileNotifierCity = ref.read(profileSettingsProvider.notifier);
+
+
+                  final filteredCities = masterDataCities
+                      .where((c) => c.countryId == selectedCountryId)
+                      .toList();
+
                   return buildOptionTile<City>(
                     context: context,
                     ref: ref,
                     title: "City",
                     showLoading: masterData.isLoading,
-                    options:
-                    masterData.cities
-                        .where(
-                          (c) =>
-                      c.countryId ==
-                          ref.read(profileSettingsProvider).country?.id,
-                    )
-                        .toList(),
+                    options: filteredCities,
                     optionToString: (c) => c.cityName,
-                    onSelect:
-                        (p0) => ref
-                        .read(profileSettingsProvider.notifier)
-                        .updateCountryCityWith(city: p0),
-                    selected: provider.city,
+                    onSelect: (p0) => profileNotifierCity.updateCountryCityWith(city: p0),
+                    selected: selectedCity,
                   );
                 },
               ),
@@ -438,7 +306,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _emailController,
+                  controller: profileState.emailController,
                   label: 'Email ID',
                   keyboardType: TextInputType.emailAddress,
                   fillColor: inputBackgroundColor,
@@ -451,7 +319,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _phoneController,
+                  controller: profileState.phoneController,
                   label: 'Phone number',
                   keyboardType: TextInputType.phone,
                   fillColor: inputBackgroundColor,
@@ -480,8 +348,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           }
           ref.read(tabIndexProvider.notifier).changeTab(index);
         },
-        items:
-        _tabWidgets
+        items: _tabWidgets
             .map(
               (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
@@ -529,8 +396,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             value: value,
-            items:
-            items.map((String item) {
+            items: items.map((String item) {
               return DropdownMenuItem<String>(
                 value: item,
                 child: Text(
@@ -562,8 +428,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     required DateTime? selectedDate,
     required VoidCallback onTap,
   }) {
-    final String displayDate =
-    selectedDate == null
+    final String displayDate = selectedDate == null
         ? 'Select Age'
         : DateFormat('dd MMM yyyy').format(selectedDate);
 
