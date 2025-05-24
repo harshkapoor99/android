@@ -11,7 +11,7 @@ class Country {
   Country({
     required this.id,
     required this.countryName,
-    required this.flag,
+    this.flag,
     required this.createdDate,
     required this.updatedDate,
     required this.status,

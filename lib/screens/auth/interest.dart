@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
-import 'package:guftagu_mobile/screens/dashboard.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
@@ -186,8 +186,8 @@ class _CharacterSelectionScreenState
                   await ref
                       .read(hiveServiceProvider.notifier)
                       .setSelectedInterests(value: selectedTypes);
-                  context.nav.pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => DashboardScreen()),
+                  context.nav.pushNamedAndRemoveUntil(
+                    Routes.dashboard,
                     (Route<dynamic> route) => false,
                   );
                 },

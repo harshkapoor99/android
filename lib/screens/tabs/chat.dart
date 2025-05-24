@@ -59,202 +59,200 @@ class _ChatTabState extends ConsumerState<ChatTab> {
         return const HomeTab();
       }
     }
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Column(
-        children: [
-          const SizedBox(height: 10),
-          SingleChildScrollView(
-            // height: MediaQuery.sizeOf(context).height * 0.18,
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              // shrinkWrap: true,
-              // scrollDirection: Axis.horizontal,
-              // itemCount: widget.ais.length + 1,
-              // itemBuilder: (context, index) {
-              children: [
-                ...masterProvider.characterDetails.map((ai) {
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: Column(
-                      children: [
-                        Ink(
-                          height: 100,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            color: null,
-                            image: DecorationImage(
-                              image:
-                                  Image.network(ai.imageGallery[0].url).image,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              ref
-                                  .read(chatProvider.notifier)
-                                  .setCharacter(ai.toCharacter());
-                              context.nav.pushNamed(Routes.chat);
-                            },
-                            borderRadius: BorderRadius.circular(40),
-                            child: null,
-                          ),
-                        ),
-                        6.ph,
-                        Text(
-                          ai.name,
-                          style: context.appTextStyle.textBold.copyWith(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-                Column(
-                  children: [
-                    Ink(
-                      height: 100,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(40),
-                        color: context.colorExt.border,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          ref
-                              .read(masterDataProvider.notifier)
-                              .fetchMasterCharacters();
-                          context.nav.pushNamed(Routes.explore);
-                        },
-                        borderRadius: BorderRadius.circular(40),
-                        child: Center(
-                          child: Icon(
-                            Icons.arrow_outward_sharp,
-                            color: context.colorExt.textSecondary,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ),
-                    6.ph,
-                    Text(
-                      "Explore",
-                      style: context.appTextStyle.textBold.copyWith(
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          16.ph,
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 8.0),
-          //   child: Divider(),
-          // ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              // height: MediaQuery.sizeOf(context).height * 0.18,
+              scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text("Chats", style: context.appTextStyle.textSemibold),
-            ),
-          ),
-          Expanded(
-            child: VisibilityDetector(
-              key: const Key("chat-screen"),
-              onVisibilityChanged: (info) {
-                if (info.visibleFraction < 1) {
-                  ref.read(chatProvider.notifier).fetchChatList();
-                }
-              },
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  ref.read(chatProvider.notifier).fetchChatList();
-                },
-                child: ListView.builder(
-                  itemCount: provider.chatList.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 2,
-                        horizontal: 16,
-                      ),
-                      onTap: () {
-                        ref
-                            .read(chatProvider.notifier)
-                            .setCharacter(provider.chatList[index].character);
-                        Future.delayed(Durations.medium1).then((value) {
-                          context.nav.pushNamed(Routes.chat);
-                        });
-                      },
-                      leading: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(26),
-                          child: NetworkImageWithPlaceholder(
-                            imageUrl:
-                                provider
-                                    .chatList[index]
-                                    .character
-                                    .imageGallery
-                                    .first
-                                    .url,
-                            placeholder: SvgPicture.asset(
-                              Assets.svgs.icProfilePlaceholder,
-                            ),
-                            fit: BoxFit.cover,
-                            errorWidget: SvgPicture.asset(
-                              Assets.svgs.icProfilePlaceholder,
-                            ),
-                          ),
-                        ),
-                      ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              child: Row(
+                children: [
+                  ...masterProvider.characterDetails.map((ai) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Column(
                         children: [
-                          Text(
-                            provider.chatList[index].character.name,
-                            style: context.appTextStyle.textSemibold.copyWith(
-                              // list item title font size reduced
-                              fontSize: 15,
-                              color: context.colorExt.textPrimary.withValues(
-                                alpha: 0.85,
+                          Ink(
+                            height: 100,
+                            width: 80,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(40),
+                              color: null,
+                              image: DecorationImage(
+                                image:
+                                    Image.network(ai.imageGallery[0].url).image,
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
-                          Text(
-                            formatTime(
-                              provider.chatList[index].lastMessageTime,
+                            child: InkWell(
+                              onTap: () {
+                                ref
+                                    .read(chatProvider.notifier)
+                                    .setCharacter(ai.toCharacter());
+                                context.nav.pushNamed(Routes.chat);
+                              },
+                              borderRadius: BorderRadius.circular(40),
+                              child: null,
                             ),
-                            style: context.appTextStyle.textSemibold.copyWith(
+                          ),
+                          6.ph,
+                          Text(
+                            ai.name,
+                            style: context.appTextStyle.textBold.copyWith(
                               fontSize: 12,
-                              color: context.colorExt.textSecondary,
                             ),
                           ),
                         ],
                       ),
-                      subtitle: Text(
-                        provider.chatList[index].lastMessage,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.appTextStyle.textSmall.copyWith(
-                          // list item text font size reduced
-                          fontSize: 12,
-                          color: context.colorExt.textSecondary,
+                    );
+                  }),
+                  Column(
+                    children: [
+                      Ink(
+                        height: 100,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(40),
+                          color: context.colorExt.border,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            ref
+                                .read(masterDataProvider.notifier)
+                                .fetchMasterCharacters();
+                            context.nav.pushNamed(Routes.explore);
+                          },
+                          borderRadius: BorderRadius.circular(40),
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_outward_sharp,
+                              color: context.colorExt.textSecondary,
+                              size: 24,
+                            ),
+                          ),
                         ),
                       ),
-                    );
+                      6.ph,
+                      Text(
+                        "Explore",
+                        style: context.appTextStyle.textBold.copyWith(
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            16.ph,
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 8.0),
+            //   child: Divider(),
+            // ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text("Chats", style: context.appTextStyle.textSemibold),
+              ),
+            ),
+            Expanded(
+              child: VisibilityDetector(
+                key: const Key("chat-screen"),
+                onVisibilityChanged: (info) {
+                  if (info.visibleFraction < 1) {
+                    ref.read(chatProvider.notifier).fetchChatList();
+                  }
+                },
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    ref.read(chatProvider.notifier).fetchChatList();
                   },
+                  child: ListView.builder(
+                    itemCount: provider.chatList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 2,
+                          horizontal: 16,
+                        ),
+                        onTap: () {
+                          ref
+                              .read(chatProvider.notifier)
+                              .setCharacter(provider.chatList[index].character);
+                          Future.delayed(Durations.medium1).then((value) {
+                            context.nav.pushNamed(Routes.chat);
+                          });
+                        },
+                        leading: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: NetworkImageWithPlaceholder(
+                              imageUrl:
+                                  provider
+                                      .chatList[index]
+                                      .character
+                                      .imageGallery
+                                      .first
+                                      .url,
+                              placeholder: SvgPicture.asset(
+                                Assets.svgs.icProfilePlaceholder,
+                              ),
+                              fit: BoxFit.cover,
+                              errorWidget: SvgPicture.asset(
+                                Assets.svgs.icProfilePlaceholder,
+                              ),
+                            ),
+                          ),
+                        ),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              provider.chatList[index].character.name,
+                              style: context.appTextStyle.textSemibold.copyWith(
+                                // list item title font size reduced
+                                fontSize: 15,
+                                color: context.colorExt.textPrimary.withValues(
+                                  alpha: 0.85,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              formatTime(
+                                provider.chatList[index].lastMessageTime,
+                              ),
+                              style: context.appTextStyle.textSemibold.copyWith(
+                                fontSize: 12,
+                                color: context.colorExt.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          provider.chatList[index].lastMessage,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.appTextStyle.textSmall.copyWith(
+                            // list item text font size reduced
+                            fontSize: 12,
+                            color: context.colorExt.textSecondary,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -160,7 +160,7 @@ void _showVoiceOptionPopup(
     responsiveRightMargin = 64.0;
   }
 
-  final voiceProvider = StateProvider<Voice?>((ref) => selected);
+  final voiceProvider = StateProvider<Voice?>((ref) => null);
 
   void togglePlay(WidgetRef ref, Voice option) {
     ref.read(voiceProvider.notifier).state =
@@ -601,9 +601,10 @@ void _showOptionPopupWithMultiselect<T>(
                                             //   Navigator.pop(context);
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                              horizontal: 18,
+                                            padding: const EdgeInsets.only(
+                                              // vertical: 10,
+                                              // horizontal: 18,
+                                              right: 15,
                                             ),
                                             decoration: BoxDecoration(
                                               color:

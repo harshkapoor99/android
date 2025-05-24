@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/chat_bubble.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
-import 'package:guftagu_mobile/screens/avatarProfile.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -109,10 +109,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CharacterProfile()),
-                  );
+                  context.nav.pushNamed(Routes.characterProfile);
                 },
                 child: CircleAvatar(backgroundImage: NetworkImage(image)),
               ),

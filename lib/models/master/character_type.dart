@@ -3,7 +3,7 @@ part of 'master_models.dart';
 class CharacterType {
   final String id;
   final String charactertypeName;
-  final String description;
+  final String? description;
   final String emoji;
   final DateTime createdDate;
   final DateTime updatedDate;
@@ -12,7 +12,7 @@ class CharacterType {
   CharacterType({
     required this.id,
     required this.charactertypeName,
-    required this.description,
+    this.description,
     required this.emoji,
     required this.createdDate,
     required this.updatedDate,

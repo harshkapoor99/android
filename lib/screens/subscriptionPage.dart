@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 // Import math for clamp
 
-class SubscriptionPage extends StatefulWidget {
-  const SubscriptionPage({Key? key}) : super(key: key);
+class SubscriptionScreen extends StatefulWidget {
+  const SubscriptionScreen({super.key});
 
   @override
-  State<SubscriptionPage> createState() => _SubscriptionPageState();
+  State<SubscriptionScreen> createState() => _SubscriptionScreenState();
 }
 
-class _SubscriptionPageState extends State<SubscriptionPage> {
+class _SubscriptionScreenState extends State<SubscriptionScreen> {
   // Default selection matches the image (1 YEAR)
   int selectedIndex = 2;
 

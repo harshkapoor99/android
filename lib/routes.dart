@@ -10,6 +10,7 @@ import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
+import 'package:guftagu_mobile/screens/subscriptionPage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Routes {
@@ -26,6 +27,8 @@ class Routes {
   static const chat = "/chat";
   static const characterProfile = "/characterProfile";
   static const call = "/call";
+  static const profileSettings = "/profileSettings";
+  static const subscription = "/subscription";
 
   static Route generatedRoutes(RouteSettings settings) {
     Widget child;
