@@ -1,16 +1,23 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../components/labeled_text_field.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import '../models/master/master_models.dart';
 import '../providers/master_data_provider.dart';
+import '../utils/app_constants.dart';
+import '../utils/file_compressor.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -38,6 +45,7 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
+  final ImagePicker picker = ImagePicker();
   final List<BottomBarIconLabel> _tabWidgets = [
     BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
     BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
@@ -53,6 +61,79 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  getPermission(Permission permission) async {
+    var checkStatus = await permission.status;
+
+    if (checkStatus.isGranted) {
+      return;
+    } else {
+      var status = await permission.request();
+      if (status.isGranted) {
+      } else if (status.isDenied) {
+        getPermission(permission);
+      } else {
+        openAppSettings();
+      }
+    }
+  }
+
+  Future getImage(ImageSource media) async {
+    if (media == ImageSource.camera) {
+      await getPermission(Permission.camera);
+    } else {
+      await getPermission(Permission.photos);
+    }
+
+    var img = await picker.pickImage(source: media);
+    if (img != null) {
+      print(img.path);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        ref
+            .read(profileSettingsProvider.notifier)
+            .uploadProfileImage(XFile(image.path));
+        image = null;
+        setState(() {});
+      }
+    }
+  }
+
+  void getDocument(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedFile = File(result.files.single.path!);
+      // You can compress or validate the document if needed
+      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
+      debugPrint("Document picked: ${pickedFile.path}");
+    } else {
+      debugPrint("No document selected.");
+    }
+  }
+
+  void getAudio(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedAudio = File(result.files.single.path!);
+      // You can process the audio here (e.g., upload or transcribe)
+      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
+      debugPrint("Audio picked: ${pickedAudio.path}");
+    } else {
+      debugPrint("No audio file selected.");
+    }
   }
 
   InputDecoration _buildInputDecoration() {
@@ -172,16 +253,40 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    const CircleAvatar(
+                    CircleAvatar(
                       radius: 60,
-                      backgroundImage: AssetImage(
-                        'assets/images/model/ayushImg.jpg',
-                      ),
+                      backgroundColor: const Color(0xFF272730),
+                    backgroundImage: AssetImage(
+                      'assets/images/model/ayushImg.jpg',
                     ),
+                      // backgroundImage: profileState.hasProfileImage
+                      //     ? NetworkImage(profileState.profileImageUrl!)
+                      //     : const AssetImage('assets/images/model/ayushImg.jpg') as ImageProvider,
+                      // child: profileState.hasProfileImage
+                      //     ? null
+                      //     : (profileState.isImageUploading
+                      //     ? CircularProgressIndicator(
+                      //   color: context.colorExt.secondary,
+                      //   strokeWidth: 3,
+                      // )
+                      //     : null),
+                    ),
+
                     Positioned(
                       bottom: -10,
                       right: -30,
                       child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
                         child: IconButton(
                           icon: SvgPicture.asset(
                             'assets/icons/solar_pen-2-bold.svg',
@@ -189,7 +294,25 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                             height: 30,
                           ),
                           onPressed: () {
-                            print('Edit profile picture');
+                            AppConstants.getPickImageAlert(
+                              context: context,
+                              pressCamera: () {
+                                getImage(ImageSource.camera);
+                                Navigator.of(context).pop();
+                              },
+                              pressGallery: () {
+                                getImage(ImageSource.gallery);
+                                Navigator.of(context).pop();
+                              },
+                              pressDocument: () async {
+                                Navigator.of(context).pop();
+                                getDocument(File(''), ref);
+                              },
+                              pressAudio: () async {
+                                Navigator.of(context).pop();
+                                getAudio(File(''), ref);
+                              },
+                            );
                           },
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),

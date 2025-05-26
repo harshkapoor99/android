@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/chat_bubble.dart';
@@ -55,6 +56,42 @@ class ChatScreen extends ConsumerStatefulWidget {
         //     .uploadImage(image: XFile(image.path));
         image = null;
       }
+    }
+  }
+
+  void getDocument(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedFile = File(result.files.single.path!);
+      // You can compress or validate the document if needed
+      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
+      debugPrint("Document picked: ${pickedFile.path}");
+    } else {
+      debugPrint("No document selected.");
+    }
+  }
+
+  void getAudio(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedAudio = File(result.files.single.path!);
+      // You can process the audio here (e.g., upload or transcribe)
+      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
+      debugPrint("Audio picked: ${pickedAudio.path}");
+    } else {
+      debugPrint("No audio file selected.");
     }
   }
 
@@ -309,6 +346,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               pressGallery: () {
                                 widget.getImage(ImageSource.gallery, ref);
                                 Navigator.of(context).pop();
+                              },
+                              pressDocument: () async {
+                                Navigator.of(context).pop();
+                                widget.getDocument(File(''), ref);
+                              },
+                              pressAudio: () async {
+                                Navigator.of(context).pop();
+                                widget.getAudio(File(''), ref);
                               },
                             );
                           },

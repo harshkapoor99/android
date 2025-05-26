@@ -23,6 +23,7 @@ abstract class ProfileService {
     required String phone,
     String? countryId,
     String? cityId,
+    String? refNewImageUrl,
   });
 
   Future<Response> uploadProfileImage(XFile image);
@@ -43,6 +44,7 @@ class ProfileServiceImpl implements ProfileService {
     required String phone,
     String? countryId,
     String? cityId,
+    String? refNewImageUrl,
   }) async {
     final response = await _apiClient.post(
       RemoteEndpoint.updateProfile.url,
@@ -55,6 +57,7 @@ class ProfileServiceImpl implements ProfileService {
         "phone": phone,
         "country": countryId,
         "city": cityId,
+        "ref_new_image_url": refNewImageUrl,
       },
       timeout: const Duration(seconds: 30),
     );

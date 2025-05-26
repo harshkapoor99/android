@@ -24,6 +24,7 @@ class ProfileSettingsState {
   final City? city;
   final bool isLoading;
   final String? error;
+  final String? refNewImageUrl;
   final User? initialUserInfo; // To store the original user info for comparison
 
   ProfileSettingsState({
@@ -36,6 +37,7 @@ class ProfileSettingsState {
     this.city,
     this.isLoading = false,
     this.error,
+    this.refNewImageUrl,
     this.initialUserInfo,
   });
 
@@ -49,6 +51,7 @@ class ProfileSettingsState {
     City? city,
     bool? isLoading,
     String? error,
+    String? refNewImageUrl,
     User? initialUserInfo,
   }) {
     return ProfileSettingsState(
@@ -61,6 +64,7 @@ class ProfileSettingsState {
       city: city ?? this.city,
       isLoading: isLoading ?? this.isLoading,
       error: error,
+      refNewImageUrl: refNewImageUrl ?? this.refNewImageUrl,
       initialUserInfo: initialUserInfo ?? this.initialUserInfo,
     );
   }
@@ -201,6 +205,7 @@ class ProfileSettingsNotifier extends StateNotifier<ProfileSettingsState> {
         phone: state.phoneController.text.trim(),
         countryId: state.country?.id,
         cityId: state.city?.id,
+        refNewImageUrl: state.refNewImageUrl ?? ''
       );
 
       if (response.statusCode == 200) {
@@ -213,6 +218,7 @@ class ProfileSettingsNotifier extends StateNotifier<ProfileSettingsState> {
           dateOfBirth: formattedDob,
           country: state.country?.countryName,
           city: state.city?.cityName,
+          // // refNewImageUrl: state.refNewImageUrl,
           profilePicture: userInfo.profile.profilePicture,
           bio: userInfo.profile.bio,
           timezone: userInfo.profile.timezone,
