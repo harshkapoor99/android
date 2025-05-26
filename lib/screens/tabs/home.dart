@@ -14,74 +14,78 @@ class HomeTab extends ConsumerWidget {
   const HomeTab({super.key});
 
   Widget buildHeader(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.pinkAccent, Colors.amber],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Colors.pinkAccent, Colors.amber],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(14),
         ),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: SizedBox(
-        height: 150,
-        child: Row(
-          children: [
-            Flexible(
-              flex: 45,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: SizedBox(
+          height: 150,
+          child: Row(
+            children: [
+              Flexible(
+                flex: 45,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Let's create your first character Now!",
+                        style: context.appTextStyle.textSemibold.copyWith(
+                          fontSize: 18,
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorExt.background,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          "Create Now",
+                          style: context.appTextStyle.text.copyWith(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Flexible(
+                flex: 40,
+                child: Stack(
                   children: [
-                    Text(
-                      "Let's create your first character Now!",
-                      style: context.appTextStyle.textSemibold.copyWith(
-                        fontSize: 18,
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Assets.images.imgTrans2.image(
+                        fit: BoxFit.contain,
+                        height: 150,
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 20,
-                      ),
-                      decoration: BoxDecoration(
-                        color: context.colorExt.background,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "Create Now",
-                        style: context.appTextStyle.text.copyWith(fontSize: 12),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Assets.images.imgTrans1.image(
+                        fit: BoxFit.contain,
+                        height: 150,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            Flexible(
-              flex: 40,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Assets.images.imgTrans2.image(
-                      fit: BoxFit.contain,
-                      height: 150,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Assets.images.imgTrans1.image(
-                      fit: BoxFit.contain,
-                      height: 150,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
