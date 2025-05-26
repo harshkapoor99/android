@@ -56,7 +56,7 @@ enum RemoteEndpoint {
 
   // Profile Update
   updateProfile(path: 'userservice/user/userupdateprofile/'),
-  updateProfileImage(path: 'userservice/user/userupdateimage/'),
+  updateProfileImage(path: 'userservice/user/userprofleimageupdate/'),
   ;
 
   const RemoteEndpoint({required this.path});
