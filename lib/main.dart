@@ -9,6 +9,12 @@ import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
+
   await Hive.initFlutter();
   await Hive.openBox(AppHSC.authBox);
   await Hive.openBox(AppHSC.userBox);
@@ -26,7 +32,7 @@ class MyApp extends StatelessWidget {
         navigatorKey: AppConstants.navigatorKey,
         scaffoldMessengerKey: AppConstants.snackbarKey,
         title: 'Guftagu',
-        // remove banner - Aryan
+        // remove banner
         debugShowCheckedModeBanner: false,
         // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
         themeMode: ThemeMode.dark,

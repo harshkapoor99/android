@@ -22,12 +22,12 @@ class AppConstants {
           5.pw,
           Text('Guftagu', style: AppTextStyle(context).appBarText),
           const Spacer(),
-          SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-          5.pw,
-          Text(
-            '1200',
-            style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
-          ),
+          // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+          // 5.pw,
+          // Text(
+          //   '1200',
+          //   style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
+          // ),
           15.pw,
           SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
           15.pw,
@@ -83,6 +83,8 @@ class AppConstants {
     required BuildContext context,
     required VoidCallback pressCamera,
     required VoidCallback pressGallery,
+    required VoidCallback pressDocument,
+    required VoidCallback pressAudio,
   }) {
     showModalBottomSheet<void>(
       showDragHandle: true,
@@ -114,10 +116,32 @@ class AppConstants {
               InkWell(
                 onTap: pressCamera,
                 child: Container(
+                  margin: const EdgeInsets.only(bottom: 1),
                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: const ListTile(
                     leading: Icon(Icons.add_a_photo),
                     title: Text("Take photo"),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: pressDocument,
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 1),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: const ListTile(
+                    leading: Icon(Icons.insert_drive_file),
+                    title: Text("Upload Document"),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: pressAudio,
+                child: Container(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  child: const ListTile(
+                    leading: Icon(Icons.audiotrack),
+                    title: Text("Upload Audio"),
                   ),
                 ),
               ),

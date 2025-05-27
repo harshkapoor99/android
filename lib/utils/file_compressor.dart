@@ -1,29 +1,44 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:path_provider/path_provider.dart';
 
 Future<File?> compressImage(File file) async {
   try {
-    int percentage = 100;
-    File? compressedFile;
-    int sizeInBytes = File(file.path).lengthSync();
-    double sizeInMb = sizeInBytes / (1024 * 1024);
+    final dir = await getTemporaryDirectory();
+    final targetPath = '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    // while (sizeInMb > 2) {
-    //   percentage = percentage - 20;
-    //   compressedFile = await FlutterNativeImage.compressImage(
-    //     file.path,
-    //     quality: 70,
-    //     percentage: percentage,
-    //   );
-    //   int sizeInBytes = File(compressedFile.path).lengthSync();
-    //   sizeInMb = sizeInBytes / (1024 * 1024);
-    // }
-    return File(compressedFile?.path ?? file.path);
+    final originalSize = file.lengthSync();
+    if (kDebugMode) {
+      print("Original file size: ${(originalSize / (1024 * 1024)).toStringAsFixed(2)} MB");
+    }
+
+    final XFile? result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      targetPath,
+      quality: 40,
+      minWidth: 600,
+      minHeight: 600,
+    );
+
+    if (result == null) {
+      if (kDebugMode) {
+        print("Compression failed.");
+      }
+      return null;
+    }
+
+    final compressedFile = File(result.path);
+    final compressedSize = compressedFile.lengthSync();
+    if (kDebugMode) {
+      print("Compressed file size: ${(compressedSize / (1024 * 1024)).toStringAsFixed(2)} MB");
+    }
+
+    return compressedFile;
   } catch (e) {
     if (kDebugMode) {
-      print('--error--$e');
+      print('Error during image compression: $e');
     }
-    return null; //If any error occurs during compression, the process is stopped.
+    return null;
   }
 }

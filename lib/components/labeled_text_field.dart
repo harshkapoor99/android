@@ -10,7 +10,7 @@ class LabeledTextField extends StatelessWidget {
   final TextStyle? inputTextStyle;
   final EdgeInsetsGeometry contentPadding;
   final double borderRadius;
-  final TextInputType keyboardType; // <-- ADDED THIS LINE
+  final TextInputType keyboardType;
   final bool obscureText;
   final String? hintText;
   final int? maxLength;
@@ -24,10 +24,10 @@ class LabeledTextField extends StatelessWidget {
     this.fillColor = const Color(0xFF23222F),
     this.labelTextStyle,
     this.inputTextStyle = const TextStyle(color: Colors.white),
-    this.contentPadding = const EdgeInsets.symmetric(horizontal: 16),
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 16,vertical: 16),
     this.borderRadius = 10.0,
     this.keyboardType =
-        TextInputType.text, // <-- ADDED THIS LINE (with default)
+        TextInputType.text,
     this.obscureText = false,
     this.hintText,
     this.maxLength,
