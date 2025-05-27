@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
-import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

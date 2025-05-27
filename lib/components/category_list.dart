@@ -1,42 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
 
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class CategoryList extends StatefulWidget {
+class CategoryList extends ConsumerWidget {
   const CategoryList({super.key});
 
   @override
-  State<CategoryList> createState() => _CategoryListState();
-}
-
-class _CategoryListState extends State<CategoryList> {
-  String selectedCategoryTab = "All";
-
-  void selectCategoryTab(String tab) {
-    setState(() {
-      selectedCategoryTab = tab;
-    });
-  }
-
-  final categories = [
-    "All",
-    "Sports",
-    "Girlfriend",
-    "Bollywood",
-    "Fashion",
-    "Villain",
-    "Comedian",
-    "Anime",
-    "Gamer",
-    "Celebrity",
-    "Sci-Fi",
-    "Horror",
-    "Superhero",
-    "Historical",
-  ];
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(masterDataProvider);
+    final categories = [
+      CharacterType(
+        id: "all",
+        charactertypeName: "All",
+        emoji: "",
+        createdDate: DateTime.now(),
+        updatedDate: DateTime.now(),
+        status: 1,
+      ),
+      ...provider.characterTypes,
+    ];
     return SizedBox(
       height: 30,
       child: ListView.builder(
@@ -45,7 +30,8 @@ class _CategoryListState extends State<CategoryList> {
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
-          bool isSelected = category == selectedCategoryTab;
+          bool isSelected =
+              category.id == (provider.seletedCharacterTypeTab?.id ?? "all");
 
           return Padding(
             padding: EdgeInsets.only(
@@ -67,12 +53,15 @@ class _CategoryListState extends State<CategoryList> {
                         .transparent, // Important for InkWell to work properly
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
-                  onTap: () => selectCategoryTab(category),
+                  onTap:
+                      () => ref
+                          .read(masterDataProvider.notifier)
+                          .selectCharacterTypeFilter(category),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Center(
                       child: Text(
-                        category,
+                        category.charactertypeName,
                         textAlign: TextAlign.center,
                         style: context.appTextStyle.textSemibold.copyWith(
                           color:
