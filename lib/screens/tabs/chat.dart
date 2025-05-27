@@ -38,7 +38,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
     final provider = ref.watch(chatProvider);
     final isHomeVisited = ref.watch(isHomeVisitedProvider);
     final masterProvider = ref.watch(masterDataProvider);
-    if (!isHomeVisited || provider.chatList.isEmpty) {
+    if (provider.chatList.isEmpty) {
       if (provider.isFetchingChatList) {
         // Case 1: Fetching and no chats yet - show loading animation
         return Center(child: Lottie.asset(Assets.animations.logo));
