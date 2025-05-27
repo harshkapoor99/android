@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,7 +32,7 @@ class MyApp extends StatelessWidget {
         navigatorKey: AppConstants.navigatorKey,
         scaffoldMessengerKey: AppConstants.snackbarKey,
         title: 'Guftagu',
-        // remove banner - Aryan
+        // remove banner
         debugShowCheckedModeBanner: false,
         // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
         themeMode: ThemeMode.dark,

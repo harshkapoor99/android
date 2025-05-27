@@ -274,51 +274,38 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
 
                     Positioned(
                       bottom: -10,
-                      right: -30,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                      right: -25,
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/solar_pen-2-bold.svg',
+                          width: 30,
+                          height: 30,
                         ),
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/icons/solar_pen-2-bold.svg',
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () {
-                            AppConstants.getPickImageAlert(
-                              context: context,
-                              pressCamera: () {
-                                getImage(ImageSource.camera);
-                                Navigator.of(context).pop();
-                              },
-                              pressGallery: () {
-                                getImage(ImageSource.gallery);
-                                Navigator.of(context).pop();
-                              },
-                              pressDocument: () async {
-                                Navigator.of(context).pop();
-                                getDocument(File(''), ref);
-                              },
-                              pressAudio: () async {
-                                Navigator.of(context).pop();
-                                getAudio(File(''), ref);
-                              },
-                            );
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          splashRadius: 24,
-                          tooltip: 'Change Profile Picture',
-                        ),
+                        onPressed: () {
+                          AppConstants.getPickImageAlert(
+                            context: context,
+                            pressCamera: () {
+                              getImage(ImageSource.camera);
+                              Navigator.of(context).pop();
+                            },
+                            pressGallery: () {
+                              getImage(ImageSource.gallery);
+                              Navigator.of(context).pop();
+                            },
+                            pressDocument: () async {
+                              Navigator.of(context).pop();
+                              getDocument(File(''), ref);
+                            },
+                            pressAudio: () async {
+                              Navigator.of(context).pop();
+                              getAudio(File(''), ref);
+                            },
+                          );
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        splashRadius: 24,
+                        tooltip: 'Change Profile Picture',
                       ),
                     ),
                   ],
