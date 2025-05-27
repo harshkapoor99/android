@@ -134,7 +134,7 @@ class Step2Widget extends ConsumerWidget {
                           ref.read(characterCreationProvider).personality?.id,
                     )
                     .toList(),
-            optionToString: (c) => c.title,
+            optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"
