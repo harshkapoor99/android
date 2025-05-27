@@ -19,7 +19,7 @@ class ImageOptionSelector extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         const spacing = 12.0;
-        final totalSpacing = spacing * (options.length - 1); // between 3 items
+        final totalSpacing = spacing * (options.length - 1);
         final itemWidth =
             (constraints.maxWidth - totalSpacing) / options.length;
         final imageHeight = itemWidth * 1;
@@ -27,94 +27,92 @@ class ImageOptionSelector extends StatelessWidget {
         return Wrap(
           spacing: spacing,
           runSpacing: spacing,
-          children:
-              options.map((option) {
-                final isSelected = selected == option['value'];
+          children: options.map((option) {
+            final isSelected = selected == option['value'];
 
-                return GestureDetector(
-                  onTap: () => onChanged(option['value']),
-                  child: SizedBox(
-                    width: itemWidth,
-                    child: Column(
+            Widget imageContainer = Container(
+              width: itemWidth,
+              height: imageHeight,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: isSelected
+                    ? Border.all(
+                  color: context.colorExt.tertiary,
+                  width: 2,
+                )
+                    : null,
+                image: DecorationImage(
+                  image: AssetImage(option['image']),
+                  fit: BoxFit.cover,
+                  alignment: option['label'] == 'Female'
+                      ? const Alignment(0, -0.8)
+                      : Alignment.center,
+                  colorFilter: isSelected
+                      ? null
+                      : ColorFilter.mode(
+                    Colors.black.withValues(alpha: .4),
+                    BlendMode.darken,
+                  ),
+                ),
+              ),
+            );
+
+            return GestureDetector(
+              onTap: () => onChanged(option['value']),
+              child: SizedBox(
+                width: itemWidth,
+                child: Column(
+                  children: [
+                    imageContainer,
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          width: itemWidth,
-                          height: imageHeight,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            border:
-                                isSelected
-                                    ? Border.all(
-                                      color: context.colorExt.tertiary,
-                                      width: 2,
-                                    )
-                                    : null,
-                            image: DecorationImage(
-                              image: AssetImage(option['image']),
-                              fit: BoxFit.cover,
-                              alignment:
-                                  option['label'] == 'Female'
-                                      ? const Alignment(0, -0.8)
-                                      : Alignment.center,
-                              colorFilter:
-                                  isSelected
-                                      ? null
-                                      : ColorFilter.mode(
-                                        Colors.black.withValues(alpha: .4),
-                                        BlendMode.darken,
-                                      ),
+                        if (option['icon'] != null) ...[
+                          option['icon'].toString().endsWith('.svg')
+                              ? SvgPicture.asset(
+                            option['icon'],
+                            height: 16,
+                            width: 16,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
                             ),
+                          )
+                              : Image.asset(
+                            option['icon'],
+                            height: 16,
+                            width: 16,
+                            color: Colors.white,
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (option['icon'] != null) ...[
-                              option['icon'].toString().endsWith('.svg')
-                                  ? SvgPicture.asset(
-                                    option['icon'],
-                                    height: 16,
-                                    width: 16,
-                                    colorFilter: const ColorFilter.mode(
-                                      Colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                  )
-                                  : Image.asset(
-                                    option['icon'],
-                                    height: 16,
-                                    width: 16,
-                                    color: Colors.white,
-                                  ),
-                              const SizedBox(width: 6),
-                            ],
-                            Flexible(
-                              child: Text(
-                                option['label'],
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 4,
-                                      color: Colors.black,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
+                          const SizedBox(width: 6),
+                        ],
+                        Flexible(
+                          child: Text(
+                            option['label'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: Colors.white,
+                              overflow: TextOverflow.ellipsis,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 4,
+                                  color: Colors.black,
+                                  offset: Offset(0, 2),
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
+                              ],
                             ),
-                          ],
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                );
-              }).toList(),
+                  ],
+                ),
+              ),
+            );
+          }).toList(),
         );
       },
     );

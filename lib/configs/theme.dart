@@ -81,7 +81,7 @@ ThemeData getAppTheme({
       ),
     ),
     inputDecorationTheme: inputDecorationTheme(isDarkTheme: isDarkTheme),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color:
           isDarkTheme
               ? AppStaticColors.primaryColor.withAlpha(50)
