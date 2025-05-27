@@ -137,19 +137,21 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                         decoration: BoxDecoration(
                           color: const Color(0xFF272730),
                           borderRadius: BorderRadius.circular(24),
+                          // crash issue
                           image:
                               provider.refImageUrl.hasValue
                                   ? DecorationImage(
-                                    image: NetworkImage(provider.refImageUrl!),
+                                    image: NetworkImage(provider.refImageUrl ?? ''),
                                     fit: BoxFit.cover,
                                     alignment: const Alignment(0, -0.5),
                                     colorFilter: ColorFilter.mode(
-                                      Colors.black.withValues(
-                                        alpha:
-                                            provider.refImageUrl.hasValue
-                                                ? 0
-                                                : 0.4,
-                                      ),
+                                      // Colors.black.withValues(
+                                      //   alpha:
+                                      //       provider.refImageUrl.hasValue
+                                      //           ? 0
+                                      //           : 0.4,
+                                      // ),
+                                      Color.fromRGBO(0, 0, 0, provider.refImageUrl.hasValue ? 0.0 : 0.4),
                                       BlendMode.darken,
                                     ),
                                   )

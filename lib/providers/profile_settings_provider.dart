@@ -221,8 +221,6 @@ class ProfileSettingsNotifier extends StateNotifier<ProfileSettingsState> {
           // // refNewImageUrl: state.refNewImageUrl,
           profilePicture: userInfo.profile.profilePicture,
           bio: userInfo.profile.bio,
-          timezone: userInfo.profile.timezone,
-          status: userInfo.status,
         );
         state = state.copyWith(
           isLoading: false,
