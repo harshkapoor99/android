@@ -11,7 +11,7 @@ import 'package:guftagu_mobile/screens/onboarding.dart';
 import 'package:guftagu_mobile/screens/profileSetting.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
-import 'package:guftagu_mobile/screens/subscriptionPage.dart';
+import 'package:guftagu_mobile/screens/subscription_page.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Routes {

@@ -27,6 +27,10 @@ extension StringExtension on String {
       return Color(int.parse("0x$hexColor"));
     }
   }
+
+  capitalize() {
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
 }
 
 extension StringExtensions on String? {

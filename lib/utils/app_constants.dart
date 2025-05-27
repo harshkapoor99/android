@@ -83,30 +83,28 @@ class AppConstants {
     required BuildContext context,
     required VoidCallback pressCamera,
     required VoidCallback pressGallery,
-    required VoidCallback pressDocument,
-    required VoidCallback pressAudio,
+    VoidCallback? pressDocument,
+    VoidCallback? pressAudio,
   }) {
     showModalBottomSheet<void>(
       showDragHandle: true,
       isScrollControlled: true,
       context: context,
       constraints: const BoxConstraints(maxWidth: 640),
+      backgroundColor: context.colorExt.border,
+
       builder: (context) {
-        return Container(
-          color: context.colorExt.border,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          width: double.infinity,
+        return Ink(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               InkWell(
+                borderRadius: BorderRadius.circular(10),
                 onTap: pressGallery,
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 1),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: const ListTile(
                     leading: Icon(Icons.attach_file),
                     title: Text("Upload from Gallery"),
@@ -114,37 +112,41 @@ class AppConstants {
                 ),
               ),
               InkWell(
+                borderRadius: BorderRadius.circular(10),
+
                 onTap: pressCamera,
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 1),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                   child: const ListTile(
                     leading: Icon(Icons.add_a_photo),
                     title: Text("Take photo"),
                   ),
                 ),
               ),
-              InkWell(
-                onTap: pressDocument,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 1),
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const ListTile(
-                    leading: Icon(Icons.insert_drive_file),
-                    title: Text("Upload Document"),
+              if (pressDocument != null)
+                InkWell(
+                  borderRadius: BorderRadius.circular(10),
+
+                  onTap: pressDocument,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 1),
+                    child: const ListTile(
+                      leading: Icon(Icons.insert_drive_file),
+                      title: Text("Upload Document"),
+                    ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: pressAudio,
-                child: Container(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const ListTile(
-                    leading: Icon(Icons.audiotrack),
-                    title: Text("Upload Audio"),
+              if (pressAudio != null)
+                InkWell(
+                  borderRadius: BorderRadius.circular(10),
+                  onTap: pressAudio,
+                  child: Container(
+                    child: const ListTile(
+                      leading: Icon(Icons.audiotrack),
+                      title: Text("Upload Audio"),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         );
