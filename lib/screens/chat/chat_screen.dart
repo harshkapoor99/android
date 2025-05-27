@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/components/chat_bubble.dart';
@@ -7,8 +8,6 @@ import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -58,6 +57,42 @@ class ChatScreen extends ConsumerStatefulWidget {
     }
   }
 
+  void getDocument(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedFile = File(result.files.single.path!);
+      // You can compress or validate the document if needed
+      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
+      debugPrint("Document picked: ${pickedFile.path}");
+    } else {
+      debugPrint("No document selected.");
+    }
+  }
+
+  void getAudio(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedAudio = File(result.files.single.path!);
+      // You can process the audio here (e.g., upload or transcribe)
+      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
+      debugPrint("Audio picked: ${pickedAudio.path}");
+    } else {
+      debugPrint("No audio file selected.");
+    }
+  }
+
   @override
   ConsumerState<ChatScreen> createState() => _ChatScreenState();
 }
@@ -90,6 +125,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
+          ref.read(chatProvider.notifier).fetchChatList();
           ref.read(chatProvider.notifier).clearHistory();
         }
       },
@@ -141,12 +177,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ],
               ),
               const Spacer(),
-              SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              5.pw,
-              Text(
-                '1200',
-                style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              ),
+              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              // 5.pw,
+              // Text(
+              //   '1200',
+              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              // ),
               // 25.pw,
               // IconButton(
               //   onPressed: () => context.nav.pushNamed(Routes.call),
@@ -310,6 +346,14 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 widget.getImage(ImageSource.gallery, ref);
                                 Navigator.of(context).pop();
                               },
+                              pressDocument: () async {
+                                Navigator.of(context).pop();
+                                widget.getDocument(File(''), ref);
+                              },
+                              pressAudio: () async {
+                                Navigator.of(context).pop();
+                                widget.getAudio(File(''), ref);
+                              },
                             );
                           },
                         ),
@@ -319,8 +363,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     AnimatedSendButton(
                       hasText: provider.hasMessage,
                       onPressed: () {
+                        final chatNotifier = ref.read(chatProvider.notifier);
+
                         if (provider.hasMessage) {
-                          ref.read(chatProvider.notifier).chatWithCharacter();
+                          chatNotifier.chatWithCharacter();
+                        } else {
+                          chatNotifier.sendStaticVoiceMessage();
                         }
                       },
                     ),

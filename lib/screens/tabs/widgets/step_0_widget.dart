@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/age_input_formatter.dart';
@@ -16,25 +17,25 @@ class Step0Widget extends ConsumerWidget {
 
   final List<String> sexualOrientationOptions = ['Straight', 'Gay', 'Lesbian'];
 
-  final List<Map<String, dynamic>> genderOptions = [
-    {
-      'label': 'Female',
-      'image': 'assets/images/model/femaleNew.jpg',
-      'icon': 'assets/icons/female.svg',
-      'value': 'female',
-    },
-    {
-      'label': 'Male',
-      'image': 'assets/images/model/maleNew.jpg',
-      'icon': 'assets/icons/male.svg',
-      'value': 'male',
-    },
-    {
-      'label': 'Others',
-      'image': 'assets/images/model/lesboNew.jpg',
-      'icon': 'assets/icons/lesbo.svg',
-      'value': 'others',
-    },
+  final List<ImageOptions> genderOptions = [
+    ImageOptions(
+      label: 'Female',
+      image: Assets.images.female,
+      icon: Assets.icons.female,
+      value: 'female',
+    ),
+    ImageOptions(
+      label: 'Male',
+      image: Assets.images.male,
+      icon: Assets.icons.male,
+      value: 'male',
+    ),
+    ImageOptions(
+      label: 'Others',
+      image: Assets.images.trans,
+      icon: Assets.icons.lesbo,
+      value: 'others',
+    ),
   ];
 
   @override

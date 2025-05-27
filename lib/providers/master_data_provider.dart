@@ -279,6 +279,11 @@ class MasterData extends _$MasterData {
       state = state.copyWith(isLoading: false);
     }
   }
+
+  void selectCharacterTypeFilter(CharacterType characterType) {
+    state = state.copyWith(seletedCharacterTypeTab: characterType);
+    // TODO: get all master Characters with the filter
+  }
 }
 
 class MasterDataState {
@@ -293,6 +298,7 @@ class MasterDataState {
     required this.cities,
     required this.characterTypes,
     required this.characterDetails,
+    this.seletedCharacterTypeTab,
   });
 
   final bool isLoading;
@@ -307,6 +313,8 @@ class MasterDataState {
   final List<CharacterType> characterTypes;
   final List<CharacterDetail> characterDetails;
 
+  final CharacterType? seletedCharacterTypeTab;
+
   MasterDataState copyWith({
     bool? isLoading,
     List<Language>? languages,
@@ -317,7 +325,8 @@ class MasterDataState {
     List<Country>? countries,
     List<City>? cities,
     List<CharacterType>? characterTypes,
-    final List<CharacterDetail>? characterDetails,
+    List<CharacterDetail>? characterDetails,
+    CharacterType? seletedCharacterTypeTab,
   }) {
     return MasterDataState(
       isLoading: isLoading ?? this.isLoading,
@@ -330,6 +339,8 @@ class MasterDataState {
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
       characterDetails: characterDetails ?? this.characterDetails,
+      seletedCharacterTypeTab:
+          seletedCharacterTypeTab ?? this.seletedCharacterTypeTab,
     );
   }
 }

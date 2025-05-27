@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
+class ImageOptions {
+  ImageOptions({
+    required this.label,
+    required this.image,
+    this.icon,
+    required this.value,
+  });
+  final String label;
+  final AssetGenImage image;
+  final String? icon;
+  final String value;
+}
+
 class ImageOptionSelector extends StatelessWidget {
-  final List<Map<String, dynamic>> options;
+  final List<ImageOptions> options;
   final String selected;
   final Function(String) onChanged;
 
@@ -29,10 +43,10 @@ class ImageOptionSelector extends StatelessWidget {
           runSpacing: spacing,
           children:
               options.map((option) {
-                final isSelected = selected == option['value'];
+                final isSelected = selected == option.value;
 
                 return GestureDetector(
-                  onTap: () => onChanged(option['value']),
+                  onTap: () => onChanged(option.value),
                   child: SizedBox(
                     width: itemWidth,
                     child: Column(
@@ -50,10 +64,10 @@ class ImageOptionSelector extends StatelessWidget {
                                     )
                                     : null,
                             image: DecorationImage(
-                              image: AssetImage(option['image']),
+                              image: option.image.provider(),
                               fit: BoxFit.cover,
                               alignment:
-                                  option['label'] == 'Female'
+                                  option.label == 'Female'
                                       ? const Alignment(0, -0.8)
                                       : Alignment.center,
                               colorFilter:
@@ -70,28 +84,21 @@ class ImageOptionSelector extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            if (option['icon'] != null) ...[
-                              option['icon'].toString().endsWith('.svg')
-                                  ? SvgPicture.asset(
-                                    option['icon'],
-                                    height: 16,
-                                    width: 16,
-                                    colorFilter: const ColorFilter.mode(
-                                      Colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                  )
-                                  : Image.asset(
-                                    option['icon'],
-                                    height: 16,
-                                    width: 16,
-                                    color: Colors.white,
-                                  ),
-                              const SizedBox(width: 6),
-                            ],
+                            if (option.icon != null)
+                              SvgPicture.asset(
+                                option.icon!,
+                                height: 16,
+                                width: 16,
+                                colorFilter: const ColorFilter.mode(
+                                  Colors.white,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            const SizedBox(width: 6),
+
                             Flexible(
                               child: Text(
-                                option['label'],
+                                option.label,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,

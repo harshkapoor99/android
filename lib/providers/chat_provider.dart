@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
@@ -94,6 +95,28 @@ class Chat extends _$Chat {
       state = state._updateWith(isTyping: false);
     }
   }
+
+  void sendStaticVoiceMessage() {
+    appendSvgChat(
+      isMe: true,
+      svgWidget: SvgPicture.asset(
+        'assets/svgs/wavesmic.svg',
+        // height: 50,
+        // width: 150,
+        fit: BoxFit.contain,
+      ),
+      time: DateTime.now(),
+    );
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      appendChat(
+        isMe: false,
+        text: "🤖 Got your voice message!",
+        time: DateTime.now(),
+      );
+    });
+  }
+
 
   void fetchChatList() async {
     try {
@@ -192,6 +215,20 @@ class Chat extends _$Chat {
       ],
     );
   }
+
+  void appendSvgChat({
+    required bool isMe,
+    required Widget svgWidget,
+    required DateTime time,
+  }) {
+    state = state._updateWith(
+      messages: [
+        ChatMessage(isMe: isMe, text: '', customContent: svgWidget, time: time),
+        ...state.messages,
+      ],
+    );
+  }
+
 }
 
 class ChatState {

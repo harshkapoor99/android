@@ -78,27 +78,29 @@ class ModelCard extends ConsumerWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        name,
-                        style: context.appTextStyle.buttonText.copyWith(
-                          fontSize: 14,
-                        ),
-                      ),
-                      // if (persionality.hasValue)
-                      if (characterType != null)
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
                         Text(
-                          characterType!,
-                          style: context.appTextStyle.text.copyWith(
-                            fontSize: 10,
+                          name,
+                          style: context.appTextStyle.buttonText.copyWith(
+                            fontSize: 14,
                           ),
+                          overflow: TextOverflow.fade,
                         ),
-                    ],
+                        // if (persionality.hasValue)
+                        if (characterType != null)
+                          Text(
+                            characterType!,
+                            style: context.appTextStyle.text.copyWith(
+                              fontSize: 10,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-                  const Spacer(),
                   CircleAvatar(
                     backgroundColor: const Color(
                       0xFF414141,

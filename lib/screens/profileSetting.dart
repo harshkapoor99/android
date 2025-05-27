@@ -1,12 +1,23 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
+import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../components/labeled_text_field.dart';
-import 'package:guftagu_mobile/utils/entensions.dart'; // If .pw is here
+import 'package:guftagu_mobile/utils/entensions.dart';
+import '../models/master/master_models.dart';
+import '../providers/master_data_provider.dart';
+import '../utils/app_constants.dart';
+import '../utils/file_compressor.dart';
 
 const Color darkBackgroundColor = Color(0xFF0A0A0A);
 const Color inputBackgroundColor = Color(0xFF23222F);
@@ -19,7 +30,6 @@ const Gradient editIconGradient = LinearGradient(
   end: Alignment.bottomRight,
 );
 
-// Helper class for Bottom Navigation Bar items
 class BottomBarIconLabel {
   BottomBarIconLabel({required this.assetName, required this.label});
   String assetName;
@@ -35,38 +45,7 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 }
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
-  String? _selectedCountry;
-  String? _selectedCity;
-  // --- New State Variables ---
-  String? _selectedGender;
-  DateTime? _selectedDate;
-  // --- End New State Variables ---
-
-  // --- Dropdown Data ---
-  final List<String> _countries = ['India', 'USA', 'Canada', 'UK', 'Australia'];
-  final Map<String, List<String>> _cities = {
-    'India': ['Mumbai', 'Delhi', 'Bangalore', 'Imphal'],
-    'USA': ['New York', 'Los Angeles', 'Chicago'],
-    'Canada': ['Toronto', 'Vancouver', 'Montreal'],
-    'UK': ['London', 'Manchester', 'Birmingham'],
-    'Australia': ['Sydney', 'Melbourne', 'Brisbane'],
-  };
-  List<String> _currentCities = [];
-  // --- New Gender Data ---
-  final List<String> _genders = [
-    'Male',
-    'Female',
-    'Other',
-    'Prefer not to say',
-  ];
-  // --- End New Gender Data ---
-
-  // --- Text Editing Controllers ---
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-
-  // --- Bottom Bar Tab Data ---
+  final ImagePicker picker = ImagePicker();
   final List<BottomBarIconLabel> _tabWidgets = [
     BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
     BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
@@ -77,68 +56,87 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   @override
   void initState() {
     super.initState();
-    _updateCities(_selectedCountry);
   }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
     super.dispose();
   }
 
-  void _updateCities(String? selectedCountry) {
-    setState(() {
-      _selectedCountry = selectedCountry;
-      _currentCities = _cities[selectedCountry] ?? [];
-      if (!_currentCities.contains(_selectedCity)) {
-        _selectedCity = null;
-      }
-    });
-  }
+  getPermission(Permission permission) async {
+    var checkStatus = await permission.status;
 
-  // --- New Date Picker Logic ---
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      // Sensible initial date (e.g., 20 years ago)
-      initialDate:
-          _selectedDate ??
-          DateTime.now().subtract(const Duration(days: 365 * 20)),
-      // Allow selection from 100 years ago up to today
-      firstDate: DateTime.now().subtract(const Duration(days: 365 * 100)),
-      lastDate: DateTime.now(), // User cannot select future date for birthday
-      builder: (context, child) {
-        // Optional: Theme the date picker
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.dark(
-              // Example dark theme
-              primary: Colors.blueAccent, // header background color
-              onPrimary: Colors.white, // header text color
-              onSurface: Colors.white, // body text color
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.blueAccent, // button text color
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+    if (checkStatus.isGranted) {
+      return;
+    } else {
+      var status = await permission.request();
+      if (status.isGranted) {
+      } else if (status.isDenied) {
+        getPermission(permission);
+      } else {
+        openAppSettings();
+      }
     }
   }
-  // --- End New Date Picker Logic ---
+
+  Future getImage(ImageSource media) async {
+    if (media == ImageSource.camera) {
+      await getPermission(Permission.camera);
+    } else {
+      await getPermission(Permission.photos);
+    }
+
+    var img = await picker.pickImage(source: media);
+    if (img != null) {
+      print(img.path);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        ref
+            .read(profileSettingsProvider.notifier)
+            .uploadProfileImage(XFile(image.path));
+        image = null;
+        setState(() {});
+      }
+    }
+  }
+
+  void getDocument(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedFile = File(result.files.single.path!);
+      // You can compress or validate the document if needed
+      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
+      debugPrint("Document picked: ${pickedFile.path}");
+    } else {
+      debugPrint("No document selected.");
+    }
+  }
+
+  void getAudio(File file, WidgetRef ref) async {
+    await getPermission(Permission.storage);
+
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
+    );
+
+    if (result != null && result.files.single.path != null) {
+      File pickedAudio = File(result.files.single.path!);
+      // You can process the audio here (e.g., upload or transcribe)
+      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
+      debugPrint("Audio picked: ${pickedAudio.path}");
+    } else {
+      debugPrint("No audio file selected.");
+    }
+  }
 
   InputDecoration _buildInputDecoration() {
-    // (logic kept as is)
     return InputDecoration(
       filled: true,
       fillColor: inputBackgroundColor,
@@ -159,12 +157,28 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         borderSide: BorderSide.none,
       ),
       hintStyle: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
-      suffixIconColor: iconColor, // Ensure suffix icons are visible
+      suffixIconColor: iconColor,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final profileState = ref.watch(profileSettingsProvider);
+    final profileNotifier = ref.read(profileSettingsProvider.notifier);
+    final masterData = ref.watch(masterDataProvider);
+
+    ref.listen<ProfileSettingsState>(profileSettingsProvider, (previous, current) {
+      if (current.error != null && current.error != previous?.error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${current.error}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    });
+
     return Scaffold(
       backgroundColor: darkBackgroundColor,
       appBar: AppBar(
@@ -187,7 +201,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             const Spacer(),
           ],
         ),
-        // Save button moved below
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -197,23 +210,37 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             children: [
               const SizedBox(height: 10),
               Align(
-                // Save Button
                 alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    print('Save button pressed');
-                    print('Name: ${_nameController.text}');
-                    print('Age: $_selectedDate');
-                    print('Gender: $_selectedGender');
-                    print('Country: $_selectedCountry');
-                    print('City: $_selectedCity');
-                    print('Email: ${_emailController.text}');
-                    print('Phone: ${_phoneController.text}');
-                  },
-                  child: const Text(
+                child: profileState.isLoading
+                    ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(primaryTextColor),
+                  ),
+                )
+                    : TextButton(
+                  onPressed: profileNotifier.hasUnsavedChanges()
+                      ? () async {
+                    final success = await profileNotifier.updateProfile();
+                    if (success && mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Profile updated successfully!'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    }
+                  }
+                      : null,
+                  child: Text(
                     'Save',
                     style: TextStyle(
-                      color: primaryTextColor,
+                      color: profileNotifier.hasUnsavedChanges()
+                          ? primaryTextColor
+                          : secondaryTextColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                     ),
@@ -228,28 +255,57 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                   children: [
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage: AssetImage(
-                        'assets/images/model/ayushImg.jpg',
-                      ),
+                      backgroundColor: const Color(0xFF272730),
+                    backgroundImage: AssetImage(
+                      'assets/images/model/ayushImg.jpg',
                     ),
+                      // backgroundImage: profileState.hasProfileImage
+                      //     ? NetworkImage(profileState.profileImageUrl!)
+                      //     : const AssetImage('assets/images/model/ayushImg.jpg') as ImageProvider,
+                      // child: profileState.hasProfileImage
+                      //     ? null
+                      //     : (profileState.isImageUploading
+                      //     ? CircularProgressIndicator(
+                      //   color: context.colorExt.secondary,
+                      //   strokeWidth: 3,
+                      // )
+                      //     : null),
+                    ),
+
                     Positioned(
                       bottom: -10,
-                      right: -30,
-                      child: Container(
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/icons/solar_pen-2-bold.svg', // Your icon path
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () {
-                            print('Edit profile picture');
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          splashRadius: 24,
-                          tooltip: 'Change Profile Picture',
+                      right: -25,
+                      child: IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/solar_pen-2-bold.svg',
+                          width: 30,
+                          height: 30,
                         ),
+                        onPressed: () {
+                          AppConstants.getPickImageAlert(
+                            context: context,
+                            pressCamera: () {
+                              getImage(ImageSource.camera);
+                              Navigator.of(context).pop();
+                            },
+                            pressGallery: () {
+                              getImage(ImageSource.gallery);
+                              Navigator.of(context).pop();
+                            },
+                            pressDocument: () async {
+                              Navigator.of(context).pop();
+                              getDocument(File(''), ref);
+                            },
+                            pressAudio: () async {
+                              Navigator.of(context).pop();
+                              getAudio(File(''), ref);
+                            },
+                          );
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        splashRadius: 24,
+                        tooltip: 'Change Profile Picture',
                       ),
                     ),
                   ],
@@ -257,12 +313,10 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ),
               const SizedBox(height: 40),
 
-              // --- Form Fields ---
-              // Name
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _nameController,
+                  controller: profileState.nameController,
                   label: 'Name',
                   fillColor: inputBackgroundColor,
                   labelColor: primaryTextColor,
@@ -272,52 +326,97 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ),
               // Age Dropdown
               _buildDatePickerField(
-                // Using helper method
                 label: 'Age',
-                selectedDate: _selectedDate,
-                onTap: () => _selectDate(context),
-              ),
-              // Gender Dropdown (NEW)
-              _buildDropdownField(
-                label: 'Gender',
-                value: _selectedGender,
-                items: _genders,
-                onChanged: (value) {
-                  setState(() {
-                    _selectedGender = value;
-                  });
+                selectedDate: profileState.dob,
+                onTap: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: profileState.dob ??
+                        DateTime.now().subtract(const Duration(days: 20 * 365)),
+                    firstDate: DateTime.now().subtract(const Duration(days: 100 * 365)),
+                    lastDate: DateTime.now(), // Today
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: const ColorScheme.dark(
+                            primary: Colors.blueAccent,
+                            onPrimary: Colors.white,
+                            onSurface: Colors.white,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.blueAccent,
+                            ),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  if (picked != null && picked != profileState.dob) {
+                    profileNotifier.setDob(picked);
+                  }
                 },
               ),
-              // Country Dropdown
               _buildDropdownField(
-                label: 'Country',
-                value: _selectedCountry,
-                items: _countries,
-                onChanged: _updateCities,
+                label: 'Gender',
+                value: profileState.gender,
+                items: profileNotifier.genders,
+                onChanged: (value) {
+                  profileNotifier.setGender(value);
+                },
               ),
-              // City Dropdown
-              _buildDropdownField(
-                label: 'City',
-                value: _selectedCity,
-                items: _currentCities,
-                onChanged:
-                    (_selectedCountry == null || _currentCities.isEmpty)
-                        ? null
-                        : (value) {
-                          setState(() {
-                            _selectedCity = value;
-                          });
-                        },
-                hintText:
-                    _selectedCountry == null
-                        ? 'Select Country First'
-                        : 'Select City',
+              Text(
+                "Country",
+                style: context.appTextStyle.characterGenLabel,
               ),
-              // Email
+              16.ph,
+              buildOptionTile<Country>(
+                context: context,
+                ref: ref,
+                title: "Country",
+                options: masterData.countries,
+                optionToString: (c) => c.countryName,
+                onSelect: (p0) => profileNotifier.updateCountryCityWith(country: p0),
+                selected: profileState.country,
+              ),
+              16.ph,
+              Text(
+                "City",
+                style: context.appTextStyle.characterGenLabel,
+              ),
+              16.ph,
+              Consumer(
+                builder: (context, ref, child) {
+                  final masterDataCities = ref.watch(masterDataProvider.select((data) => data.cities));
+                  final selectedCountryId = ref.watch(profileSettingsProvider.select((state) => state.country?.id));
+                  final selectedCity = ref.watch(profileSettingsProvider.select((state) => state.city));
+                  final profileNotifierCity = ref.read(profileSettingsProvider.notifier);
+
+
+                  final filteredCities = masterDataCities
+                      .where((c) => c.countryId == selectedCountryId)
+                      .toList();
+
+                  return buildOptionTile<City>(
+                    context: context,
+                    ref: ref,
+                    title: "City",
+                    showLoading: masterData.isLoading,
+                    options: filteredCities,
+                    optionToString: (c) => c.cityName,
+                    onSelect: (p0) => profileNotifierCity.updateCountryCityWith(city: p0),
+                    selected: selectedCity,
+                  );
+                },
+              ),
+
+              16.ph,
+
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _emailController,
+                  controller: profileState.emailController,
                   label: 'Email ID',
                   keyboardType: TextInputType.emailAddress,
                   fillColor: inputBackgroundColor,
@@ -330,7 +429,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
-                  controller: _phoneController,
+                  controller: profileState.phoneController,
                   label: 'Phone number',
                   keyboardType: TextInputType.phone,
                   fillColor: inputBackgroundColor,
@@ -340,13 +439,12 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 ),
               ),
 
-              const SizedBox(height: 20), // Bottom padding inside Column
+              const SizedBox(height: 20),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // Kept as is
         type: BottomNavigationBarType.fixed,
         currentIndex: 3,
         backgroundColor: const Color(0xFF171717),
@@ -360,37 +458,35 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           }
           ref.read(tabIndexProvider.notifier).changeTab(index);
         },
-        items:
-            _tabWidgets
-                .map(
-                  (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
-                    activeIcon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    icon: SvgPicture.asset(
-                      iconLabel.assetName,
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        context.colorExt.textPrimary.withOpacity(0.6),
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    label: iconLabel.label,
-                  ),
-                )
-                .toList(),
+        items: _tabWidgets
+            .map(
+              (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              iconLabel.assetName,
+              height: 18,
+              width: 18,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.textPrimary,
+                BlendMode.srcIn,
+              ),
+            ),
+            icon: SvgPicture.asset(
+              iconLabel.assetName,
+              height: 18,
+              width: 18,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.textPrimary.withOpacity(0.6),
+                BlendMode.srcIn,
+              ),
+            ),
+            label: iconLabel.label,
+          ),
+        )
+            .toList(),
       ),
     );
   }
 
-  // Helper for Dropdowns (Unchanged)
   Widget _buildDropdownField({
     required String label,
     required String? value,
@@ -405,25 +501,20 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              color: primaryTextColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: context.appTextStyle.characterGenLabel,
           ),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             value: value,
-            items:
-                items.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: const TextStyle(color: primaryTextColor),
-                    ),
-                  );
-                }).toList(),
+            items: items.map((String item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Text(
+                  item,
+                  style: context.appTextStyle.characterGenLabel,
+                ),
+              );
+            }).toList(),
             onChanged: onChanged,
             decoration: _buildInputDecoration().copyWith(
               hintText: hintText ?? 'Select $label',
@@ -442,18 +533,14 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     );
   }
 
-  // --- New Helper Widget for Date Picker Field ---
   Widget _buildDatePickerField({
     required String label,
     required DateTime? selectedDate,
     required VoidCallback onTap,
   }) {
-    // Format the date, handle null
-    final String displayDate =
-        selectedDate == null
-            ? 'Select Age'
-            // Using intl package for formatting - ensure imported
-            : DateFormat('dd MMM yyyy').format(selectedDate);
+    final String displayDate = selectedDate == null
+        ? 'Select Age'
+        : DateFormat('dd MMM yyyy').format(selectedDate);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -462,38 +549,25 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
         children: [
           Text(
             label,
-            style: const TextStyle(
-              color: primaryTextColor,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
+            style: context.appTextStyle.characterGenLabel,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           InkWell(
-            // Makes the whole area tappable
             onTap: onTap,
             child: InputDecorator(
-              // Provides the input field look
               decoration: _buildInputDecoration().copyWith(
-                hintText: 'Select Birthday', // Hint if needed
+                hintText: 'Select Birthday',
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text(
                     displayDate,
-                    style: TextStyle(
-                      color:
-                          selectedDate == null
-                              ? secondaryTextColor.withOpacity(
-                                0.5,
-                              ) // Hint color
-                              : primaryTextColor, // Selected date color
-                    ),
+                    style: context.appTextStyle.characterGenLabel,
                   ),
                   const Icon(
                     Icons.calendar_today,
-                    color: iconColor, // Use defined icon color
+                    color: iconColor,
                   ),
                 ],
               ),

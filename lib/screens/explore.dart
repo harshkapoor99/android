@@ -31,17 +31,19 @@ class ExploreScreen extends ConsumerWidget {
         child: Row(
           children: [
             Flexible(
-              flex: 45,
+              flex: 55,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Let's create your first character Now!",
-                      style: context.appTextStyle.textSemibold.copyWith(
-                        fontSize: 20,
+                    Expanded(
+                      child: Text(
+                        "Let's create your first character Now!",
+                        style: context.appTextStyle.textSemibold.copyWith(
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                     Container(
@@ -70,14 +72,14 @@ class ExploreScreen extends ConsumerWidget {
                 children: [
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: Assets.images.imgTrans2.image(
+                    child: Assets.images.exploreRight.image(
                       fit: BoxFit.contain,
                       height: 130,
                     ),
                   ),
                   Align(
                     alignment: Alignment.bottomLeft,
-                    child: Assets.images.imgTrans1.image(
+                    child: Assets.images.exploreLeft.image(
                       fit: BoxFit.contain,
                       height: 130,
                     ),

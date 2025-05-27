@@ -10,82 +10,95 @@ import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
-class HomeTab extends ConsumerWidget {
+class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});
 
+  @override
+  ConsumerState<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends ConsumerState<HomeTab> {
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      ref.read(masterDataProvider.notifier).fetchMasterCharacters();
+    });
+    super.initState();
+  }
+
   Widget buildHeader(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.pinkAccent, Colors.amber],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(14),
+    return Container(
+      margin: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Colors.pinkAccent, Colors.amber],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        child: SizedBox(
-          height: 150,
-          child: Row(
-            children: [
-              Flexible(
-                flex: 45,
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: SizedBox(
+        height: 150,
+        child: Row(
+          children: [
+            Flexible(
+              flex: 55,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
                         "Let's create your first character Now!",
                         style: context.appTextStyle.textSemibold.copyWith(
-                          fontSize: 18,
+                          fontSize: 20,
                         ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.colorExt.background,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          "Create Now",
-                          style: context.appTextStyle.text.copyWith(
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 40,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Assets.images.imgTrans2.image(
-                        fit: BoxFit.contain,
-                        height: 150,
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Assets.images.imgTrans1.image(
-                        fit: BoxFit.contain,
-                        height: 150,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 20,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorExt.background,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        "Create Now",
+                        style: context.appTextStyle.textSemibold.copyWith(
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            Flexible(
+              flex: 35,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Assets.images.exploreRight.image(
+                      fit: BoxFit.contain,
+                      height: 130,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Assets.images.exploreLeft.image(
+                      fit: BoxFit.contain,
+                      height: 130,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -154,7 +167,7 @@ class HomeTab extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final masterProvider = ref.watch(masterDataProvider);
     return SingleChildScrollView(
       child: Column(

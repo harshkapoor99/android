@@ -62,12 +62,12 @@ class CallScreen extends ConsumerWidget {
               ],
             ),
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-            5.pw,
-            Text(
-              '1200',
-              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-            ),
+            // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+            // 5.pw,
+            // Text(
+            //   '1200',
+            //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+            // ),
             20.pw,
           ],
         ),

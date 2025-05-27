@@ -8,6 +8,7 @@ import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
+import 'package:guftagu_mobile/screens/profileSetting.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:guftagu_mobile/screens/avatarProfile.dart';
 import 'package:guftagu_mobile/screens/subscriptionPage.dart';
@@ -56,6 +57,10 @@ class Routes {
         child = const CharacterProfile();
       case Routes.call:
         child = const CallScreen();
+      case Routes.profileSettings:
+        child = const ProfileSettingsPage();
+      case Routes.subscription:
+        child = const SubscriptionScreen();
       default:
         throw Exception('Invalid route: ${settings.name}');
     }

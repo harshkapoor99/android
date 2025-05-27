@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
@@ -11,17 +12,13 @@ import '../../../providers/character_creation_provider.dart';
 class Step1Widget extends ConsumerWidget {
   Step1Widget({super.key});
 
-  final List<Map<String, dynamic>> styleOptions = [
-    {
-      'label': 'Realistic',
-      'image': 'assets/images/model/realNew.png',
-      'value': 'realistic',
-    },
-    {
-      'label': 'Animated',
-      'image': 'assets/images/model/animeNew.png',
-      'value': 'anime',
-    },
+  final List<ImageOptions> styleOptions = [
+    ImageOptions(
+      label: 'Realistic',
+      image: Assets.images.realistic,
+      value: 'realistic',
+    ),
+    ImageOptions(label: 'Animated', image: Assets.images.anime, value: 'anime'),
   ];
 
   @override

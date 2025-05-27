@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1069471489115",
+    "project_id": "aj59701",
+    "storage_bucket": "aj59701.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069471489115:android:49565161c5d95734baf37e",
+        "android_client_info": {
+          "package_name": "com.guftagu.app.guftagu_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxLdrWHfbvLoFEBKgN75UBQPAwgBP0h6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
