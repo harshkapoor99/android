@@ -90,6 +90,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
+          ref.read(chatProvider.notifier).fetchChatList();
           ref.read(chatProvider.notifier).clearHistory();
         }
       },

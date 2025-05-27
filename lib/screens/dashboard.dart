@@ -16,7 +16,7 @@ class DashboardScreen extends ConsumerWidget {
   DashboardScreen({super.key});
 
   final List<Widget> _screens = [
-    ChatTab(),
+    const ChatTab(),
     const CreateTab(),
     const MyAisTab(),
     const ProfileTab(),
