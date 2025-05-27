@@ -5,7 +5,6 @@ import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
-import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -36,7 +35,6 @@ class _ChatTabState extends ConsumerState<ChatTab> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
-    final isHomeVisited = ref.watch(isHomeVisitedProvider);
     final masterProvider = ref.watch(masterDataProvider);
     if (provider.chatList.isEmpty) {
       if (provider.isFetchingChatList) {
