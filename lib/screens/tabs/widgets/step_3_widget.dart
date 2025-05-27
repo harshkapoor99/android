@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -64,7 +63,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
     var img = await picker.pickImage(source: media);
     if (img != null) {
       print(img.path);
-        var image = await compressImage(File(img.path));
+      var image = await compressImage(File(img.path));
       if (image != null) {
         // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
         ref
@@ -73,42 +72,6 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
         image = null;
         setState(() {});
       }
-    }
-  }
-
-  void getDocument(File file, WidgetRef ref) async {
-    await getPermission(Permission.storage);
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      File pickedFile = File(result.files.single.path!);
-      // You can compress or validate the document if needed
-      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
-      debugPrint("Document picked: ${pickedFile.path}");
-    } else {
-      debugPrint("No document selected.");
-    }
-  }
-
-  void getAudio(File file, WidgetRef ref) async {
-    await getPermission(Permission.storage);
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      File pickedAudio = File(result.files.single.path!);
-      // You can process the audio here (e.g., upload or transcribe)
-      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
-      debugPrint("Audio picked: ${pickedAudio.path}");
-    } else {
-      debugPrint("No audio file selected.");
     }
   }
 
@@ -141,7 +104,9 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                           image:
                               provider.refImageUrl.hasValue
                                   ? DecorationImage(
-                                    image: NetworkImage(provider.refImageUrl ?? ''),
+                                    image: NetworkImage(
+                                      provider.refImageUrl ?? '',
+                                    ),
                                     fit: BoxFit.cover,
                                     alignment: const Alignment(0, -0.5),
                                     colorFilter: ColorFilter.mode(
@@ -151,7 +116,14 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                       //           ? 0
                                       //           : 0.4,
                                       // ),
-                                      Color.fromRGBO(0, 0, 0, provider.refImageUrl.hasValue ? 0.0 : 0.4),
+                                      Color.fromRGBO(
+                                        0,
+                                        0,
+                                        0,
+                                        provider.refImageUrl.hasValue
+                                            ? 0.0
+                                            : 0.4,
+                                      ),
                                       BlendMode.darken,
                                     ),
                                   )
@@ -188,14 +160,6 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                               pressGallery: () {
                                 getImage(ImageSource.gallery);
                                 Navigator.of(context).pop();
-                              },
-                              pressDocument: () async {
-                                Navigator.of(context).pop();
-                                getDocument(File(''), ref);
-                              },
-                              pressAudio: () async {
-                                Navigator.of(context).pop();
-                                getAudio(File(''), ref);
                               },
                             );
                           },

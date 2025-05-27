@@ -94,8 +94,8 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                       10.ph,
                       Center(
                         child: Container(
-                          width: 164,
-                          height: 164,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: const Color(0xFF00FFED),
@@ -109,7 +109,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                           ),
                         ),
                       ),
-                      40.ph,
+                      20.ph,
                       Center(
                         child: LayoutBuilder(
                           builder: (context, constraints) {
@@ -128,54 +128,64 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                   16.ph,
                                   _buildAlignedRow("Age", character.age),
                                   16.ph,
-                                  _buildAlignedRow("Gender", character.gender),
+                                  _buildAlignedRow(
+                                    "Gender",
+                                    character.gender.capitalize(),
+                                  ),
                                   16.ph,
                                   _buildAlignedRow(
                                     "Address",
                                     "${character.city.cityName}, ${character.country.countryName}",
                                   ),
+                                  if (character.voice != null) ...[
+                                    16.ph,
+                                    _buildAlignedRow(
+                                      "Voice",
+                                      "${character.voice?.fullName}",
+                                    ),
+                                  ],
                                 ],
                               ),
                             );
                           },
                         ),
                       ),
-                      20.ph,
-                      Center(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            double screenWidth = constraints.maxWidth;
-                            return Container(
-                              width: screenWidth * 0.98,
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF23222F),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // buildProfileField(
-                                  //   "Sexual Orientation",
-                                  //   provider.character!.style,
-                                  // ),
-                                  // 16.ph,
-                                  buildProfileField(
-                                    "Voice",
-                                    character.voice?.fullName ?? "No voice",
-                                  ),
-                                  // 16.ph,
-                                  // buildProfileField(
-                                  //   "Language",
-                                  //   provider.character!.languageId,
-                                  // ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      // 20.ph,
+                      // Center(
+                      //   child: LayoutBuilder(
+                      //     builder: (context, constraints) {
+                      //       double screenWidth = constraints.maxWidth;
+                      //       return Container(
+                      //         width: screenWidth * 0.98,
+                      //         padding: const EdgeInsets.all(24),
+                      //         decoration: BoxDecoration(
+                      //           color: const Color(0xFF23222F),
+                      //           borderRadius: BorderRadius.circular(20),
+                      //         ),
+                      //         child: Column(
+                      //           crossAxisAlignment: CrossAxisAlignment.start,
+                      //           mainAxisSize: MainAxisSize.min,
+                      //           children: [
+                      //             // buildProfileField(
+                      //             //   "Sexual Orientation",
+                      //             //   provider.character!.style,
+                      //             // ),
+                      //             // 16.ph,
+                      //             buildProfileField(
+                      //               "Voice",
+                      //               character.voice?.fullName ?? "No voice",
+                      //             ),
+                      //             // 16.ph,
+                      //             // buildProfileField(
+                      //             //   "Language",
+                      //             //   provider.character!.languageId,
+                      //             // ),
+                      //           ],
+                      //         ),
+                      //       );
+                      //     },
+                      //   ),
+                      // ),
                       20.ph,
                       Center(
                         child: LayoutBuilder(
@@ -198,27 +208,25 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                       null) ...[
                                     buildProfileField(
                                       "What type of category fits your companion",
-                                      character
-                                          .characterType!
-                                          .charactertypeName,
+                                      "${character.characterType!.charactertypeName} ${character.characterType!.emoji}",
                                     ),
                                     16.ph,
                                   ],
                                   buildProfileField(
                                     "What’s your companion’s relationship to you",
-                                    character.relationship.title,
+                                    "${character.relationship.title} ${character.relationship.emoji}",
                                   ),
                                   16.ph,
                                   buildProfileField(
                                     "What's your companion's personality type",
-                                    character.personality.title,
+                                    "${character.personality.title} ${character.personality.emoji}",
                                   ),
                                   if (character.behaviours.isNotEmpty) ...[
                                     16.ph,
                                     buildProfileMultiField(
                                       "Which behaviour’s match your companion",
                                       character.behaviours
-                                          .map((e) => e.title)
+                                          .map((e) => "${e.title} ${e.emoji}")
                                           .toList(),
                                     ),
                                   ],
@@ -280,11 +288,14 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: Color(0xFFD3D3D3),
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
+          style: context.appTextStyle.textSmall.copyWith(
+            color: const Color(0xFFD3D3D3),
           ),
+          //  const TextStyle(
+          //   color: Color(0xFFD3D3D3),
+          //   fontWeight: FontWeight.w400,
+          //   fontSize: 14,
+          // ),
         ),
         8.ph,
         Container(
@@ -306,19 +317,18 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            color: Color(0xFFD3D3D3),
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
+          style: context.appTextStyle.textSmall.copyWith(
+            color: const Color(0xFFD3D3D3),
           ),
         ),
         8.ph,
         Wrap(
+          spacing: 10,
           children:
               values
                   .map(
                     (value) => Container(
-                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 10),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 12,
@@ -328,7 +338,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
-                        value,
+                        value.capitalize(),
                         style: context.appTextStyle.textSemibold,
                       ),
                     ),
@@ -346,19 +356,15 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
           flex: 1,
           child: Text(
             label,
-            style: const TextStyle(
-              color: Color(0xFFD3D3D3),
-              fontWeight: FontWeight.w400,
-              fontSize: 14,
+            style: context.appTextStyle.textSmall.copyWith(
+              color: const Color(0xFFD3D3D3),
             ),
           ),
         ),
-        const Text(
+        Text(
           ":",
-          style: TextStyle(
-            color: Color(0xFFD3D3D3),
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
+          style: context.appTextStyle.textSmall.copyWith(
+            color: const Color(0xFFD3D3D3),
           ),
         ),
         const SizedBox(width: 8),

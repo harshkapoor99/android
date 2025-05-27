@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 // Import math for clamp
 
 class SubscriptionScreen extends StatefulWidget {
@@ -72,7 +73,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 child: Column(
                   children: [
                     // --- Top Section (will now scroll) ---
-                    Container(
+                    SizedBox(
                       // Height still defines its initial size within the scroll view
                       height: screenHeight * 0.58,
                       child: Stack(
@@ -80,7 +81,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           // Background image
                           Positioned.fill(
                             child: Image.asset(
-                              'assets/images/model/mod_img5.jpeg', // Ensure path is correct
+                              Assets
+                                  .images
+                                  .model
+                                  .modImg1
+                                  .path, // Ensure path is correct
                               fit: BoxFit.cover,
                               alignment: Alignment.topCenter.add(
                                 const Alignment(0, 0.1),
@@ -176,6 +181,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         ],
                       ),
                     ),
+
                     // --- End Top Section ---
 
                     // --- Bottom Section Content (Now directly part of the main Column) ---
@@ -208,7 +214,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                     top: screenHeight * 0.02,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[900]?.withOpacity(0.5),
+                                    color: Colors.grey[900]?.withValues(
+                                      alpha: 0.5,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color:

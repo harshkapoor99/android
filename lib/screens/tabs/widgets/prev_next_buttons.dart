@@ -6,6 +6,7 @@ import 'package:guftagu_mobile/providers/keyboard_aware_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:pinput/pinput.dart';
 
 class PrevNextButtons extends ConsumerWidget {
   const PrevNextButtons({super.key});
@@ -15,6 +16,11 @@ class PrevNextButtons extends ConsumerWidget {
     int currentStep,
     WidgetRef ref,
   ) {
+    if (currentStep == 0 &&
+        int.parse(ref.read(characterCreationProvider).ageController.text) <
+            18) {
+      ref.read(characterCreationProvider).ageController.setText("18");
+    }
     if (currentStep < 4) {
       if (currentStep == 3) {
         ref.read(characterCreationProvider.notifier).createCharacter();

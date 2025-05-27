@@ -25,11 +25,9 @@ bool nextButtonStatus(Ref ref) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
-      provider.language != null
-  // uncomment to make it mandatory
-  // provider.country != null &&
-  // provider.city != null
-  ) {
+      provider.language != null &&
+      provider.country != null &&
+      provider.city != null) {
     return true;
   } else if (provider.index == 2 &&
       provider.characterType != null &&
@@ -191,29 +189,29 @@ class CharacterCreation extends _$CharacterCreation {
       final Response response = await ref
           .read(characterServiceProvider)
           .createCharacter(
-        creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
-        creatorUserType: "user",
-        name: state.characterNameController.text,
-        age: state.ageController.text,
-        gender: state.gender!,
-        sexualOrientation: state.sexualOrientation!,
-        style: state.style!,
-        languageId: state.language!.id,
-        charactertypeId: state.characterType!.id,
-        relationshipId: state.relationship!.id,
-        personalityId: state.personality!.id,
-        behaviourIds: state.behaviours.map((b) => b.id).toList(),
-        voiceId: state.voice?.id,
-        countryId: state.country?.id,
-        cityId: state.city?.id,
-        refImage: state.refImageUrl,
-        refImageDescription: state.descriptionController.text,
-        refImageBackstory: state.backstoryController.text,
-      );
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+            creatorUserType: "user",
+            name: state.characterNameController.text,
+            age: state.ageController.text,
+            gender: state.gender!,
+            sexualOrientation: state.sexualOrientation!,
+            style: state.style!,
+            languageId: state.language!.id,
+            charactertypeId: state.characterType!.id,
+            relationshipId: state.relationship!.id,
+            personalityId: state.personality!.id,
+            behaviourIds: state.behaviours.map((b) => b.id).toList(),
+            voiceId: state.voice?.id,
+            countryId: state.country?.id,
+            cityId: state.city?.id,
+            refImage: state.refImageUrl,
+            refImageDescription: state.descriptionController.text,
+            refImageBackstory: state.backstoryController.text,
+          );
       if (response.statusCode == 201) {
         final List<dynamic> imageGallery = response.data['image_gallery'];
         final List<GenImage> images =
-        imageGallery.map((image) => GenImage.fromMap(image)).toList();
+            imageGallery.map((image) => GenImage.fromMap(image)).toList();
         state = state._updateWith(
           characterImages: images,
           chracterId: response.data['character_id'],
@@ -237,18 +235,18 @@ class CharacterCreation extends _$CharacterCreation {
         .read(characterServiceProvider)
         .uploadImage(image) // ?? state.uploadImage!
         .then((response) {
-      if (response.statusCode == 200) {
-        state = state._updateWith(
-          refImageUrl: response.data['url'],
-          isImageUploading: false,
-        );
-      } else {
-        state = state._updateWith(isImageUploading: false);
-      }
-    })
+          if (response.statusCode == 200) {
+            state = state._updateWith(
+              refImageUrl: response.data['url'],
+              isImageUploading: false,
+            );
+          } else {
+            state = state._updateWith(isImageUploading: false);
+          }
+        })
         .catchError((error) {
-      state = state._updateWith(isImageUploading: false);
-    });
+          state = state._updateWith(isImageUploading: false);
+        });
   }
 
   void generateRandomPrompt() async {
@@ -257,19 +255,19 @@ class CharacterCreation extends _$CharacterCreation {
       final Response response = await ref
           .read(characterServiceProvider)
           .generateRandomPrompt(
-        name: state.characterNameController.text,
-        age: state.ageController.text,
-        gender: state.gender!,
-        style: state.style!,
-        languageId: state.language!.id,
-        charactertypeId: state.characterType!.id,
-        relationshipId: state.relationship!.id,
-        personalityId: state.personality!.id,
-        behaviourIds: state.behaviours.map((b) => b.id).toList(),
-        voiceId: state.voice?.id,
-        countryId: state.country?.id,
-        cityId: state.city?.id,
-      );
+            name: state.characterNameController.text,
+            age: state.ageController.text,
+            gender: state.gender!,
+            style: state.style!,
+            languageId: state.language!.id,
+            charactertypeId: state.characterType!.id,
+            relationshipId: state.relationship!.id,
+            personalityId: state.personality!.id,
+            behaviourIds: state.behaviours.map((b) => b.id).toList(),
+            voiceId: state.voice?.id,
+            countryId: state.country?.id,
+            cityId: state.city?.id,
+          );
       if (response.statusCode == 200) {
         // final List<dynamic> imageGallery = response.data['image_gallery'];
         // final List<GenImage> images =
@@ -295,10 +293,10 @@ class CharacterCreation extends _$CharacterCreation {
       final response = await ref
           .read(characterServiceProvider)
           .selectImage(
-        characterId: state.chracterId,
-        creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
-        imageId: state.seletedCharacterImage!.id,
-      );
+            characterId: state.chracterId,
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+            imageId: state.seletedCharacterImage!.id,
+          );
       if (response.statusCode == 200) {
         return CommonResponse(
           isSuccess: true,
@@ -400,7 +398,7 @@ class CharacterCreationState {
       pageController: pageController ?? this.pageController,
       index: index ?? this.index,
       characterNameController:
-      characterNameController ?? this.characterNameController,
+          characterNameController ?? this.characterNameController,
       ageController: ageController ?? this.ageController,
       gender: gender ?? this.gender,
       style: style ?? this.style,
@@ -417,14 +415,14 @@ class CharacterCreationState {
       // uploadImage: uploadImage ?? this.uploadImage,
       isImageUploading: isImageUploading ?? this.isImageUploading,
       descriptionController:
-      descriptionController ?? this.descriptionController,
+          descriptionController ?? this.descriptionController,
       backstoryController: backstoryController ?? this.backstoryController,
       isCharacterGenerating:
-      isCharacterGenerating ?? this.isCharacterGenerating,
+          isCharacterGenerating ?? this.isCharacterGenerating,
       characterImages: characterImages ?? this.characterImages,
       chracterId: chracterId ?? this.chracterId,
       seletedCharacterImage:
-      seletedCharacterImage ?? this.seletedCharacterImage,
+          seletedCharacterImage ?? this.seletedCharacterImage,
     );
   }
 
