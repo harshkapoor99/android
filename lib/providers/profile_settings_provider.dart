@@ -86,8 +86,7 @@ class ProfileSettingsNotifier extends StateNotifier<ProfileSettingsState> {
   final List<String> genders = [
     'Male',
     'Female',
-    'Other',
-    'Prefer not to say',
+    'Others',
   ];
 
   void _loadUserData() {
