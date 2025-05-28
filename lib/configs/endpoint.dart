@@ -54,6 +54,11 @@ enum RemoteEndpoint {
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/'),
 
+  // google auth
+  googleAuthenticationByEmail(
+    path: 'userservice/user/googleauthenticationbyemail/',
+  ),
+
   // Profile Update
   updateProfile(path: 'userservice/user/userupdateprofile/'),
   updateProfileImage(path: 'userservice/user/userprofleimageupdate/'),
