@@ -16,7 +16,6 @@ class Step2Widget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
-    final masterData = ref.read(masterDataProvider);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(
@@ -35,12 +34,14 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Category",
-            options: masterData.characterTypes,
+            options: ref.watch(
+              masterDataProvider.select((state) => state.characterTypes),
+            ),
             optionToString: (c) => "${c.charactertypeName} ${c.emoji}",
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateRPBWith(characterType: p0),
+                    .updateCRPBWith(characterType: p0),
             selected: provider.characterType,
             icon: SvgPicture.asset(
               'assets/icons/mdi_category-outline.svg',
@@ -58,14 +59,10 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Relationship",
-            options:
-                masterData.relationships
-                    .where(
-                      (r) =>
-                          r.charactertypeId ==
-                          ref.read(characterCreationProvider).characterType?.id,
-                    )
-                    .toList(),
+            options: ref.watch(
+              masterDataProvider.select((state) => state.relationships),
+            ),
+            // .where(
             optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).characterType != null
@@ -74,7 +71,7 @@ class Step2Widget extends ConsumerWidget {
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateRPBWith(relationship: p0),
+                    .updateCRPBWith(relationship: p0),
             selected: provider.relationship,
             icon: SvgPicture.asset(
               'assets/icons/carbon_friendship.svg',
@@ -92,14 +89,9 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Personality",
-            options:
-                masterData.personalities
-                    .where(
-                      (p) =>
-                          p.relationshipId ==
-                          ref.read(characterCreationProvider).relationship?.id,
-                    )
-                    .toList(),
+            options: ref.watch(
+              masterDataProvider.select((state) => state.personalities),
+            ),
             optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).relationship != null
@@ -108,7 +100,7 @@ class Step2Widget extends ConsumerWidget {
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateRPBWith(personality: p0),
+                    .updateCRPBWith(personality: p0),
             selected: provider.personality,
             icon: SvgPicture.asset(
               'assets/icons/solar_mask-sad-linear.svg',
@@ -126,15 +118,10 @@ class Step2Widget extends ConsumerWidget {
             context: context,
             ref: ref,
             title: "Behaviours",
-            options:
-                masterData.behaviours
-                    .where(
-                      (b) =>
-                          b.personalityId ==
-                          ref.read(characterCreationProvider).personality?.id,
-                    )
-                    .toList(),
-            optionToString: (c) => "${c.title} ${c.emoji}",
+            options: ref.watch(
+              masterDataProvider.select((state) => state.behaviours),
+            ),
+            optionToString: (c) => "${c.title.capitalize()} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"
@@ -143,7 +130,7 @@ class Step2Widget extends ConsumerWidget {
             onMultiSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
-                    .updateRPBWith(behaviours: p0),
+                    .updateCRPBWith(behaviours: p0),
             multiSelected: provider.behaviours,
             icon: SvgPicture.asset(
               'assets/icons/material-symbols_mindfulness-outline.svg',

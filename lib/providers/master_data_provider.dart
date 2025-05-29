@@ -228,7 +228,7 @@ class MasterData extends _$MasterData {
                 .map((e) => Personality.fromMap(e))
                 .toList()
                 .cast<Personality>();
-        state = state.copyWith(personalities: personalities);
+        state = state.copyWith(personalities: personalities, behaviours: []);
       }
     } catch (e) {
       rethrow;
@@ -251,7 +251,11 @@ class MasterData extends _$MasterData {
                 .map((e) => Relationship.fromMap(e))
                 .toList()
                 .cast<Relationship>();
-        state = state.copyWith(relationships: relationships);
+        state = state.copyWith(
+          relationships: relationships,
+          personalities: [],
+          behaviours: [],
+        );
       }
     } catch (e) {
       rethrow;

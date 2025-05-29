@@ -25,12 +25,14 @@ enum RemoteEndpoint {
   fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
 
   // MasterData by id
-  fetchBehaviousByPersonality(path: 'masterservice/behaviour/getallbehaviour/'),
+  fetchBehaviousByPersonality(
+    path: 'masterservice/behaviour/behaviourdetailsbypersonalityid/',
+  ),
   fetchPersionalitiesByRelationship(
-    path: 'masterservice/personality/getallpersonality/',
+    path: 'masterservice/personality/personalitydetailsbyrelationshipid/',
   ),
   fetchRelationshipsByCharactertype(
-    path: 'masterservice/relationship/getallrelationship/',
+    path: 'masterservice/relationship/relationshipdetailsbycharactertypeid/',
   ),
 
   fetchMasterCharacters(

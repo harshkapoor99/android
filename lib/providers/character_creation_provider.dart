@@ -121,7 +121,8 @@ class CharacterCreation extends _$CharacterCreation {
     );
   }
 
-  void updateRPBWith({
+  // update (C)haracterType, (R)elationship, (P)ersonality & (B)ehaviours
+  void updateCRPBWith({
     CharacterType? characterType,
     Personality? personality,
     Relationship? relationship,
@@ -134,15 +135,18 @@ class CharacterCreation extends _$CharacterCreation {
       state.relationship = null;
       state.personality = null;
       state.behaviours = [];
+      ref.read(masterDataProvider.notifier).fetchRelationshipsByCharactertype();
     } else if (relationship != null && state.relationship != relationship) {
       doUpdate = true;
       state.relationship = relationship;
       state.personality = null;
       state.behaviours = [];
+      ref.read(masterDataProvider.notifier).fetchPersionalitiesByRelationship();
     } else if (personality != null && state.personality != personality) {
       doUpdate = true;
       state.personality = personality;
       state.behaviours = [];
+      ref.read(masterDataProvider.notifier).fetchBehaviousByPersonality();
     } else if (behaviours != null && state.behaviours != behaviours) {
       doUpdate = true;
       state.behaviours = behaviours;
