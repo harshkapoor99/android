@@ -61,9 +61,10 @@ enum RemoteEndpoint {
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/'),
 
-  // Profile Update
+  // User Profile
+  profileDetails(path: 'userservice/user/userdetailsbyuserid/'),
   updateProfile(path: 'userservice/user/userupdateprofile/'),
-  updateProfileImage(path: 'userservice/user/userprofleimageupdate/');
+  updateProfileImage(path: 'userservice/user/userprofileimageupdate/');
 
   const RemoteEndpoint({required this.path});
 

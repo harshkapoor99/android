@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/configs/hive_contants.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
-import 'package:guftagu_mobile/providers/tab.dart';
+import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ProfileTab extends ConsumerStatefulWidget {
   const ProfileTab({super.key});
@@ -29,27 +31,36 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
         child: Column(
           children: [
             const SizedBox(height: 16),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(70),
-              child: SizedBox(
-                height: 126,
-                width: 126,
-                child: NetworkImageWithPlaceholder(
-                  imageUrl: userInfo!.profile.profilePicture,
-                  placeholder: SvgPicture.asset(
-                    Assets.svgs.icProfilePlaceholder,
+            ValueListenableBuilder(
+              valueListenable: Hive.box(AppHSC.userBox).listenable(),
+              builder: (context, user, _) {
+                final Map<dynamic, dynamic> userData =
+                    user.get(AppHSC.userInfo) ?? {};
+                userInfo = User.fromMap(userData.cast<String, dynamic>());
+
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(70),
+                  child: SizedBox(
+                    height: 126,
+                    width: 126,
+                    child: NetworkImageWithPlaceholder(
+                      imageUrl: userInfo!.profile.profilePicture,
+                      placeholder: SvgPicture.asset(
+                        Assets.svgs.icProfilePlaceholder,
+                      ),
+                      fit: BoxFit.cover,
+                      errorWidget: SvgPicture.asset(
+                        Assets.svgs.icProfilePlaceholder,
+                      ),
+                    ),
                   ),
-                  fit: BoxFit.cover,
-                  errorWidget: SvgPicture.asset(
-                    Assets.svgs.icProfilePlaceholder,
-                  ),
-                ),
-              ),
+                );
+              },
             ),
 
             const SizedBox(height: 12),
             Text(
-              userInfo.profile.fullName,
+              userInfo!.profile.fullName,
               style: context.appTextStyle.textBold.copyWith(
                 fontSize: 18,
                 // color: Color(0xFFF2F2F2),
@@ -58,10 +69,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             Opacity(
               opacity: 0.6,
               child: Text(
-                userInfo.email.hasValue
-                    ? userInfo.email
-                    : userInfo.mobileNumber.hasValue
-                    ? userInfo.mobileNumber
+                userInfo!.email.hasValue
+                    ? userInfo!.email
+                    : userInfo!.mobileNumber.hasValue
+                    ? userInfo!.mobileNumber
                     : "",
                 style: context.appTextStyle.text.copyWith(
                   fontSize: 14,
@@ -198,12 +209,11 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               ),
               onTap: () {
                 ref.read(hiveServiceProvider.notifier).removeAllData();
-                context.nav
-                    .pushNamedAndRemoveUntil(Routes.login, (route) => false)
-                    .then(
-                      (value) =>
-                          ref.read(tabIndexProvider.notifier).changeTab(0),
-                    );
+                ref.read(chatProvider.notifier).clearChatList();
+                context.nav.pushNamedAndRemoveUntil(
+                  Routes.login,
+                  (route) => false,
+                );
               },
             ),
           ],

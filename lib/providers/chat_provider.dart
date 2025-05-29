@@ -117,7 +117,6 @@ class Chat extends _$Chat {
     });
   }
 
-
   void fetchChatList() async {
     try {
       state = state._updateWith(isFetchingChatList: true);
@@ -199,6 +198,10 @@ class Chat extends _$Chat {
     );
   }
 
+  void clearChatList() {
+    state = state._updateWith(chatList: []);
+  }
+
   void setCharacter(Character character) {
     state = state._updateWith(character: character);
   }
@@ -228,7 +231,6 @@ class Chat extends _$Chat {
       ],
     );
   }
-
 }
 
 class ChatState {

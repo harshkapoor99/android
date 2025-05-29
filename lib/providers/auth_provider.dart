@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
+import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/services/auth_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/services/profile_settings_service.dart';
 import 'package:guftagu_mobile/utils/validators.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -150,7 +152,7 @@ class Auth extends _$Auth {
     state = state._updateLoading(true);
     try {
       final response = await ref
-          .read(authServiceProvider)
+          .read(profileServiceProvider)
           .updateName(
             ref.read(hiveServiceProvider.notifier).getUserId()!,
             state.nameController.text,
@@ -220,6 +222,31 @@ class Auth extends _$Auth {
       );
     } finally {
       state = state._updateisGoogleAuthLoading(false);
+    }
+  }
+
+  Future<CommonResponse> getUserDetails(String userId) async {
+    state = state._updateLoading(true);
+    try {
+      final response = await ref
+          .read(profileServiceProvider)
+          .getUserDetails(ref.read(hiveServiceProvider.notifier).getUserId()!);
+      if (response.data['status'] != 200) {
+        return CommonResponse<User>(
+          message: response.data['message'],
+          isSuccess: false,
+        );
+      }
+      User user = User.fromMap(response.data['user']);
+      ref.read(profileSettingsProvider).updateWith(initialUserInfo: user);
+      return CommonResponse(
+        isSuccess: response.statusCode == 200,
+        message: response.data["message"],
+      );
+    } catch (e) {
+      return CommonResponse(isSuccess: false, message: "Some error occured");
+    } finally {
+      state = state._updateLoading(false);
     }
   }
 }

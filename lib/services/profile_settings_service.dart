@@ -8,12 +8,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part '../gen/services/profile_settings_service.gen.dart';
 
 @riverpod
-ProfileService profileService(ProfileServiceRef ref) {
+ProfileService profileService(Ref ref) {
   final apiClient = ref.watch(apiClientProvider);
   return ProfileServiceImpl(apiClient);
 }
 
 abstract class ProfileService {
+  Future<Response> updateName(String userId, String name);
   Future<Response> updateProfile({
     required String userId,
     required String name,
@@ -21,12 +22,13 @@ abstract class ProfileService {
     required String dateOfBirth,
     required String email,
     required String phone,
-    String? countryId,
-    String? cityId,
-    String? refNewImageUrl,
+    String? country,
+    String? city,
+    String? imageUrl,
   });
 
-  Future<Response> uploadProfileImage(XFile image);
+  Future<Response> uploadProfileImage(String userId, XFile image);
+  Future<Response> getUserDetails(String userId);
 }
 
 class ProfileServiceImpl implements ProfileService {
@@ -35,6 +37,19 @@ class ProfileServiceImpl implements ProfileService {
   ProfileServiceImpl(this._apiClient);
 
   @override
+  Future<Response> updateName(String userId, String name) async {
+    try {
+      final response = await _apiClient.post(
+        RemoteEndpoint.updateName.url,
+        data: {"user_id": userId, "user_name": name},
+      );
+      return response;
+    } catch (e) {
+      throw Exception('Failed to update name: $e');
+    }
+  }
+
+  @override
   Future<Response> updateProfile({
     required String userId,
     required String name,
@@ -42,22 +57,24 @@ class ProfileServiceImpl implements ProfileService {
     required String dateOfBirth,
     required String email,
     required String phone,
-    String? countryId,
-    String? cityId,
-    String? refNewImageUrl,
+    String? country,
+    String? city,
+    String? imageUrl,
   }) async {
     final response = await _apiClient.post(
       RemoteEndpoint.updateProfile.url,
       data: {
         "user_id": userId,
-        "name": name,
-        "gender": gender,
-        "date_of_birth": dateOfBirth,
-        "email": email,
-        "phone": phone,
-        "country": countryId,
-        "city": cityId,
-        "ref_new_image_url": refNewImageUrl,
+        "profile": {
+          "full_name": name,
+          "gender": gender,
+          "date_of_birth": dateOfBirth,
+          "email": email,
+          "phone": phone,
+          "country": country,
+          "city": city,
+          "profile_picture": imageUrl,
+        },
       },
       timeout: const Duration(seconds: 30),
     );
@@ -65,16 +82,23 @@ class ProfileServiceImpl implements ProfileService {
   }
 
   @override
-  Future<Response> uploadProfileImage(XFile image) async {
+  Future<Response> uploadProfileImage(String userId, XFile image) async {
     return _apiClient.post(
       RemoteEndpoint.updateProfileImage.url,
       data: FormData.fromMap({
-        'image': await MultipartFile.fromFile(
-          image.path,
-          filename: image.name,
-        ),
+        "user_id": userId,
+        'image': await MultipartFile.fromFile(image.path, filename: image.name),
       }),
       timeout: const Duration(seconds: 30),
     );
+  }
+
+  @override
+  Future<Response> getUserDetails(String userId) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.profileDetails.url,
+      data: {"user_id": userId},
+    );
+    return response;
   }
 }
