@@ -55,7 +55,7 @@ class DashboardScreen extends ConsumerWidget {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          backgroundColor: const Color(0xFF171717),
+          backgroundColor: context.colorExt.background,
           selectedItemColor: context.colorExt.textPrimary,
           showUnselectedLabels: true,
           unselectedItemColor: Colors.grey,

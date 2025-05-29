@@ -34,7 +34,10 @@ ThemeData getAppTheme({
             isDarkTheme
                 ? AppStaticColors.lightWhiteColor
                 : AppStaticColors.grayColor,
-        background: isDarkTheme ? Colors.black : const Color(0xFFF3F4F6),
+        background:
+            isDarkTheme
+                ? const Color.fromRGBO(3, 7, 18, 1)
+                : const Color(0xFFF3F4F6),
         border:
             isDarkTheme ? AppStaticColors.grayColor : AppStaticColors.grayColor,
       ),
