@@ -75,7 +75,7 @@ class CreateTab extends ConsumerWidget {
               ),
             ),
 
-            45.ph,
+            35.ph,
             // PageView for step content
             Expanded(
               child: PageView(

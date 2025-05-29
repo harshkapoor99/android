@@ -69,11 +69,16 @@ class AuthService {
     }
   }
 
-  Future<Response> updateName(String userId, String name) async {
+  Future<Response> googleAuth(
+    String email, {
+    String? name,
+    DateTime? dob,
+  }) async {
     try {
       final response = await _apiClient.post(
-        RemoteEndpoint.updateName.url,
-        data: {"user_id": userId, "user_name": name},
+        RemoteEndpoint.googleAuthenticationByEmail.url,
+        data: {"email": email, "full_name": name, "dob": dob},
+        headers: _apiClient.authHeader,
       );
       return response;
     } catch (e) {

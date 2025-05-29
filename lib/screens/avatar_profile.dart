@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/entensions.dart';
 import 'package:lottie/lottie.dart';
@@ -123,27 +123,30 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                               ),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
+                                spacing: 16,
                                 children: [
                                   _buildAlignedRow("Name", character.name),
-                                  16.ph,
-                                  _buildAlignedRow("Age", character.age),
-                                  16.ph,
-                                  _buildAlignedRow(
-                                    "Gender",
-                                    character.gender.capitalize(),
-                                  ),
-                                  16.ph,
-                                  _buildAlignedRow(
-                                    "Address",
-                                    "${character.city.cityName}, ${character.country.countryName}",
-                                  ),
-                                  if (character.voice != null) ...[
-                                    16.ph,
+                                  if (character.age.hasValue)
+                                    _buildAlignedRow(
+                                      "Age",
+                                      character.age ?? "",
+                                    ),
+                                  if (character.gender.hasValue)
+                                    _buildAlignedRow(
+                                      "Gender",
+                                      character.gender?.capitalize() ?? "",
+                                    ),
+                                  if ((character.city?.cityName).hasValue ||
+                                      (character.country?.countryName).hasValue)
+                                    _buildAlignedRow(
+                                      "Address",
+                                      "${character.city?.cityName}, ${character.country?.countryName}",
+                                    ),
+                                  if (character.voice != null)
                                     _buildAlignedRow(
                                       "Voice",
                                       "${character.voice?.fullName}",
                                     ),
-                                  ],
                                 ],
                               ),
                             );
@@ -214,12 +217,12 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                   ],
                                   buildProfileField(
                                     "What’s your companion’s relationship to you",
-                                    "${character.relationship.title} ${character.relationship.emoji}",
+                                    "${character.relationship?.title} ${character.relationship?.emoji}",
                                   ),
                                   16.ph,
                                   buildProfileField(
                                     "What's your companion's personality type",
-                                    "${character.personality.title} ${character.personality.emoji}",
+                                    "${character.personality?.title} ${character.personality?.emoji}",
                                   ),
                                   if (character.behaviours.isNotEmpty) ...[
                                     16.ph,

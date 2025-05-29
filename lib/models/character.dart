@@ -5,18 +5,18 @@ class Character {
   final String creatorId;
   final String creatorUserType;
   final String name;
-  final String age;
-  final String gender;
-  final String style;
-  final String sexualOrientation;
-  final String languageId;
-  final String charactertypeId;
-  final String relationshipId;
-  final String personalityId;
+  final String? age;
+  final String? gender;
+  final String? style;
+  final String? sexualOrientation;
+  final String? languageId;
+  final String? charactertypeId;
+  final String? relationshipId;
+  final String? personalityId;
   final List<String> behaviourIds;
   final String? voiceId;
-  final String countryId;
-  final String cityId;
+  final String? countryId;
+  final String? cityId;
   final String? refImage;
   final String? refImageDescription;
   final String? refImageBackstory;
@@ -30,21 +30,21 @@ class Character {
     required this.creatorId,
     required this.creatorUserType,
     required this.name,
-    required this.age,
-    required this.gender,
-    required this.style,
-    required this.sexualOrientation,
-    required this.languageId,
-    required this.charactertypeId,
-    required this.relationshipId,
-    required this.personalityId,
-    required this.behaviourIds,
-    required this.voiceId,
-    required this.countryId,
-    required this.cityId,
-    required this.refImage,
-    required this.refImageDescription,
-    required this.refImageBackstory,
+    this.age,
+    this.gender,
+    this.style,
+    this.sexualOrientation,
+    this.languageId,
+    this.charactertypeId,
+    this.relationshipId,
+    this.personalityId,
+    this.behaviourIds = const [],
+    this.voiceId,
+    this.countryId,
+    this.cityId,
+    this.refImage,
+    this.refImageDescription,
+    this.refImageBackstory,
     required this.prompt,
     required this.imageGallery,
     required this.createdDate,

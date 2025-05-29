@@ -76,7 +76,7 @@ class Step4Widget extends ConsumerWidget {
                         ],
                       ),
                     ),
-                  30.ph,
+                  26.ph,
                   Text(
                     // '${proivider.refImageUrl.hasValue ? "Or" : ""} Choose from images',
                     'Choose from images',
@@ -86,7 +86,7 @@ class Step4Widget extends ConsumerWidget {
                       color: const Color(0xFFA3A3A3),
                     ),
                   ),
-                  10.ph,
+                  16.ph,
 
                   // 3×2 grid layout with premium tag on 2nd and 6th
                   GridView.count(

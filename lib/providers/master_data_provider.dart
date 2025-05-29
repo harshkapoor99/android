@@ -1,3 +1,4 @@
+import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/services/master_service.dart';
@@ -183,14 +184,14 @@ class MasterData extends _$MasterData {
 
   void fetchAllMasterData() async {
     Future.wait([
-      fetchLanguages(),
-      fetchBehaviours(),
-      fetchPersonalities(),
-      fetchRelationships(),
-      fetchVoices(),
-      fetchCountries(),
       fetchCharacterTypes(),
+      fetchCountries(),
+      fetchLanguages(),
+      fetchVoices(),
       fetchMasterCharacters(),
+      // fetchRelationships(),
+      // fetchPersonalities(),
+      // fetchBehaviours(),
     ]);
   }
 
@@ -228,7 +229,7 @@ class MasterData extends _$MasterData {
                 .map((e) => Personality.fromMap(e))
                 .toList()
                 .cast<Personality>();
-        state = state.copyWith(personalities: personalities);
+        state = state.copyWith(personalities: personalities, behaviours: []);
       }
     } catch (e) {
       rethrow;
@@ -251,7 +252,11 @@ class MasterData extends _$MasterData {
                 .map((e) => Relationship.fromMap(e))
                 .toList()
                 .cast<Relationship>();
-        state = state.copyWith(relationships: relationships);
+        state = state.copyWith(
+          relationships: relationships,
+          personalities: [],
+          behaviours: [],
+        );
       }
     } catch (e) {
       rethrow;

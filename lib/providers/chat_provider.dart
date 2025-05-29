@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
-import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -117,7 +117,6 @@ class Chat extends _$Chat {
     });
   }
 
-
   void fetchChatList() async {
     try {
       state = state._updateWith(isFetchingChatList: true);
@@ -199,6 +198,10 @@ class Chat extends _$Chat {
     );
   }
 
+  void clearChatList() {
+    state = state._updateWith(chatList: []);
+  }
+
   void setCharacter(Character character) {
     state = state._updateWith(character: character);
   }
@@ -228,7 +231,6 @@ class Chat extends _$Chat {
       ],
     );
   }
-
 }
 
 class ChatState {

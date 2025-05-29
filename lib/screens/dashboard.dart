@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -55,7 +53,7 @@ class DashboardScreen extends ConsumerWidget {
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: currentIndex,
-          backgroundColor: const Color(0xFF171717),
+          backgroundColor: context.colorExt.background,
           selectedItemColor: context.colorExt.textPrimary,
           showUnselectedLabels: true,
           unselectedItemColor: Colors.grey,

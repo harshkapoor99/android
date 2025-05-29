@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "1069471489115",
-    "project_id": "aj59701",
-    "storage_bucket": "aj59701.firebasestorage.app"
+    "project_number": "19508565659",
+    "project_id": "guftagu-dev",
+    "storage_bucket": "guftagu-dev.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1069471489115:android:49565161c5d95734baf37e",
+        "mobilesdk_app_id": "1:19508565659:android:b7cb254dbe52793e37d83e",
         "android_client_info": {
           "package_name": "com.guftagu.app.guftagu_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "19508565659-sgq5gmprn40hoconlrep8u3eca31hmbe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guftagu.app.guftagu_mobile",
+            "certificate_hash": "1346a16229bb0afa0d7cd1b7ca3c0c7e0927a3de"
+          }
+        },
+        {
+          "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAxLdrWHfbvLoFEBKgN75UBQPAwgBP0h6Q"
+          "current_key": "AIzaSyBm5TnAowIBv4vWIf6xirg6Wy1M2YNIysc"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

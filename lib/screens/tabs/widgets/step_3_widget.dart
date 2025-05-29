@@ -172,7 +172,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                       ),
                     ],
                   ),
-                  10.ph,
+                  16.ph,
                   const Text(
                     'Reference Image (if any)',
                     style: TextStyle(
@@ -185,7 +185,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            30.ph,
+            26.ph,
 
             const Text(
               'Image description (if any)',
@@ -195,7 +195,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                 color: Color(0xFFA3A3A3),
               ),
             ),
-            10.ph,
+            16.ph,
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
@@ -304,7 +304,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            30.ph,
+            26.ph,
 
             const Text(
               'Back Story if any (300 words)',
@@ -314,7 +314,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                 color: Color(0xFFA3A3A3),
               ),
             ),
-            10.ph,
+            16.ph,
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               width: double.infinity,

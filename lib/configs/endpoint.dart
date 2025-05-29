@@ -8,6 +8,11 @@ enum RemoteEndpoint {
   otpEmail(path: 'userservice/user/userotpverificationbyemail/'),
   updateName(path: 'userservice/user/userupdatename/'),
 
+  // google auth
+  googleAuthenticationByEmail(
+    path: 'userservice/user/googleauthenticationbyemail/',
+  ),
+
   // Master Service
   fetchLanguages(path: 'masterservice/language/getalllanguage/'),
   fetchBehavious(path: 'masterservice/behaviour/getallbehaviour/'),
@@ -20,12 +25,14 @@ enum RemoteEndpoint {
   fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
 
   // MasterData by id
-  fetchBehaviousByPersonality(path: 'masterservice/behaviour/getallbehaviour/'),
+  fetchBehaviousByPersonality(
+    path: 'masterservice/behaviour/behaviourdetailsbypersonalityid/',
+  ),
   fetchPersionalitiesByRelationship(
-    path: 'masterservice/personality/getallpersonality/',
+    path: 'masterservice/personality/personalitydetailsbyrelationshipid/',
   ),
   fetchRelationshipsByCharactertype(
-    path: 'masterservice/relationship/getallrelationship/',
+    path: 'masterservice/relationship/relationshipdetailsbycharactertypeid/',
   ),
 
   fetchMasterCharacters(
@@ -54,10 +61,10 @@ enum RemoteEndpoint {
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/'),
 
-  // Profile Update
+  // User Profile
+  profileDetails(path: 'userservice/user/userdetailsbyuserid/'),
   updateProfile(path: 'userservice/user/userupdateprofile/'),
-  updateProfileImage(path: 'userservice/user/userprofleimageupdate/'),
-  ;
+  updateProfileImage(path: 'userservice/user/userprofileimageupdate/');
 
   const RemoteEndpoint({required this.path});
 

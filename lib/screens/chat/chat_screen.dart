@@ -130,6 +130,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         }
       },
       child: Scaffold(
+        backgroundColor: context.colorExt.background,
         appBar: AppBar(
           backgroundColor: context.colorExt.background,
           // automaticallyImplyLeading: false,
@@ -378,7 +379,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ],
           ),
         ),
-        backgroundColor: Colors.black,
       ),
     );
   }

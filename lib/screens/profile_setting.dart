@@ -1,15 +1,16 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/components/verification_section.dart';
 import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../components/labeled_text_field.dart';
@@ -46,12 +47,6 @@ class ProfileSettingsPage extends ConsumerStatefulWidget {
 
 class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
   final ImagePicker picker = ImagePicker();
-  final List<BottomBarIconLabel> _tabWidgets = [
-    BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
-    BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
-    BottomBarIconLabel(assetName: Assets.svgs.icMyAi, label: 'My AIs'),
-    BottomBarIconLabel(assetName: Assets.svgs.icProfile, label: 'Profile'),
-  ];
 
   @override
   void initState() {
@@ -100,42 +95,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     }
   }
 
-  void getDocument(File file, WidgetRef ref) async {
-    await getPermission(Permission.storage);
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      File pickedFile = File(result.files.single.path!);
-      // You can compress or validate the document if needed
-      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
-      debugPrint("Document picked: ${pickedFile.path}");
-    } else {
-      debugPrint("No document selected.");
-    }
-  }
-
-  void getAudio(File file, WidgetRef ref) async {
-    await getPermission(Permission.storage);
-
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['mp3', 'wav', 'aac', 'm4a'],
-    );
-
-    if (result != null && result.files.single.path != null) {
-      File pickedAudio = File(result.files.single.path!);
-      // You can process the audio here (e.g., upload or transcribe)
-      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
-      debugPrint("Audio picked: ${pickedAudio.path}");
-    } else {
-      debugPrint("No audio file selected.");
-    }
-  }
-
   InputDecoration _buildInputDecoration() {
     return InputDecoration(
       filled: true,
@@ -167,7 +126,10 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     final profileNotifier = ref.read(profileSettingsProvider.notifier);
     final masterData = ref.watch(masterDataProvider);
 
-    ref.listen<ProfileSettingsState>(profileSettingsProvider, (previous, current) {
+    ref.listen<ProfileSettingsState>(profileSettingsProvider, (
+      previous,
+      current,
+    ) {
       if (current.error != null && current.error != previous?.error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -180,7 +142,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     });
 
     return Scaffold(
-      backgroundColor: darkBackgroundColor,
+      backgroundColor: context.colorExt.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -190,9 +152,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           children: [
             SvgPicture.asset(Assets.svgs.logo, height: 50, width: 50),
             5.pw,
-            Text(
+            const Text(
               'Guftagu',
-              style: const TextStyle(
+              style: TextStyle(
                 color: primaryTextColor,
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
@@ -211,41 +173,45 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
-                child: profileState.isLoading
-                    ? const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryTextColor),
-                  ),
-                )
-                    : TextButton(
-                  onPressed: profileNotifier.hasUnsavedChanges()
-                      ? () async {
-                    final success = await profileNotifier.updateProfile();
-                    if (success && mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Profile updated successfully!'),
-                          backgroundColor: Colors.green,
-                          duration: Duration(seconds: 2),
+                child:
+                    profileState.isLoading
+                        ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              primaryTextColor,
+                            ),
+                          ),
+                        )
+                        : TextButton(
+                          onPressed:
+                              profileNotifier.hasUnsavedChanges()
+                                  ? () async {
+                                    final success =
+                                        await profileNotifier.updateProfile();
+                                    if (success && mounted) {
+                                      AppConstants.showSnackbar(
+                                        message:
+                                            "   'Profile updated successfully!',",
+                                        isSuccess: true,
+                                      );
+                                    }
+                                  }
+                                  : null,
+                          child: Text(
+                            'Save',
+                            style: TextStyle(
+                              color:
+                                  profileNotifier.hasUnsavedChanges()
+                                      ? primaryTextColor
+                                      : secondaryTextColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                         ),
-                      );
-                    }
-                  }
-                      : null,
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                      color: profileNotifier.hasUnsavedChanges()
-                          ? primaryTextColor
-                          : secondaryTextColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
               ),
               const SizedBox(height: 10),
               Center(
@@ -253,23 +219,27 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 child: Stack(
                   clipBehavior: Clip.none,
                   children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: const Color(0xFF272730),
-                    backgroundImage: AssetImage(
-                      'assets/images/model/ayushImg.jpg',
-                    ),
-                      // backgroundImage: profileState.hasProfileImage
-                      //     ? NetworkImage(profileState.profileImageUrl!)
-                      //     : const AssetImage('assets/images/model/ayushImg.jpg') as ImageProvider,
-                      // child: profileState.hasProfileImage
-                      //     ? null
-                      //     : (profileState.isImageUploading
-                      //     ? CircularProgressIndicator(
-                      //   color: context.colorExt.secondary,
-                      //   strokeWidth: 3,
-                      // )
-                      //     : null),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(70),
+                      child: SizedBox(
+                        height: 126,
+                        width: 126,
+                        child: NetworkImageWithPlaceholder(
+                          imageUrl:
+                              profileState.imageUrl ??
+                              profileState
+                                  .initialUserInfo!
+                                  .profile
+                                  .profilePicture,
+                          placeholder: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
+                          fit: BoxFit.cover,
+                          errorWidget: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
+                        ),
+                      ),
                     ),
 
                     Positioned(
@@ -291,14 +261,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                             pressGallery: () {
                               getImage(ImageSource.gallery);
                               Navigator.of(context).pop();
-                            },
-                            pressDocument: () async {
-                              Navigator.of(context).pop();
-                              getDocument(File(''), ref);
-                            },
-                            pressAudio: () async {
-                              Navigator.of(context).pop();
-                              getAudio(File(''), ref);
                             },
                           );
                         },
@@ -326,14 +288,17 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               ),
               // Age Dropdown
               _buildDatePickerField(
-                label: 'Age',
+                label: 'Date Of Birth',
                 selectedDate: profileState.dob,
                 onTap: () async {
                   final DateTime? picked = await showDatePicker(
                     context: context,
-                    initialDate: profileState.dob ??
+                    initialDate:
+                        profileState.dob ??
                         DateTime.now().subtract(const Duration(days: 20 * 365)),
-                    firstDate: DateTime.now().subtract(const Duration(days: 100 * 365)),
+                    firstDate: DateTime.now().subtract(
+                      const Duration(days: 100 * 365),
+                    ),
                     lastDate: DateTime.now(), // Today
                     builder: (context, child) {
                       return Theme(
@@ -361,15 +326,12 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
               _buildDropdownField(
                 label: 'Gender',
                 value: profileState.gender,
-                items: profileNotifier.genders,
+                items: profileState.genders,
                 onChanged: (value) {
                   profileNotifier.setGender(value);
                 },
               ),
-              Text(
-                "Country",
-                style: context.appTextStyle.characterGenLabel,
-              ),
+              Text("Country", style: context.appTextStyle.characterGenLabel),
               16.ph,
               buildOptionTile<Country>(
                 context: context,
@@ -377,26 +339,33 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                 title: "Country",
                 options: masterData.countries,
                 optionToString: (c) => c.countryName,
-                onSelect: (p0) => profileNotifier.updateCountryCityWith(country: p0),
-                selected: profileState.country,
+                onSelect:
+                    (p0) => profileNotifier.updateCountryCityWith(country: p0),
+                selectedValue: profileState.country,
               ),
               16.ph,
-              Text(
-                "City",
-                style: context.appTextStyle.characterGenLabel,
-              ),
+              Text("City", style: context.appTextStyle.characterGenLabel),
               16.ph,
               Consumer(
                 builder: (context, ref, child) {
-                  final masterDataCities = ref.watch(masterDataProvider.select((data) => data.cities));
-                  final selectedCountryId = ref.watch(profileSettingsProvider.select((state) => state.country?.id));
-                  final selectedCity = ref.watch(profileSettingsProvider.select((state) => state.city));
-                  final profileNotifierCity = ref.read(profileSettingsProvider.notifier);
+                  final masterDataCities = ref.watch(
+                    masterDataProvider.select((value) => value.cities),
+                  );
+                  final seletedCountryId = ref.watch(
+                    profileSettingsProvider.select((value) => value.countryId),
+                  );
+                  final seletedCity = ref.watch(
+                    profileSettingsProvider.select((value) => value.city),
+                  );
 
+                  final profileNotifierCity = ref.read(
+                    profileSettingsProvider.notifier,
+                  );
 
-                  final filteredCities = masterDataCities
-                      .where((c) => c.countryId == selectedCountryId)
-                      .toList();
+                  final filteredCities =
+                      masterDataCities
+                          .where((c) => c.countryId == seletedCountryId)
+                          .toList();
 
                   return buildOptionTile<City>(
                     context: context,
@@ -405,14 +374,46 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                     showLoading: masterData.isLoading,
                     options: filteredCities,
                     optionToString: (c) => c.cityName,
-                    onSelect: (p0) => profileNotifierCity.updateCountryCityWith(city: p0),
-                    selected: selectedCity,
+                    onSelect:
+                        (p0) =>
+                            profileNotifierCity.updateCountryCityWith(city: p0),
+                    selectedValue: seletedCity,
                   );
                 },
               ),
 
               16.ph,
 
+              // VerificationSection(
+              //   label: "Email",
+              //   controller: profileState.emailController,
+              //   otpController: profileState.otpController,
+              //   keyboardType: TextInputType.emailAddress,
+              //   isOtpSent: false,
+              //   isVerified: false,
+              //   isLoading: false,
+              //   onSendOtp: () {},
+              //   onVerifyOtp: (p0) {},
+              //   hintText: "Enter your email",
+              //   inputBackgroundColor: inputBackgroundColor,
+              //   primaryTextColor: primaryTextColor,
+              //   secondaryTextColor: secondaryTextColor,
+              // ),
+              //  VerificationSection(
+              //   label: "Phone",
+              //   controller: profileState.phoneController,
+              //   otpController: profileState.otpController,
+              //   keyboardType: TextInputType.emailAddress,
+              //   isOtpSent: false,
+              //   isVerified: false,
+              //   isLoading: false,
+              //   onSendOtp: () {},
+              //   onVerifyOtp: (p0) {},
+              //   hintText: "Enter your email",
+              //   inputBackgroundColor: inputBackgroundColor,
+              //   primaryTextColor: primaryTextColor,
+              //   secondaryTextColor: secondaryTextColor,
+              // ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: LabeledTextField(
@@ -444,46 +445,6 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 3,
-        backgroundColor: const Color(0xFF171717),
-        selectedItemColor: context.colorExt.textPrimary,
-        showUnselectedLabels: true,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          if (index == 3) return;
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-          ref.read(tabIndexProvider.notifier).changeTab(index);
-        },
-        items: _tabWidgets
-            .map(
-              (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
-            activeIcon: SvgPicture.asset(
-              iconLabel.assetName,
-              height: 18,
-              width: 18,
-              colorFilter: ColorFilter.mode(
-                context.colorExt.textPrimary,
-                BlendMode.srcIn,
-              ),
-            ),
-            icon: SvgPicture.asset(
-              iconLabel.assetName,
-              height: 18,
-              width: 18,
-              colorFilter: ColorFilter.mode(
-                context.colorExt.textPrimary.withOpacity(0.6),
-                BlendMode.srcIn,
-              ),
-            ),
-            label: iconLabel.label,
-          ),
-        )
-            .toList(),
-      ),
     );
   }
 
@@ -499,22 +460,20 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: context.appTextStyle.characterGenLabel,
-          ),
+          Text(label, style: context.appTextStyle.characterGenLabel),
           const SizedBox(height: 8),
           DropdownButtonFormField<String>(
             value: value,
-            items: items.map((String item) {
-              return DropdownMenuItem<String>(
-                value: item,
-                child: Text(
-                  item,
-                  style: context.appTextStyle.characterGenLabel,
-                ),
-              );
-            }).toList(),
+            items:
+                items.map((String item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(
+                      item,
+                      style: context.appTextStyle.characterGenLabel,
+                    ),
+                  );
+                }).toList(),
             onChanged: onChanged,
             decoration: _buildInputDecoration().copyWith(
               hintText: hintText ?? 'Select $label',
@@ -525,7 +484,9 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
             isExpanded: true,
             disabledHint: Text(
               hintText ?? 'Select $label',
-              style: TextStyle(color: secondaryTextColor.withOpacity(0.5)),
+              style: TextStyle(
+                color: secondaryTextColor.withValues(alpha: 0.5),
+              ),
             ),
           ),
         ],
@@ -538,19 +499,17 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
     required DateTime? selectedDate,
     required VoidCallback onTap,
   }) {
-    final String displayDate = selectedDate == null
-        ? 'Select Age'
-        : DateFormat('dd MMM yyyy').format(selectedDate);
+    final String displayDate =
+        selectedDate == null
+            ? 'Select Age'
+            : DateFormat('dd MMM yyyy').format(selectedDate);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            label,
-            style: context.appTextStyle.characterGenLabel,
-          ),
+          Text(label, style: context.appTextStyle.characterGenLabel),
           const SizedBox(height: 16),
           InkWell(
             onTap: onTap,
@@ -565,10 +524,7 @@ class _ProfileSettingsPageState extends ConsumerState<ProfileSettingsPage> {
                     displayDate,
                     style: context.appTextStyle.characterGenLabel,
                   ),
-                  const Icon(
-                    Icons.calendar_today,
-                    color: iconColor,
-                  ),
+                  const Icon(Icons.calendar_today, color: iconColor),
                 ],
               ),
             ),

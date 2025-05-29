@@ -8,6 +8,18 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+dependencies {
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
+    // Firebase Authentication
+    implementation("com.google.firebase:firebase-auth")
+
+    // Cloud Firestore
+    implementation("com.google.firebase:firebase-firestore")
+}
+
 android {
     namespace = "com.guftagu.app.guftagu_mobile"
     compileSdk = flutter.compileSdkVersion

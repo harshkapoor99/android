@@ -1,4 +1,6 @@
-part of 'master_models.dart';
+import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/models/gen_image.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 
 class CharacterDetail {
   final String id;
@@ -7,17 +9,17 @@ class CharacterDetail {
 
   final String name;
   final String? bio;
-  final String age;
-  final String gender;
-  final String style;
-  final String sexualOrientation;
+  final String? age;
+  final String? gender;
+  final String? style;
+  final String? sexualOrientation;
 
-  final Language language;
+  final Language? language;
   final Voice? voice;
-  final Country country;
-  final City city;
-  final Personality personality;
-  final Relationship relationship;
+  final Country? country;
+  final City? city;
+  final Personality? personality;
+  final Relationship? relationship;
   final CharacterType? characterType;
   final List<Behaviour> behaviours;
   final List<GenImage> imageGallery;
@@ -68,12 +70,19 @@ class CharacterDetail {
     style: json["style"],
     sexualOrientation: json["sexual_orientation"],
 
-    language: Language.fromMap(json["language"]),
+    language:
+        json["language"] != null ? Language.fromMap(json["language"]) : null,
     voice: json["voice"] != null ? Voice.fromMap(json["voice"]) : null,
-    country: Country.fromMap(json["country"]),
-    city: City.fromMap(json["city"]),
-    personality: Personality.fromMap(json["personality"]),
-    relationship: Relationship.fromMap(json["relationship"]),
+    country: json["country"] != null ? Country.fromMap(json["country"]) : null,
+    city: json["city"] != null ? City.fromMap(json["city"]) : null,
+    personality:
+        json["personality"] != null
+            ? Personality.fromMap(json["personality"])
+            : null,
+    relationship:
+        json["relationship"] != null
+            ? Relationship.fromMap(json["relationship"])
+            : null,
     characterType:
         json["character_type"] != null
             ? CharacterType.fromMap(json["character_type"])
@@ -104,12 +113,12 @@ class CharacterDetail {
     "style": style,
     "sexual_orientation": sexualOrientation,
 
-    "language": country.toMap(),
+    "language": country?.toMap(),
     "voice": voice?.toMap(),
-    "country": country.toMap(),
-    "city": city.toMap(),
-    "personality": personality.toMap(),
-    "relationship": relationship.toMap(),
+    "country": country?.toMap(),
+    "city": city?.toMap(),
+    "personality": personality?.toMap(),
+    "relationship": relationship?.toMap(),
     "character_type": characterType?.toMap(),
     "behaviour": List<GenImage>.from(behaviours.map((b) => b.toMap())),
     "image_gallery": List<dynamic>.from(imageGallery.map((x) => x.toMap())),
@@ -140,7 +149,7 @@ class CharacterDetail {
     Personality? personality,
     Relationship? relationship,
     CharacterType? characterType,
-    List<Behaviour>? behaviour,
+    List<Behaviour>? behaviours,
     List<GenImage>? imageGallery,
 
     String? prompt,
@@ -168,7 +177,7 @@ class CharacterDetail {
       personality: personality ?? this.personality,
       relationship: relationship ?? this.relationship,
       characterType: characterType ?? this.characterType,
-      behaviours: behaviour ?? this.behaviours,
+      behaviours: behaviours ?? this.behaviours,
       imageGallery: imageGallery ?? this.imageGallery,
 
       prompt: prompt ?? this.prompt,
@@ -188,14 +197,14 @@ class CharacterDetail {
     gender: gender,
     style: style,
     sexualOrientation: sexualOrientation,
-    languageId: language.id,
+    languageId: language?.id,
     charactertypeId: characterType?.id ?? "",
-    relationshipId: relationship.id,
-    personalityId: personality.id,
+    relationshipId: relationship?.id,
+    personalityId: personality?.id,
     behaviourIds: behaviours.map((e) => e.id).toList(),
     voiceId: voice?.id,
-    countryId: country.id,
-    cityId: city.id,
+    countryId: country?.id,
+    cityId: city?.id,
     refImage: null,
     refImageDescription: null,
     refImageBackstory: null,

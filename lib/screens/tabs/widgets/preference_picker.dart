@@ -18,6 +18,7 @@ Widget buildOptionTile<T>({
   required String Function(T) optionToString,
   bool isLast = false,
   T? selected,
+  String? selectedValue,
   List<T>? multiSelected,
   required Function(T) onSelect,
   Function(List<T>)? onMultiSelect,
@@ -43,8 +44,13 @@ Widget buildOptionTile<T>({
     child: ListTile(
       leading: icon,
       title:
-          selected != null
-              ? Text(optionToString(selected), style: titleStyle)
+          selectedValue != null
+              ? Text(selectedValue, style: titleStyle)
+              : selected != null
+              ? Text(
+                selectedValue ?? optionToString(selected),
+                style: titleStyle,
+              )
               : isMultiple == true &&
                   multiSelected != null &&
                   multiSelected.isNotEmpty
