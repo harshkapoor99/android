@@ -1,4 +1,6 @@
-part of 'master_models.dart';
+import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/models/gen_image.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 
 class CharacterDetail {
   final String id;

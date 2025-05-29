@@ -1,3 +1,4 @@
+import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/services/master_service.dart';
