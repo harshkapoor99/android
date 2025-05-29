@@ -43,7 +43,7 @@ class Step1Widget extends ConsumerWidget {
                     .read(characterCreationProvider.notifier)
                     .updateWith(style: style),
           ),
-          36.ph,
+          26.ph,
           Text(
             "Companion's Country",
             style: context.appTextStyle.characterGenLabel,
@@ -61,7 +61,7 @@ class Step1Widget extends ConsumerWidget {
                     .updateCountryCityWith(country: p0),
             selected: provider.country,
           ),
-          36.ph,
+          26.ph,
           Text(
             "Companion's City",
             style: context.appTextStyle.characterGenLabel,
@@ -92,7 +92,7 @@ class Step1Widget extends ConsumerWidget {
               );
             },
           ),
-          36.ph,
+          26.ph,
           Text(
             "Companion's Language",
             style: context.appTextStyle.characterGenLabel,
@@ -111,7 +111,7 @@ class Step1Widget extends ConsumerWidget {
                     .updateWith(language: p0),
             selected: provider.language,
           ),
-          32.ph,
+          20.ph,
         ],
       ),
     );

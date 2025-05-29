@@ -48,7 +48,7 @@ class Step2Widget extends ConsumerWidget {
               height: 24,
             ),
           ),
-          36.ph,
+          26.ph,
           Text(
             "What's your companion's relationship to you",
             style: context.appTextStyle.characterGenLabel,
@@ -82,7 +82,7 @@ class Step2Widget extends ConsumerWidget {
               height: 24,
             ),
           ),
-          36.ph,
+          26.ph,
           Text(
             "What's your companion's personality type",
             style: context.appTextStyle.characterGenLabel,
@@ -116,7 +116,7 @@ class Step2Widget extends ConsumerWidget {
               height: 24,
             ),
           ),
-          36.ph,
+          26.ph,
           Text(
             "Which behaviour's match your companion",
             style: context.appTextStyle.characterGenLabel,
@@ -153,7 +153,7 @@ class Step2Widget extends ConsumerWidget {
             isMultiple: true,
             maxSelectToClose: 3,
           ),
-          36.ph,
+          26.ph,
         ],
       ),
     );

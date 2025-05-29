@@ -57,11 +57,11 @@ class Step0Widget extends ConsumerWidget {
               label: 'Character Name',
               hintText: 'Name',
             ),
-            36.ph,
+            26.ph,
             LabeledTextField(
               labelColor: const Color(0xFFF2F2F2),
               controller: provider.ageController,
-              label: 'Age (yrs)',
+              label: 'Age (years - minimum 18+)',
               hintText: 'Eg. 26',
               keyboardType: TextInputType.number,
               // maxLength: 2,
@@ -71,7 +71,7 @@ class Step0Widget extends ConsumerWidget {
                 TwoDigitRangeTextInputFormatter(min: 18, max: 99),
               ],
             ),
-            36.ph,
+            26.ph,
             Text('Gender', style: context.appTextStyle.characterGenLabel),
             12.ph,
             ImageOptionSelector(
@@ -84,7 +84,7 @@ class Step0Widget extends ConsumerWidget {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
             ),
-            36.ph,
+            26.ph,
             Text(
               'Sexual Orientation',
               style: context.appTextStyle.characterGenLabel,
@@ -134,14 +134,14 @@ class Step0Widget extends ConsumerWidget {
                     );
                   }).toList(),
             ),
-            36.ph,
+            26.ph,
             Text(
               'Companion’s  Voice',
               style: context.appTextStyle.textSemibold.copyWith(
                 color: const Color(0xFFF2F2F2),
               ),
             ),
-            const SizedBox(height: 16),
+            16.ph,
             buildOptionTile<Voice>(
               context: context,
               ref: ref,
@@ -154,7 +154,7 @@ class Step0Widget extends ConsumerWidget {
                       .updateWith(voice: p0),
               selected: characterProvider.voice,
             ),
-            32.ph,
+            20.ph,
           ],
         ),
       ),
