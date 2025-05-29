@@ -183,14 +183,14 @@ class MasterData extends _$MasterData {
 
   void fetchAllMasterData() async {
     Future.wait([
-      fetchLanguages(),
-      fetchBehaviours(),
-      fetchPersonalities(),
-      fetchRelationships(),
-      fetchVoices(),
-      fetchCountries(),
       fetchCharacterTypes(),
+      fetchCountries(),
+      fetchLanguages(),
+      fetchVoices(),
       fetchMasterCharacters(),
+      // fetchRelationships(),
+      // fetchPersonalities(),
+      // fetchBehaviours(),
     ]);
   }
 
