@@ -17,6 +17,7 @@ class User {
   final DateTime updatedDate;
   final int status;
   final Profile profile;
+  final List<String> characterTypeIds;
 
   User({
     required this.id,
@@ -27,6 +28,7 @@ class User {
     required this.updatedDate,
     required this.status,
     required this.profile,
+    this.characterTypeIds = const [],
   });
 
   User copyWith({
@@ -38,6 +40,7 @@ class User {
     DateTime? updatedDate,
     int? status,
     Profile? profile,
+    List<String>? characterTypeIds,
   }) => User(
     id: id ?? this.id,
     username: username ?? this.username,
@@ -47,6 +50,7 @@ class User {
     updatedDate: updatedDate ?? this.updatedDate,
     status: status ?? this.status,
     profile: profile ?? this.profile,
+    characterTypeIds: characterTypeIds ?? this.characterTypeIds,
   );
 
   factory User.fromMap(Map<String, dynamic> json) => User(
@@ -58,6 +62,10 @@ class User {
     updatedDate: DateTime.parse(json["updated_date"]),
     status: json["status"],
     profile: Profile.fromMap(json["profile"].cast<String, dynamic>()),
+    characterTypeIds:
+        json["charactertype_id"] != null
+            ? List.from(json["charactertype_id"])
+            : [],
   );
 
   Map<String, dynamic> toMap() => {
@@ -69,6 +77,7 @@ class User {
     "updated_date": updatedDate.toIso8601String(),
     "status": status,
     "profile": profile.toMap(),
+    "charactertype_id": characterTypeIds,
   };
 }
 

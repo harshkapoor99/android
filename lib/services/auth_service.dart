@@ -80,4 +80,21 @@ class AuthService {
       throw Exception('Failed to verify email OTP: $e');
     }
   }
+
+  Future<Response> googleAuth(
+    String email, {
+    String? name,
+    DateTime? dob,
+  }) async {
+    try {
+      final response = await _apiClient.post(
+        RemoteEndpoint.googleAuthenticationByEmail.url,
+        data: {"email": email, "full_name": name, "dob": dob},
+        headers: _apiClient.authHeader,
+      );
+      return response;
+    } catch (e) {
+      throw Exception('Failed to verify email OTP: $e');
+    }
+  }
 }
