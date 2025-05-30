@@ -729,9 +729,11 @@ void _showOptionPopupWithSearch<T>(
             FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF141416),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            decoration: BoxDecoration(
+              color: context.colorExt.background,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
