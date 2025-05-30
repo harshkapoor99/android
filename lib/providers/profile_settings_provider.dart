@@ -27,23 +27,25 @@ class ProfileSettings extends _$ProfileSettings {
       phoneController: TextEditingController(),
       otpController: TextEditingController(),
       initialUserInfo: user,
-      gender: user?.profile.gender,
-      country: user?.profile.country,
-      countryId:
-          countries.isNotEmpty
-              ? countries
-                  .firstWhere(
-                    (element) => element.countryName == user?.profile.country,
-                  )
-                  .id
+      gender:
+          user?.profile.gender.isNotEmpty == true ? user!.profile.gender : null,
+      country:
+          user?.profile.country.isNotEmpty == true
+              ? user?.profile.country
               : null,
-      city: user?.profile.city,
+      countryId:
+          countries
+              .firstWhereOrNull(
+                (element) => element.countryName == user?.profile.country,
+              )
+              ?.id,
+      city: user?.profile.city.isNotEmpty == true ? user?.profile.city : null,
       dob: DateTime.tryParse(user?.profile.dateOfBirth ?? ""),
     );
 
-    initialState.nameController.setText(user?.profile.fullName ?? "");
-    initialState.emailController.setText(user?.email ?? "");
-    initialState.phoneController.setText(user?.mobileNumber ?? "");
+    initialState.nameController.setText(user?.profile.fullName ?? "--");
+    initialState.emailController.setText(user?.email ?? "--");
+    initialState.phoneController.setText(user?.mobileNumber ?? "--");
 
     ref.onDispose(() {
       state.nameController.dispose();
