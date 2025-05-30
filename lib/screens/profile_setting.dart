@@ -219,7 +219,6 @@ class ProfileSettingsPage extends ConsumerWidget {
                   controller: profileState.nameController,
                   label: 'Name',
                   hintText: "Name",
-                  borderRadius: 12.0,
                 ),
                 26.ph,
                 // Age Dropdown

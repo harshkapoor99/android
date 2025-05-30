@@ -6,12 +6,7 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 class LabeledTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
-  final Color labelColor;
-  final Color fillColor;
-  final EdgeInsetsGeometry contentPadding;
-  final double borderRadius;
   final TextInputType keyboardType;
-  final bool obscureText;
   final String? hintText;
   final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
@@ -20,15 +15,7 @@ class LabeledTextField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.label,
-    this.labelColor = const Color(0xFFF2F2F2),
-    this.fillColor = const Color(0xFF23222F),
-    this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 16,
-      vertical: 16,
-    ),
-    this.borderRadius = 10.0,
     this.keyboardType = TextInputType.text,
-    this.obscureText = false,
     this.hintText,
     this.maxLength,
     this.inputFormatters,

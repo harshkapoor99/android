@@ -45,7 +45,6 @@ class VerificationSection extends StatelessWidget {
                   controller: controller,
                   label: label,
                   keyboardType: keyboardType,
-                  borderRadius: 12.0,
                 ),
               ),
               const SizedBox(width: 10),

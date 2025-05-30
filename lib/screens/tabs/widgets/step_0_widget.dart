@@ -52,14 +52,12 @@ class Step0Widget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LabeledTextField(
-              labelColor: const Color(0xFFF2F2F2),
               controller: provider.characterNameController,
               label: 'Character Name',
               hintText: 'Name',
             ),
             26.ph,
             LabeledTextField(
-              labelColor: const Color(0xFFF2F2F2),
               controller: provider.ageController,
               label: 'Age (years - minimum 18+)',
               hintText: 'Eg. 26',
