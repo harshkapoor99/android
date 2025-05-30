@@ -175,7 +175,7 @@ class AppConstants {
           borderSide: BorderSide.none,
         ),
         hintStyle: context.appTextStyle.text.copyWith(
-          color: context.colorExt.textSecondary,
+          color: context.colorExt.textHint,
         ),
         suffixIconColor: context.colorExt.textPrimary,
       );

@@ -123,7 +123,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           child: Center(
                             child: Icon(
                               Icons.arrow_outward_sharp,
-                              color: context.colorExt.textSecondary,
+                              color: context.colorExt.textHint,
                               size: 24,
                             ),
                           ),
@@ -216,7 +216,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             ),
                             style: context.appTextStyle.textSemibold.copyWith(
                               fontSize: 12,
-                              color: context.colorExt.textSecondary,
+                              color: context.colorExt.textHint,
                             ),
                           ),
                         ],
@@ -228,7 +228,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                         style: context.appTextStyle.textSmall.copyWith(
                           // list item text font size reduced
                           fontSize: 12,
-                          color: context.colorExt.textSecondary,
+                          color: context.colorExt.textHint,
                         ),
                       ),
                     );

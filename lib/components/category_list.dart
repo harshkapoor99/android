@@ -67,7 +67,7 @@ class CategoryList extends ConsumerWidget {
                           color:
                               isSelected
                                   ? context.colorExt.background
-                                  : context.colorExt.textSecondary,
+                                  : context.colorExt.textHint,
                           fontSize: 12,
                         ),
                       ),

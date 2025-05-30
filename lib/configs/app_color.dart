@@ -8,7 +8,6 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color button;
   final Color buttonText;
   final Color textPrimary;
-  final Color textSecondary;
   final Color textHint;
   final Color border;
   final Color background;
@@ -20,7 +19,6 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.button,
     required this.buttonText,
     required this.textPrimary,
-    required this.textSecondary,
     required this.textHint,
     required this.border,
     required this.background,
@@ -34,7 +32,6 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? button,
     Color? buttonText,
     Color? textPrimary,
-    Color? textSecondary,
     Color? textHint,
     Color? border,
     Color? background,
@@ -46,7 +43,6 @@ class AppColors extends ThemeExtension<AppColors> {
       button: button ?? this.button,
       buttonText: buttonText ?? this.buttonText,
       textPrimary: textPrimary ?? this.textPrimary,
-      textSecondary: textSecondary ?? this.textSecondary,
       textHint: textHint ?? this.textHint,
       border: border ?? this.border,
       background: background ?? this.background,
@@ -71,9 +67,6 @@ class AppColors extends ThemeExtension<AppColors> {
           AppStaticColors.redColor,
       textPrimary:
           Color.lerp(textPrimary, other.textPrimary, t) ??
-          AppStaticColors.redColor,
-      textSecondary:
-          Color.lerp(textSecondary, other.textSecondary, t) ??
           AppStaticColors.redColor,
       textHint:
           Color.lerp(textHint, other.textHint, t) ?? AppStaticColors.redColor,

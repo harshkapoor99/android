@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/components/labeled_text_field.dart';
 import 'package:guftagu_mobile/components/pin_put.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class VerificationSection extends StatelessWidget {
   final String label;
@@ -13,9 +14,6 @@ class VerificationSection extends StatelessWidget {
   final VoidCallback onSendOtp;
   final Function(String) onVerifyOtp;
   final String hintText;
-  final Color inputBackgroundColor;
-  final Color primaryTextColor;
-  final Color secondaryTextColor;
 
   const VerificationSection({
     super.key,
@@ -29,9 +27,6 @@ class VerificationSection extends StatelessWidget {
     required this.onSendOtp,
     required this.onVerifyOtp,
     required this.hintText,
-    required this.inputBackgroundColor,
-    required this.primaryTextColor,
-    required this.secondaryTextColor,
   });
 
   @override
@@ -50,8 +45,6 @@ class VerificationSection extends StatelessWidget {
                   controller: controller,
                   label: label,
                   keyboardType: keyboardType,
-                  fillColor: inputBackgroundColor,
-                  labelColor: primaryTextColor,
                   borderRadius: 12.0,
                 ),
               ),
@@ -112,7 +105,7 @@ class VerificationSection extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               'Enter OTP sent to your ${label.toLowerCase()}',
-              style: TextStyle(color: secondaryTextColor, fontSize: 12),
+              style: TextStyle(color: context.colorExt.textHint, fontSize: 12),
             ),
             const SizedBox(height: 8),
             PinPutWidget(

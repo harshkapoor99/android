@@ -433,7 +433,7 @@ void _showOptionPopup<T>(
                                       decoration: BoxDecoration(
                                         color:
                                             isSelected
-                                                ? context.colorExt.textSecondary
+                                                ? context.colorExt.textHint
                                                 : context.colorExt.border,
                                         borderRadius: BorderRadius.circular(
                                           100,
@@ -615,7 +615,7 @@ void _showOptionPopupWithMultiselect<T>(
                                                   isSelected
                                                       ? context
                                                           .colorExt
-                                                          .textSecondary
+                                                          .textHint
                                                       : context.colorExt.border,
                                               borderRadius:
                                                   BorderRadius.circular(100),
@@ -785,7 +785,7 @@ void _showOptionPopupWithSearch<T>(
                         ),
                         hintText: "Search",
                         hintStyle: context.appTextStyle.text.copyWith(
-                          color: context.colorExt.textSecondary.withValues(
+                          color: context.colorExt.textHint.withValues(
                             // alpha: 0.7,
                           ),
                         ),
@@ -799,7 +799,7 @@ void _showOptionPopupWithSearch<T>(
                             height: 5,
                             width: 5,
                             colorFilter: ColorFilter.mode(
-                              context.colorExt.textSecondary,
+                              context.colorExt.textHint,
                               BlendMode.srcIn,
                             ),
                           ),

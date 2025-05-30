@@ -106,7 +106,7 @@ class _MessageBoxState extends State<MessageBox> {
                   height: 28,
                   width: 28,
                   colorFilter: ColorFilter.mode(
-                    context.colorExt.textSecondary,
+                    context.colorExt.textHint,
                     BlendMode.srcIn,
                   ),
                 ),

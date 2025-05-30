@@ -22,17 +22,6 @@ import '../providers/master_data_provider.dart';
 import '../utils/app_constants.dart';
 import '../utils/file_compressor.dart';
 
-const Color darkBackgroundColor = Color(0xFF0A0A0A);
-const Color inputBackgroundColor = Color(0xFF23222F);
-const Color primaryTextColor = Colors.white;
-const Color secondaryTextColor = Colors.grey;
-const Color iconColor = Colors.white;
-const Gradient editIconGradient = LinearGradient(
-  colors: [Colors.blueAccent, Colors.purpleAccent],
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-);
-
 class ProfileSettingsPage extends ConsumerWidget {
   ProfileSettingsPage({super.key});
 
@@ -101,18 +90,13 @@ class ProfileSettingsPage extends ConsumerWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: true,
-        iconTheme: const IconThemeData(color: primaryTextColor),
         title: Row(
           children: [
             SvgPicture.asset(Assets.svgs.logo, height: 50, width: 50),
             5.pw,
             const Text(
               'Guftagu',
-              style: TextStyle(
-                color: primaryTextColor,
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const Spacer(),
           ],
@@ -131,13 +115,13 @@ class ProfileSettingsPage extends ConsumerWidget {
                   alignment: Alignment.centerRight,
                   child:
                       profileState.isLoading
-                          ? const SizedBox(
+                          ? SizedBox(
                             width: 20,
                             height: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                primaryTextColor,
+                                context.colorExt.primary,
                               ),
                             ),
                           )
@@ -158,11 +142,11 @@ class ProfileSettingsPage extends ConsumerWidget {
                                     : null,
                             child: Text(
                               'Save',
-                              style: TextStyle(
+                              style: context.appTextStyle.text.copyWith(
                                 color:
                                     profileNotifier.hasUnsavedChanges()
-                                        ? primaryTextColor
-                                        : secondaryTextColor,
+                                        ? context.colorExt.textHint
+                                        : context.colorExt.textHint,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -235,8 +219,6 @@ class ProfileSettingsPage extends ConsumerWidget {
                   controller: profileState.nameController,
                   label: 'Name',
                   hintText: "Name",
-                  fillColor: inputBackgroundColor,
-                  labelColor: primaryTextColor,
                   borderRadius: 12.0,
                 ),
                 26.ph,
@@ -345,61 +327,55 @@ class ProfileSettingsPage extends ConsumerWidget {
 
                 16.ph,
 
-                // VerificationSection(
-                //   label: "Email",
-                //   controller: profileState.emailController,
-                //   otpController: profileState.otpController,
-                //   keyboardType: TextInputType.emailAddress,
-                //   isOtpSent: false,
-                //   isVerified: false,
-                //   isLoading: false,
-                //   onSendOtp: () {},
-                //   onVerifyOtp: (p0) {},
-                //   hintText: "Enter your email",
-                //   inputBackgroundColor: inputBackgroundColor,
-                //   primaryTextColor: primaryTextColor,
-                //   secondaryTextColor: secondaryTextColor,
-                // ),
-                //  VerificationSection(
-                //   label: "Phone",
-                //   controller: profileState.phoneController,
-                //   otpController: profileState.otpController,
-                //   keyboardType: TextInputType.emailAddress,
-                //   isOtpSent: false,
-                //   isVerified: false,
-                //   isLoading: false,
-                //   onSendOtp: () {},
-                //   onVerifyOtp: (p0) {},
-                //   hintText: "Enter your email",
-                //   inputBackgroundColor: inputBackgroundColor,
-                //   primaryTextColor: primaryTextColor,
-                //   secondaryTextColor: secondaryTextColor,
-                // ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: LabeledTextField(
-                    controller: profileState.emailController,
-                    label: 'Email ID',
-                    keyboardType: TextInputType.emailAddress,
-                    fillColor: inputBackgroundColor,
-                    labelColor: primaryTextColor,
-                    borderRadius: 12.0,
-                  ),
+                VerificationSection(
+                  label: "Email",
+                  controller: profileState.emailController,
+                  otpController: profileState.otpController,
+                  keyboardType: TextInputType.emailAddress,
+                  isOtpSent: false,
+                  isVerified: false,
+                  isLoading: false,
+                  onSendOtp: () {},
+                  onVerifyOtp: (p0) {},
+                  hintText: "Enter your email",
                 ),
-                // Phone
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: LabeledTextField(
-                    controller: profileState.phoneController,
-                    label: 'Phone number',
-                    hintText: "",
-                    keyboardType: TextInputType.phone,
-                    fillColor: inputBackgroundColor,
-                    labelColor: primaryTextColor,
-                    borderRadius: 12.0,
-                  ),
+                VerificationSection(
+                  label: "Phone",
+                  controller: profileState.phoneController,
+                  otpController: profileState.otpController,
+                  keyboardType: TextInputType.phone,
+                  isOtpSent: false,
+                  isVerified: false,
+                  isLoading: false,
+                  onSendOtp: () {},
+                  onVerifyOtp: (p0) {},
+                  hintText: "Enter your phone",
                 ),
 
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 20.0),
+                //   child: LabeledTextField(
+                //     controller: profileState.emailController,
+                //     label: 'Email ID',
+                //     keyboardType: TextInputType.emailAddress,
+                //     fillColor: inputBackgroundColor,
+                //     labelColor: primaryTextColor,
+                //     borderRadius: 12.0,
+                //   ),
+                // ),
+                // // Phone
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 20.0),
+                //   child: LabeledTextField(
+                //     controller: profileState.phoneController,
+                //     label: 'Phone number',
+                //     hintText: "",
+                //     keyboardType: TextInputType.phone,
+                //     fillColor: inputBackgroundColor,
+                //     labelColor: primaryTextColor,
+                //     borderRadius: 12.0,
+                //   ),
+                // ),
                 const SizedBox(height: 20),
               ],
             ),
