@@ -5,7 +5,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {

@@ -9,7 +9,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
 
 class ChatTab extends ConsumerStatefulWidget {

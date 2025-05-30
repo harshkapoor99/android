@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:guftagu_mobile/services/profile_settings_service.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../models/master/master_models.dart';

@@ -6,7 +6,7 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 
 class Step2Widget extends ConsumerWidget {
   const Step2Widget({super.key});
@@ -121,7 +121,7 @@ class Step2Widget extends ConsumerWidget {
             options: ref.watch(
               masterDataProvider.select((state) => state.behaviours),
             ),
-            optionToString: (c) => "${c.title.capitalize()} ${c.emoji}",
+            optionToString: (c) => "${c.title} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"

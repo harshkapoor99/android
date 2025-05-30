@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/responsive.dart';
 
 Widget buildOptionTile<T>({
@@ -26,16 +27,16 @@ Widget buildOptionTile<T>({
   int? maxSelectToClose,
   bool showLoading = false,
 }) {
-  final titleStyle =
-      Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
-      ) ??
-      const TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-      );
+  final titleStyle = context.appTextStyle.textSemibold;
+  // Theme.of(context).textTheme.titleMedium?.copyWith(
+  //   color: Colors.white,
+  //   fontWeight: FontWeight.w600,
+  // ) ??
+  // const TextStyle(
+  //   color: Colors.white,
+  //   fontSize: 16,
+  //   fontWeight: FontWeight.w600,
+  // );
   return Container(
     decoration: BoxDecoration(
       color: const Color(0xFF23222F),
@@ -43,27 +44,24 @@ Widget buildOptionTile<T>({
     ),
     child: ListTile(
       leading: icon,
-      title:
-          selectedValue != null
-              ? Text(selectedValue, style: titleStyle)
-              : selected != null
-              ? Text(
-                selectedValue ?? optionToString(selected),
-                style: titleStyle,
-              )
-              : isMultiple == true &&
-                  multiSelected != null &&
-                  multiSelected.isNotEmpty
-              ? Text(
-                "${multiSelected.length} $title Selected",
-                style: titleStyle,
-              )
-              : Text(
-                "Select",
-                style: titleStyle.copyWith(
-                  color: context.colorExt.textSecondary,
-                ),
-              ),
+      title: Text(
+        selectedValue ??
+            (selected != null
+                ? optionToString(selected)
+                : isMultiple == true &&
+                    multiSelected != null &&
+                    multiSelected.isNotEmpty
+                ? "${multiSelected.length} $title Selected"
+                : "Select"),
+        style:
+            selectedValue != null ||
+                    selected != null ||
+                    (isMultiple == true &&
+                        multiSelected != null &&
+                        multiSelected.isNotEmpty)
+                ? titleStyle
+                : AppConstants.inputDecoration(context).hintStyle,
+      ),
       trailing:
           showLoading
               ? SizedBox(

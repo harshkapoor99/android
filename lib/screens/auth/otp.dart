@@ -11,7 +11,7 @@ import 'package:guftagu_mobile/providers/auth_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 
 class OtpScreen extends ConsumerWidget {
   const OtpScreen({super.key});

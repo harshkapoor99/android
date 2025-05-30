@@ -6,7 +6,7 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/age_input_formatter.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../components/labeled_text_field.dart';
 import '../../../models/master/master_models.dart';

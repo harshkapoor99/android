@@ -5,7 +5,7 @@ import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 
 class AppConstants {
   static appbar(
@@ -153,6 +153,32 @@ class AppConstants {
       },
     );
   }
+
+  static InputDecoration inputDecoration(BuildContext context) =>
+      InputDecoration(
+        filled: true,
+        fillColor: context.colorExt.border,
+        contentPadding: const EdgeInsets.symmetric(
+          vertical: 15.0,
+          horizontal: 15.0,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        hintStyle: context.appTextStyle.text.copyWith(
+          color: context.colorExt.textSecondary,
+        ),
+        suffixIconColor: context.colorExt.textPrimary,
+      );
 
   static GlobalKey<ScaffoldMessengerState> snackbarKey =
       GlobalKey<ScaffoldMessengerState>();

@@ -58,7 +58,7 @@ class Routes {
       case Routes.call:
         child = const CallScreen();
       case Routes.profileSettings:
-        child = const ProfileSettingsPage();
+        child = ProfileSettingsPage();
       case Routes.subscription:
         child = const SubscriptionScreen();
       default:

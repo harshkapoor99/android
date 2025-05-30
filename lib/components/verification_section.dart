@@ -52,7 +52,6 @@ class VerificationSection extends StatelessWidget {
                   keyboardType: keyboardType,
                   fillColor: inputBackgroundColor,
                   labelColor: primaryTextColor,
-                  inputTextStyle: TextStyle(color: primaryTextColor),
                   borderRadius: 12.0,
                 ),
               ),
