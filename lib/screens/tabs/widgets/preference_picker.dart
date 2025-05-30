@@ -180,7 +180,7 @@ void _showVoiceOptionPopup(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF141416),
+            color: Color(0xFF0D0D18),
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
@@ -367,7 +367,7 @@ void _showOptionPopup<T>(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF141416),
+            color: Color(0xFF0D0D18),
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
@@ -531,7 +531,7 @@ void _showOptionPopupWithMultiselect<T>(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
           child: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF141416),
+              color: Color(0xFF0D0D18),
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
@@ -729,11 +729,9 @@ void _showOptionPopupWithSearch<T>(
             FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Container(
-            decoration: BoxDecoration(
-              color: context.colorExt.background,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
+            decoration: const BoxDecoration(
+              color: Color(0xFF0D0D18),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

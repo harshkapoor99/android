@@ -121,7 +121,7 @@ class Step2Widget extends ConsumerWidget {
             options: ref.watch(
               masterDataProvider.select((state) => state.behaviours),
             ),
-            optionToString: (c) => "${c.title} ${c.emoji}",
+            optionToString: (c) => "${c.title.capitalize()} ${c.emoji}",
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"
