@@ -140,11 +140,9 @@ class AppConstants {
                 InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: pressAudio,
-                  child: Container(
-                    child: const ListTile(
-                      leading: Icon(Icons.audiotrack),
-                      title: Text("Upload Audio"),
-                    ),
+                  child: const ListTile(
+                    leading: Icon(Icons.audiotrack),
+                    title: Text("Upload Audio"),
                   ),
                 ),
             ],

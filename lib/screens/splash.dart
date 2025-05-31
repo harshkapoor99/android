@@ -56,7 +56,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         final isOnboarded = hiveService.getOnboardingStatus();
         final authToken = hiveService.getAuthToken();
         final user = hiveService.getUserInfo();
-        print("authToken: $authToken");
 
         if (!isOnboarded) {
           context.nav.pushReplacementNamed(Routes.onboarding);

@@ -108,7 +108,7 @@ class Step0Widget extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isSelected
-                                    ? Color(0xFFBEBEBE)
+                                    ? const Color(0xFFBEBEBE)
                                     : const Color(0xFF23222F),
                             borderRadius: BorderRadius.circular(8),
                           ),

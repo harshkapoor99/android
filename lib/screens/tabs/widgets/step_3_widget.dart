@@ -62,7 +62,6 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      print(img.path);
       var image = await compressImage(File(img.path));
       if (image != null) {
         // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);

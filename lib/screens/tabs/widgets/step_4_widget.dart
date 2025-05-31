@@ -52,7 +52,6 @@ class Step4Widget extends ConsumerWidget {
                                   -0.5,
                                 ), // move image slightly up
                                 errorBuilder: (context, error, stackTrace) {
-                                  print('Error loading image: $error');
                                   return const Center(
                                     child: Icon(
                                       Icons.image_not_supported,
