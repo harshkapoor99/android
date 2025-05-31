@@ -58,7 +58,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...masterProvider.characterDetails.map((ai) {
+                  ...masterProvider.characters.map((ai) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Column(
@@ -79,7 +79,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               onTap: () {
                                 ref
                                     .read(chatProvider.notifier)
-                                    .setCharacter(ai.toCharacter());
+                                    .setCharacter(ai);
                                 context.nav.pushNamed(Routes.chat);
                               },
                               borderRadius: BorderRadius.circular(40),

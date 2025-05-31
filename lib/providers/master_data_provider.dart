@@ -1,4 +1,4 @@
-import 'package:guftagu_mobile/models/character_details.dart';
+import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/services/master_service.dart';
@@ -19,7 +19,7 @@ class MasterData extends _$MasterData {
       countries: [],
       cities: [],
       characterTypes: [],
-      characterDetails: [],
+      characters: [],
     );
   }
 
@@ -271,12 +271,9 @@ class MasterData extends _$MasterData {
     try {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data['data'];
-        final List<CharacterDetail> character =
-            data
-                .map((e) => CharacterDetail.fromMap(e))
-                .toList()
-                .cast<CharacterDetail>();
-        state = state.copyWith(characterDetails: character);
+        final List<Character> characters =
+            data.map((e) => Character.fromMap(e)).toList().cast<Character>();
+        state = state.copyWith(characters: characters);
       }
     } catch (e) {
       rethrow;
@@ -302,7 +299,7 @@ class MasterDataState {
     required this.countries,
     required this.cities,
     required this.characterTypes,
-    required this.characterDetails,
+    required this.characters,
     this.seletedCharacterTypeTab,
   });
 
@@ -316,7 +313,7 @@ class MasterDataState {
   final List<Country> countries;
   final List<City> cities;
   final List<CharacterType> characterTypes;
-  final List<CharacterDetail> characterDetails;
+  final List<Character> characters;
 
   final CharacterType? seletedCharacterTypeTab;
 
@@ -330,7 +327,7 @@ class MasterDataState {
     List<Country>? countries,
     List<City>? cities,
     List<CharacterType>? characterTypes,
-    List<CharacterDetail>? characterDetails,
+    List<Character>? characters,
     CharacterType? seletedCharacterTypeTab,
   }) {
     return MasterDataState(
@@ -343,7 +340,7 @@ class MasterDataState {
       countries: countries ?? this.countries,
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
-      characterDetails: characterDetails ?? this.characterDetails,
+      characters: characters ?? this.characters,
       seletedCharacterTypeTab:
           seletedCharacterTypeTab ?? this.seletedCharacterTypeTab,
     );

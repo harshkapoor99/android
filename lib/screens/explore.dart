@@ -194,13 +194,7 @@ class ExploreScreen extends ConsumerWidget {
             buildHeader(context),
             buildGradientTexts(context),
             const CategoryList(),
-            buildCharacterGrid(
-              context,
-              ref,
-              masterProvider.characterDetails
-                  .map((c) => c.toCharacter())
-                  .toList(),
-            ),
+            buildCharacterGrid(context, ref, masterProvider.characters),
           ],
         ),
       ),
