@@ -8,7 +8,7 @@ import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
-import 'package:guftagu_mobile/screens/profile_setting.dart';
+import 'package:guftagu_mobile/screens/user_profile.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:guftagu_mobile/screens/avatar_profile.dart';
 import 'package:guftagu_mobile/screens/subscription_page.dart';

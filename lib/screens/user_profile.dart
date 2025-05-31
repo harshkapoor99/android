@@ -7,7 +7,7 @@ import 'package:guftagu_mobile/components/datepicker_field.dart';
 import 'package:guftagu_mobile/components/dropdown_field.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/verification_section.dart';
-import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
+import 'package:guftagu_mobile/providers/user_profile_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -53,7 +53,7 @@ class ProfileSettingsPage extends ConsumerWidget {
       var image = await compressImage(File(img.path));
       if (image != null) {
         ref
-            .read(profileSettingsProvider.notifier)
+            .read(userProfileProvider.notifier)
             .uploadProfileImage(XFile(image.path));
         image = null;
       }
@@ -62,14 +62,11 @@ class ProfileSettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final profileState = ref.watch(profileSettingsProvider);
-    final profileNotifier = ref.read(profileSettingsProvider.notifier);
+    final profileState = ref.watch(userProfileProvider);
+    final profileNotifier = ref.read(userProfileProvider.notifier);
     final masterData = ref.watch(masterDataProvider);
 
-    ref.listen<ProfileSettingsState>(profileSettingsProvider, (
-      previous,
-      current,
-    ) {
+    ref.listen<UserProfileState>(userProfileProvider, (previous, current) {
       if (current.error != null && current.error != previous?.error) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -305,16 +302,14 @@ class ProfileSettingsPage extends ConsumerWidget {
                       masterDataProvider.select((value) => value.cities),
                     );
                     final seletedCountryId = ref.watch(
-                      profileSettingsProvider.select(
-                        (value) => value.countryId,
-                      ),
+                      userProfileProvider.select((value) => value.countryId),
                     );
                     final seletedCity = ref.watch(
-                      profileSettingsProvider.select((value) => value.city),
+                      userProfileProvider.select((value) => value.city),
                     );
 
                     final profileNotifierCity = ref.read(
-                      profileSettingsProvider.notifier,
+                      userProfileProvider.notifier,
                     );
 
                     final filteredCities =

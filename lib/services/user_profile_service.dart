@@ -8,12 +8,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part '../gen/services/profile_settings_service.gen.dart';
 
 @riverpod
-ProfileService profileService(Ref ref) {
+UserProfileService profileService(Ref ref) {
   final apiClient = ref.watch(apiClientProvider);
-  return ProfileServiceImpl(apiClient);
+  return UserProfileServiceImpl(apiClient);
 }
 
-abstract class ProfileService {
+abstract class UserProfileService {
   Future<Response> updateName(String userId, String name);
   Future<Response> updateProfile({
     required String userId,
@@ -39,10 +39,10 @@ abstract class ProfileService {
   });
 }
 
-class ProfileServiceImpl implements ProfileService {
+class UserProfileServiceImpl implements UserProfileService {
   final ApiClient _apiClient;
 
-  ProfileServiceImpl(this._apiClient);
+  UserProfileServiceImpl(this._apiClient);
 
   @override
   Future<Response> updateName(String userId, String name) async {

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
-import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
+import 'package:guftagu_mobile/providers/user_profile_provider.dart';
 import 'package:guftagu_mobile/services/auth_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
-import 'package:guftagu_mobile/services/profile_settings_service.dart';
+import 'package:guftagu_mobile/services/user_profile_service.dart';
 import 'package:guftagu_mobile/utils/validators.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -238,7 +238,7 @@ class Auth extends _$Auth {
         );
       }
       User user = User.fromMap(response.data['user']);
-      ref.read(profileSettingsProvider).updateWith(initialUserInfo: user);
+      ref.read(userProfileProvider).updateWith(initialUserInfo: user);
       return CommonResponse(
         isSuccess: response.statusCode == 200,
         message: response.data["message"],

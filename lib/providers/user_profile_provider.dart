@@ -4,7 +4,7 @@ import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/validators.dart';
 import 'package:pinput/pinput.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:guftagu_mobile/services/profile_settings_service.dart';
+import 'package:guftagu_mobile/services/user_profile_service.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -13,11 +13,11 @@ import '../services/hive_service.dart';
 import '../models/user_model.dart';
 import 'master_data_provider.dart';
 
-part '../gen/providers/profile_settings_provider.gen.dart';
+part '../gen/providers/user_profile_provider.gen.dart';
 
 @riverpod
 bool hasUnsavedChanges(Ref ref) {
-  final state = ref.watch(profileSettingsProvider);
+  final state = ref.watch(userProfileProvider);
   final originalInfo = state.initialUserInfo;
   if (originalInfo == null) return false;
 
@@ -55,7 +55,7 @@ bool hasUnsavedChanges(Ref ref) {
 
 @riverpod
 bool hasEmailChanged(Ref ref) {
-  final state = ref.watch(profileSettingsProvider);
+  final state = ref.watch(userProfileProvider);
   final originalInfo = state.initialUserInfo;
   if (originalInfo == null) return false;
   final currentEmail = state.emailController.text.trim();
@@ -69,7 +69,7 @@ bool hasEmailChanged(Ref ref) {
 
 @riverpod
 bool hasPhoneChanged(Ref ref) {
-  final state = ref.watch(profileSettingsProvider);
+  final state = ref.watch(userProfileProvider);
   final originalInfo = state.initialUserInfo;
   if (originalInfo == null) return false;
   final currentPhone = state.phoneController.text.trim();
@@ -85,15 +85,15 @@ bool hasPhoneChanged(Ref ref) {
 }
 
 @riverpod
-class ProfileSettings extends _$ProfileSettings {
-  ProfileService get _service => ref.read(profileServiceProvider);
+class UserProfile extends _$UserProfile {
+  UserProfileService get _service => ref.read(profileServiceProvider);
   HiveService get _hiveService => ref.read(hiveServiceProvider.notifier);
 
   @override
-  ProfileSettingsState build() {
+  UserProfileState build() {
     final user = _loadUserData();
     final countries = ref.read(masterDataProvider).countries;
-    final initialState = ProfileSettingsState(
+    final initialState = UserProfileState(
       nameController: TextEditingController(),
       emailController: TextEditingController(),
       phoneController: TextEditingController(),
@@ -365,7 +365,7 @@ class ProfileSettings extends _$ProfileSettings {
   }
 }
 
-class ProfileSettingsState {
+class UserProfileState {
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
@@ -387,7 +387,7 @@ class ProfileSettingsState {
   // Phone booleans
   bool isPhoneOtpSent, isPhoneVerified, isPhoneLoading;
 
-  ProfileSettingsState({
+  UserProfileState({
     required this.nameController,
     required this.emailController,
     required this.phoneController,
@@ -410,7 +410,7 @@ class ProfileSettingsState {
     this.initialUserInfo,
   });
 
-  ProfileSettingsState updateWith({
+  UserProfileState updateWith({
     TextEditingController? nameController,
     TextEditingController? emailController,
     TextEditingController? phoneController,
@@ -431,7 +431,7 @@ class ProfileSettingsState {
     String? imageUrl,
     User? initialUserInfo,
   }) {
-    return ProfileSettingsState(
+    return UserProfileState(
       nameController: nameController ?? this.nameController,
       emailController: emailController ?? this.emailController,
       phoneController: phoneController ?? this.phoneController,
@@ -454,8 +454,8 @@ class ProfileSettingsState {
     );
   }
 
-  ProfileSettingsState update(ProfileSettingsState state) {
-    return ProfileSettingsState(
+  UserProfileState update(UserProfileState state) {
+    return UserProfileState(
       nameController: state.nameController,
       emailController: state.emailController,
       phoneController: state.phoneController,
