@@ -64,7 +64,13 @@ enum RemoteEndpoint {
   // User Profile
   profileDetails(path: 'userservice/user/userdetailsbyuserid/'),
   updateProfile(path: 'userservice/user/userupdateprofile/'),
-  updateProfileImage(path: 'userservice/user/userprofileimageupdate/');
+  updateProfileImage(path: 'userservice/user/userprofileimageupdate/'),
+
+  // User profile verify
+  userVerify(path: "userservice/user/userverifybyphoneoremail/"),
+  userVerifyOtp(path: "userservice/user/otpverify/")
+  // ending semicolon
+  ;
 
   const RemoteEndpoint({required this.path});
 

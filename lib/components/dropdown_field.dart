@@ -23,46 +23,43 @@ class DropdownField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: context.appTextStyle.characterGenLabel),
-          16.ph,
-          DropdownButtonFormField<String>(
-            value: value,
-            items:
-                items.map((String item) {
-                  return DropdownMenuItem<String>(
-                    value: item,
-                    child: Text(
-                      item,
-                      style: context.appTextStyle.characterGenLabel,
-                    ),
-                  );
-                }).toList(),
-            onChanged: onChanged,
-            hint: Text(
-              hintText ?? 'Select $label',
-              style: AppConstants.inputDecoration(
-                context,
-              ).hintStyle?.copyWith(fontFamily: 'OpenSans'),
-            ),
-            decoration: AppConstants.inputDecoration(context).copyWith(
-              // hintText: hintText ?? 'Select $label',
-              // hintStyle: AppConstants.inputDecoration(context).hintStyle,
-              // labelText: "Select $label",
-              // labelStyle: AppConstants.inputDecoration(context).hintStyle,
-            ),
-            dropdownColor: context.colorExt.border,
-            style: context.appTextStyle.characterGenLabel.copyWith(
-              fontFamily: 'OpenSans',
-            ),
-            isExpanded: true,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: context.appTextStyle.characterGenLabel),
+        16.ph,
+        DropdownButtonFormField<String>(
+          value: value,
+          items:
+              items.map((String item) {
+                return DropdownMenuItem<String>(
+                  value: item,
+                  child: Text(
+                    item,
+                    style: context.appTextStyle.characterGenLabel,
+                  ),
+                );
+              }).toList(),
+          onChanged: onChanged,
+          hint: Text(
+            hintText ?? 'Select $label',
+            style: AppConstants.inputDecoration(
+              context,
+            ).hintStyle?.copyWith(fontFamily: 'OpenSans'),
           ),
-        ],
-      ),
+          decoration: AppConstants.inputDecoration(context).copyWith(
+            // hintText: hintText ?? 'Select $label',
+            // hintStyle: AppConstants.inputDecoration(context).hintStyle,
+            // labelText: "Select $label",
+            // labelStyle: AppConstants.inputDecoration(context).hintStyle,
+          ),
+          dropdownColor: context.colorExt.border,
+          style: context.appTextStyle.characterGenLabel.copyWith(
+            fontFamily: 'OpenSans',
+          ),
+          isExpanded: true,
+        ),
+      ],
     );
   }
 }

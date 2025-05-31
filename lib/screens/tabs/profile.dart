@@ -24,7 +24,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
-    User? userInfo = ref.read(hiveServiceProvider.notifier).getUserInfo();
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -36,50 +35,53 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               builder: (context, user, _) {
                 final Map<dynamic, dynamic> userData =
                     user.get(AppHSC.userInfo) ?? {};
-                userInfo = User.fromMap(userData.cast<String, dynamic>());
+                User? userInfo = User.fromMap(userData.cast<String, dynamic>());
 
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(70),
-                  child: SizedBox(
-                    height: 126,
-                    width: 126,
-                    child: NetworkImageWithPlaceholder(
-                      imageUrl: userInfo!.profile.profilePicture,
-                      placeholder: SvgPicture.asset(
-                        Assets.svgs.icProfilePlaceholder,
-                      ),
-                      fit: BoxFit.cover,
-                      errorWidget: SvgPicture.asset(
-                        Assets.svgs.icProfilePlaceholder,
+                return Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(70),
+                      child: SizedBox(
+                        height: 126,
+                        width: 126,
+                        child: NetworkImageWithPlaceholder(
+                          imageUrl: userInfo.profile.profilePicture,
+                          placeholder: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
+                          fit: BoxFit.cover,
+                          errorWidget: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    12.ph,
+                    Text(
+                      userInfo.profile.fullName,
+                      style: context.appTextStyle.textBold.copyWith(
+                        fontSize: 18,
+                        // color: Color(0xFFF2F2F2),
+                      ),
+                    ),
+                    Opacity(
+                      opacity: 0.6,
+                      child: Text(
+                        userInfo.email.hasValue
+                            ? userInfo.email
+                            : userInfo.mobileNumber.hasValue
+                            ? userInfo.mobileNumber
+                            : "",
+                        style: context.appTextStyle.text.copyWith(
+                          fontSize: 14,
+                          height:
+                              1.71, // Line height = fontSize × height = 14 × 1.71 ≈ 24
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               },
-            ),
-
-            const SizedBox(height: 12),
-            Text(
-              userInfo!.profile.fullName,
-              style: context.appTextStyle.textBold.copyWith(
-                fontSize: 18,
-                // color: Color(0xFFF2F2F2),
-              ),
-            ),
-            Opacity(
-              opacity: 0.6,
-              child: Text(
-                userInfo!.email.hasValue
-                    ? userInfo!.email
-                    : userInfo!.mobileNumber.hasValue
-                    ? userInfo!.mobileNumber
-                    : "",
-                style: context.appTextStyle.text.copyWith(
-                  fontSize: 14,
-                  height:
-                      1.71, // Line height = fontSize × height = 14 × 1.71 ≈ 24
-                ),
-              ),
             ),
 
             24.ph,

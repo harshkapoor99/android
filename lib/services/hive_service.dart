@@ -54,6 +54,10 @@ class HiveService extends _$HiveService {
   }
 
   void updateUserInfo({
+    // complete user object
+    User? user,
+
+    // indivisual values
     String? username,
     String? email,
     String? mobileNumber,
@@ -68,7 +72,7 @@ class HiveService extends _$HiveService {
     String? timezone,
   }) {
     // Get current user info
-    User? currentUser = getUserInfo();
+    User? currentUser = user ?? getUserInfo();
 
     if (currentUser != null) {
       // Create updated profile

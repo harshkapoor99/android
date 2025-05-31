@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -10,6 +11,7 @@ class LabeledTextField extends StatelessWidget {
   final String? hintText;
   final int? maxLength;
   final List<TextInputFormatter>? inputFormatters;
+  final String? prefixText;
 
   const LabeledTextField({
     super.key,
@@ -19,6 +21,7 @@ class LabeledTextField extends StatelessWidget {
     this.hintText,
     this.maxLength,
     this.inputFormatters,
+    this.prefixText,
   });
 
   @override
@@ -28,8 +31,7 @@ class LabeledTextField extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: context.appTextStyle.characterGenLabel),
-            const SizedBox(height: 16),
+            LabelText(label),
             TextField(
               inputFormatters: inputFormatters,
               controller: controller,
@@ -37,9 +39,13 @@ class LabeledTextField extends StatelessWidget {
               keyboardType: keyboardType,
               textCapitalization: TextCapitalization.sentences,
               maxLength: maxLength,
-              decoration: AppConstants.inputDecoration(
-                context,
-              ).copyWith(hintText: hintText),
+              decoration: AppConstants.inputDecoration(context).copyWith(
+                hintText: hintText,
+                prefixText: prefixText,
+                prefixStyle: context.appTextStyle.text,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+                counterText: "",
+              ),
             ),
           ],
         );

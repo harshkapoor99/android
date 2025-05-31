@@ -20,15 +20,23 @@ abstract class ProfileService {
     required String name,
     required String gender,
     required String dateOfBirth,
-    required String email,
-    required String phone,
+    // required String email,
+    // required String phone,
     String? country,
     String? city,
     String? imageUrl,
   });
 
-  Future<Response> uploadProfileImage(String userId, XFile image);
   Future<Response> getUserDetails(String userId);
+  Future<Response> uploadProfileImage(String userId, XFile image);
+
+  Future<Response> userVerify(String userId, {String? email, String? phone});
+  Future<Response> userVerifyOtp(
+    String userId, {
+    required String otp,
+    String? email,
+    String? phone,
+  });
 }
 
 class ProfileServiceImpl implements ProfileService {
@@ -55,8 +63,8 @@ class ProfileServiceImpl implements ProfileService {
     required String name,
     required String gender,
     required String dateOfBirth,
-    required String email,
-    required String phone,
+    // required String email,
+    // required String phone,
     String? country,
     String? city,
     String? imageUrl,
@@ -67,16 +75,14 @@ class ProfileServiceImpl implements ProfileService {
         "user_id": userId,
         "profile": {
           "full_name": name,
-          "gender": gender,
           "date_of_birth": dateOfBirth,
-          "email": email,
-          "phone": phone,
+          "gender": gender,
+          // "bio": null,
+          "profile_picture": imageUrl,
           "country": country,
           "city": city,
-          "profile_picture": imageUrl,
         },
       },
-      timeout: const Duration(seconds: 30),
     );
     return response;
   }
@@ -89,7 +95,6 @@ class ProfileServiceImpl implements ProfileService {
         "user_id": userId,
         'image': await MultipartFile.fromFile(image.path, filename: image.name),
       }),
-      timeout: const Duration(seconds: 30),
     );
   }
 
@@ -98,6 +103,36 @@ class ProfileServiceImpl implements ProfileService {
     final response = await _apiClient.post(
       RemoteEndpoint.profileDetails.url,
       data: {"user_id": userId},
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> userVerify(
+    String userId, {
+    String? email,
+    String? phone,
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.userVerify.url,
+      data: {"user_id": userId, "email": email, "phone": phone},
+      headers: _apiClient.authHeader,
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> userVerifyOtp(
+    String userId, {
+    required String otp,
+    String? email,
+    String? phone,
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.userVerifyOtp.url,
+      data: {"user_id": userId, "email": email, "phone": phone, "otp": otp},
+
+      headers: _apiClient.authHeader,
     );
     return response;
   }

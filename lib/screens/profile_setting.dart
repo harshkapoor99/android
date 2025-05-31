@@ -9,9 +9,7 @@ import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/verification_section.dart';
 import 'package:guftagu_mobile/providers/profile_settings_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
-import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -52,7 +50,6 @@ class ProfileSettingsPage extends ConsumerWidget {
 
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      print(img.path);
       var image = await compressImage(File(img.path));
       if (image != null) {
         ref
@@ -110,7 +107,7 @@ class ProfileSettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                10.ph,
                 Align(
                   alignment: Alignment.centerRight,
                   child:
@@ -125,35 +122,51 @@ class ProfileSettingsPage extends ConsumerWidget {
                               ),
                             ),
                           )
-                          : TextButton(
-                            onPressed:
-                                profileNotifier.hasUnsavedChanges()
-                                    ? () async {
-                                      final success =
-                                          await profileNotifier.updateProfile();
-                                      if (success) {
-                                        AppConstants.showSnackbar(
-                                          message:
-                                              "   'Profile updated successfully!',",
-                                          isSuccess: true,
-                                        );
-                                      }
-                                    }
-                                    : null,
-                            child: Text(
-                              'Save',
-                              style: context.appTextStyle.text.copyWith(
-                                color:
-                                    profileNotifier.hasUnsavedChanges()
-                                        ? context.colorExt.textHint
-                                        : context.colorExt.textHint,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                          : Consumer(
+                            builder: (context, ref, child) {
+                              bool hasChanges = ref.watch(
+                                hasUnsavedChangesProvider,
+                              );
+                              return TextButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      hasChanges
+                                          ? WidgetStateProperty.all(
+                                            context.colorExt.border,
+                                          )
+                                          : null,
+                                ),
+                                onPressed:
+                                    hasChanges
+                                        ? () async {
+                                          final success =
+                                              await profileNotifier
+                                                  .updateProfile();
+                                          if (success) {
+                                            AppConstants.showSnackbar(
+                                              message:
+                                                  "   'Profile updated successfully!',",
+                                              isSuccess: true,
+                                            );
+                                          }
+                                        }
+                                        : null,
+                                child: Text(
+                                  'Save',
+                                  style: context.appTextStyle.text.copyWith(
+                                    color:
+                                        hasChanges
+                                            ? context.colorExt.textPrimary
+                                            : context.colorExt.textHint,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                 ),
-                const SizedBox(height: 10),
+                10.ph,
                 Center(
                   // Profile Picture
                   child: Stack(
@@ -213,7 +226,7 @@ class ProfileSettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
+                40.ph,
 
                 LabeledTextField(
                   controller: profileState.nameController,
@@ -269,6 +282,7 @@ class ProfileSettingsPage extends ConsumerWidget {
                   },
                   inputDecoration: AppConstants.inputDecoration(context),
                 ),
+                26.ph,
                 Text("Country", style: context.appTextStyle.characterGenLabel),
                 16.ph,
                 buildOptionTile<Country>(
@@ -282,7 +296,7 @@ class ProfileSettingsPage extends ConsumerWidget {
                           profileNotifier.updateCountryCityWith(country: p0),
                   selectedValue: profileState.country,
                 ),
-                16.ph,
+                26.ph,
                 Text("City", style: context.appTextStyle.characterGenLabel),
                 16.ph,
                 Consumer(
@@ -324,31 +338,35 @@ class ProfileSettingsPage extends ConsumerWidget {
                   },
                 ),
 
-                16.ph,
+                26.ph,
 
                 VerificationSection(
                   label: "Email",
                   controller: profileState.emailController,
-                  otpController: profileState.otpController,
+                  otpController: profileState.emailOtpController,
                   keyboardType: TextInputType.emailAddress,
-                  isOtpSent: false,
-                  isVerified: false,
-                  isLoading: false,
-                  onSendOtp: () {},
-                  onVerifyOtp: (p0) {},
+                  showButton: ref.watch(hasEmailChangedProvider),
+                  isOtpSent: profileState.isEmailOtpSent,
+                  isVerified: profileState.isEmailVerified,
+                  isLoading: profileState.isEmailLoading,
+                  onSendOtp: () => profileNotifier.sendOtp(true),
+                  onVerifyOtp: (otp) => profileNotifier.verifyOtp(true, otp),
                   hintText: "Enter your email",
                 ),
                 VerificationSection(
                   label: "Phone",
                   controller: profileState.phoneController,
-                  otpController: profileState.otpController,
+                  otpController: profileState.phoneOtpController,
                   keyboardType: TextInputType.phone,
-                  isOtpSent: false,
-                  isVerified: false,
-                  isLoading: false,
-                  onSendOtp: () {},
-                  onVerifyOtp: (p0) {},
+                  showButton: ref.watch(hasPhoneChangedProvider),
+                  isOtpSent: profileState.isPhoneOtpSent,
+                  isVerified: profileState.isPhoneVerified,
+                  isLoading: profileState.isPhoneLoading,
+                  onSendOtp: () => profileNotifier.sendOtp(false),
+                  onVerifyOtp: (otp) => profileNotifier.verifyOtp(false, otp),
                   hintText: "Enter your phone",
+                  prefixText: "+91",
+                  maxLength: 10,
                 ),
 
                 // Padding(

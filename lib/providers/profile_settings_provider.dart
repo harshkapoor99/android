@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
+import 'package:guftagu_mobile/utils/validators.dart';
 import 'package:pinput/pinput.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:guftagu_mobile/services/profile_settings_service.dart';
@@ -13,6 +16,75 @@ import 'master_data_provider.dart';
 part '../gen/providers/profile_settings_provider.gen.dart';
 
 @riverpod
+bool hasUnsavedChanges(Ref ref) {
+  final state = ref.watch(profileSettingsProvider);
+  final originalInfo = state.initialUserInfo;
+  if (originalInfo == null) return false;
+
+  if (state.nameController.text.trim() != (originalInfo.profile.fullName)) {
+    return true;
+  }
+
+  if (state.gender != null && state.gender != originalInfo.profile.gender) {
+    return true;
+  }
+
+  DateTime? originalDob;
+  if (originalInfo.profile.dateOfBirth != null &&
+      originalInfo.profile.dateOfBirth!.isNotEmpty) {
+    try {
+      originalDob = DateTime.parse(originalInfo.profile.dateOfBirth!);
+    } catch (e) {
+      originalDob = null;
+    }
+  }
+  if (state.dob != originalDob) {
+    return true;
+  }
+
+  if (state.country != null && state.country != originalInfo.profile.country) {
+    return true;
+  }
+
+  if (state.city != null && state.city != originalInfo.profile.city) {
+    return true;
+  }
+
+  return false;
+}
+
+@riverpod
+bool hasEmailChanged(Ref ref) {
+  final state = ref.watch(profileSettingsProvider);
+  final originalInfo = state.initialUserInfo;
+  if (originalInfo == null) return false;
+  final currentEmail = state.emailController.text.trim();
+  final originalEmail = originalInfo.email.hasValue ? originalInfo.email : "";
+  if (currentEmail != "" && currentEmail != originalEmail) {
+    return true && EmailOrPhoneValidator.isValidEmail(currentEmail);
+  }
+  if (state.isEmailVerified) return false;
+  return false;
+}
+
+@riverpod
+bool hasPhoneChanged(Ref ref) {
+  final state = ref.watch(profileSettingsProvider);
+  final originalInfo = state.initialUserInfo;
+  if (originalInfo == null) return false;
+  final currentPhone = state.phoneController.text.trim();
+  final originalPhone =
+      originalInfo.mobileNumber.hasValue ? originalInfo.mobileNumber : "";
+  if (currentPhone != "" &&
+      currentPhone != originalPhone &&
+      currentPhone.length == 10) {
+    return true && EmailOrPhoneValidator.isValidPhoneNumber(currentPhone);
+  }
+  if (state.isPhoneVerified) return false;
+  return false;
+}
+
+@riverpod
 class ProfileSettings extends _$ProfileSettings {
   ProfileService get _service => ref.read(profileServiceProvider);
   HiveService get _hiveService => ref.read(hiveServiceProvider.notifier);
@@ -25,7 +97,8 @@ class ProfileSettings extends _$ProfileSettings {
       nameController: TextEditingController(),
       emailController: TextEditingController(),
       phoneController: TextEditingController(),
-      otpController: TextEditingController(),
+      emailOtpController: TextEditingController(),
+      phoneOtpController: TextEditingController(),
       initialUserInfo: user,
       gender:
           user?.profile.gender.isNotEmpty == true ? user!.profile.gender : null,
@@ -46,6 +119,16 @@ class ProfileSettings extends _$ProfileSettings {
     initialState.nameController.setText(user?.profile.fullName ?? "--");
     initialState.emailController.setText(user?.email ?? "--");
     initialState.phoneController.setText(user?.mobileNumber ?? "--");
+
+    initialState.nameController.addListener(() {
+      state = state.updateWith(nameController: initialState.nameController);
+    });
+    initialState.emailController.addListener(() {
+      state = state.updateWith(emailController: initialState.emailController);
+    });
+    initialState.phoneController.addListener(() {
+      state = state.updateWith(phoneController: initialState.phoneController);
+    });
 
     ref.onDispose(() {
       state.nameController.dispose();
@@ -113,8 +196,6 @@ class ProfileSettings extends _$ProfileSettings {
         name: state.nameController.text.trim(),
         gender: state.gender ?? '',
         dateOfBirth: formattedDob,
-        email: state.emailController.text.trim(),
-        phone: state.phoneController.text.trim(),
         country: state.country,
         city: state.city,
         imageUrl: state.imageUrl,
@@ -178,54 +259,109 @@ class ProfileSettings extends _$ProfileSettings {
     }
   }
 
-  bool hasUnsavedChanges() {
-    final originalInfo = state.initialUserInfo;
-    if (originalInfo == null) return false;
+  Future<void> sendOtp(bool isEmail) async {
+    final userId = ref.read(hiveServiceProvider.notifier).getUserId()!;
+    // Determine which controller/text and which state‐flags to update
+    final contactValue =
+        isEmail
+            ? state.emailController.text
+            : '+91${state.phoneController.text}';
+    // 1) set loading = true for either email or phone
+    state =
+        isEmail
+            ? state.updateWith(isEmailLoading: true)
+            : state.updateWith(isPhoneLoading: true);
 
-    if (state.nameController.text.trim() != (originalInfo.profile.fullName)) {
-      return true;
-    }
+    // 2) call the correct userVerify(...) method
+    final res =
+        isEmail
+            ? await _service.userVerify(userId, email: contactValue)
+            : await _service.userVerify(userId, phone: contactValue);
 
-    if (state.gender != originalInfo.profile.gender) {
-      return true;
-    }
+    // 3) show snackbar for success/failure
+    AppConstants.showSnackbar(
+      message: res.data["message"],
+      isSuccess: res.statusCode == 200,
+    );
 
-    final currentEmail = state.emailController.text.trim();
-    final originalEmail =
-        originalInfo.email.hasValue ? originalInfo.email : "N/A";
-    if (currentEmail != "N/A" && currentEmail != originalEmail) {
-      return true;
-    }
-
-    final currentPhone = state.phoneController.text.trim();
-    final originalPhone =
-        originalInfo.mobileNumber.hasValue ? originalInfo.mobileNumber : "N/A";
-    if (currentPhone != "N/A" && currentPhone != originalPhone) {
-      return true;
-    }
-
-    DateTime? originalDob;
-    if (originalInfo.profile.dateOfBirth != null &&
-        originalInfo.profile.dateOfBirth!.isNotEmpty) {
-      try {
-        originalDob = DateTime.parse(originalInfo.profile.dateOfBirth!);
-      } catch (e) {
-        originalDob = null;
+    // 4) if successful, unfocus and flip the “OTP sent” flag
+    if (res.statusCode == 200) {
+      FocusManager.instance.primaryFocus?.unfocus();
+      if (isEmail) {
+        state.isEmailOtpSent = true;
+      } else {
+        state.isPhoneOtpSent = true;
       }
     }
-    if (state.dob != originalDob) {
-      return true;
+
+    // 5) set loading = false for whichever field we set to true earlier
+    state =
+        isEmail
+            ? state.updateWith(isEmailLoading: false)
+            : state.updateWith(isPhoneLoading: false);
+
+    // 6) push the final state object back
+    state = state.update(state);
+  }
+
+  Future<void> verifyOtp(bool isEmail, String otp) async {
+    final userId = ref.read(hiveServiceProvider.notifier).getUserId()!;
+    // Determine the same “contact string” logic
+    final contactValue =
+        isEmail
+            ? state.emailController.text
+            : '+91${state.phoneController.text}';
+    // 1) set loading = true
+    state =
+        isEmail
+            ? state.updateWith(isEmailLoading: true)
+            : state.updateWith(isPhoneLoading: true);
+
+    // 2) call the correct userVerifyOtp(...) method
+    final res =
+        isEmail
+            ? await _service.userVerifyOtp(
+              userId,
+              otp: otp,
+              email: contactValue,
+            )
+            : await _service.userVerifyOtp(
+              userId,
+              otp: otp,
+              phone: contactValue,
+            );
+
+    // 3) show snackbar
+    AppConstants.showSnackbar(
+      message: res.data["message"],
+      isSuccess: res.statusCode == 200,
+    );
+
+    // 4) if successful, flip the “verified” flag
+    if (res.statusCode == 200) {
+      if (isEmail) {
+        _hiveService.updateUserInfo(email: state.emailController.text);
+        state.initialUserInfo = state.initialUserInfo!.copyWith(
+          email: contactValue,
+        );
+        state.isEmailVerified = true;
+      } else {
+        _hiveService.updateUserInfo(mobileNumber: state.phoneController.text);
+        state.initialUserInfo = state.initialUserInfo!.copyWith(
+          mobileNumber: contactValue,
+        );
+        state.isPhoneVerified = true;
+      }
     }
 
-    if (state.country != originalInfo.profile.country) {
-      return true;
-    }
+    // 5) set loading = false
+    state =
+        isEmail
+            ? state.updateWith(isEmailLoading: false)
+            : state.updateWith(isPhoneLoading: false);
 
-    if (state.city != originalInfo.profile.city) {
-      return true;
-    }
-
-    return false;
+    // 6) push the final state
+    state = state.update(state);
   }
 }
 
@@ -233,7 +369,8 @@ class ProfileSettingsState {
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
-  final TextEditingController otpController;
+  final TextEditingController emailOtpController;
+  final TextEditingController phoneOtpController;
   DateTime? dob;
   String? gender;
   String? country;
@@ -245,17 +382,29 @@ class ProfileSettingsState {
   User? initialUserInfo;
   final List<String> genders = ['Male', 'Female', 'Others'];
 
+  // Email booleans
+  bool isEmailOtpSent, isEmailVerified, isEmailLoading;
+  // Phone booleans
+  bool isPhoneOtpSent, isPhoneVerified, isPhoneLoading;
+
   ProfileSettingsState({
     required this.nameController,
     required this.emailController,
     required this.phoneController,
-    required this.otpController,
+    required this.emailOtpController,
+    required this.phoneOtpController,
     this.dob,
     this.gender,
     this.country,
     this.countryId,
     this.city,
     this.isLoading = false,
+    this.isEmailOtpSent = false,
+    this.isEmailVerified = false,
+    this.isEmailLoading = false,
+    this.isPhoneOtpSent = false,
+    this.isPhoneVerified = false,
+    this.isPhoneLoading = false,
     this.error,
     this.imageUrl,
     this.initialUserInfo,
@@ -265,12 +414,19 @@ class ProfileSettingsState {
     TextEditingController? nameController,
     TextEditingController? emailController,
     TextEditingController? phoneController,
-    TextEditingController? otpController,
+    TextEditingController? emailOtpController,
+    TextEditingController? phoneOtpController,
     DateTime? dob,
     String? gender,
     String? country,
     String? city,
     bool? isLoading,
+    bool? isEmailOtpSent,
+    bool? isEmailVerified,
+    bool? isEmailLoading,
+    bool? isPhoneOtpSent,
+    bool? isPhoneVerified,
+    bool? isPhoneLoading,
     String? error,
     String? imageUrl,
     User? initialUserInfo,
@@ -279,12 +435,19 @@ class ProfileSettingsState {
       nameController: nameController ?? this.nameController,
       emailController: emailController ?? this.emailController,
       phoneController: phoneController ?? this.phoneController,
-      otpController: otpController ?? this.otpController,
+      emailOtpController: emailOtpController ?? this.emailOtpController,
+      phoneOtpController: phoneOtpController ?? this.phoneOtpController,
       dob: dob ?? this.dob,
       gender: gender ?? this.gender,
       country: country ?? this.country,
       city: city ?? this.city,
       isLoading: isLoading ?? this.isLoading,
+      isEmailOtpSent: isEmailOtpSent ?? this.isEmailOtpSent,
+      isEmailVerified: isEmailVerified ?? this.isEmailVerified,
+      isEmailLoading: isEmailLoading ?? this.isEmailLoading,
+      isPhoneOtpSent: isPhoneOtpSent ?? this.isPhoneOtpSent,
+      isPhoneVerified: isPhoneVerified ?? this.isPhoneVerified,
+      isPhoneLoading: isPhoneLoading ?? this.isPhoneLoading,
       error: error,
       imageUrl: imageUrl ?? this.imageUrl,
       initialUserInfo: initialUserInfo ?? this.initialUserInfo,
@@ -296,13 +459,20 @@ class ProfileSettingsState {
       nameController: state.nameController,
       emailController: state.emailController,
       phoneController: state.phoneController,
-      otpController: state.otpController,
+      emailOtpController: state.emailOtpController,
+      phoneOtpController: state.phoneOtpController,
       dob: state.dob,
       gender: state.gender,
       country: state.country,
       countryId: state.countryId,
       city: state.city,
       isLoading: state.isLoading,
+      isEmailOtpSent: state.isEmailOtpSent,
+      isEmailVerified: state.isEmailVerified,
+      isEmailLoading: state.isEmailLoading,
+      isPhoneOtpSent: state.isPhoneOtpSent,
+      isPhoneVerified: state.isPhoneVerified,
+      isPhoneLoading: state.isPhoneLoading,
       error: state.error,
       imageUrl: state.imageUrl,
       initialUserInfo: state.initialUserInfo,
