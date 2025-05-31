@@ -20,8 +20,8 @@ import '../providers/master_data_provider.dart';
 import '../utils/app_constants.dart';
 import '../utils/file_compressor.dart';
 
-class ProfileSettingsPage extends ConsumerWidget {
-  ProfileSettingsPage({super.key});
+class UserProfileScreen extends ConsumerWidget {
+  UserProfileScreen({super.key});
 
   final ImagePicker picker = ImagePicker();
 

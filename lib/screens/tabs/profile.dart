@@ -89,7 +89,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             // All menu items
             _buildTile(
               onTap: () {
-                context.nav.pushNamed(Routes.profileSettings);
+                context.nav.pushNamed(Routes.userProfile);
               },
               icon: 'assets/icons/profile01.svg',
               title: 'Profile setting',
