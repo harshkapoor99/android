@@ -7,24 +7,6 @@ import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
 import '../providers/chat_provider.dart'; // If .pw is here
 
-const Color darkBackgroundColor = Color(0xFF0A0A0A);
-const Color inputBackgroundColor = Color(0xFF23222F);
-const Color primaryTextColor = Colors.white;
-const Color secondaryTextColor = Colors.grey;
-const Color iconColor = Colors.white;
-const Gradient editIconGradient = LinearGradient(
-  colors: [Colors.blueAccent, Colors.purpleAccent],
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-);
-
-// Helper class for Bottom Navigation Bar items
-class BottomBarIconLabel {
-  BottomBarIconLabel({required this.assetName, required this.label});
-  String assetName;
-  String label;
-}
-
 class CharacterProfile extends ConsumerStatefulWidget {
   const CharacterProfile({super.key});
 
@@ -58,12 +40,12 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
     final CharacterDetail? character = provider.characterDetail;
 
     return Scaffold(
-      backgroundColor: darkBackgroundColor,
+      backgroundColor: context.colorExt.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: true,
-        iconTheme: const IconThemeData(color: primaryTextColor),
+        iconTheme: IconThemeData(color: context.colorExt.textHint),
         title: Builder(
           builder: (context) {
             double horizontalPadding =
@@ -190,55 +172,62 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                       //   ),
                       // ),
                       20.ph,
-                      Center(
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            double screenWidth = constraints.maxWidth;
-                            return Container(
-                              width: screenWidth * 0.98,
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF23222F),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (character
-                                          .characterType
-                                          ?.charactertypeName !=
-                                      null) ...[
-                                    buildProfileField(
-                                      "What type of category fits your companion",
-                                      "${character.characterType!.charactertypeName} ${character.characterType!.emoji}",
-                                    ),
-                                    16.ph,
+                      if (character.characterType != null ||
+                          character.relationship != null ||
+                          character.personality != null ||
+                          character.behaviours.isNotEmpty)
+                        Center(
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              double screenWidth = constraints.maxWidth;
+                              return Container(
+                                width: screenWidth * 0.98,
+                                padding: const EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF23222F),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (character
+                                            .characterType
+                                            ?.charactertypeName !=
+                                        null) ...[
+                                      buildProfileField(
+                                        "What type of category fits your companion",
+                                        "${character.characterType!.charactertypeName} ${character.characterType!.emoji}",
+                                      ),
+                                      16.ph,
+                                    ],
+                                    if (character.relationship != null) ...[
+                                      buildProfileField(
+                                        "What’s your companion’s relationship to you",
+                                        "${character.relationship?.title} ${character.relationship?.emoji}",
+                                      ),
+                                      16.ph,
+                                    ],
+                                    if (character.personality != null)
+                                      buildProfileField(
+                                        "What's your companion's personality type",
+                                        "${character.personality?.title} ${character.personality?.emoji}",
+                                      ),
+                                    if (character.behaviours.isNotEmpty) ...[
+                                      16.ph,
+                                      buildProfileMultiField(
+                                        "Which behaviour’s match your companion",
+                                        character.behaviours
+                                            .map((e) => "${e.title} ${e.emoji}")
+                                            .toList(),
+                                      ),
+                                    ],
                                   ],
-                                  buildProfileField(
-                                    "What’s your companion’s relationship to you",
-                                    "${character.relationship?.title} ${character.relationship?.emoji}",
-                                  ),
-                                  16.ph,
-                                  buildProfileField(
-                                    "What's your companion's personality type",
-                                    "${character.personality?.title} ${character.personality?.emoji}",
-                                  ),
-                                  if (character.behaviours.isNotEmpty) ...[
-                                    16.ph,
-                                    buildProfileMultiField(
-                                      "Which behaviour’s match your companion",
-                                      character.behaviours
-                                          .map((e) => "${e.title} ${e.emoji}")
-                                          .toList(),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            );
-                          },
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
                       // 20.ph,
                       // Center(
                       //   child: LayoutBuilder(
