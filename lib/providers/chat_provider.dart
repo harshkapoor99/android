@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
+import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
@@ -168,27 +169,6 @@ class Chat extends _$Chat {
     }
   }
 
-  void fetchCharacterDetails() async {
-    state = state._updateWith(isFetchingCharacterDetails: true);
-    try {
-      final response = await ref
-          .read(chatServiceProvider)
-          .fetchCharacterDetails(characterId: state.character!.id);
-
-      if (response.statusCode == 200) {
-        final characterDetail = CharacterDetail.fromMap(response.data["data"]);
-
-        state = state._updateWith(characterDetail: characterDetail);
-      } else {
-        initiateChatWithCharacter();
-      }
-    } catch (e) {
-      rethrow;
-    } finally {
-      state = state._updateWith(isFetchingCharacterDetails: false);
-    }
-  }
-
   void clearHistory() {
     state.messageController.clear();
     state = state._updateWith(
@@ -231,6 +211,14 @@ class Chat extends _$Chat {
       ],
     );
   }
+
+  void updateImage(GenImage image) {
+    if (state.character != null) {
+      state = state._updateWith(
+        character: state.character!.updateWith(imageGallery: [image]),
+      );
+    }
+  }
 }
 
 class ChatState {
@@ -240,17 +228,12 @@ class ChatState {
     this.isTyping = false,
     this.isFetchingHistory = true,
     this.isFetchingChatList = true,
-    this.isFetchingCharacterDetails = true,
     this.character,
     this.characterDetail,
     required this.messages,
     required this.chatList,
   });
-  final bool hasMessage,
-      isTyping,
-      isFetchingHistory,
-      isFetchingChatList,
-      isFetchingCharacterDetails;
+  final bool hasMessage, isTyping, isFetchingHistory, isFetchingChatList;
   final TextEditingController messageController;
   final List<ChatMessage> messages;
   final List<ChatListItem> chatList;
@@ -264,7 +247,6 @@ class ChatState {
     bool? isTyping,
     bool? isFetchingHistory,
     bool? isFetchingChatList,
-    bool? isFetchingCharacterDetails,
     TextEditingController? messageController,
     Character? character,
     CharacterDetail? characterDetail,
@@ -276,8 +258,6 @@ class ChatState {
       isTyping: isTyping ?? this.isTyping,
       isFetchingHistory: isFetchingHistory ?? this.isFetchingHistory,
       isFetchingChatList: isFetchingChatList ?? this.isFetchingChatList,
-      isFetchingCharacterDetails:
-          isFetchingCharacterDetails ?? this.isFetchingCharacterDetails,
       messageController: messageController ?? this.messageController,
       character: character ?? this.character,
       characterDetail: characterDetail ?? this.characterDetail,

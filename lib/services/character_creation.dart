@@ -57,6 +57,12 @@ abstract class CharacterService {
     String? countryId,
     String? cityId,
   });
+  Future<Response> characterImageUpdate({
+    required String characterId,
+    String? refImageDescription,
+    String? refImageBackstory,
+    String? refImage,
+  });
 }
 
 class CharacterServiceImpl implements CharacterService {
@@ -138,7 +144,6 @@ class CharacterServiceImpl implements CharacterService {
         "creator_id": creatorId,
         "image_id": imageId,
       },
-      timeout: const Duration(seconds: 30),
     );
     return response;
   }
@@ -174,7 +179,25 @@ class CharacterServiceImpl implements CharacterService {
         "country": countryId,
         "city": cityId,
       },
-      timeout: const Duration(seconds: 30),
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> characterImageUpdate({
+    required String characterId,
+    String? refImageDescription,
+    String? refImageBackstory,
+    String? refImage,
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.characterImageUpdate.url,
+      data: {
+        "character_id": characterId,
+        "ref_image_description": refImageDescription,
+        "ref_image_backstory": refImageBackstory,
+        "ref_image": refImage,
+      },
     );
     return response;
   }

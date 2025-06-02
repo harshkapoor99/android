@@ -148,7 +148,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 onTap: () {
                   context.nav.pushNamed(Routes.characterProfile);
                 },
-                child: CircleAvatar(backgroundImage: NetworkImage(image)),
+                child: Hero(
+                  tag: "character_image",
+
+                  child: CircleAvatar(backgroundImage: NetworkImage(image)),
+                ),
               ),
               10.pw,
               Column(
