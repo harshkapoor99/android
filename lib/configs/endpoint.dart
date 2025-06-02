@@ -36,7 +36,7 @@ enum RemoteEndpoint {
   ),
 
   fetchMasterCharacters(
-    path: 'chatgenerationservice/character/getallcharacterlist/',
+    path: 'chatgenerationservice/character/getallcharacterformobile/',
   ),
 
   // Generate Random prompt
@@ -54,6 +54,9 @@ enum RemoteEndpoint {
   charactersDetails(
     path: 'chatgenerationservice/character/characterdetailsbycharacterid/',
   ),
+  characterImageUpdate(
+    path: 'chatgenerationservice/character/updatecharacterimage/',
+  ),
 
   // Chat with character
   initiateChatWithCharacter(path: 'chatgenerationservice/character/initchat/'),
@@ -64,7 +67,13 @@ enum RemoteEndpoint {
   // User Profile
   profileDetails(path: 'userservice/user/userdetailsbyuserid/'),
   updateProfile(path: 'userservice/user/userupdateprofile/'),
-  updateProfileImage(path: 'userservice/user/userprofileimageupdate/');
+  updateProfileImage(path: 'userservice/user/userprofileimageupdate/'),
+
+  // User profile verify
+  userVerify(path: "userservice/user/userverifybyphoneoremail/"),
+  userVerifyOtp(path: "userservice/user/otpverify/")
+  // ending semicolon
+  ;
 
   const RemoteEndpoint({required this.path});
 

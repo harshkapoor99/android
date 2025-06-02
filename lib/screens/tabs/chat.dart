@@ -9,7 +9,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
 
 class ChatTab extends ConsumerStatefulWidget {
@@ -58,7 +58,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ...masterProvider.characterDetails.map((ai) {
+                  ...masterProvider.characters.map((ai) {
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
                       child: Column(
@@ -79,7 +79,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               onTap: () {
                                 ref
                                     .read(chatProvider.notifier)
-                                    .setCharacter(ai.toCharacter());
+                                    .setCharacter(ai);
                                 context.nav.pushNamed(Routes.chat);
                               },
                               borderRadius: BorderRadius.circular(40),
@@ -123,7 +123,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           child: Center(
                             child: Icon(
                               Icons.arrow_outward_sharp,
-                              color: context.colorExt.textSecondary,
+                              color: context.colorExt.textHint,
                               size: 24,
                             ),
                           ),
@@ -216,7 +216,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                             ),
                             style: context.appTextStyle.textSemibold.copyWith(
                               fontSize: 12,
-                              color: context.colorExt.textSecondary,
+                              color: context.colorExt.textHint,
                             ),
                           ),
                         ],
@@ -228,7 +228,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                         style: context.appTextStyle.textSmall.copyWith(
                           // list item text font size reduced
                           fontSize: 12,
-                          color: context.colorExt.textSecondary,
+                          color: context.colorExt.textHint,
                         ),
                       ),
                     );

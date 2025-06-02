@@ -38,7 +38,7 @@ class AppTextStyle {
   );
 
   TextStyle get textSmall => TextStyle(
-    color: colors(context).textSecondary,
+    color: colors(context).textHint,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );

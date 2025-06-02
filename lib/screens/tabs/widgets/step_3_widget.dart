@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -62,7 +62,6 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      print(img.path);
       var image = await compressImage(File(img.path));
       if (image != null) {
         // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);

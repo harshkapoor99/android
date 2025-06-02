@@ -26,10 +26,6 @@ ThemeData getAppTheme({
             isDarkTheme
                 ? AppStaticColors.whiteColor
                 : AppStaticColors.blackColor,
-        textSecondary:
-            isDarkTheme
-                ? AppStaticColors.lightWhiteColor
-                : AppStaticColors.grayColor,
         textHint:
             isDarkTheme
                 ? AppStaticColors.lightWhiteColor

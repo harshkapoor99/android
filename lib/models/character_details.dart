@@ -24,6 +24,9 @@ class CharacterDetail {
   final List<Behaviour> behaviours;
   final List<GenImage> imageGallery;
 
+  final String? refImage;
+  final String? imageDescription;
+  final String? backStory;
   final String prompt;
 
   final DateTime createdDate;
@@ -52,6 +55,9 @@ class CharacterDetail {
     required this.behaviours,
     required this.imageGallery,
 
+    required this.refImage,
+    required this.imageDescription,
+    required this.backStory,
     required this.prompt,
 
     required this.createdDate,
@@ -94,6 +100,9 @@ class CharacterDetail {
       json["image_gallery"].map((x) => GenImage.fromMap(x)),
     ),
 
+    refImage: json["ref_image"],
+    imageDescription: json["ref_image_description"],
+    backStory: json["ref_image_backstory"],
     prompt: json["prompt"],
 
     createdDate: DateTime.parse(json["created_date"]),
@@ -123,6 +132,9 @@ class CharacterDetail {
     "behaviour": List<GenImage>.from(behaviours.map((b) => b.toMap())),
     "image_gallery": List<dynamic>.from(imageGallery.map((x) => x.toMap())),
 
+    "ref_image": refImage,
+    "ref_image_description": imageDescription,
+    "ref_image_backstory": backStory,
     "prompt": prompt,
 
     "created_date": createdDate.toIso8601String(),
@@ -152,6 +164,9 @@ class CharacterDetail {
     List<Behaviour>? behaviours,
     List<GenImage>? imageGallery,
 
+    String? refImage,
+    String? imageDescription,
+    String? backStory,
     String? prompt,
 
     DateTime? createdDate,
@@ -180,6 +195,9 @@ class CharacterDetail {
       behaviours: behaviours ?? this.behaviours,
       imageGallery: imageGallery ?? this.imageGallery,
 
+      refImage: refImage ?? this.refImage,
+      imageDescription: imageDescription ?? this.imageDescription,
+      backStory: backStory ?? this.backStory,
       prompt: prompt ?? this.prompt,
 
       createdDate: createdDate ?? this.createdDate,
@@ -205,9 +223,9 @@ class CharacterDetail {
     voiceId: voice?.id,
     countryId: country?.id,
     cityId: city?.id,
-    refImage: null,
-    refImageDescription: null,
-    refImageBackstory: null,
+    refImage: refImage,
+    refImageDescription: imageDescription,
+    refImageBackstory: backStory,
     prompt: prompt,
     imageGallery: imageGallery,
     createdDate: createdDate,

@@ -6,7 +6,7 @@ import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/age_input_formatter.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../components/labeled_text_field.dart';
 import '../../../models/master/master_models.dart';
@@ -52,14 +52,12 @@ class Step0Widget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             LabeledTextField(
-              labelColor: const Color(0xFFF2F2F2),
               controller: provider.characterNameController,
               label: 'Character Name',
               hintText: 'Name',
             ),
             26.ph,
             LabeledTextField(
-              labelColor: const Color(0xFFF2F2F2),
               controller: provider.ageController,
               label: 'Age (years - minimum 18+)',
               hintText: 'Eg. 26',
@@ -110,7 +108,7 @@ class Step0Widget extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isSelected
-                                    ? Color(0xFFBEBEBE)
+                                    ? const Color(0xFFBEBEBE)
                                     : const Color(0xFF23222F),
                             borderRadius: BorderRadius.circular(8),
                           ),

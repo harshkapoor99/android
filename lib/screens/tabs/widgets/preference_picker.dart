@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/responsive.dart';
 
 Widget buildOptionTile<T>({
@@ -26,16 +27,16 @@ Widget buildOptionTile<T>({
   int? maxSelectToClose,
   bool showLoading = false,
 }) {
-  final titleStyle =
-      Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: Colors.white,
-        fontWeight: FontWeight.w600,
-      ) ??
-      const TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-      );
+  final titleStyle = context.appTextStyle.textSemibold;
+  // Theme.of(context).textTheme.titleMedium?.copyWith(
+  //   color: Colors.white,
+  //   fontWeight: FontWeight.w600,
+  // ) ??
+  // const TextStyle(
+  //   color: Colors.white,
+  //   fontSize: 16,
+  //   fontWeight: FontWeight.w600,
+  // );
   return Container(
     decoration: BoxDecoration(
       color: const Color(0xFF23222F),
@@ -43,27 +44,24 @@ Widget buildOptionTile<T>({
     ),
     child: ListTile(
       leading: icon,
-      title:
-          selectedValue != null
-              ? Text(selectedValue, style: titleStyle)
-              : selected != null
-              ? Text(
-                selectedValue ?? optionToString(selected),
-                style: titleStyle,
-              )
-              : isMultiple == true &&
-                  multiSelected != null &&
-                  multiSelected.isNotEmpty
-              ? Text(
-                "${multiSelected.length} $title Selected",
-                style: titleStyle,
-              )
-              : Text(
-                "Select",
-                style: titleStyle.copyWith(
-                  color: context.colorExt.textSecondary,
-                ),
-              ),
+      title: Text(
+        selectedValue ??
+            (selected != null
+                ? optionToString(selected)
+                : isMultiple == true &&
+                    multiSelected != null &&
+                    multiSelected.isNotEmpty
+                ? "${multiSelected.length} $title Selected"
+                : "Select"),
+        style:
+            selectedValue != null ||
+                    selected != null ||
+                    (isMultiple == true &&
+                        multiSelected != null &&
+                        multiSelected.isNotEmpty)
+                ? titleStyle
+                : AppConstants.inputDecoration(context).hintStyle,
+      ),
       trailing:
           showLoading
               ? SizedBox(
@@ -182,7 +180,7 @@ void _showVoiceOptionPopup(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF141416),
+            color: Color(0xFF0D0D18),
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
@@ -369,7 +367,7 @@ void _showOptionPopup<T>(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
           decoration: const BoxDecoration(
-            color: Color(0xFF141416),
+            color: Color(0xFF0D0D18),
             borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
@@ -435,7 +433,7 @@ void _showOptionPopup<T>(
                                       decoration: BoxDecoration(
                                         color:
                                             isSelected
-                                                ? context.colorExt.textSecondary
+                                                ? context.colorExt.textHint
                                                 : context.colorExt.border,
                                         borderRadius: BorderRadius.circular(
                                           100,
@@ -533,7 +531,7 @@ void _showOptionPopupWithMultiselect<T>(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
           child: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF141416),
+              color: Color(0xFF0D0D18),
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
@@ -617,7 +615,7 @@ void _showOptionPopupWithMultiselect<T>(
                                                   isSelected
                                                       ? context
                                                           .colorExt
-                                                          .textSecondary
+                                                          .textHint
                                                       : context.colorExt.border,
                                               borderRadius:
                                                   BorderRadius.circular(100),
@@ -732,7 +730,7 @@ void _showOptionPopupWithSearch<T>(
           },
           child: Container(
             decoration: const BoxDecoration(
-              color: Color(0xFF141416),
+              color: Color(0xFF0D0D18),
               borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
             ),
             child: Column(
@@ -787,7 +785,7 @@ void _showOptionPopupWithSearch<T>(
                         ),
                         hintText: "Search",
                         hintStyle: context.appTextStyle.text.copyWith(
-                          color: context.colorExt.textSecondary.withValues(
+                          color: context.colorExt.textHint.withValues(
                             // alpha: 0.7,
                           ),
                         ),
@@ -801,7 +799,7 @@ void _showOptionPopupWithSearch<T>(
                             height: 5,
                             width: 5,
                             colorFilter: ColorFilter.mode(
-                              context.colorExt.textSecondary,
+                              context.colorExt.textHint,
                               BlendMode.srcIn,
                             ),
                           ),

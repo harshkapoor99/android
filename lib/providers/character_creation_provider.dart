@@ -340,6 +340,7 @@ class CharacterCreationState {
     required this.descriptionController,
     required this.backstoryController,
     this.isCharacterGenerating = false,
+    this.isRandomPromptGenerating = false,
     this.characterImages = const [],
     this.chracterId = "",
     this.seletedCharacterImage,
@@ -366,7 +367,8 @@ class CharacterCreationState {
   TextEditingController descriptionController;
   TextEditingController backstoryController;
 
-  bool isCharacterGenerating, isImageUploading;
+  bool isCharacterGenerating, isImageUploading, isRandomPromptGenerating;
+
   String chracterId;
   List<GenImage> characterImages;
   GenImage? seletedCharacterImage;
@@ -394,6 +396,7 @@ class CharacterCreationState {
     TextEditingController? descriptionController,
     TextEditingController? backstoryController,
     bool? isCharacterGenerating,
+    bool? isRandomPromptGenerating,
     List<GenImage>? characterImages,
     String? chracterId,
     GenImage? seletedCharacterImage,
@@ -423,6 +426,8 @@ class CharacterCreationState {
       backstoryController: backstoryController ?? this.backstoryController,
       isCharacterGenerating:
           isCharacterGenerating ?? this.isCharacterGenerating,
+      isRandomPromptGenerating:
+          isRandomPromptGenerating ?? this.isRandomPromptGenerating,
       characterImages: characterImages ?? this.characterImages,
       chracterId: chracterId ?? this.chracterId,
       seletedCharacterImage:
@@ -454,6 +459,7 @@ class CharacterCreationState {
       descriptionController: state.descriptionController,
       backstoryController: state.backstoryController,
       isCharacterGenerating: state.isCharacterGenerating,
+      isRandomPromptGenerating: state.isRandomPromptGenerating,
       characterImages: state.characterImages,
       chracterId: state.chracterId,
       seletedCharacterImage: state.seletedCharacterImage,
@@ -481,6 +487,7 @@ class CharacterCreationState {
       descriptionController: descriptionController,
       backstoryController: backstoryController,
       isCharacterGenerating: false,
+      isRandomPromptGenerating: false,
       characterImages: [],
       chracterId: "",
       seletedCharacterImage: null,

@@ -10,7 +10,7 @@ import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 
 class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
@@ -194,13 +194,7 @@ class ExploreScreen extends ConsumerWidget {
             buildHeader(context),
             buildGradientTexts(context),
             const CategoryList(),
-            buildCharacterGrid(
-              context,
-              ref,
-              masterProvider.characterDetails
-                  .map((c) => c.toCharacter())
-                  .toList(),
-            ),
+            buildCharacterGrid(context, ref, masterProvider.characters),
           ],
         ),
       ),

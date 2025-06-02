@@ -11,7 +11,7 @@ import 'package:lottie/lottie.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -148,7 +148,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 onTap: () {
                   context.nav.pushNamed(Routes.characterProfile);
                 },
-                child: CircleAvatar(backgroundImage: NetworkImage(image)),
+                child: Hero(
+                  tag: "character_image",
+
+                  child: CircleAvatar(backgroundImage: NetworkImage(image)),
+                ),
               ),
               10.pw,
               Column(

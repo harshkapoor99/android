@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -10,7 +9,7 @@ import 'package:guftagu_mobile/screens/tabs/widgets/step_1_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_2_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_3_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_4_widget.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 
 class CreateTab extends ConsumerWidget {
   const CreateTab({super.key});

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/entensions.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
 
 class Step4Widget extends ConsumerWidget {
@@ -52,7 +52,6 @@ class Step4Widget extends ConsumerWidget {
                                   -0.5,
                                 ), // move image slightly up
                                 errorBuilder: (context, error, stackTrace) {
-                                  print('Error loading image: $error');
                                   return const Center(
                                     child: Icon(
                                       Icons.image_not_supported,

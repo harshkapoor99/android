@@ -8,9 +8,9 @@ import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
-import 'package:guftagu_mobile/screens/profile_setting.dart';
+import 'package:guftagu_mobile/screens/user_profile.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
-import 'package:guftagu_mobile/screens/avatar_profile.dart';
+import 'package:guftagu_mobile/screens/character_profile.dart';
 import 'package:guftagu_mobile/screens/subscription_page.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -28,7 +28,7 @@ class Routes {
   static const chat = "/chat";
   static const characterProfile = "/characterProfile";
   static const call = "/call";
-  static const profileSettings = "/profileSettings";
+  static const userProfile = "/userProfile";
   static const subscription = "/subscription";
 
   static Route generatedRoutes(RouteSettings settings) {
@@ -57,8 +57,8 @@ class Routes {
         child = const CharacterProfile();
       case Routes.call:
         child = const CallScreen();
-      case Routes.profileSettings:
-        child = const ProfileSettingsPage();
+      case Routes.userProfile:
+        child = UserProfileScreen();
       case Routes.subscription:
         child = const SubscriptionScreen();
       default:

@@ -288,8 +288,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                             Text(
                                               plan['perWeekText'],
                                               style: TextStyle(
-                                                color: Colors.white.withOpacity(
-                                                  0.8,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
                                                 ),
                                                 fontSize:
                                                     _getResponsiveFontSize(
@@ -435,7 +435,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: .3),
                     shape: BoxShape.circle,
                   ),
                   child: IconButton(

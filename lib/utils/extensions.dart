@@ -62,3 +62,12 @@ extension DateTimeExtensions on DateTime {
     return isBefore(today);
   }
 }
+
+extension IterableExtensions<T> on Iterable<T> {
+  T? firstWhereOrNull(bool Function(T element) test) {
+    for (var element in this) {
+      if (test(element)) return element;
+    }
+    return null;
+  }
+}

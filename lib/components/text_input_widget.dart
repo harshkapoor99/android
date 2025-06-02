@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class TextInputWidget extends StatelessWidget {
@@ -51,23 +52,29 @@ class TextInputWidget extends StatelessWidget {
       controller: controller,
       focusNode: focusNode,
       readOnly: readOnly,
+      keyboardType: keyboardType,
       textAlignVertical: TextAlignVertical.center,
       obscureText: obscureText!,
       onChanged: onChanged,
       validator: validator,
       style: context.appTextStyle.text,
-      decoration: InputDecoration(
+      decoration: AppConstants.inputDecoration(context).copyWith(
+        hintText: hint,
         prefixText: prefixText,
         suffixText: sufixText,
         prefix: prefix,
         suffix: suffix,
         prefixStyle: context.appTextStyle.text,
-        filled: true,
-        fillColor: context.colorExt.border,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide(color: context.colorExt.border),
         ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: context.colorExt.primary),
+        ),
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        counterText: "",
       ),
     );
   }
