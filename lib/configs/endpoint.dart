@@ -8,6 +8,9 @@ enum RemoteEndpoint {
   otpEmail(path: 'userservice/user/userotpverificationbyemail/'),
   updateName(path: 'userservice/user/userupdatename/'),
 
+  // user interests
+  saveInterests(path: "userservice/user/selectcharactertype/"),
+
   // google auth
   googleAuthenticationByEmail(
     path: 'userservice/user/googleauthenticationbyemail/',

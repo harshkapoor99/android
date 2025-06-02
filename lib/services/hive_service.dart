@@ -70,6 +70,7 @@ class HiveService extends _$HiveService {
     String? country,
     String? city,
     String? timezone,
+    List<String>? characterTypeIds,
   }) {
     // Get current user info
     User? currentUser = user ?? getUserInfo();
@@ -97,6 +98,7 @@ class HiveService extends _$HiveService {
         updatedDate: DateTime.now(), // Update the updatedDate to current time
         status: status ?? currentUser.status,
         profile: updatedProfile,
+        characterTypeIds: characterTypeIds ?? currentUser.characterTypeIds,
       );
 
       // Save the updated user info back to the box
@@ -135,14 +137,6 @@ class HiveService extends _$HiveService {
 
   Future<void> setHasStartedChat({required bool value}) async {
     await _appSettingsBox.put(AppHSC.hasStartedChat, value);
-  }
-
-  List<String> getSelectedInterests() {
-    return _appSettingsBox.get(AppHSC.seletedInterests, defaultValue: []);
-  }
-
-  Future<void> setSelectedInterests({required List<String> value}) async {
-    await _appSettingsBox.put(AppHSC.seletedInterests, value);
   }
 
   // Combined Operations

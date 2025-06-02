@@ -1,6 +1,7 @@
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/master_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -168,12 +169,29 @@ class MasterData extends _$MasterData {
     try {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data['data'];
-        final List<CharacterType> characterTypes =
+        // response CTs
+        final List<CharacterType> resCharacterTypes =
             data
                 .map((e) => CharacterType.fromMap(e))
                 .toList()
                 .cast<CharacterType>();
-        state = state.copyWith(characterTypes: characterTypes);
+        // user interested CTs
+        final userInterests =
+            ref
+                .read(hiveServiceProvider.notifier)
+                .getUserInfo()!
+                .characterTypeIds;
+
+        for (var element in resCharacterTypes) {
+          if (userInterests.contains(element.id)) {
+            resCharacterTypes.remove(element);
+            resCharacterTypes.add(element);
+          }
+        }
+
+        state = state.copyWith(
+          characterTypes: resCharacterTypes.reversed.toList(),
+        );
       }
     } catch (e) {
       rethrow;

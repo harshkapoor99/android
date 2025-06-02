@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/app_text_style.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/auth_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
@@ -20,7 +21,7 @@ class GoogleAuthButton extends ConsumerWidget {
         } else if (value.response!.characterTypeIds.isEmpty) {
           context.nav.pushReplacementNamed(Routes.interest);
         } else {
-          context.nav.pushReplacementNamed(Routes.interest);
+          context.nav.pushReplacementNamed(Routes.dashboard);
         }
         ref.read(authProvider.notifier).clearControllers();
       }
@@ -56,7 +57,7 @@ class GoogleAuthButton extends ConsumerWidget {
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
               else
-                SvgPicture.asset("assets/svgs/ic_google.svg", height: 40),
+                SvgPicture.asset(Assets.svgs.icGoogle, height: 40),
               const SizedBox(width: 12),
               Text(
                 provider.isGoogleAuthLoading
