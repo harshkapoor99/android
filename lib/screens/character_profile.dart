@@ -33,7 +33,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
       characterProfileProvider,
     );
 
-    final FocusNode _descriptionFocusNode = FocusNode();
+    final FocusNode descriptionFocusNode = FocusNode();
 
     var image =
         ref
@@ -252,7 +252,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                   TextField(
                                     clipBehavior: Clip.antiAliasWithSaveLayer,
                                     controller: profile.descriptionController,
-                                    focusNode: _descriptionFocusNode,
+                                    focusNode: descriptionFocusNode,
                                     style: context.appTextStyle.text,
                                     textCapitalization:
                                         TextCapitalization.sentences,
@@ -283,7 +283,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                         milliseconds: 200,
                                       ),
                                       child:
-                                          _descriptionFocusNode.hasFocus ||
+                                          descriptionFocusNode.hasFocus ||
                                                   profile
                                                       .descriptionController
                                                       .text
@@ -362,7 +362,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                         milliseconds: 200,
                                       ),
                                       child:
-                                          _descriptionFocusNode.hasFocus ||
+                                          descriptionFocusNode.hasFocus ||
                                                   profile
                                                       .descriptionController
                                                       .text
