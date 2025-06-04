@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
+
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -26,6 +27,8 @@ abstract class UserProfileService {
     String? city,
     String? imageUrl,
   });
+
+  Future<Response> saveInterests(String userId, List<String> characterTypes);
 
   Future<Response> getUserDetails(String userId);
   Future<Response> uploadProfileImage(String userId, XFile image);
@@ -55,6 +58,18 @@ class UserProfileServiceImpl implements UserProfileService {
     } catch (e) {
       throw Exception('Failed to update name: $e');
     }
+  }
+
+  @override
+  Future<Response> saveInterests(
+    String userId,
+    List<String> characterTypes,
+  ) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.saveInterests.url,
+      data: {"user_id": userId, "charactertype_id": characterTypes},
+    );
+    return response;
   }
 
   @override

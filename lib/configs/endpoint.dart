@@ -8,6 +8,9 @@ enum RemoteEndpoint {
   otpEmail(path: 'userservice/user/userotpverificationbyemail/'),
   updateName(path: 'userservice/user/userupdatename/'),
 
+  // user interests
+  saveInterests(path: "userservice/user/selectcharactertype/"),
+
   // google auth
   googleAuthenticationByEmail(
     path: 'userservice/user/googleauthenticationbyemail/',
@@ -19,6 +22,7 @@ enum RemoteEndpoint {
   fetchPersionalities(path: 'masterservice/personality/getallpersonality/'),
   fetchRelationships(path: 'masterservice/relationship/getallrelationship/'),
   fetchVoices(path: 'masterservice/voice/getallvoice/'),
+  fetchVoicesByLanguage(path: 'masterservice/voice/voicedetailsbylanguageid/'),
   fetchCountries(path: 'masterservice/country/getallcountry/'),
   fetchCities(path: 'masterservice/city/getallcity/'),
   fetchCitiesByCountry(path: 'masterservice/city/citiesdetailsbycountryid/'),
@@ -63,6 +67,10 @@ enum RemoteEndpoint {
   chatWithCharacter(path: 'chatgenerationservice/character/chat/'),
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/'),
+
+  // Audio
+  generateAudio(path: "chatgenerationservice/character/texttospeech/"),
+  audioMessage(path: "chatgenerationservice/character/speechtotextgeneration/"),
 
   // User Profile
   profileDetails(path: 'userservice/user/userdetailsbyuserid/'),

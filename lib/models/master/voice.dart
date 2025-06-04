@@ -5,8 +5,10 @@ class Voice {
   final String fullName;
   final String vocalId;
   final String vocalType;
+  final String languageId;
+  final String languageCode;
   final String gender;
-  final String voicetextUrl;
+  final String? voicetextUrl;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
@@ -16,8 +18,10 @@ class Voice {
     required this.fullName,
     required this.vocalId,
     required this.vocalType,
+    required this.languageId,
+    required this.languageCode,
     required this.gender,
-    required this.voicetextUrl,
+    this.voicetextUrl,
     required this.createdDate,
     required this.updatedDate,
     required this.status,
@@ -28,6 +32,8 @@ class Voice {
     fullName: json["full_name"],
     vocalId: json["vocal_id"],
     vocalType: json["vocal_type"],
+    languageId: json["language_id"] ?? " ",
+    languageCode: json["language_code"],
     gender: json["gender"],
     voicetextUrl: json["voicetext_url"],
     createdDate: DateTime.parse(json["created_date"]),
@@ -40,6 +46,8 @@ class Voice {
     "full_name": fullName,
     "vocal_id": vocalId,
     "vocal_type": vocalType,
+    "language_id": languageId,
+    "language_code": languageCode,
     "gender": gender,
     "voicetext_url": voicetextUrl,
     "created_date": createdDate.toIso8601String(),

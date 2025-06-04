@@ -65,6 +65,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           ref.read(apiClientProvider).updateToken(authToken);
           if (!user.profile.fullName.hasValue) {
             context.nav.pushReplacementNamed(Routes.name);
+          } else if (user.characterTypeIds.isEmpty) {
+            context.nav.pushReplacementNamed(Routes.interest);
           } else {
             context.nav.pushReplacementNamed(Routes.dashboard);
           }

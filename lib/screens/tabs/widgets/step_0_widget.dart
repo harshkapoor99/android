@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/age_input_formatter.dart';
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../components/labeled_text_field.dart';
@@ -70,8 +70,7 @@ class Step0Widget extends ConsumerWidget {
               ],
             ),
             26.ph,
-            Text('Gender', style: context.appTextStyle.characterGenLabel),
-            12.ph,
+            const LabelText("Gender"),
             ImageOptionSelector(
               options: genderOptions,
               selected: provider.gender ?? "",
@@ -83,11 +82,7 @@ class Step0Widget extends ConsumerWidget {
               },
             ),
             26.ph,
-            Text(
-              'Sexual Orientation',
-              style: context.appTextStyle.characterGenLabel,
-            ),
-            16.ph,
+            const LabelText("Sexual Orientation"),
             Row(
               children:
                   sexualOrientationOptions.map((option) {
@@ -133,23 +128,37 @@ class Step0Widget extends ConsumerWidget {
                   }).toList(),
             ),
             26.ph,
-            Text(
-              'Companion’s  Voice',
-              style: context.appTextStyle.textSemibold.copyWith(
-                color: const Color(0xFFF2F2F2),
-              ),
-            ),
-            16.ph,
-            buildOptionTile<Voice>(
+            const LabelText("Companion's  Language"),
+            buildOptionTile<Language>(
               context: context,
               ref: ref,
-              title: 'Voice',
-              options: masterData.voices,
-              optionToString: (v) => v.fullName,
+              title: "Language",
+              options: masterData.languages,
+              optionToString: (c) => c.title,
               onSelect:
                   (p0) => ref
                       .read(characterCreationProvider.notifier)
-                      .updateWith(voice: p0),
+                      .updateLanguageVoiceWith(language: p0),
+              selected: provider.language,
+            ),
+            26.ph,
+            const LabelText("Companion's  Voice"),
+            buildOptionTile<Voice>(
+              context: context,
+              ref: ref,
+              title: 'Voices',
+              options: masterData.voices,
+              showLoading: masterData.isLoading,
+              emptyOptionHint:
+                  ref.read(characterCreationProvider).language != null
+                      ? "No Voice found for this Language"
+                      : "Choose a Language to continue",
+              optionToString: (v) => v.fullName,
+              optionToStringSubtitle: (v) => v.gender,
+              onSelect:
+                  (p0) => ref
+                      .read(characterCreationProvider.notifier)
+                      .updateLanguageVoiceWith(voice: p0),
               selected: characterProvider.voice,
             ),
             20.ph,

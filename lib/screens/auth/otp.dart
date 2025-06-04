@@ -26,8 +26,10 @@ class OtpScreen extends ConsumerWidget {
           if (value.isSuccess) {
             if (!value.response!.profile.fullName.hasValue) {
               context.nav.pushReplacementNamed(Routes.name);
-            } else {
+            } else if (value.response!.characterTypeIds.isEmpty) {
               context.nav.pushReplacementNamed(Routes.interest);
+            } else {
+              context.nav.pushReplacementNamed(Routes.dashboard);
             }
             ref.read(authProvider.notifier).clearControllers();
           }
