@@ -187,7 +187,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 size: 18,
                 color: Colors.white,
               ),
-              onTap: () => context.nav.pushNamed(Routes.audioWave),
+              // onTap: () => context.nav.pushNamed(Routes.audioWave),
             ),
             _buildTile(
               onTap: () {

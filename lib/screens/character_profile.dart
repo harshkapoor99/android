@@ -103,10 +103,6 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                           width: 120,
                           height: 120,
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xFF00FFED),
-                              width: 1.96,
-                            ),
                             borderRadius: BorderRadius.circular(19.64),
                             image: DecorationImage(
                               image: NetworkImage(image!),

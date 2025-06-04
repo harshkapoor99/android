@@ -68,6 +68,10 @@ enum RemoteEndpoint {
   chatHistory(path: 'chatgenerationservice/character/chathistory/'),
   chatList(path: 'chatgenerationservice/character/chatlist/'),
 
+  // Audio
+  generateAudio(path: "chatgenerationservice/character/texttospeech/"),
+  audioMessage(path: "chatgenerationservice/character/speechtotextgeneration/"),
+
   // User Profile
   profileDetails(path: 'userservice/user/userdetailsbyuserid/'),
   updateProfile(path: 'userservice/user/userupdateprofile/'),

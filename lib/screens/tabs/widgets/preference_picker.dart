@@ -1,8 +1,10 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/providers/audio_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
@@ -161,12 +163,30 @@ void _showVoiceOptionPopup(
     responsiveRightMargin = 64.0;
   }
 
-  final voiceProvider = StateProvider<Voice?>((ref) => null);
-
-  void togglePlay(WidgetRef ref, Voice voice) {
-    ref.read(voiceProvider.notifier).state =
-        ref.read(voiceProvider) == voice ? null : voice;
+  Future<void> _initializePlayer(
+    WidgetRef ref,
+    Voice voice, {
+    required int samples,
+  }) async {
+    try {
+      await ref
+          .read(audioPlayerProvider.notifier)
+          .preparePlayer(voice, samples: samples);
+    } catch (e) {
+      AppConstants.showSnackbar(
+        message: "Failed to load audio:",
+        isSuccess: false,
+      );
+    }
   }
+
+  const style = PlayerWaveStyle(
+    fixedWaveColor: Colors.black,
+    liveWaveColor: Colors.lightBlue,
+    backgroundColor: Colors.black,
+  );
+
+  final samples = style.getSamplesForWidth(screenWidth / 5);
 
   showModalBottomSheet(
     context: context,
@@ -211,7 +231,11 @@ void _showVoiceOptionPopup(
               ),
               Consumer(
                 builder: (context, ref, child) {
-                  final provider = ref.watch(voiceProvider);
+                  final playerState = ref.watch(audioPlayerProvider);
+                  final player = ref.read(audioPlayerProvider.notifier);
+                  final currentDuration = playerState.currentDuration;
+                  final maxDuration = playerState.playerController.maxDuration;
+
                   return options.isEmpty && emptyOptionHint != null
                       ? Text(
                         emptyOptionHint,
@@ -230,7 +254,6 @@ void _showVoiceOptionPopup(
                           itemBuilder: (context, index) {
                             final option = options[index];
                             final isSelected = selected == option;
-                            final isPlaying = provider == option;
 
                             return Container(
                               margin: const EdgeInsets.only(bottom: 10),
@@ -252,10 +275,28 @@ void _showVoiceOptionPopup(
                               child: Row(
                                 children: [
                                   GestureDetector(
-                                    onTap: () => togglePlay(ref, option),
+                                    onTap: () async {
+                                      if (playerState.selectedVoice?.id !=
+                                          option.id) {
+                                        _initializePlayer(
+                                          ref,
+                                          option,
+                                          samples: samples,
+                                        );
+                                        return;
+                                      }
+                                      if (playerState.playerStatus ==
+                                          PlayerStatus.playing) {
+                                        await player.pausePlayer();
+                                      } else {
+                                        await player.startPlayer();
+                                      }
+                                    },
                                     child: SvgPicture.asset(
-                                      provider != null &&
-                                              provider.id == option.id
+                                      playerState.selectedVoice?.id ==
+                                                  option.id &&
+                                              playerState.playerStatus ==
+                                                  PlayerStatus.playing
                                           ? Assets.svgs.icPause
                                           : Assets.svgs.icPlay,
                                     ),
@@ -280,57 +321,83 @@ void _showVoiceOptionPopup(
                                         ),
                                     ],
                                   ),
-                                  const Spacer(),
 
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      if (isPlaying)
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            right: responsiveRightMargin,
-                                          ),
-                                          child: SvgPicture.asset(
-                                            Assets.svgs.waves,
-                                            colorFilter: const ColorFilter.mode(
-                                              Color(0xFF9D93FF),
-                                              BlendMode.srcIn,
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        if (option.id ==
+                                            playerState.selectedVoice?.id)
+                                          Expanded(
+                                            child: Center(
+                                              child: SizedBox(
+                                                // height: 50,
+                                                child:
+                                                    playerState.playerStatus ==
+                                                            PlayerStatus.loading
+                                                        ? CircularProgressIndicator(
+                                                          constraints:
+                                                              BoxConstraints.tight(
+                                                                const Size(
+                                                                  20,
+                                                                  20,
+                                                                ),
+                                                              ),
+                                                          strokeWidth: 2,
+                                                        )
+                                                        : AudioFileWaveforms(
+                                                          size: Size(
+                                                            screenWidth / 5,
+                                                            30,
+                                                          ),
+                                                          playerController:
+                                                              playerState
+                                                                  .playerController,
+                                                          enableSeekGesture:
+                                                              true,
+                                                          waveformType:
+                                                              WaveformType
+                                                                  .fitWidth,
+                                                          waveformData:
+                                                              playerState
+                                                                  .playerController
+                                                                  .waveformData,
+                                                          playerWaveStyle:
+                                                              style,
+                                                        ),
+                                              ),
                                             ),
-                                            width: 26,
-                                            height: 26,
-                                            semanticsLabel: 'Waves icon',
+                                          ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            onSelect(option);
+                                            Navigator.pop(context);
+                                          },
+                                          child: Container(
+                                            width: 40,
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF16151E),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                            ),
+                                            child: Center(
+                                              child: SvgPicture.asset(
+                                                Assets.svgs.clarityArrowLine,
+                                                colorFilter:
+                                                    const ColorFilter.mode(
+                                                      Colors.white,
+                                                      BlendMode.srcIn,
+                                                    ),
+                                                width: 26,
+                                                height: 26,
+                                                semanticsLabel: 'Arrow icon',
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          onSelect(option);
-                                          Navigator.pop(context);
-                                        },
-                                        child: Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            color: const Color(0xFF16151E),
-                                            borderRadius: BorderRadius.circular(
-                                              5,
-                                            ),
-                                          ),
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              Assets.svgs.clarityArrowLine,
-                                              colorFilter:
-                                                  const ColorFilter.mode(
-                                                    Colors.white,
-                                                    BlendMode.srcIn,
-                                                  ),
-                                              width: 26,
-                                              height: 26,
-                                              semanticsLabel: 'Arrow icon',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
