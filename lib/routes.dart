@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:guftagu_mobile/screens/audio_wave_demo.dart';
 import 'package:guftagu_mobile/screens/auth/interest.dart';
 import 'package:guftagu_mobile/screens/auth/login.dart';
 import 'package:guftagu_mobile/screens/auth/otp.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const call = "/call";
   static const userProfile = "/userProfile";
   static const subscription = "/subscription";
+  static const audioWave = "/audioWave";
 
   static Route generatedRoutes(RouteSettings settings) {
     Widget child;
@@ -61,6 +63,8 @@ class Routes {
         child = UserProfileScreen();
       case Routes.subscription:
         child = const SubscriptionScreen();
+      case Routes.audioWave:
+        child = const AudioWaveDemo();
       default:
         throw Exception('Invalid route: ${settings.name}');
     }

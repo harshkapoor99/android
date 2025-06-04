@@ -21,11 +21,11 @@ bool nextButtonStatus(Ref ref) {
       provider.ageController.text.isNotEmpty &&
       provider.sexualOrientation != null &&
       provider.gender != null &&
+      provider.language != null &&
       provider.voice != null) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
-      provider.language != null &&
       provider.country != null &&
       provider.city != null) {
     return true;
@@ -168,6 +168,24 @@ class CharacterCreation extends _$CharacterCreation {
     } else if (city != null && state.city != city) {
       doUpdate = true;
       state.city = city;
+    }
+    if (doUpdate) {
+      state = state._updateWithState(state);
+    }
+  }
+
+  void updateLanguageVoiceWith({Language? language, Voice? voice}) {
+    bool doUpdate = false;
+    if (language != null && state.language != language) {
+      doUpdate = true;
+      state.language = language;
+      ref
+          .read(masterDataProvider.notifier)
+          .fetchVoicesByLanguage(language: language);
+      state.voice = null;
+    } else if (voice != null && state.voice != voice) {
+      doUpdate = true;
+      state.voice = voice;
     }
     if (doUpdate) {
       state = state._updateWithState(state);

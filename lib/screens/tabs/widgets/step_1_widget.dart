@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../providers/character_creation_provider.dart';
@@ -30,11 +30,7 @@ class Step1Widget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Character Style',
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          12.ph,
+          const LabelText('Character Style'),
           ImageOptionSelector(
             options: styleOptions,
             selected: provider.style ?? "",
@@ -44,11 +40,7 @@ class Step1Widget extends ConsumerWidget {
                     .updateWith(style: style),
           ),
           26.ph,
-          Text(
-            "Companion's Country",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("Companion's Country"),
           buildOptionTile<Country>(
             context: context,
             ref: ref,
@@ -62,11 +54,7 @@ class Step1Widget extends ConsumerWidget {
             selected: provider.country,
           ),
           26.ph,
-          Text(
-            "Companion's City",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("Companion's City"),
           Consumer(
             builder: (context, ref, child) {
               final masterData = ref.watch(masterDataProvider);
@@ -91,25 +79,6 @@ class Step1Widget extends ConsumerWidget {
                 selected: provider.city,
               );
             },
-          ),
-          26.ph,
-          Text(
-            "Companion's Language",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-
-          16.ph,
-          buildOptionTile<Language>(
-            context: context,
-            ref: ref,
-            title: "Language",
-            options: masterData.languages,
-            optionToString: (c) => c.title,
-            onSelect:
-                (p0) => ref
-                    .read(characterCreationProvider.notifier)
-                    .updateWith(language: p0),
-            selected: provider.language,
           ),
           20.ph,
         ],

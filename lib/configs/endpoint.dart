@@ -22,6 +22,7 @@ enum RemoteEndpoint {
   fetchPersionalities(path: 'masterservice/personality/getallpersonality/'),
   fetchRelationships(path: 'masterservice/relationship/getallrelationship/'),
   fetchVoices(path: 'masterservice/voice/getallvoice/'),
+  fetchVoicesByLanguage(path: 'masterservice/voice/voicedetailsbylanguageid/'),
   fetchCountries(path: 'masterservice/country/getallcountry/'),
   fetchCities(path: 'masterservice/city/getallcity/'),
   fetchCitiesByCountry(path: 'masterservice/city/citiesdetailsbycountryid/'),

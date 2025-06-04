@@ -18,6 +18,7 @@ abstract class MasterService {
   Future<Response> fetchPersionalities();
   Future<Response> fetchRelationships();
   Future<Response> fetchVoices();
+  Future<Response> fetchVoicesByLanguage({required String languageId});
   Future<Response> fetchCountries();
   Future<Response> fetchCities();
   Future<Response> fetchCitiesByCountry({required String countryId});
@@ -96,6 +97,15 @@ class MasterServiceImpl implements MasterService {
   @override
   Future<Response> fetchVoices() async {
     final response = await _apiClient.get(RemoteEndpoint.fetchVoices.url);
+    return response;
+  }
+
+  @override
+  Future<Response> fetchVoicesByLanguage({required String languageId}) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchVoicesByLanguage.url,
+      data: {"language_id": languageId},
+    );
     return response;
   }
 

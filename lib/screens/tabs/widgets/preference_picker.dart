@@ -17,6 +17,7 @@ Widget buildOptionTile<T>({
   Widget? icon,
   double? width,
   required String Function(T) optionToString,
+  String Function(T)? optionToStringSubtitle,
   bool isLast = false,
   T? selected,
   String? selectedValue,
@@ -28,15 +29,6 @@ Widget buildOptionTile<T>({
   bool showLoading = false,
 }) {
   final titleStyle = context.appTextStyle.textSemibold;
-  // Theme.of(context).textTheme.titleMedium?.copyWith(
-  //   color: Colors.white,
-  //   fontWeight: FontWeight.w600,
-  // ) ??
-  // const TextStyle(
-  //   color: Colors.white,
-  //   fontSize: 16,
-  //   fontWeight: FontWeight.w600,
-  // );
   return Container(
     decoration: BoxDecoration(
       color: const Color(0xFF23222F),
@@ -86,6 +78,9 @@ Widget buildOptionTile<T>({
             title,
             options as List<Voice>,
             optionToString: optionToString as String Function(Voice),
+            optionToStringSubtitle:
+                optionToStringSubtitle as String Function(Voice)?,
+            emptyOptionHint: emptyOptionHint,
             onSelect: onSelect as Function(Voice),
             selected: selected as Voice?,
           );
@@ -136,6 +131,8 @@ void _showVoiceOptionPopup(
   String title,
   List<Voice> options, {
   required String Function(Voice) optionToString,
+  String Function(Voice)? optionToStringSubtitle,
+  String? emptyOptionHint,
   required Function(Voice) onSelect,
   Voice? selected,
 }) {
@@ -166,9 +163,9 @@ void _showVoiceOptionPopup(
 
   final voiceProvider = StateProvider<Voice?>((ref) => null);
 
-  void togglePlay(WidgetRef ref, Voice option) {
+  void togglePlay(WidgetRef ref, Voice voice) {
     ref.read(voiceProvider.notifier).state =
-        ref.read(voiceProvider) == option ? null : option;
+        ref.read(voiceProvider) == voice ? null : voice;
   }
 
   showModalBottomSheet(
@@ -195,10 +192,10 @@ void _showVoiceOptionPopup(
                 ),
                 child: Row(
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: Text(
-                        "Choose from here",
-                        style: TextStyle(
+                        "Choose from $title",
+                        style: const TextStyle(
                           color: Color(0xFFA3A3A3),
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
@@ -215,112 +212,132 @@ void _showVoiceOptionPopup(
               Consumer(
                 builder: (context, ref, child) {
                   final provider = ref.watch(voiceProvider);
-                  return Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        bottom: 10,
-                        top: 5,
-                      ),
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final option = options[index];
-                        final isSelected = selected == option;
-                        final isPlaying = provider == option;
-
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+                  return options.isEmpty && emptyOptionHint != null
+                      ? Text(
+                        emptyOptionHint,
+                        style: context.appTextStyle.textSmall,
+                      )
+                      : Flexible(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 10,
+                            top: 5,
                           ),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF23222F),
-                            borderRadius: BorderRadius.circular(10),
-                            border:
-                                isSelected
-                                    ? Border.all(
-                                      color: const Color(0xFF47C8FC),
-                                      width: 1,
-                                    )
-                                    : null,
-                          ),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => togglePlay(ref, option),
-                                child: SvgPicture.asset(
-                                  provider != null && provider.id == option.id
-                                      ? Assets.svgs.icPause
-                                      : Assets.svgs.icPlay,
-                                ),
-                              ),
-                              12.pw,
-                              Text(
-                                optionToString(option),
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.85),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const Spacer(),
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            final option = options[index];
+                            final isSelected = selected == option;
+                            final isPlaying = provider == option;
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                            return Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF23222F),
+                                borderRadius: BorderRadius.circular(10),
+                                border:
+                                    isSelected
+                                        ? Border.all(
+                                          color: const Color(0xFF47C8FC),
+                                          width: 1,
+                                        )
+                                        : null,
+                              ),
+                              child: Row(
                                 children: [
-                                  if (isPlaying)
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        right: responsiveRightMargin,
-                                      ),
-                                      child: SvgPicture.asset(
-                                        Assets.svgs.waves,
-                                        colorFilter: const ColorFilter.mode(
-                                          Color(0xFF9D93FF),
-                                          BlendMode.srcIn,
-                                        ),
-                                        width: 26,
-                                        height: 26,
-                                        semanticsLabel: 'Waves icon',
-                                      ),
-                                    ),
                                   GestureDetector(
-                                    onTap: () {
-                                      onSelect(option);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF16151E),
-                                        borderRadius: BorderRadius.circular(5),
+                                    onTap: () => togglePlay(ref, option),
+                                    child: SvgPicture.asset(
+                                      provider != null &&
+                                              provider.id == option.id
+                                          ? Assets.svgs.icPause
+                                          : Assets.svgs.icPlay,
+                                    ),
+                                  ),
+                                  12.pw,
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        optionToString(option),
+                                        style:
+                                            context.appTextStyle.textSemibold,
                                       ),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          Assets.svgs.clarityArrowLine,
-                                          colorFilter: const ColorFilter.mode(
-                                            Colors.white,
-                                            BlendMode.srcIn,
+                                      if (optionToStringSubtitle != null)
+                                        Text(
+                                          optionToStringSubtitle(option),
+                                          style: context
+                                              .appTextStyle
+                                              .textSemibold
+                                              .copyWith(fontSize: 12),
+                                        ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      if (isPlaying)
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                            right: responsiveRightMargin,
                                           ),
-                                          width: 26,
-                                          height: 26,
-                                          semanticsLabel: 'Arrow icon',
+                                          child: SvgPicture.asset(
+                                            Assets.svgs.waves,
+                                            colorFilter: const ColorFilter.mode(
+                                              Color(0xFF9D93FF),
+                                              BlendMode.srcIn,
+                                            ),
+                                            width: 26,
+                                            height: 26,
+                                            semanticsLabel: 'Waves icon',
+                                          ),
+                                        ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          onSelect(option);
+                                          Navigator.pop(context);
+                                        },
+                                        child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF16151E),
+                                            borderRadius: BorderRadius.circular(
+                                              5,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: SvgPicture.asset(
+                                              Assets.svgs.clarityArrowLine,
+                                              colorFilter:
+                                                  const ColorFilter.mode(
+                                                    Colors.white,
+                                                    BlendMode.srcIn,
+                                                  ),
+                                              width: 26,
+                                              height: 26,
+                                              semanticsLabel: 'Arrow icon',
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                            );
+                          },
+                        ),
+                      );
                 },
               ),
               SizedBox(height: verticalPadding),

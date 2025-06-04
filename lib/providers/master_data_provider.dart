@@ -112,6 +112,24 @@ class MasterData extends _$MasterData {
     }
   }
 
+  Future<void> fetchVoicesByLanguage({required Language language}) async {
+    final response = await ref
+        .read(masterServiceProvider)
+        .fetchVoicesByLanguage(languageId: language.id);
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<Voice> voices =
+            data.map((e) => Voice.fromMap(e)).toList().cast<Voice>();
+        state = state.copyWith(voices: voices);
+      }
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state.copyWith(isLoading: false);
+    }
+  }
+
   Future<void> fetchCountries() async {
     final response = await ref.read(masterServiceProvider).fetchCountries();
     try {
@@ -205,7 +223,7 @@ class MasterData extends _$MasterData {
       fetchCharacterTypes(),
       fetchCountries(),
       fetchLanguages(),
-      fetchVoices(),
+      // fetchVoices(),
       fetchMasterCharacters(),
       // fetchRelationships(),
       // fetchPersonalities(),

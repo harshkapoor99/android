@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 
 class Step2Widget extends ConsumerWidget {
@@ -25,11 +25,7 @@ class Step2Widget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "What type of category fits your companion",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("What type of category fits your companion"),
           buildOptionTile<CharacterType>(
             context: context,
             ref: ref,
@@ -50,11 +46,7 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          Text(
-            "What's your companion's relationship to you",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("What's your companion's relationship to you"),
           buildOptionTile<Relationship>(
             context: context,
             ref: ref,
@@ -80,11 +72,7 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          Text(
-            "What's your companion's personality type",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("What's your companion's personality type"),
           buildOptionTile<Personality>(
             context: context,
             ref: ref,
@@ -109,11 +97,7 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          Text(
-            "Which behaviour's match your companion",
-            style: context.appTextStyle.characterGenLabel,
-          ),
-          16.ph,
+          const LabelText("Which behaviour's match your companion"),
           buildOptionTile<Behaviour>(
             context: context,
             ref: ref,
