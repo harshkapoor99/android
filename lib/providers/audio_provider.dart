@@ -95,6 +95,7 @@ class AudioPlayer extends _$AudioPlayer {
         .generateAudio(
           text:
               "Hello, ${ref.read(hiveServiceProvider.notifier).getUserInfo()?.profile.fullName ?? ""}! It's nice to meet you! How are you?",
+          languageId: voice.languageId,
           vocalId: voice.vocalId,
         );
 

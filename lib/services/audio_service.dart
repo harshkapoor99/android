@@ -18,6 +18,7 @@ abstract class AudioService {
   Future<Response> generateAudio({
     required String text,
     required String vocalId,
+    required String languageId,
   });
   Future<Response> sendAudioChatMessage({
     required File audioFile,
@@ -35,10 +36,11 @@ class AudioServiceImpl implements AudioService {
   Future<Response> generateAudio({
     required String text,
     required String vocalId,
+    required String languageId,
   }) async {
     final response = await _apiClient.post(
       RemoteEndpoint.generateAudio.url,
-      data: {"text": text, "vocal_id": vocalId},
+      data: {"text": text, "vocal_id": vocalId, "language_id": languageId},
     );
     return response;
   }
