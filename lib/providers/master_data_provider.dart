@@ -200,7 +200,11 @@ class MasterData extends _$MasterData {
                 .getUserInfo()!
                 .characterTypeIds;
 
-        for (var element in resCharacterTypes) {
+        final resCharacterTypesCopy = List<CharacterType>.from(
+          resCharacterTypes,
+        );
+
+        for (var element in resCharacterTypesCopy) {
           if (userInterests.contains(element.id)) {
             resCharacterTypes.remove(element);
             resCharacterTypes.add(element);
