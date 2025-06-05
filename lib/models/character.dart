@@ -8,6 +8,7 @@ class Character {
   final String? age;
   final String? gender;
   final String? style;
+  final String? characterDescription;
   final String? sexualOrientation;
   final String? languageId;
   final String? charactertypeId;
@@ -33,6 +34,7 @@ class Character {
     this.age,
     this.gender,
     this.style,
+    this.characterDescription,
     this.sexualOrientation,
     this.languageId,
     this.charactertypeId,
@@ -59,6 +61,7 @@ class Character {
     age: json["age"],
     gender: json["gender"],
     style: json["style"],
+    characterDescription: json["character_description"],
     sexualOrientation: json["sexual_orientation"],
     languageId: json["language_id"],
     charactertypeId: json["charactertype_id"] ?? "",
@@ -87,6 +90,7 @@ class Character {
     "age": age,
     "gender": gender,
     "style": style,
+    "character_description": characterDescription,
     "sexual_orientation": sexualOrientation,
     "language_id": languageId,
     "charactertype_id": charactertypeId,
@@ -138,6 +142,7 @@ class Character {
       age: age,
       gender: gender,
       style: style,
+      characterDescription: characterDescription,
       sexualOrientation: sexualOrientation,
       languageId: languageId,
       charactertypeId: charactertypeId,

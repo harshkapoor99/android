@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
@@ -35,7 +36,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(chatProvider);
-    final masterProvider = ref.watch(masterDataProvider);
+
     if (provider.chatList.isEmpty) {
       if (provider.isFetchingChatList) {
         // Case 1: Fetching and no chats yet - show loading animation
@@ -51,95 +52,11 @@ class _ChatTabState extends ConsumerState<ChatTab> {
         child: Column(
           children: [
             const SizedBox(height: 10),
-            SingleChildScrollView(
+            const SingleChildScrollView(
               // height: MediaQuery.sizeOf(context).height * 0.18,
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...masterProvider.characters.map((ai) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: Column(
-                        children: [
-                          Ink(
-                            height: 100,
-                            width: 80,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40),
-                              color: null,
-                              image: DecorationImage(
-                                image:
-                                    Image.network(ai.imageGallery[0].url).image,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                ref
-                                    .read(chatProvider.notifier)
-                                    .setCharacter(ai);
-                                context.nav.pushNamed(Routes.chat);
-                              },
-                              borderRadius: BorderRadius.circular(40),
-                              child: null,
-                            ),
-                          ),
-                          6.ph,
-                          SizedBox(
-                            width: 80,
-                            child: Text(
-                              ai.name,
-                              maxLines: 1,
-                              overflow: TextOverflow.clip,
-                              style: context.appTextStyle.textBold.copyWith(
-                                fontSize: 12,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                  Column(
-                    children: [
-                      Ink(
-                        height: 100,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(40),
-                          color: context.colorExt.border,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            ref
-                                .read(masterDataProvider.notifier)
-                                .fetchMasterCharacters();
-                            context.nav.pushNamed(Routes.explore);
-                          },
-                          borderRadius: BorderRadius.circular(40),
-                          child: Center(
-                            child: Icon(
-                              Icons.arrow_outward_sharp,
-                              color: context.colorExt.textHint,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      6.ph,
-                      Text(
-                        "Explore",
-                        style: context.appTextStyle.textBold.copyWith(
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: HeaderCharacterRow(),
             ),
             16.ph,
             // const Padding(
@@ -239,6 +156,99 @@ class _ChatTabState extends ConsumerState<ChatTab> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class HeaderCharacterRow extends ConsumerWidget {
+  const HeaderCharacterRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final masterCharacters = ref.watch(
+      masterDataProvider.select((value) => value.characters),
+    );
+    List<Character> characters = List<Character>.from(masterCharacters);
+    characters.sort((a, b) => b.createdDate.compareTo(a.createdDate));
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...characters
+            .sublist(0, characters.length <= 10 ? characters.length : 10)
+            .map((ai) {
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: Column(
+                  children: [
+                    Ink(
+                      height: 100,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40),
+                        color: null,
+                        image: DecorationImage(
+                          image: Image.network(ai.imageGallery[0].url).image,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          ref.read(chatProvider.notifier).setCharacter(ai);
+                          context.nav.pushNamed(Routes.chat);
+                        },
+                        borderRadius: BorderRadius.circular(40),
+                        child: null,
+                      ),
+                    ),
+                    6.ph,
+                    SizedBox(
+                      width: 80,
+                      child: Text(
+                        ai.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                        style: context.appTextStyle.textBold.copyWith(
+                          fontSize: 12,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+        Column(
+          children: [
+            Ink(
+              height: 100,
+              width: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                color: context.colorExt.border,
+              ),
+              child: InkWell(
+                onTap: () {
+                  ref.read(masterDataProvider.notifier).fetchMasterCharacters();
+                  context.nav.pushNamed(Routes.explore);
+                },
+                borderRadius: BorderRadius.circular(40),
+                child: Center(
+                  child: Icon(
+                    Icons.arrow_outward_sharp,
+                    color: context.colorExt.textHint,
+                    size: 24,
+                  ),
+                ),
+              ),
+            ),
+            6.ph,
+            Text(
+              "Explore",
+              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

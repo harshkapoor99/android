@@ -5,7 +5,6 @@ import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
-import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
@@ -169,31 +168,8 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                         return ModelCard(
                           imageUrl: image,
                           name: provider.myAiList[index].name,
-                          characterType:
-                              ref
-                                      .read(masterDataProvider)
-                                      .characterTypes
-                                      .where(
-                                        (e) =>
-                                            e.id ==
-                                            provider
-                                                .myAiList[index]
-                                                .charactertypeId,
-                                      )
-                                      .isNotEmpty
-                                  ? ref
-                                      .read(masterDataProvider)
-                                      .characterTypes
-                                      .where(
-                                        (e) =>
-                                            e.id ==
-                                            provider
-                                                .myAiList[index]
-                                                .charactertypeId,
-                                      )
-                                      .first
-                                      .charactertypeName
-                                  : null,
+                          description:
+                              provider.myAiList[index].characterDescription,
                           onCharTap:
                               () => ref
                                   .read(chatProvider.notifier)

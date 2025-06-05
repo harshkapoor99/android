@@ -155,7 +155,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           return ModelCard(
             imageUrl: image,
             name: characters[index].name,
-            characterType: null,
+            description: characters[index].characterDescription,
             onCharTap:
                 () => ref
                     .read(chatProvider.notifier)

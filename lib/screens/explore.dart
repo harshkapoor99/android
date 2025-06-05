@@ -144,7 +144,7 @@ class ExploreScreen extends ConsumerWidget {
           return ModelCard(
             imageUrl: image,
             name: characters[index].name,
-            characterType: null,
+            description: characters[index].characterDescription,
             onCharTap:
                 () => ref
                     .read(chatProvider.notifier)
@@ -174,12 +174,6 @@ class ExploreScreen extends ConsumerWidget {
         title: Row(
           children: [
             const Spacer(),
-            SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-            5.pw,
-            Text(
-              '1200',
-              style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-            ),
             15.pw,
             SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
             15.pw,
