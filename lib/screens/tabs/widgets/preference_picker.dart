@@ -163,7 +163,7 @@ void _showVoiceOptionPopup(
     responsiveRightMargin = 64.0;
   }
 
-  Future<void> _initializePlayer(
+  Future<void> initializePlayer(
     WidgetRef ref,
     Voice voice, {
     required int samples,
@@ -278,7 +278,7 @@ void _showVoiceOptionPopup(
                                     onTap: () async {
                                       if (playerState.selectedVoice?.id !=
                                           option.id) {
-                                        _initializePlayer(
+                                        initializePlayer(
                                           ref,
                                           option,
                                           samples: samples,

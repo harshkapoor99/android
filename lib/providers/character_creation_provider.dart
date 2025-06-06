@@ -5,7 +5,7 @@ import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
-import 'package:guftagu_mobile/services/character_creation.dart';
+import 'package:guftagu_mobile/services/character_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:image_picker/image_picker.dart';

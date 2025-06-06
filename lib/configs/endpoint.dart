@@ -61,6 +61,9 @@ enum RemoteEndpoint {
   characterImageUpdate(
     path: 'chatgenerationservice/character/updatecharacterimage/',
   ),
+  deleteCharacter(
+    path: "chatgenerationservice/character/deletecharacterformobile/",
+  ),
 
   // Chat with character
   initiateChatWithCharacter(path: 'chatgenerationservice/character/initchat/'),

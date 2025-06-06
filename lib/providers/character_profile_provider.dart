@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
-import 'package:guftagu_mobile/services/character_creation.dart';
+import 'package:guftagu_mobile/services/character_service.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -16,6 +16,7 @@ class ModelCard extends ConsumerWidget {
     this.description,
     required this.onCharTap,
     this.onLongPress,
+    this.selected = false,
   });
 
   final String imageUrl;
@@ -23,6 +24,7 @@ class ModelCard extends ConsumerWidget {
   final String? description;
   final void Function() onCharTap;
   final void Function()? onLongPress;
+  final bool selected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -72,7 +74,8 @@ class ModelCard extends ConsumerWidget {
           ),
           Positioned.fill(
             child: Material(
-              color: Colors.transparent,
+              color:
+                  selected ? Colors.black.withAlpha(200) : Colors.transparent,
               child: InkWell(
                 onLongPress: onLongPress,
                 onTap: () {

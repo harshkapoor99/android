@@ -14,6 +14,7 @@ MyAiService myAiService(Ref ref) {
 
 abstract class MyAiService {
   Future<Response> fetchMyAis({required String creatorId});
+  Future<Response> deleteCharacter({required String characterId});
 }
 
 class MyAiServiceImpl implements MyAiService {
@@ -26,5 +27,14 @@ class MyAiServiceImpl implements MyAiService {
       RemoteEndpoint.charactersByUser.url,
       data: {"creator_id": creatorId},
     );
+  }
+
+  @override
+  Future<Response> deleteCharacter({required String characterId}) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.deleteCharacter.url,
+      data: {"character_id": characterId},
+    );
+    return response;
   }
 }
