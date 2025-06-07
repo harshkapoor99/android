@@ -7,7 +7,6 @@ import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:lottie/lottie.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -219,55 +218,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // --- Handle typing indicator ---
                             if (provider.isTyping && index == 0) {
                               // Display Lottie animation when typing
-                              return Align(
-                                alignment:
-                                    Alignment
-                                        .centerLeft, // Align like incoming messages
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment
-                                          .end, // Align avatar bottom with animation
-                                  children: [
-                                    // Display the AI's avatar
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        right: 10,
-                                        bottom: 5,
-                                      ), // Add bottom margin to align
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                          image:
-                                              Image.network(
-                                                image,
-                                              ).image, // Use the existing image url variable
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    // Display the Lottie animation
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      // Optional background/padding for Lottie:
-                                      // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                      // decoration: BoxDecoration(
-                                      //    color: context.colorExt.surface,
-                                      //    borderRadius: BorderRadius.circular(10),
-                                      // ),
-                                      child: Lottie.asset(
-                                        'assets/animations/du.json', // <-- *** ADJUST THIS PATH TO YOUR FILE ***
-                                        width: 60, // Adjust width as needed
-                                        height: 40, // Adjust height as needed
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              return ChatBubble(
+                                text: "text",
+                                isMe: false,
+                                imageUrl: image,
+                                showTyping: true,
                               );
                             }
                             // --- End typing indicator ---
