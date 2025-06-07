@@ -37,13 +37,13 @@ class _MessageBoxState extends State<MessageBox> {
         duration: Durations.short2,
         padding: const EdgeInsets.only(left: 12),
         decoration: BoxDecoration(
-          color: context.colorExt.border,
+          color: context.colorExt.surface,
           borderRadius: BorderRadius.circular(
             widget.hasMessage || isFocused ? 10 : 60,
           ),
           border: Border.all(
             color:
-                isFocused ? context.colorExt.primary : context.colorExt.border,
+                isFocused ? context.colorExt.primary : context.colorExt.surface,
             width: 1.5,
           ),
         ),
@@ -83,7 +83,7 @@ class _MessageBoxState extends State<MessageBox> {
                     fontSize: 14,
                     color: context.colorExt.textPrimary.withValues(alpha: 0.7),
                   ),
-                  fillColor: context.colorExt.border,
+                  fillColor: context.colorExt.surface,
                   border: const OutlineInputBorder(borderSide: BorderSide.none),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide.none,

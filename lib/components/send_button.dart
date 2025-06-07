@@ -19,7 +19,7 @@ class AnimatedSendButton extends StatelessWidget {
       width: 45,
       height: 45,
       decoration: BoxDecoration(
-        color: context.colorExt.border,
+        color: context.colorExt.surface,
         borderRadius: BorderRadius.circular(100),
       ),
       child: IconButton(

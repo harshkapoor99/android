@@ -39,7 +39,7 @@ class Step4Widget extends ConsumerWidget {
                             width: 167,
                             height: 167,
                             decoration: BoxDecoration(
-                              color: const Color(0xFF272730),
+                              color: context.colorExt.surface,
                               borderRadius: BorderRadius.circular(24),
                             ),
                             child: ClipRRect(
@@ -107,14 +107,14 @@ class Step4Widget extends ConsumerWidget {
                           Material(
                             borderRadius: BorderRadius.circular(10),
                             clipBehavior: Clip.antiAlias,
-                            color: const Color(0xFF272730),
+                            color: context.colorExt.border,
                             child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   width: 2, // You can adjust this
                                   color:
                                       isSeleted
-                                          ? context.colorExt.tertiary
+                                          ? context.colorExt.primary
                                           : Colors.transparent,
                                 ),
                                 borderRadius: BorderRadius.circular(

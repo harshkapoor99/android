@@ -224,7 +224,7 @@ class HeaderCharacterRow extends ConsumerWidget {
               width: 80,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
-                color: context.colorExt.border,
+                color: context.colorExt.surface,
               ),
               child: InkWell(
                 onTap: () {

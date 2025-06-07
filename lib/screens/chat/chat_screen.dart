@@ -256,7 +256,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                       // Optional background/padding for Lottie:
                                       // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                       // decoration: BoxDecoration(
-                                      //    color: context.colorExt.border,
+                                      //    color: context.colorExt.surface,
                                       //    borderRadius: BorderRadius.circular(10),
                                       // ),
                                       child: Lottie.asset(
@@ -396,7 +396,7 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: context.colorExt.border,
+        color: context.colorExt.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(

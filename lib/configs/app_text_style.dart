@@ -38,7 +38,7 @@ class AppTextStyle {
   );
 
   TextStyle get textSmall => TextStyle(
-    color: colors(context).textHint,
+    color: colors(context).textPrimary,
     fontSize: 14,
     fontWeight: FontWeight.w400,
   );
@@ -68,5 +68,11 @@ class AppTextStyle {
   );
 
   TextStyle get characterGenLabel =>
-      TextStyle(fontSize: 16, color: context.colorExt.textPrimary);
+      TextStyle(color: context.colorExt.textPrimary, fontSize: 16);
+
+  TextStyle get sheetHeader => TextStyle(
+    color: context.colorExt.textPrimary,
+    fontSize: 18,
+    fontWeight: FontWeight.w600,
+  );
 }

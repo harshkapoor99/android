@@ -121,7 +121,7 @@ class CallScreen extends ConsumerWidget {
                     _buildCircleButton(
                       context,
                       SvgPicture.asset(Assets.svgs.icChat, width: 20),
-                      context.colorExt.border,
+                      context.colorExt.surface,
                       onPressed: context.nav.pop,
                     ),
                     _buildCircleButton(
@@ -139,7 +139,7 @@ class CallScreen extends ConsumerWidget {
                             width: 20,
                           )
                           : SvgPicture.asset(Assets.svgs.icSpeaker, width: 20),
-                      context.colorExt.border,
+                      context.colorExt.surface,
                       onPressed:
                           () => ref.read(callProvider.notifier).toggleSpeaker(),
                       enabled: provider.isSpeakerOn,

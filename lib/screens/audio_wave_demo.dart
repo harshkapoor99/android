@@ -22,7 +22,7 @@ class AudioWaveDemo extends ConsumerWidget {
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: context.colorExt.border,
+            color: context.colorExt.surface,
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: ListView.separated(

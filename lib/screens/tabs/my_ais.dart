@@ -6,7 +6,6 @@ import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
-import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:lottie/lottie.dart';
@@ -40,7 +39,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
       position: position,
       menuPadding: EdgeInsets.zero,
       popUpAnimationStyle: AnimationStyle(curve: Curves.decelerate),
-      color: context.colorExt.border,
+      color: context.colorExt.surface,
       items: [
         PopupMenuItem(
           value: 'delete',
@@ -49,7 +48,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
               Icons.delete_rounded,
               color: context.colorExt.textPrimary,
             ),
-            title: Text("Delete", style: context.appTextStyle.labelText),
+            title: Text("Delete", style: context.appTextStyle.text),
           ),
         ),
       ],
@@ -177,14 +176,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 26),
-                    const Text(
-                      'My AIs',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFF2F2F2),
-                      ),
-                    ),
+                    Text('My AIs', style: context.appTextStyle.sheetHeader),
                     const SizedBox(height: 18),
                     GridView.builder(
                       // crossAxisCount: 2,

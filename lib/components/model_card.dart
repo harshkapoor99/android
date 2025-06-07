@@ -108,9 +108,11 @@ class ModelCard extends ConsumerWidget {
                               if (description != null)
                                 Text(
                                   description!,
-                                  style: context.appTextStyle.text.copyWith(
-                                    fontSize: 10,
-                                  ),
+                                  style: context.appTextStyle.buttonText
+                                      .copyWith(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                 ),
                             ],
                           ),

@@ -64,7 +64,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                     CustomPaint(
                       size: const Size(6, 6),
                       painter: _BubbleNipPainter(
-                        color: const Color(0xFF1F1F1F),
+                        color: context.colorExt.sheet,
                         isMe: widget.isMe,
                       ),
                     ),
@@ -81,7 +81,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                                 colors: [Color(0xFF9D00C6), Color(0xFF00B1A4)],
                               )
                               : null,
-                      color: widget.isMe ? null : const Color(0xFF1F1F1F),
+                      color: widget.isMe ? null : context.colorExt.bubble,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10),
                         topRight: const Radius.circular(10),
@@ -97,11 +97,11 @@ class _ChatBubbleState extends State<ChatBubble> {
                       widget.text,
                       style: context.appTextStyle.text.copyWith(
                         fontSize: 14,
-                        color: context.colorExt.textPrimary,
-                        fontStyle:
-                            widget.showTyping
-                                ? FontStyle.italic
-                                : FontStyle.normal,
+                        color:
+                            widget.isMe
+                                ? context.colorExt.buttonText
+                                : context.colorExt.textPrimary,
+                        fontStyle: FontStyle.normal,
                       ),
                       contextMenuBuilder: (context, editableTextState) {
                         final selectedText = editableTextState

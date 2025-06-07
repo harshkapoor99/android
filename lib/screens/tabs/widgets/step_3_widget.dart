@@ -97,7 +97,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                         width: 150,
                         height: 150,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF272730),
+                          color: context.colorExt.surface,
                           borderRadius: BorderRadius.circular(24),
                           // crash issue
                           image:
@@ -199,7 +199,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF272730),
+                color: context.colorExt.surface,
               ),
               child: Stack(
                 children: [
@@ -242,7 +242,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                         .generateRandomPrompt();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF1C1B2A),
+                                    backgroundColor: context.colorExt.sheet,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
                                     ),
@@ -271,13 +271,9 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                       ),
                                     ),
                                   ),
-                                  label: const Text(
+                                  label: Text(
                                     'Random Prompt',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFFE5E5E5),
-                                    ),
+                                    style: context.appTextStyle.textSmall,
                                   ),
                                 ),
                               ),
@@ -296,6 +292,10 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                 'assets/icons/mingcute_quill-pen-line.svg',
                                 width: 18,
                                 height: 18,
+                                colorFilter: ColorFilter.mode(
+                                  context.colorExt.textPrimary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                     ),
                   ),
@@ -319,7 +319,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF272730),
+                color: context.colorExt.surface,
               ),
               child: Stack(
                 children: [
@@ -355,6 +355,10 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                 'assets/icons/mingcute_quill-pen-line.svg',
                                 width: 18,
                                 height: 18,
+                                colorFilter: ColorFilter.mode(
+                                  context.colorExt.textPrimary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                     ),
                   ),

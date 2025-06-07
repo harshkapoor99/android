@@ -6,6 +6,7 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
 import 'package:guftagu_mobile/utils/age_input_formatter.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../components/labeled_text_field.dart';
@@ -15,7 +16,11 @@ import '../../../providers/master_data_provider.dart';
 class Step0Widget extends ConsumerWidget {
   Step0Widget({super.key});
 
-  final List<String> sexualOrientationOptions = ['Straight', 'Gay', 'Lesbian'];
+  final List<String> sexualOrientationOptions = const [
+    'Straight',
+    'Gay',
+    'Lesbian',
+  ];
 
   final List<ImageOptions> genderOptions = [
     ImageOptions(
@@ -103,24 +108,19 @@ class Step0Widget extends ConsumerWidget {
                           decoration: BoxDecoration(
                             color:
                                 isSelected
-                                    ? const Color(0xFFBEBEBE)
-                                    : const Color(0xFF23222F),
+                                    ? context.colorExt.button
+                                    : context.colorExt.surface,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             option,
-                            style:
-                                isSelected
-                                    ? const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFF000000),
-                                    )
-                                    : const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
+                            style: context.appTextStyle.textSemibold.copyWith(
+                              fontSize: 14,
+                              color:
+                                  isSelected
+                                      ? context.colorExt.buttonText
+                                      : null,
+                            ),
                           ),
                         ),
                       ),

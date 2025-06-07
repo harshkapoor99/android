@@ -74,9 +74,9 @@ class _PinputExampleState extends State<PinPutWidget> {
               focusNode: focusNode,
               defaultPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  color: context.colorExt.border,
+                  color: context.colorExt.surface,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: context.colorExt.border),
+                  border: Border.all(color: context.colorExt.surface),
                 ),
               ),
               separatorBuilder: (index) => const SizedBox(width: 8),
@@ -96,16 +96,16 @@ class _PinputExampleState extends State<PinPutWidget> {
               ),
               focusedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  color: context.colorExt.border,
+                  color: context.colorExt.surface,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: context.colorExt.primary),
                 ),
               ),
               submittedPinTheme: defaultPinTheme.copyWith(
                 decoration: defaultPinTheme.decoration!.copyWith(
-                  color: context.colorExt.border,
+                  color: context.colorExt.surface,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: context.colorExt.border),
+                  border: Border.all(color: context.colorExt.surface),
                 ),
               ),
               errorPinTheme: defaultPinTheme.copyBorderWith(

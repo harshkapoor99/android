@@ -129,7 +129,7 @@ class UserProfileScreen extends ConsumerWidget {
                                   backgroundColor:
                                       hasChanges
                                           ? WidgetStateProperty.all(
-                                            context.colorExt.border,
+                                            context.colorExt.surface,
                                           )
                                           : null,
                                 ),

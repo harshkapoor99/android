@@ -44,7 +44,7 @@ class GoogleAuthButton extends ConsumerWidget {
           width: double.infinity,
           height: 50,
           decoration: BoxDecoration(
-            border: Border.all(color: context.colorExt.border, width: 2),
+            border: Border.all(color: context.colorExt.surface, width: 2),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(

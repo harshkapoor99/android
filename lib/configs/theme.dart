@@ -16,7 +16,10 @@ ThemeData getAppTheme({
                 ? AppStaticColors.primaryColor
                 : AppStaticColors.primaryColor,
         secondary: AppStaticColors.secondaryColor,
-        tertiary: AppStaticColors.accentColor,
+        tertiary:
+            isDarkTheme
+                ? AppStaticColors.accentColor
+                : AppStaticColors.accentColorDark,
         button:
             isDarkTheme
                 ? AppStaticColors.primaryColor
@@ -26,16 +29,32 @@ ThemeData getAppTheme({
             isDarkTheme
                 ? AppStaticColors.whiteColor
                 : AppStaticColors.blackColor,
+        invertTextPrimary:
+            isDarkTheme
+                ? AppStaticColors.blackColor
+                : AppStaticColors.whiteColor,
         textHint:
             isDarkTheme
                 ? AppStaticColors.lightWhiteColor
                 : AppStaticColors.grayColor,
         background:
             isDarkTheme
-                ? const Color.fromRGBO(3, 7, 18, 1)
-                : const Color(0xFFF3F4F6),
+                ? AppStaticColors.darkBackground
+                : AppStaticColors.lightBackground,
         border:
-            isDarkTheme ? AppStaticColors.grayColor : AppStaticColors.grayColor,
+            isDarkTheme ? AppStaticColors.border : AppStaticColors.grayColor,
+        bubble:
+            isDarkTheme
+                ? AppStaticColors.darkBubble
+                : AppStaticColors.lightBubble,
+        surface:
+            isDarkTheme
+                ? AppStaticColors.grayColor
+                : AppStaticColors.lightGrayColor,
+        sheet:
+            isDarkTheme
+                ? AppStaticColors.sheetDark
+                : AppStaticColors.sheetLight,
       ),
     ],
     fontFamily: 'OpenSans',
@@ -55,7 +74,9 @@ ThemeData getAppTheme({
     unselectedWidgetColor:
         isDarkTheme ? AppStaticColors.accentColor : AppStaticColors.grayColor,
     scaffoldBackgroundColor:
-        isDarkTheme ? Colors.black : const Color(0xFFF3F4F6),
+        isDarkTheme
+            ? AppStaticColors.darkBackground
+            : AppStaticColors.lightBackground,
     appBarTheme: AppBarTheme(
       surfaceTintColor: Colors.transparent,
       backgroundColor:

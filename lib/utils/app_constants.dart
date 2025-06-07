@@ -15,6 +15,7 @@ class AppConstants {
   }) {
     return AppBar(
       // commit - implyLeading
+      backgroundColor: context.colorExt.background,
       automaticallyImplyLeading: implyLeading,
       title: Row(
         children: [
@@ -91,7 +92,7 @@ class AppConstants {
       isScrollControlled: true,
       context: context,
       constraints: const BoxConstraints(maxWidth: 640),
-      backgroundColor: context.colorExt.border,
+      backgroundColor: context.colorExt.surface,
 
       builder: (context) {
         return Ink(
@@ -155,7 +156,7 @@ class AppConstants {
   static InputDecoration inputDecoration(BuildContext context) =>
       InputDecoration(
         filled: true,
-        fillColor: context.colorExt.border,
+        fillColor: context.colorExt.surface,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 15.0,
           horizontal: 15.0,

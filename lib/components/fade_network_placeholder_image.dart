@@ -40,7 +40,7 @@ class _DefaultPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.colorExt.border,
+      color: context.colorExt.surface,
       child: Center(
         child: Icon(Icons.image, color: context.colorExt.textPrimary),
       ),
@@ -55,7 +55,7 @@ class _DefaultErrorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.colorExt.border,
+      color: context.colorExt.surface,
       child: Center(
         child: Icon(Icons.broken_image, color: context.colorExt.textPrimary),
       ),
