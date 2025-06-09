@@ -20,14 +20,14 @@ bool nextButtonStatus(Ref ref) {
       provider.characterNameController.text.isNotEmpty &&
       provider.ageController.text.isNotEmpty &&
       provider.sexualOrientation != null &&
-      provider.gender != null &&
-      provider.language != null &&
-      provider.voice != null) {
+      provider.gender != null) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
       provider.country != null &&
-      provider.city != null) {
+      provider.city != null &&
+      provider.language != null &&
+      provider.voice != null) {
     return true;
   } else if (provider.index == 2 &&
       provider.characterType != null &&
