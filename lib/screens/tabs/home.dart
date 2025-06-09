@@ -8,6 +8,7 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
@@ -26,7 +27,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     super.initState();
   }
 
-  Widget buildHeader(BuildContext context) {
+  Widget buildHeader(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -54,22 +55,34 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                         "Let's create your first character Now!",
                         style: context.appTextStyle.textSemibold.copyWith(
                           fontSize: 20,
+                          color: context.colorExt.buttonText,
                         ),
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 20,
-                      ),
                       decoration: BoxDecoration(
                         color: context.colorExt.background,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
-                        "Create Now",
-                        style: context.appTextStyle.textSemibold.copyWith(
-                          fontSize: 12,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(10),
+                          onTap: () {
+                            ref.read(tabIndexProvider.notifier).changeTab(1);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                              horizontal: 20,
+                            ),
+                            child: Text(
+                              "Create Now",
+                              style: context.appTextStyle.textSemibold.copyWith(
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -173,7 +186,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildHeader(context),
+          buildHeader(context, ref),
           buildGradientTexts(context),
           const CategoryList(),
           buildCharacterGrid(context, ref, masterProvider.characters),
