@@ -141,7 +141,7 @@ class Step2Widget extends ConsumerWidget {
             isMultiple: true,
             maxSelectToClose: 3,
           ),
-          26.ph,
+          20.ph,
         ],
       ),
     );

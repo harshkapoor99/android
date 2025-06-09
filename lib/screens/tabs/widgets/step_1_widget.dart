@@ -39,7 +39,7 @@ class Step1Widget extends ConsumerWidget {
                     .read(characterCreationProvider.notifier)
                     .updateWith(style: style),
           ),
-          26.ph,
+          22.ph,
           const LabelText("Companion's Country"),
           buildOptionTile<Country>(
             context: context,
@@ -53,7 +53,7 @@ class Step1Widget extends ConsumerWidget {
                     .updateCountryCityWith(country: p0),
             selected: provider.country,
           ),
-          26.ph,
+          22.ph,
           const LabelText("Companion's City"),
           Consumer(
             builder: (context, ref, child) {
@@ -79,6 +79,40 @@ class Step1Widget extends ConsumerWidget {
                 selected: provider.city,
               );
             },
+          ),
+          22.ph,
+          const LabelText("Companion's  Language"),
+          buildOptionTile<Language>(
+            context: context,
+            ref: ref,
+            title: "Language",
+            options: masterData.languages,
+            optionToString: (c) => c.title,
+            onSelect:
+                (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateLanguageVoiceWith(language: p0),
+            selected: provider.language,
+          ),
+          22.ph,
+          const LabelText("Companion's  Voice"),
+          buildOptionTile<Voice>(
+            context: context,
+            ref: ref,
+            title: 'Voices',
+            options: masterData.voices,
+            showLoading: masterData.isLoading,
+            emptyOptionHint:
+                ref.read(characterCreationProvider).language != null
+                    ? "No Voice found for this Language"
+                    : "Choose a Language to continue",
+            optionToString: (v) => v.fullName,
+            optionToStringSubtitle: (v) => v.gender,
+            onSelect:
+                (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateLanguageVoiceWith(voice: p0),
+            selected: provider.voice,
           ),
           20.ph,
         ],

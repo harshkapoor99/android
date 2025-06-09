@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -184,17 +185,8 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            26.ph,
-
-            const Text(
-              'Image description (if any)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
-            16.ph,
+            22.ph,
+            const LabelText("Image description (if any)"),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
@@ -303,17 +295,8 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            26.ph,
-
-            const Text(
-              'Back Story if any (300 words)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
-            16.ph,
+            22.ph,
+            const LabelText("Back Story if any (300 words)"),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               width: double.infinity,

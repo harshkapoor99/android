@@ -66,7 +66,7 @@ class CategoryList extends ConsumerWidget {
                         style: context.appTextStyle.textSemibold.copyWith(
                           color:
                               isSelected
-                                  ? context.colorExt.background
+                                  ? context.colorExt.buttonText
                                   : context.colorExt.textHint,
                           fontSize: 12,
                         ),

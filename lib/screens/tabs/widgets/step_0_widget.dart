@@ -61,7 +61,7 @@ class Step0Widget extends ConsumerWidget {
               label: 'Character Name',
               hintText: 'Name',
             ),
-            26.ph,
+            22.ph,
             LabeledTextField(
               controller: provider.ageController,
               label: 'Age (years - minimum 18+)',
@@ -74,7 +74,7 @@ class Step0Widget extends ConsumerWidget {
                 TwoDigitRangeTextInputFormatter(min: 18, max: 99),
               ],
             ),
-            26.ph,
+            22.ph,
             const LabelText("Gender"),
             ImageOptionSelector(
               options: genderOptions,
@@ -86,7 +86,7 @@ class Step0Widget extends ConsumerWidget {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
             ),
-            26.ph,
+            22.ph,
             const LabelText("Sexual Orientation"),
             Row(
               children:
@@ -127,40 +127,7 @@ class Step0Widget extends ConsumerWidget {
                     );
                   }).toList(),
             ),
-            26.ph,
-            const LabelText("Companion's  Language"),
-            buildOptionTile<Language>(
-              context: context,
-              ref: ref,
-              title: "Language",
-              options: masterData.languages,
-              optionToString: (c) => c.title,
-              onSelect:
-                  (p0) => ref
-                      .read(characterCreationProvider.notifier)
-                      .updateLanguageVoiceWith(language: p0),
-              selected: provider.language,
-            ),
-            26.ph,
-            const LabelText("Companion's  Voice"),
-            buildOptionTile<Voice>(
-              context: context,
-              ref: ref,
-              title: 'Voices',
-              options: masterData.voices,
-              showLoading: masterData.isLoading,
-              emptyOptionHint:
-                  ref.read(characterCreationProvider).language != null
-                      ? "No Voice found for this Language"
-                      : "Choose a Language to continue",
-              optionToString: (v) => v.fullName,
-              optionToStringSubtitle: (v) => v.gender,
-              onSelect:
-                  (p0) => ref
-                      .read(characterCreationProvider.notifier)
-                      .updateLanguageVoiceWith(voice: p0),
-              selected: characterProvider.voice,
-            ),
+
             20.ph,
           ],
         ),
