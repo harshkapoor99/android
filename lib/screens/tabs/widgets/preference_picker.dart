@@ -322,13 +322,10 @@ void _showVoiceOptionPopup(
                                   ),
 
                                   Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        if (option.id ==
-                                            playerState.selectedVoice?.id)
-                                          Expanded(
-                                            child: Center(
+                                    child:
+                                        option.id ==
+                                                playerState.selectedVoice?.id
+                                            ? Center(
                                               child: SizedBox(
                                                 // height: 50,
                                                 child:
@@ -365,40 +362,37 @@ void _showVoiceOptionPopup(
                                                               style,
                                                         ),
                                               ),
-                                            ),
-                                          ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            onSelect(option);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: context.colorExt.surface,
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              border: Border.all(
-                                                color: context.colorExt.border,
-                                                width: 1,
-                                              ),
-                                            ),
-                                            child: Center(
-                                              child: SvgPicture.asset(
-                                                Assets.svgs.clarityArrowLine,
-                                                colorFilter: ColorFilter.mode(
-                                                  context.colorExt.textPrimary,
-                                                  BlendMode.srcIn,
-                                                ),
-                                                width: 26,
-                                                height: 26,
-                                                semanticsLabel: 'Arrow icon',
-                                              ),
-                                            ),
-                                          ),
+                                            )
+                                            : const SizedBox.shrink(),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      onSelect(option);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: context.colorExt.surface,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: context.colorExt.border,
+                                          width: 1,
                                         ),
-                                      ],
+                                      ),
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          Assets.svgs.clarityArrowLine,
+                                          colorFilter: ColorFilter.mode(
+                                            context.colorExt.textPrimary,
+                                            BlendMode.srcIn,
+                                          ),
+                                          width: 26,
+                                          height: 26,
+                                          semanticsLabel: 'Arrow icon',
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],

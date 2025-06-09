@@ -133,7 +133,23 @@ class Chat extends _$Chat {
             return ChatListItem.fromMap(e);
           }).toList();
       if (chatsList.isNotEmpty) {
-        ref.read(hiveServiceProvider.notifier).setHasStartedChat(value: true);
+        if (state.chatList.isNotEmpty) {
+          var chatList = state.chatList;
+          for (var i = 0; i < parsedChatsList.length; i++) {
+            var chat = chatList.firstWhereOrNull(
+              (element) => element.sessionId == parsedChatsList[i].sessionId,
+            );
+            if (chat != null) {
+              bool hasNewMessage =
+                  chat.lastChat.message != parsedChatsList[i].lastChat.message;
+              if (hasNewMessage || chat.hasNewMessage) {
+                parsedChatsList[i] = parsedChatsList[i].copyWith(
+                  hasNewMessage: hasNewMessage || chat.hasNewMessage,
+                );
+              }
+            }
+          }
+        }
         state = state._updateWith(chatList: parsedChatsList);
       } else {}
     } catch (e) {
@@ -183,33 +199,49 @@ class Chat extends _$Chat {
   }
 
   void setCharacter(Character character) {
-    state = state._updateWith(character: character);
+    var chatList = state.chatList;
+    var chatIndex = chatList.indexWhere(
+      (element) => element.character.id == character.id,
+    );
+
+    chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
+
+    state = state._updateWith(character: character, chatList: chatList);
   }
 
   void appendChat({
     required bool isMe,
-    required String text,
+    String? text,
     required DateTime time,
+    String? audioPath,
   }) {
-    state = state._updateWith(
-      messages: [
-        ChatMessage(isMe: isMe, text: text, time: time),
-        ...state.messages,
-      ],
+    ChatMessage newMessage = ChatMessage(
+      characterId: state.character!.id,
+      sender: isMe ? "user" : "ai",
+      creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+      sessionId:
+          state.character!.id +
+          ref.read(hiveServiceProvider.notifier).getUserId()!,
+
+      isMe: isMe,
+      message: text,
+      timestamp: time,
+      audioPath: audioPath,
     );
+
+    updateChatList(newMessage, state.messages.isEmpty);
+
+    state = state._updateWith(messages: [newMessage, ...state.messages]);
   }
 
-  void appendSvgChat({
-    required bool isMe,
-    required Widget svgWidget,
-    required DateTime time,
-  }) {
-    state = state._updateWith(
-      messages: [
-        ChatMessage(isMe: isMe, text: '', customContent: svgWidget, time: time),
-        ...state.messages,
-      ],
-    );
+  void updateChatList(ChatMessage message, bool isNew) {
+    var list = state.chatList;
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].character.id == state.character?.id) {
+        list[i] = list[i].copyWith(lastChat: message, hasNewMessage: isNew);
+      }
+    }
+    state = state._updateWith(chatList: list);
   }
 
   void updateImage(GenImage image) {

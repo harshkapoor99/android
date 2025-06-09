@@ -1,39 +1,48 @@
 import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/models/master/chat_message.dart';
 
 class ChatListItem {
   final String sessionId;
   final String creatorId;
   final Character character;
-  final String lastMessage;
-  final DateTime lastMessageTime;
+  final ChatMessage lastChat;
+  final bool hasNewMessage;
 
   ChatListItem({
     required this.sessionId,
     required this.creatorId,
     required this.character,
-    required this.lastMessage,
-    required this.lastMessageTime,
+    required this.lastChat,
+    this.hasNewMessage = false,
   });
 
   factory ChatListItem.fromMap(Map<String, dynamic> json) => ChatListItem(
     sessionId: json["session_id"],
     creatorId: json["creator_id"],
     character: Character.fromMap(json["character"]),
-    lastMessage: json["last_message"],
-    lastMessageTime: DateTime.parse(
-      json["last_message_time"].runtimeType == String
-          ? json["last_message_time"].contains("Z")
-              ? json["last_message_time"]
-              : json["last_message_time"].padRight(26, "0") + ("Z")
-          : json["last_message_time"],
-    ).toLocal(),
+    lastChat: ChatMessage.fromMap(json["latest_chat"]),
   );
 
   Map<String, dynamic> toMap() => {
     "session_id": sessionId,
     "creator_id": creatorId,
     "character": character.toMap(),
-    "last_message": lastMessage,
-    "last_message_time": lastMessageTime.toIso8601String(),
+    "latest_chat": lastChat.toMap(),
   };
+
+  ChatListItem copyWith({
+    String? sessionId,
+    String? creatorId,
+    Character? character,
+    ChatMessage? lastChat,
+    bool? hasNewMessage,
+  }) {
+    return ChatListItem(
+      sessionId: sessionId ?? this.sessionId,
+      creatorId: creatorId ?? this.creatorId,
+      character: character ?? this.character,
+      lastChat: lastChat ?? this.lastChat,
+      hasNewMessage: hasNewMessage ?? this.hasNewMessage,
+    );
+  }
 }

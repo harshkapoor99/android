@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
 
-class ChatBubble extends StatefulWidget {
+class ChatBubbleText extends StatefulWidget {
   final String text;
   final bool isMe;
   final String imageUrl;
   final bool showTyping;
   final DateTime? time;
 
-  const ChatBubble({
+  const ChatBubbleText({
     super.key,
     required this.text,
     required this.isMe,
@@ -21,10 +22,10 @@ class ChatBubble extends StatefulWidget {
   });
 
   @override
-  State<ChatBubble> createState() => _ChatBubbleState();
+  State<ChatBubbleText> createState() => _ChatBubbleTextState();
 }
 
-class _ChatBubbleState extends State<ChatBubble> {
+class _ChatBubbleTextState extends State<ChatBubbleText> {
   Key textKey = UniqueKey();
   void _deselectText() {
     setState(() {
@@ -64,7 +65,7 @@ class _ChatBubbleState extends State<ChatBubble> {
                   if (!widget.isMe)
                     CustomPaint(
                       size: const Size(6, 6),
-                      painter: _BubbleNipPainter(
+                      painter: BubbleNipPainter(
                         color: context.colorExt.bubble,
                         isMe: widget.isMe,
                       ),
@@ -93,66 +94,73 @@ class _ChatBubbleState extends State<ChatBubble> {
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7,
                     ),
-                    child:
-                        widget.showTyping
-                            ? Lottie.asset(
-                              'assets/animations/du.json',
-                              height: 20,
-                              fit: BoxFit.contain,
-                            )
-                            : SelectableText(
-                              key: textKey,
-                              widget.text,
-                              style: context.appTextStyle.text.copyWith(
-                                fontSize: 14,
-                                color:
-                                    widget.isMe
-                                        ? context.colorExt.buttonText
-                                        : context.colorExt.textPrimary,
-                                fontStyle: FontStyle.normal,
-                              ),
-                              contextMenuBuilder: (context, editableTextState) {
-                                final selectedText = editableTextState
-                                    .textEditingValue
-                                    .selection
-                                    .textInside(widget.text);
-                                return AdaptiveTextSelectionToolbar.buttonItems(
-                                  buttonItems: [
-                                    if (selectedText.isNotEmpty)
-                                      ContextMenuButtonItem(
-                                        label: 'Copy',
-                                        onPressed: () {
-                                          Clipboard.setData(
-                                            ClipboardData(text: selectedText),
-                                          );
-                                          _deselectText();
-                                        },
-                                      ),
+                    child: Builder(
+                      builder: (context) {
+                        if (widget.showTyping) {
+                          return Lottie.asset(
+                            'assets/animations/du.json',
+                            height: 20,
+                            fit: BoxFit.contain,
+                          );
+                        }
+                        if (widget.text.isNotEmpty) {
+                          return SelectableText(
+                            key: textKey,
+                            widget.text,
+                            style: context.appTextStyle.text.copyWith(
+                              fontSize: 14,
+                              color:
+                                  widget.isMe
+                                      ? context.colorExt.buttonText
+                                      : context.colorExt.textPrimary,
+                              fontStyle: FontStyle.normal,
+                            ),
+                            contextMenuBuilder: (context, editableTextState) {
+                              final selectedText = editableTextState
+                                  .textEditingValue
+                                  .selection
+                                  .textInside(widget.text);
+                              return AdaptiveTextSelectionToolbar.buttonItems(
+                                buttonItems: [
+                                  if (selectedText.isNotEmpty)
                                     ContextMenuButtonItem(
-                                      label: 'Copy All',
+                                      label: 'Copy',
                                       onPressed: () {
                                         Clipboard.setData(
-                                          ClipboardData(text: widget.text),
+                                          ClipboardData(text: selectedText),
                                         );
                                         _deselectText();
                                       },
                                     ),
-                                  ],
-                                  anchors: TextSelectionToolbarAnchors(
-                                    primaryAnchor:
-                                        editableTextState
-                                            .contextMenuAnchors
-                                            .primaryAnchor -
-                                        const Offset(0, 0),
+                                  ContextMenuButtonItem(
+                                    label: 'Copy All',
+                                    onPressed: () {
+                                      Clipboard.setData(
+                                        ClipboardData(text: widget.text),
+                                      );
+                                      _deselectText();
+                                    },
                                   ),
-                                );
-                              },
-                            ),
+                                ],
+                                anchors: TextSelectionToolbarAnchors(
+                                  primaryAnchor:
+                                      editableTextState
+                                          .contextMenuAnchors
+                                          .primaryAnchor -
+                                      const Offset(0, 0),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
                   ),
                   if (widget.isMe)
                     CustomPaint(
                       size: const Size(6, 6),
-                      painter: _BubbleNipPainter(
+                      painter: BubbleNipPainter(
                         color: const Color(0xFF00B1A4),
                         isMe: widget.isMe,
                       ),
@@ -160,12 +168,9 @@ class _ChatBubbleState extends State<ChatBubble> {
                 ],
               ),
 
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text(
-                  widget.time != null ? formatTime(widget.time!) : "",
-                  style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
-                ),
+              Text(
+                widget.time != null ? formatTime(widget.time!) : "",
+                style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
               ),
             ],
           ),
@@ -173,34 +178,4 @@ class _ChatBubbleState extends State<ChatBubble> {
       ),
     );
   }
-}
-
-class _BubbleNipPainter extends CustomPainter {
-  final Color? color;
-  final bool isMe;
-
-  _BubbleNipPainter({required this.color, required this.isMe});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = color ?? Colors.purple
-          ..style = PaintingStyle.fill;
-
-    final path = Path();
-    if (isMe) {
-      path.moveTo(0, 0);
-      path.lineTo(size.width, size.height);
-      path.lineTo(0, size.height);
-    } else {
-      path.moveTo(size.width, 0);
-      path.lineTo(0, size.height);
-      path.lineTo(size.width, size.height);
-    }
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

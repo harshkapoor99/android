@@ -218,7 +218,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // --- Handle typing indicator ---
                             if (provider.isTyping && index == 0) {
                               // Display Lottie animation when typing
-                              return ChatBubble(
+                              return ChatBubbleText(
                                 text: "text",
                                 isMe: false,
                                 imageUrl: image,
@@ -250,8 +250,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   provider.messages[messageIndex + 1];
                               showDateSeparator =
                                   !isSameDay(
-                                    provider.messages[messageIndex].time,
-                                    prevMessage.time,
+                                    provider.messages[messageIndex].timestamp,
+                                    prevMessage.timestamp,
                                   );
                             }
 
@@ -267,14 +267,30 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     provider.messages[messageIndex].time,
                                   ),
                                 ChatBubble(
-                                  text: provider.messages[messageIndex].text,
-                                  isMe: provider.messages[messageIndex].isMe,
-                                  imageUrl:
-                                      image, // Pass the AI image url (used if isMe is false)
-                                  time:
-                                      provider.messages[messageIndex].time
-                                          .toLocal(),
-                                ),
+                                  text: provider.messages[messageIndex]
+                                            .timestamp
+                                            .toLocal(),
+                                    audioPath:
+                                        provider
+                                            .messages[messageIndex]
+                                            .audioPath,
+                                  ),
+                                if (provider.messages[messageIndex].message !=
+                                    null)
+                                  ChatBubbleText(
+                                    text:
+                                        provider
+                                            .messages[messageIndex]
+                                            .message!,
+                                    isMe: provider.messages[messageIndex].isMe,
+                                    imageUrl:
+                                        image, // Pass the AI image url (used if isMe is false)
+                                    time:
+                                        provider
+                                            .messages[messageIndex]
+                                            .timestamp
+                                            .toLocal(),
+                                  ),
                               ],
                             );
                           },
@@ -307,12 +323,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 Navigator.of(context).pop();
                               },
                               pressDocument: () async {
-                                Navigator.of(context).pop();
                                 widget.getDocument(File(''), ref);
+                                Navigator.of(context).pop();
                               },
                               pressAudio: () async {
-                                Navigator.of(context).pop();
                                 widget.getAudio(File(''), ref);
+                                Navigator.of(context).pop();
                               },
                             );
                           },

@@ -129,7 +129,7 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           ),
                           Text(
                             formatTime(
-                              provider.chatList[index].lastMessageTime,
+                              provider.chatList[index].lastChat.timestamp,
                             ),
                             style: context.appTextStyle.textSemibold.copyWith(
                               fontSize: 12,
@@ -138,15 +138,35 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           ),
                         ],
                       ),
-                      subtitle: Text(
-                        provider.chatList[index].lastMessage,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.appTextStyle.textSmall.copyWith(
-                          // list item text font size reduced
-                          fontSize: 12,
-                          color: context.colorExt.textHint,
-                        ),
+                      subtitle: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              provider.chatList[index].lastChat.message ?? "",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: context.appTextStyle.textSmall.copyWith(
+                                // list item text font size reduced
+                                fontSize: 12,
+                                color: context.colorExt.textHint,
+                                fontWeight:
+                                    provider.chatList[index].hasNewMessage
+                                        ? FontWeight.w700
+                                        : null,
+                              ),
+                            ),
+                          ),
+                          if (provider.chatList[index].hasNewMessage)
+                            Container(
+                              margin: const EdgeInsets.only(left: 10),
+                              width: 7,
+                              height: 7,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(100),
+                                color: Colors.green,
+                              ),
+                            ),
+                        ],
                       ),
                     );
                   },
