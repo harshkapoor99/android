@@ -2,13 +2,11 @@
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:dio/dio.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/audio_provider.gen.dart';
@@ -51,22 +49,6 @@ class AudioPlayer extends _$AudioPlayer {
       }
     });
     return initState;
-  }
-
-  Future<void> _downloadAudio(String url) async {
-    // final status = await Permission.storage.request();
-    // if (!status.isGranted) {
-    //   throw Exception('Storage permission not granted');
-    // }
-
-    final tempDir = await getTemporaryDirectory();
-    final fileName = url.split('/').last.split("?").first;
-    state.downloadedFilePath = path.join(tempDir.path, fileName);
-    state = state.updateWith(state);
-
-    final dio = Dio();
-    await dio.download(url, state.downloadedFilePath!);
-    print("#AP> download complete");
   }
 
   Future<void> preparePlayer(Voice voice, {int samples = 100}) async {
@@ -118,7 +100,10 @@ class AudioPlayer extends _$AudioPlayer {
             print('Error deleting audio file: $e');
           }
         }
-        await _downloadAudio(voiceUrl);
+        final file = await downloadAudio(voiceUrl);
+        state.downloadedFilePath = file.filePath;
+        state = state.updateWith(state);
+
         filePath = state.downloadedFilePath!;
         await state.playerController.preparePlayer(
           path: filePath,
@@ -154,31 +139,22 @@ class AudioPlayer extends _$AudioPlayer {
     await state.playerController.seekTo(duration.inMilliseconds);
   }
 
-  Future<void> prepareWaveform(String audioPath, bool isNetworkUrl) async {
-    try {
-      String filePath = audioPath;
+  // Future<void> startRecording() async {
+  //   if (state.recordController.hasPermission) {
+  //     state.recordController.record();
+  //   } else {
+  //     bool result = await state.recordController.checkPermission();
+  //     if (result) {
+  //       state.recordController.record();
+  //     }
+  //   }
+  // }
 
-      if (isNetworkUrl) {
-        await _downloadAudio(audioPath);
-        filePath = state.downloadedFilePath!;
-      }
-
-      // final tempDir = await getTemporaryDirectory();
-      // final waveformPath = path.join(
-      //   tempDir.path,
-      //   'waveform_${DateTime.now().millisecondsSinceEpoch}.json',
-      // );
-
-      await state.playerController.preparePlayer(
-        path: filePath,
-        shouldExtractWaveform: true,
-        // waveformData: WaveformData(path: waveformPath, samples: []),
-      );
-    } catch (e) {
-      print('Error preparing waveform: $e');
-      rethrow;
-    }
-  }
+  // void stopRecording() {
+  //   if (state.recordController.hasPermission) {
+  //     state.recordController.stop();
+  //   }
+  // }
 }
 
 class AudioPlayerState {
