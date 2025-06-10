@@ -5,7 +5,6 @@ import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
-import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
@@ -19,6 +18,54 @@ class MyAisTab extends ConsumerStatefulWidget {
 }
 
 class _MyAisTabState extends ConsumerState<MyAisTab> {
+  int? _selectedIndex;
+  final double _scale = 1.0;
+  final double _selectedScale = 1.1;
+  void _showContextMenu(
+    BuildContext context,
+    int index,
+    LongPressStartDetails details,
+  ) {
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final RelativeRect position = RelativeRect.fromSize(
+      details.globalPosition &
+          const Size(40, 40), // Smaller rect for better positioning
+      overlay.size,
+    );
+
+    showMenu(
+      context: context,
+      position: position,
+      menuPadding: EdgeInsets.zero,
+      popUpAnimationStyle: AnimationStyle(curve: Curves.decelerate),
+      color: context.colorExt.surface,
+      items: [
+        PopupMenuItem(
+          value: 'delete',
+          child: ListTile(
+            leading: Icon(
+              Icons.delete_rounded,
+              color: context.colorExt.textPrimary,
+            ),
+            title: Text("Delete", style: context.appTextStyle.text),
+          ),
+        ),
+      ],
+    ).then((value) {
+      if (value != null && value == "delete") {
+        ref
+            .read(myAiProvider.notifier)
+            .deleteCharacter(
+              ref.read(myAiProvider).myAiList[_selectedIndex!].id,
+            );
+      }
+      setState(() {
+        _selectedIndex = null;
+      });
+    });
+  }
+
   @override
   void initState() {
     ref.read(myAiProvider.notifier).fetchMyAis();
@@ -129,14 +176,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 26),
-                    const Text(
-                      'My AIs',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFFF2F2F2),
-                      ),
-                    ),
+                    Text('My AIs', style: context.appTextStyle.sheetHeader),
                     const SizedBox(height: 18),
                     GridView.builder(
                       // crossAxisCount: 2,
@@ -166,38 +206,36 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                           image =
                               provider.myAiList[index].imageGallery.first.url;
                         }
-                        return ModelCard(
-                          imageUrl: image,
-                          name: provider.myAiList[index].name,
-                          characterType:
-                              ref
-                                      .read(masterDataProvider)
-                                      .characterTypes
-                                      .where(
-                                        (e) =>
-                                            e.id ==
-                                            provider
-                                                .myAiList[index]
-                                                .charactertypeId,
-                                      )
-                                      .isNotEmpty
-                                  ? ref
-                                      .read(masterDataProvider)
-                                      .characterTypes
-                                      .where(
-                                        (e) =>
-                                            e.id ==
-                                            provider
-                                                .myAiList[index]
-                                                .charactertypeId,
-                                      )
-                                      .first
-                                      .charactertypeName
-                                  : null,
-                          onCharTap:
-                              () => ref
-                                  .read(chatProvider.notifier)
-                                  .setCharacter(provider.myAiList[index]),
+                        return GestureDetector(
+                          onLongPress: () {
+                            setState(() {
+                              _selectedIndex = index;
+                            });
+                          },
+                          onLongPressStart: (details) {
+                            _showContextMenu(context, index, details);
+                          },
+                          child: AnimatedScale(
+                            scale:
+                                _selectedIndex == index
+                                    ? _selectedScale
+                                    : _scale,
+                            duration: const Duration(milliseconds: 200),
+                            child: ModelCard(
+                              selected:
+                                  !(_selectedIndex == index) &&
+                                  _selectedIndex != null,
+                              imageUrl: image,
+                              name: provider.myAiList[index].name,
+                              description:
+                                  provider.myAiList[index].characterDescription,
+                              onCharTap:
+                                  () => ref
+                                      .read(chatProvider.notifier)
+                                      .setCharacter(provider.myAiList[index]),
+                              // onLongPress: _showContextMenu(context, index),
+                            ),
+                          ),
                         );
                       },
                     ),

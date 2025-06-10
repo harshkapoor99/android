@@ -5,7 +5,7 @@ import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part '../gen/services/character_creation.gen.dart';
+part '../gen/services/character_service.gen.dart';
 
 @riverpod
 CharacterService characterService(Ref ref) {

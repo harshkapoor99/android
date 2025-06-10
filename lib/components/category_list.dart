@@ -43,8 +43,8 @@ class CategoryList extends ConsumerWidget {
               decoration: BoxDecoration(
                 color:
                     isSelected
-                        ? const Color(0xFFB1B0BD)
-                        : const Color(0xFF23222F),
+                        ? context.colorExt.primary
+                        : context.colorExt.surface,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Material(
@@ -66,7 +66,7 @@ class CategoryList extends ConsumerWidget {
                         style: context.appTextStyle.textSemibold.copyWith(
                           color:
                               isSelected
-                                  ? context.colorExt.background
+                                  ? context.colorExt.buttonText
                                   : context.colorExt.textHint,
                           fontSize: 12,
                         ),

@@ -6,6 +6,7 @@ import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 
 class Step2Widget extends ConsumerWidget {
@@ -43,6 +44,10 @@ class Step2Widget extends ConsumerWidget {
               'assets/icons/mdi_category-outline.svg',
               width: 24,
               height: 24,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.tertiary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           26.ph,
@@ -69,6 +74,10 @@ class Step2Widget extends ConsumerWidget {
               'assets/icons/carbon_friendship.svg',
               width: 24,
               height: 24,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.tertiary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           26.ph,
@@ -94,6 +103,10 @@ class Step2Widget extends ConsumerWidget {
               'assets/icons/solar_mask-sad-linear.svg',
               width: 24,
               height: 24,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.tertiary,
+                BlendMode.srcIn,
+              ),
             ),
           ),
           26.ph,
@@ -120,11 +133,15 @@ class Step2Widget extends ConsumerWidget {
               'assets/icons/material-symbols_mindfulness-outline.svg',
               width: 24,
               height: 24,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.tertiary,
+                BlendMode.srcIn,
+              ),
             ),
             isMultiple: true,
             maxSelectToClose: 3,
           ),
-          26.ph,
+          20.ph,
         ],
       ),
     );

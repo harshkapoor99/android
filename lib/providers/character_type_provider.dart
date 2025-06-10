@@ -56,7 +56,7 @@ class UserInterest extends _$UserInterest {
 
   Future<CommonResponse> saveInterests() async {
     final currentState = await future;
-    List<CharacterType> characterTypes = currentState.characterTypes;
+    List<CharacterType> characterTypes = currentState.selectedCharacterTypes;
     state = AsyncData(currentState.updateWith(isLoading: true));
     try {
       var res = await ref

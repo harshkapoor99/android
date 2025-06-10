@@ -13,9 +13,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await Hive.initFlutter();
   await Hive.openBox(AppHSC.authBox);
@@ -30,18 +28,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KeyboardVisibilityProvider(
-      child: MaterialApp(
-        navigatorKey: AppConstants.navigatorKey,
-        scaffoldMessengerKey: AppConstants.snackbarKey,
-        title: 'Guftagu',
-        // remove banner
-        debugShowCheckedModeBanner: false,
-        // themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-        themeMode: ThemeMode.dark,
-        theme: getAppTheme(context: context, isDarkTheme: false),
-        darkTheme: getAppTheme(context: context, isDarkTheme: true),
-        onGenerateRoute: Routes.generatedRoutes,
-        initialRoute: Routes.splash,
+      child: ValueListenableBuilder(
+        valueListenable: Hive.box(AppHSC.appSettingsBox).listenable(),
+        builder: (context, appSettingsBox, _) {
+          bool isDark = appSettingsBox.get(
+            AppHSC.isDarkTheme,
+            defaultValue: true,
+          );
+          // final selectedLocal = appSettingsBox.get(AppHSC.appLocal) as String?;
+          // if (selectedLocal == null) {
+          //   appSettingsBox.put(AppHSC.appLocal, 'en');
+          // }
+          return MaterialApp(
+            navigatorKey: AppConstants.navigatorKey,
+            scaffoldMessengerKey: AppConstants.snackbarKey,
+            title: 'Guftagu',
+            themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+            theme: getAppTheme(context: context, isDarkTheme: false),
+            darkTheme: getAppTheme(context: context, isDarkTheme: true),
+            onGenerateRoute: Routes.generatedRoutes,
+            initialRoute: Routes.splash,
+          );
+        },
       ),
     );
   }

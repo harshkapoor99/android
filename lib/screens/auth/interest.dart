@@ -146,7 +146,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
                                     color:
                                         isSelected
                                             ? null
-                                            : context.colorExt.border,
+                                            : context.colorExt.surface,
                                   ),
                                   child: Text(
                                     type.charactertypeName.toUpperCase(),

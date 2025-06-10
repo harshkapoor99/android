@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/label_text.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -97,7 +98,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                         width: 150,
                         height: 150,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF272730),
+                          color: context.colorExt.surface,
                           borderRadius: BorderRadius.circular(24),
                           // crash issue
                           image:
@@ -184,22 +185,13 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            26.ph,
-
-            const Text(
-              'Image description (if any)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
-            16.ph,
+            22.ph,
+            const LabelText("Image description (if any)"),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF272730),
+                color: context.colorExt.surface,
               ),
               child: Stack(
                 children: [
@@ -242,7 +234,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                         .generateRandomPrompt();
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF1C1B2A),
+                                    backgroundColor: context.colorExt.sheet,
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 12,
                                     ),
@@ -271,13 +263,9 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                       ),
                                     ),
                                   ),
-                                  label: const Text(
+                                  label: Text(
                                     'Random Prompt',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xFFE5E5E5),
-                                    ),
+                                    style: context.appTextStyle.textSmall,
                                   ),
                                 ),
                               ),
@@ -296,6 +284,10 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                 'assets/icons/mingcute_quill-pen-line.svg',
                                 width: 18,
                                 height: 18,
+                                colorFilter: ColorFilter.mode(
+                                  context.colorExt.textPrimary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                     ),
                   ),
@@ -303,23 +295,14 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
               ),
             ),
 
-            26.ph,
-
-            const Text(
-              'Back Story if any (300 words)',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFA3A3A3),
-              ),
-            ),
-            16.ph,
+            22.ph,
+            const LabelText("Back Story if any (300 words)"),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: const Color(0xFF272730),
+                color: context.colorExt.surface,
               ),
               child: Stack(
                 children: [
@@ -355,6 +338,10 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                 'assets/icons/mingcute_quill-pen-line.svg',
                                 width: 18,
                                 height: 18,
+                                colorFilter: ColorFilter.mode(
+                                  context.colorExt.textPrimary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                     ),
                   ),

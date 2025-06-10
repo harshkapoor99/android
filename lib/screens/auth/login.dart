@@ -111,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           Expanded(
                             child: Divider(
-                              color: context.colorExt.border,
+                              color: context.colorExt.surface,
                               indent: 20,
                               endIndent: 20,
                             ),
@@ -119,7 +119,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           Text('Or', style: AppTextStyle(context).textSmall),
                           Expanded(
                             child: Divider(
-                              color: context.colorExt.border,
+                              color: context.colorExt.surface,
                               indent: 20,
                               endIndent: 20,
                             ),

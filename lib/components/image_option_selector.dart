@@ -59,7 +59,7 @@ class ImageOptionSelector extends StatelessWidget {
                             border:
                                 isSelected
                                     ? Border.all(
-                                      color: context.colorExt.tertiary,
+                                      color: context.colorExt.primary,
                                       width: 2,
                                     )
                                     : null,
@@ -89,8 +89,8 @@ class ImageOptionSelector extends StatelessWidget {
                                 option.icon!,
                                 height: 16,
                                 width: 16,
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
+                                colorFilter: ColorFilter.mode(
+                                  context.colorExt.textPrimary,
                                   BlendMode.srcIn,
                                 ),
                               ),
@@ -99,19 +99,7 @@ class ImageOptionSelector extends StatelessWidget {
                             Flexible(
                               child: Text(
                                 option.label,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                  overflow: TextOverflow.ellipsis,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 4,
-                                      color: Colors.black,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
+                                style: context.appTextStyle.textSmall,
                                 textAlign: TextAlign.center,
                               ),
                             ),

@@ -10,7 +10,7 @@ class LabelText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       // TODO: add left: 8.0 to padding
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 12),
       child: Text(label, style: context.appTextStyle.characterGenLabel),
     );
   }

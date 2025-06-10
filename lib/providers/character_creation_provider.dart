@@ -5,7 +5,7 @@ import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
-import 'package:guftagu_mobile/services/character_creation.dart';
+import 'package:guftagu_mobile/services/character_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:image_picker/image_picker.dart';
@@ -20,14 +20,14 @@ bool nextButtonStatus(Ref ref) {
       provider.characterNameController.text.isNotEmpty &&
       provider.ageController.text.isNotEmpty &&
       provider.sexualOrientation != null &&
-      provider.gender != null &&
-      provider.language != null &&
-      provider.voice != null) {
+      provider.gender != null) {
     return true;
   } else if (provider.index == 1 &&
       provider.style != null &&
       provider.country != null &&
-      provider.city != null) {
+      provider.city != null &&
+      provider.language != null &&
+      provider.voice != null) {
     return true;
   } else if (provider.index == 2 &&
       provider.characterType != null &&

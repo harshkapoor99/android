@@ -2,6 +2,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/audio_provider.dart';
@@ -33,7 +34,7 @@ Widget buildOptionTile<T>({
   final titleStyle = context.appTextStyle.textSemibold;
   return Container(
     decoration: BoxDecoration(
-      color: const Color(0xFF23222F),
+      color: context.colorExt.surface,
       borderRadius: BorderRadius.circular(10),
     ),
     child: ListTile(
@@ -66,9 +67,9 @@ Widget buildOptionTile<T>({
                   color: context.colorExt.textPrimary,
                 ),
               )
-              : const Icon(
+              : Icon(
                 Icons.arrow_forward_ios,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
                 size: 16,
               ),
       onTap: () {
@@ -154,24 +155,15 @@ void _showVoiceOptionPopup(
     large: 36,
   );
 
-  double responsiveRightMargin;
-  if (screenWidth < 380) {
-    responsiveRightMargin = 24.0;
-  } else if (screenWidth < 600) {
-    responsiveRightMargin = 40.0;
-  } else {
-    responsiveRightMargin = 64.0;
-  }
-
-  Future<void> _initializePlayer(
+  Future<void> initializePlayer(
     WidgetRef ref,
     Voice voice, {
     required int samples,
   }) async {
     try {
       await ref
-          .read(audioPlayerProvider.notifier)
-          .preparePlayer(voice, samples: samples);
+          .read(audioPlayerProvider(voice: voice).notifier)
+          .preparePlayerVoice(voice, samples: samples);
     } catch (e) {
       AppConstants.showSnackbar(
         message: "Failed to load audio:",
@@ -180,11 +172,7 @@ void _showVoiceOptionPopup(
     }
   }
 
-  const style = PlayerWaveStyle(
-    fixedWaveColor: Colors.black,
-    liveWaveColor: Colors.lightBlue,
-    backgroundColor: Colors.black,
-  );
+  const style = AppConstants.playerWaveStyle;
 
   final samples = style.getSamplesForWidth(screenWidth / 5);
 
@@ -196,9 +184,9 @@ void _showVoiceOptionPopup(
       return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF0D0D18),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          decoration: BoxDecoration(
+            color: context.colorExt.sheet,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -215,26 +203,23 @@ void _showVoiceOptionPopup(
                     Expanded(
                       child: Text(
                         "Choose from $title",
-                        style: const TextStyle(
-                          color: Color(0xFFA3A3A3),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: context.appTextStyle.sheetHeader,
                       ),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.close, color: Color(0xFFA3A3A3)),
+                      child: Icon(
+                        Icons.close,
+                        color: context.colorExt.textPrimary,
+                      ),
                     ),
                   ],
                 ),
               ),
               Consumer(
                 builder: (context, ref, child) {
-                  final playerState = ref.watch(audioPlayerProvider);
-                  final player = ref.read(audioPlayerProvider.notifier);
-                  final currentDuration = playerState.currentDuration;
-                  final maxDuration = playerState.playerController.maxDuration;
+                  final playerState = ref.watch(audioPlayerProvider());
+                  final player = ref.read(audioPlayerProvider().notifier);
 
                   return options.isEmpty && emptyOptionHint != null
                       ? Text(
@@ -262,15 +247,11 @@ void _showVoiceOptionPopup(
                                 vertical: 8,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF23222F),
-                                borderRadius: BorderRadius.circular(10),
-                                border:
+                                color:
                                     isSelected
-                                        ? Border.all(
-                                          color: const Color(0xFF47C8FC),
-                                          width: 1,
-                                        )
-                                        : null,
+                                        ? context.colorExt.primary
+                                        : context.colorExt.surface,
+                                borderRadius: BorderRadius.circular(10),
                               ),
                               child: Row(
                                 children: [
@@ -278,7 +259,7 @@ void _showVoiceOptionPopup(
                                     onTap: () async {
                                       if (playerState.selectedVoice?.id !=
                                           option.id) {
-                                        _initializePlayer(
+                                        initializePlayer(
                                           ref,
                                           option,
                                           samples: samples,
@@ -308,8 +289,15 @@ void _showVoiceOptionPopup(
                                     children: [
                                       Text(
                                         optionToString(option),
-                                        style:
-                                            context.appTextStyle.textSemibold,
+                                        style: context.appTextStyle.textSemibold
+                                            .copyWith(
+                                              color:
+                                                  isSelected
+                                                      ? context
+                                                          .colorExt
+                                                          .buttonText
+                                                      : null,
+                                            ),
                                       ),
                                       if (optionToStringSubtitle != null)
                                         Text(
@@ -317,19 +305,24 @@ void _showVoiceOptionPopup(
                                           style: context
                                               .appTextStyle
                                               .textSemibold
-                                              .copyWith(fontSize: 12),
+                                              .copyWith(
+                                                fontSize: 12,
+                                                color:
+                                                    isSelected
+                                                        ? context
+                                                            .colorExt
+                                                            .buttonText
+                                                        : null,
+                                              ),
                                         ),
                                     ],
                                   ),
 
                                   Expanded(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        if (option.id ==
-                                            playerState.selectedVoice?.id)
-                                          Expanded(
-                                            child: Center(
+                                    child:
+                                        option.id ==
+                                                playerState.selectedVoice?.id
+                                            ? Center(
                                               child: SizedBox(
                                                 // height: 50,
                                                 child:
@@ -366,37 +359,37 @@ void _showVoiceOptionPopup(
                                                               style,
                                                         ),
                                               ),
-                                            ),
-                                          ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            onSelect(option);
-                                            Navigator.pop(context);
-                                          },
-                                          child: Container(
-                                            width: 40,
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF16151E),
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                            ),
-                                            child: Center(
-                                              child: SvgPicture.asset(
-                                                Assets.svgs.clarityArrowLine,
-                                                colorFilter:
-                                                    const ColorFilter.mode(
-                                                      Colors.white,
-                                                      BlendMode.srcIn,
-                                                    ),
-                                                width: 26,
-                                                height: 26,
-                                                semanticsLabel: 'Arrow icon',
-                                              ),
-                                            ),
-                                          ),
+                                            )
+                                            : const SizedBox.shrink(),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      onSelect(option);
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: context.colorExt.surface,
+                                        borderRadius: BorderRadius.circular(5),
+                                        border: Border.all(
+                                          color: context.colorExt.border,
+                                          width: 1,
                                         ),
-                                      ],
+                                      ),
+                                      child: Center(
+                                        child: SvgPicture.asset(
+                                          Assets.svgs.clarityArrowLine,
+                                          colorFilter: ColorFilter.mode(
+                                            context.colorExt.textPrimary,
+                                            BlendMode.srcIn,
+                                          ),
+                                          width: 26,
+                                          height: 26,
+                                          semanticsLabel: 'Arrow icon',
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -450,9 +443,9 @@ void _showOptionPopup<T>(
       return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
         child: Container(
-          decoration: const BoxDecoration(
-            color: Color(0xFF0D0D18),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+          decoration: BoxDecoration(
+            color: context.colorExt.sheet,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -469,16 +462,15 @@ void _showOptionPopup<T>(
                     Expanded(
                       child: Text(
                         "Choose a $title",
-                        style: const TextStyle(
-                          color: Color(0xFFA3A3A3),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: context.appTextStyle.sheetHeader,
                       ),
                     ),
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
-                      child: const Icon(Icons.close, color: Color(0xFFA3A3A3)),
+                      child: Icon(
+                        Icons.close,
+                        color: context.colorExt.textPrimary,
+                      ),
                     ),
                   ],
                 ),
@@ -517,8 +509,8 @@ void _showOptionPopup<T>(
                                       decoration: BoxDecoration(
                                         color:
                                             isSelected
-                                                ? context.colorExt.textHint
-                                                : context.colorExt.border,
+                                                ? context.colorExt.button
+                                                : context.colorExt.surface,
                                         borderRadius: BorderRadius.circular(
                                           100,
                                         ),
@@ -529,7 +521,9 @@ void _showOptionPopup<T>(
                                             .copyWith(
                                               color:
                                                   isSelected
-                                                      ? Colors.black
+                                                      ? context
+                                                          .colorExt
+                                                          .buttonText
                                                       : null,
                                             ),
                                       ),
@@ -614,9 +608,11 @@ void _showOptionPopupWithMultiselect<T>(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
           child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0D0D18),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            decoration: BoxDecoration(
+              color: context.colorExt.sheet,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -633,11 +629,7 @@ void _showOptionPopupWithMultiselect<T>(
                       Expanded(
                         child: Text(
                           "Choose upto $maxSelectToClose $title",
-                          style: const TextStyle(
-                            color: Color(0xFFA3A3A3),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: context.appTextStyle.sheetHeader,
                         ),
                       ),
                       GestureDetector(
@@ -646,9 +638,9 @@ void _showOptionPopupWithMultiselect<T>(
                               context,
                               ref.read(multiSelectProvider),
                             ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Color(0xFFA3A3A3),
+                          color: context.colorExt.textPrimary,
                         ),
                       ),
                     ],
@@ -689,43 +681,45 @@ void _showOptionPopupWithMultiselect<T>(
                                             //   Navigator.pop(context);
                                           },
                                           child: Container(
-                                            padding: const EdgeInsets.only(
-                                              // vertical: 10,
-                                              // horizontal: 18,
-                                              right: 15,
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: 18,
                                             ),
                                             decoration: BoxDecoration(
                                               color:
                                                   isSelected
-                                                      ? context
+                                                      ? context.colorExt.button
+                                                      : context
                                                           .colorExt
-                                                          .textHint
-                                                      : context.colorExt.border,
+                                                          .surface,
                                               borderRadius:
                                                   BorderRadius.circular(100),
                                             ),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Radio<T>(
-                                                  value: option,
-                                                  groupValue:
-                                                      seletedOptions.contains(
-                                                            option,
-                                                          )
-                                                          ? option
-                                                          : null,
-                                                  onChanged: (_) {
-                                                    toggleSelect(ref, option);
-                                                  },
-                                                  fillColor:
-                                                      WidgetStatePropertyAll(
-                                                        context
-                                                            .colorExt
-                                                            .primary,
-                                                      ),
-                                                  activeColor: Colors.red,
-                                                ),
+                                                // Radio<T>(
+                                                //   value: option,
+                                                //   groupValue:
+                                                //       seletedOptions.contains(
+                                                //             option,
+                                                //           )
+                                                //           ? option
+                                                //           : null,
+                                                //   onChanged: (_) {
+                                                //     toggleSelect(ref, option);
+                                                //   },
+                                                //   fillColor:
+                                                //       WidgetStatePropertyAll(
+                                                //         isSelected
+                                                //             ? context
+                                                //                 .colorExt
+                                                //                 .textPrimary
+                                                //             : context
+                                                //                 .colorExt
+                                                //                 .surface,
+                                                //       ),
+                                                // ),
                                                 Flexible(
                                                   child: Text(
                                                     optionToString(option),
@@ -735,7 +729,9 @@ void _showOptionPopupWithMultiselect<T>(
                                                         .copyWith(
                                                           color:
                                                               isSelected
-                                                                  ? Colors.black
+                                                                  ? context
+                                                                      .colorExt
+                                                                      .buttonText
                                                                   : null,
                                                         ),
                                                   ),
@@ -813,9 +809,11 @@ void _showOptionPopupWithSearch<T>(
             FocusManager.instance.primaryFocus?.unfocus();
           },
           child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF0D0D18),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+            decoration: BoxDecoration(
+              color: context.colorExt.sheet,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -832,18 +830,14 @@ void _showOptionPopupWithSearch<T>(
                       Expanded(
                         child: Text(
                           "Choose a $title",
-                          style: const TextStyle(
-                            color: Color(0xFFA3A3A3),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                          ),
+                          style: context.appTextStyle.sheetHeader,
                         ),
                       ),
                       GestureDetector(
                         onTap: () => Navigator.pop(context),
-                        child: const Icon(
+                        child: Icon(
                           Icons.close,
-                          color: Color(0xFFA3A3A3),
+                          color: context.colorExt.textPrimary,
                         ),
                       ),
                     ],
@@ -889,7 +883,7 @@ void _showOptionPopupWithSearch<T>(
                           ),
                         ),
                         filled: true,
-                        fillColor: context.colorExt.border,
+                        fillColor: context.colorExt.surface,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(60),
                           borderSide: BorderSide.none,
@@ -922,36 +916,45 @@ void _showOptionPopupWithSearch<T>(
                           // crossAxisAlignment: WrapCrossAlignment.start,
                           // children:
                           itemCount: filteredOption.length,
-                          itemBuilder:
-                              (context, index) => GestureDetector(
-                                onTap: () {
-                                  onSelect(filteredOption[index]);
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 18,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        width: 1,
-                                        color: context.colorExt.border,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    optionToString(filteredOption[index]),
-                                    style: const TextStyle(
-                                      color: Color(0xFFE5E5E5),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
+                          itemBuilder: (context, index) {
+                            bool isSelected = filteredOption[index] == selected;
+                            return GestureDetector(
+                              onTap: () {
+                                onSelect(filteredOption[index]);
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 18,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? context.colorExt.primary
+                                          : null,
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      width: 1,
+                                      color: context.colorExt.surface,
                                     ),
                                   ),
                                 ),
+                                child: Text(
+                                  optionToString(filteredOption[index]),
+                                  style: context.appTextStyle.textSmall
+                                      .copyWith(
+                                        color:
+                                            isSelected
+                                                ? context.colorExt.buttonText
+                                                : null,
+                                      ),
+                                ),
                               ),
+                            );
+                          },
                         ),
                       ),
                     );

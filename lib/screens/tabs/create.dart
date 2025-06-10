@@ -9,6 +9,7 @@ import 'package:guftagu_mobile/screens/tabs/widgets/step_1_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_2_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_3_widget.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/step_4_widget.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 
 class CreateTab extends ConsumerWidget {
@@ -31,20 +32,18 @@ class CreateTab extends ConsumerWidget {
                 children: [
                   Row(
                     children: [
-                      const Text(
+                      Text(
                         'Character Creation',
-                        style: TextStyle(
+                        style: context.appTextStyle.hintText.copyWith(
                           fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFC9C9C9),
                         ),
                       ),
                       5.pw,
                       SvgPicture.asset(
                         Assets.svgs.icArrowRight,
                         height: 20,
-                        colorFilter: const ColorFilter.mode(
-                          Color(0xFFC9C9C9),
+                        colorFilter: ColorFilter.mode(
+                          context.colorExt.textHint,
                           BlendMode.srcIn,
                         ),
                       ),
@@ -52,20 +51,17 @@ class CreateTab extends ConsumerWidget {
                   ),
                   Row(
                     children: [
-                      const Text(
+                      Text(
                         'STEP',
-                        style: TextStyle(
+                        style: context.appTextStyle.hintText.copyWith(
                           fontSize: 16,
-                          color: Color(0xFFA3A3A3),
                         ),
                       ),
                       6.pw,
                       Text(
                         '${provider.index + 1 > 4 ? 4 : provider.index + 1}/4', // Ensure it doesn't exceed 4
-                        style: const TextStyle(
+                        style: context.appTextStyle.hintText.copyWith(
                           fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],

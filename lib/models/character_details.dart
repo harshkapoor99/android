@@ -12,6 +12,7 @@ class CharacterDetail {
   final String? age;
   final String? gender;
   final String? style;
+  final String? characterDescription;
   final String? sexualOrientation;
 
   final Language? language;
@@ -43,6 +44,7 @@ class CharacterDetail {
     required this.age,
     required this.gender,
     required this.style,
+    required this.characterDescription,
     required this.sexualOrientation,
 
     required this.language,
@@ -74,6 +76,7 @@ class CharacterDetail {
     age: json["age"],
     gender: json["gender"],
     style: json["style"],
+    characterDescription: json["character_description"],
     sexualOrientation: json["sexual_orientation"],
 
     language:
@@ -120,6 +123,7 @@ class CharacterDetail {
     "age": age,
     "gender": gender,
     "style": style,
+    "character_description": characterDescription,
     "sexual_orientation": sexualOrientation,
 
     "language": country?.toMap(),
@@ -152,6 +156,7 @@ class CharacterDetail {
     String? age,
     String? gender,
     String? style,
+    String? characterDescription,
     String? sexualOrientation,
 
     Language? language,
@@ -183,6 +188,7 @@ class CharacterDetail {
       age: age ?? this.age,
       gender: gender ?? this.gender,
       style: style ?? this.style,
+      characterDescription: characterDescription ?? this.characterDescription,
       sexualOrientation: sexualOrientation ?? this.sexualOrientation,
 
       language: language ?? this.language,
@@ -214,6 +220,7 @@ class CharacterDetail {
     age: age,
     gender: gender,
     style: style,
+    characterDescription: characterDescription,
     sexualOrientation: sexualOrientation,
     languageId: language?.id,
     charactertypeId: characterType?.id ?? "",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/components/profile_tile.dart';
 import 'package:guftagu_mobile/configs/hive_contants.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
@@ -87,19 +88,19 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             24.ph,
 
             // All menu items
-            _buildTile(
+            ProfileTile(
               onTap: () {
                 context.nav.pushNamed(Routes.userProfile);
               },
               icon: 'assets/icons/profile01.svg',
               title: 'Profile setting',
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
               ),
             ),
-            _buildTile(
+            ProfileTile(
               icon: 'assets/icons/profile02.svg',
               title: 'Notification',
               trailing: Switch(
@@ -124,91 +125,123 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 }),
               ),
             ),
-            _buildTile(
+            ProfileTile(
               icon: 'assets/icons/profile03.svg',
               title: 'Language',
-              trailing: const Row(
+              trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('English', style: TextStyle(color: Color(0xFFF2F2F2))),
-                  SizedBox(width: 8),
+                  Text('English', style: context.appTextStyle.textSmall),
+                  8.pw,
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 18,
-                    color: Colors.white,
+                    color: context.colorExt.textPrimary,
                   ),
                 ],
               ),
             ),
-            _buildTile(
-              icon: 'assets/icons/profile04.svg',
-              title: 'Theme',
-              trailing: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF23222F),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF47455E), width: 1),
-                ),
-                child: Row(
-                  children: [
-                    SvgPicture.asset(
-                      'assets/svgs/uil_sun.svg',
-                      height: 24,
-                      width: 24,
+            ValueListenableBuilder(
+              valueListenable: Hive.box(AppHSC.appSettingsBox).listenable(),
+              builder: (context, appSettingsBox, child) {
+                bool isDark = appSettingsBox.get(
+                  AppHSC.isDarkTheme,
+                  defaultValue: true,
+                );
+                return ProfileTile(
+                  icon: 'assets/icons/profile04.svg',
+                  title: 'Theme',
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 6,
                     ),
-                    const SizedBox(width: 31),
-                    SvgPicture.asset(
-                      'assets/svgs/lucide_moon.svg',
-                      height: 24,
-                      width: 24,
+                    decoration: BoxDecoration(
+                      color: context.colorExt.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(0xFF47455E),
+                        width: 1,
+                      ),
                     ),
-                  ],
-                ),
-              ),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/svgs/uil_sun.svg',
+                          height: 24,
+                          width: 24,
+                          colorFilter: ColorFilter.mode(
+                            !isDark
+                                ? context.colorExt.tertiary
+                                : context.colorExt.textHint,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 31),
+                        SvgPicture.asset(
+                          'assets/svgs/lucide_moon.svg',
+                          height: 24,
+                          width: 24,
+                          colorFilter: ColorFilter.mode(
+                            isDark
+                                ? context.colorExt.tertiary
+                                : context.colorExt.textHint,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    bool isDark = Hive.box(
+                      AppHSC.appSettingsBox,
+                    ).get(AppHSC.isDarkTheme, defaultValue: true);
+                    Hive.box(
+                      AppHSC.appSettingsBox,
+                    ).put(AppHSC.isDarkTheme, !isDark);
+                  },
+                );
+              },
             ),
-            _buildTile(
+            ProfileTile(
               icon: 'assets/icons/profile05.svg',
               title: 'Help',
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
               ),
             ),
-            _buildTile(
+            ProfileTile(
               icon: 'assets/icons/profile06.svg',
               title: 'Refer a friend',
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
               ),
               // onTap: () => context.nav.pushNamed(Routes.audioWave),
             ),
-            _buildTile(
+            ProfileTile(
               onTap: () {
                 context.nav.pushNamed(Routes.subscription);
               },
               icon: 'assets/icons/profile07.svg',
               title: 'Subscription',
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
               ),
             ),
 
-            _buildTile(
+            ProfileTile(
               icon: 'assets/icons/profile08.svg',
               title: 'Log out',
-              trailing: const Icon(
+              trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
-                color: Colors.white,
+                color: context.colorExt.textPrimary,
               ),
               onTap: () {
                 ref.read(hiveServiceProvider.notifier).removeAllData();
@@ -220,53 +253,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               },
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTile({
-    required String icon,
-    required String title,
-    required Widget trailing,
-    void Function()? onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: Ink(
-        decoration: BoxDecoration(
-          color: const Color(0xFF23222F),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () => Future.delayed(Durations.short4, onTap),
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 21.29,
-              vertical: 10,
-            ),
-            child: Row(
-              children: [
-                SvgPicture.asset(icon, height: 40, width: 42.57),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      height:
-                          1.75, // line-height of 28px / font-size of 16px = 1.75
-                      letterSpacing: 0, // 0px letter-spacing
-                    ),
-                  ),
-                ),
-                trailing,
-              ],
-            ),
-          ),
         ),
       ),
     );

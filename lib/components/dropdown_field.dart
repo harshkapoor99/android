@@ -53,7 +53,7 @@ class DropdownField extends StatelessWidget {
             // labelText: "Select $label",
             // labelStyle: AppConstants.inputDecoration(context).hintStyle,
           ),
-          dropdownColor: context.colorExt.border,
+          dropdownColor: context.colorExt.surface,
           style: context.appTextStyle.characterGenLabel.copyWith(
             fontFamily: 'OpenSans',
           ),

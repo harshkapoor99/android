@@ -2,23 +2,21 @@
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:dio/dio.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
+import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/audio_provider.gen.dart';
 
-enum PlayerStatus { stopped, playing, paused, loading, error }
-
 @riverpod
 class AudioPlayer extends _$AudioPlayer {
   @override
-  AudioPlayerState build() {
+  AudioPlayerState build({Voice? voice, ChatMessage? message}) {
     final initState = AudioPlayerState(playerController: PlayerController());
     initState.playerController.onPlayerStateChanged.listen((playerState) {
       if (playerState == PlayerState.playing) {
@@ -28,7 +26,7 @@ class AudioPlayer extends _$AudioPlayer {
       } else if (playerState == PlayerState.stopped) {
         state.playerStatus = PlayerStatus.stopped;
       }
-      state = state.updateWith(state);
+      // state = state.updateWith(state);
     });
 
     initState.playerController.onCurrentDurationChanged.listen((duration) {
@@ -53,23 +51,7 @@ class AudioPlayer extends _$AudioPlayer {
     return initState;
   }
 
-  Future<void> _downloadAudio(String url) async {
-    // final status = await Permission.storage.request();
-    // if (!status.isGranted) {
-    //   throw Exception('Storage permission not granted');
-    // }
-
-    final tempDir = await getTemporaryDirectory();
-    final fileName = url.split('/').last.split("?").first;
-    state.downloadedFilePath = path.join(tempDir.path, fileName);
-    state = state.updateWith(state);
-
-    final dio = Dio();
-    await dio.download(url, state.downloadedFilePath!);
-    print("#AP> download complete");
-  }
-
-  Future<void> preparePlayer(Voice voice, {int samples = 100}) async {
+  Future<void> preparePlayerVoice(Voice voice, {int samples = 100}) async {
     // Skip if we're already preparing/playing the same voice
     if (state.selectedVoice?.id == voice.id &&
         state.playerStatus != PlayerStatus.stopped) {
@@ -95,6 +77,7 @@ class AudioPlayer extends _$AudioPlayer {
         .generateAudio(
           text:
               "Hello, ${ref.read(hiveServiceProvider.notifier).getUserInfo()?.profile.fullName ?? ""}! It's nice to meet you! How are you?",
+          languageId: voice.languageId,
           vocalId: voice.vocalId,
         );
 
@@ -117,13 +100,70 @@ class AudioPlayer extends _$AudioPlayer {
             print('Error deleting audio file: $e');
           }
         }
-        await _downloadAudio(voiceUrl);
+        final file = await downloadAudio(voiceUrl);
+        state.downloadedFilePath = file.filePath;
+        state = state.updateWith(state);
+
         filePath = state.downloadedFilePath!;
         await state.playerController.preparePlayer(
           path: filePath,
           shouldExtractWaveform: true,
           noOfSamples: samples,
         );
+        state.playerController.setFinishMode(finishMode: FinishMode.pause);
+
+        // state.playerStatus = PlayerStatus.stopped;
+        state.playerController.startPlayer();
+        state = state.updateWith(state);
+      }
+    } catch (e) {
+      state.playerStatus = PlayerStatus.error;
+      state = state.updateWith(state);
+      rethrow;
+    }
+  }
+
+  Future<void> preparePlayerAudioMessage({
+    String? url,
+    String? path,
+    int samples = 100,
+  }) async {
+    assert(url != null || path != null, "either url or path must be provided");
+
+    // Stop and clean up previous player if it exists
+    if (state.playerStatus != PlayerStatus.stopped) {
+      await state.playerController.stopPlayer();
+    }
+
+    // Release resources from previous playback
+    if (state.downloadedFilePath != null) {
+      await state.playerController.release();
+    }
+
+    state.playerStatus = PlayerStatus.loading;
+    state = state.updateWith(state);
+
+    try {
+      // await state.playerController.release();
+      // }
+
+      String filePath = "";
+
+      if (path.hasValue) {
+        filePath = path!;
+      } else if (url.hasValue) {
+        final file = await downloadAudio(url!);
+        filePath = file.filePath;
+      }
+
+      if (filePath.hasValue) {
+        state.downloadedFilePath = filePath;
+        await state.playerController.preparePlayer(
+          path: filePath,
+          shouldExtractWaveform: true,
+          noOfSamples: samples,
+        );
+
         state.playerController.setFinishMode(finishMode: FinishMode.pause);
 
         // state.playerStatus = PlayerStatus.stopped;
@@ -153,31 +193,22 @@ class AudioPlayer extends _$AudioPlayer {
     await state.playerController.seekTo(duration.inMilliseconds);
   }
 
-  Future<void> prepareWaveform(String audioPath, bool isNetworkUrl) async {
-    try {
-      String filePath = audioPath;
+  // Future<void> startRecording() async {
+  //   if (state.recordController.hasPermission) {
+  //     state.recordController.record();
+  //   } else {
+  //     bool result = await state.recordController.checkPermission();
+  //     if (result) {
+  //       state.recordController.record();
+  //     }
+  //   }
+  // }
 
-      if (isNetworkUrl) {
-        await _downloadAudio(audioPath);
-        filePath = state.downloadedFilePath!;
-      }
-
-      // final tempDir = await getTemporaryDirectory();
-      // final waveformPath = path.join(
-      //   tempDir.path,
-      //   'waveform_${DateTime.now().millisecondsSinceEpoch}.json',
-      // );
-
-      await state.playerController.preparePlayer(
-        path: filePath,
-        shouldExtractWaveform: true,
-        // waveformData: WaveformData(path: waveformPath, samples: []),
-      );
-    } catch (e) {
-      print('Error preparing waveform: $e');
-      rethrow;
-    }
-  }
+  // void stopRecording() {
+  //   if (state.recordController.hasPermission) {
+  //     state.recordController.stop();
+  //   }
+  // }
 }
 
 class AudioPlayerState {
@@ -205,3 +236,6 @@ class AudioPlayerState {
     currentDuration: state.currentDuration,
   );
 }
+
+// "/data/user/0/com.guftagu.app.guftagu_mobile/cache/09-06-25-11-14-272541046739822349619.m4a"
+// 487163920

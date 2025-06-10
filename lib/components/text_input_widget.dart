@@ -67,7 +67,7 @@ class TextInputWidget extends StatelessWidget {
         prefixStyle: context.appTextStyle.text,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: context.colorExt.border),
+          borderSide: BorderSide(color: context.colorExt.surface),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),

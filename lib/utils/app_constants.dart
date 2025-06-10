@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
@@ -15,6 +16,7 @@ class AppConstants {
   }) {
     return AppBar(
       // commit - implyLeading
+      backgroundColor: context.colorExt.background,
       automaticallyImplyLeading: implyLeading,
       title: Row(
         children: [
@@ -91,7 +93,7 @@ class AppConstants {
       isScrollControlled: true,
       context: context,
       constraints: const BoxConstraints(maxWidth: 640),
-      backgroundColor: context.colorExt.border,
+      backgroundColor: context.colorExt.surface,
 
       builder: (context) {
         return Ink(
@@ -155,7 +157,7 @@ class AppConstants {
   static InputDecoration inputDecoration(BuildContext context) =>
       InputDecoration(
         filled: true,
-        fillColor: context.colorExt.border,
+        fillColor: context.colorExt.surface,
         contentPadding: const EdgeInsets.symmetric(
           vertical: 15.0,
           horizontal: 15.0,
@@ -177,6 +179,12 @@ class AppConstants {
         ),
         suffixIconColor: context.colorExt.textPrimary,
       );
+
+  static const playerWaveStyle = PlayerWaveStyle(
+    fixedWaveColor: Colors.black,
+    liveWaveColor: Colors.lightBlue,
+    backgroundColor: Colors.black,
+  );
 
   static GlobalKey<ScaffoldMessengerState> snackbarKey =
       GlobalKey<ScaffoldMessengerState>();

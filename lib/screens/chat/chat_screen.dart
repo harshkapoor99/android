@@ -2,17 +2,19 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guftagu_mobile/components/chat_bubble.dart';
+import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
+import 'package:guftagu_mobile/components/chat_bubble_text.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:lottie/lottie.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
+import 'package:guftagu_mobile/utils/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -20,23 +22,6 @@ class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
   final ImagePicker picker = ImagePicker();
-
-  getPermission(Permission permission) async {
-    var checkStatus = await permission.status;
-
-    if (checkStatus.isGranted) {
-      return;
-    } else {
-      var status = await permission.request();
-      if (status.isGranted) {
-      } else if (status.isDenied) {
-        getPermission(permission);
-      } else {
-        openAppSettings();
-        // EasyLoading.showError('Allow the permission');
-      }
-    }
-  }
 
   Future getImage(ImageSource media, WidgetRef ref) async {
     if (media == ImageSource.camera) {
@@ -219,55 +204,11 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // --- Handle typing indicator ---
                             if (provider.isTyping && index == 0) {
                               // Display Lottie animation when typing
-                              return Align(
-                                alignment:
-                                    Alignment
-                                        .centerLeft, // Align like incoming messages
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment
-                                          .end, // Align avatar bottom with animation
-                                  children: [
-                                    // Display the AI's avatar
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                        right: 10,
-                                        bottom: 5,
-                                      ), // Add bottom margin to align
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        image: DecorationImage(
-                                          image:
-                                              Image.network(
-                                                image,
-                                              ).image, // Use the existing image url variable
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    // Display the Lottie animation
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                        vertical: 5,
-                                      ),
-                                      // Optional background/padding for Lottie:
-                                      // padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                      // decoration: BoxDecoration(
-                                      //    color: context.colorExt.border,
-                                      //    borderRadius: BorderRadius.circular(10),
-                                      // ),
-                                      child: Lottie.asset(
-                                        'assets/animations/du.json', // <-- *** ADJUST THIS PATH TO YOUR FILE ***
-                                        width: 60, // Adjust width as needed
-                                        height: 40, // Adjust height as needed
-                                        fit: BoxFit.contain,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                              return ChatBubbleText(
+                                text: "text",
+                                isMe: false,
+                                imageUrl: image,
+                                showTyping: true,
                               );
                             }
                             // --- End typing indicator ---
@@ -286,6 +227,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     //     1 -
                                     index; // Normal index when no typing indicator
 
+                            final message = provider.messages[messageIndex];
+
                             bool showDateSeparator = false;
                             if (messageIndex == provider.messages.length - 1) {
                               showDateSeparator = true;
@@ -295,8 +238,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                   provider.messages[messageIndex + 1];
                               showDateSeparator =
                                   !isSameDay(
-                                    provider.messages[messageIndex].time,
-                                    prevMessage.time,
+                                    provider.messages[messageIndex].timestamp,
+                                    prevMessage.timestamp,
                                   );
                             }
 
@@ -309,17 +252,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 )
                                   _buildDateSeparator(
                                     context,
-                                    provider.messages[messageIndex].time,
+                                    message.timestamp,
                                   ),
-                                ChatBubble(
-                                  text: provider.messages[messageIndex].text,
-                                  isMe: provider.messages[messageIndex].isMe,
-                                  imageUrl:
-                                      image, // Pass the AI image url (used if isMe is false)
-                                  time:
-                                      provider.messages[messageIndex].time
-                                          .toLocal(),
-                                ),
+                                if (message.audioPath != null ||
+                                    message.voiceUrl != null)
+                                  ChatBubbleAudio(
+                                    message: message,
+                                    isMe: message.isMe,
+                                    imageUrl:
+                                        image, // Pass the AI image url (used if isMe is false)
+                                    time: message.timestamp.toLocal(),
+                                    path: message.audioPath,
+                                    url: message.voiceUrl,
+                                  ),
+                                if (message.message != null)
+                                  ChatBubbleText(
+                                    text: message.message!,
+                                    isMe: message.isMe,
+                                    imageUrl:
+                                        image, // Pass the AI image url (used if isMe is false)
+                                    time: message.timestamp.toLocal(),
+                                  ),
                               ],
                             );
                           },
@@ -339,6 +292,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         child: MessageBox(
                           controller: ref.read(chatProvider).messageController,
                           hasMessage: provider.hasMessage,
+                          recordingController: provider.recordController,
+                          isRecordig: provider.isRecording,
                           focusNodes: widget._focusNodes,
                           onPlusPressed: () {
                             AppConstants.getPickImageAlert(
@@ -352,12 +307,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 Navigator.of(context).pop();
                               },
                               pressDocument: () async {
-                                Navigator.of(context).pop();
                                 widget.getDocument(File(''), ref);
+                                Navigator.of(context).pop();
                               },
                               pressAudio: () async {
-                                Navigator.of(context).pop();
                                 widget.getAudio(File(''), ref);
+                                Navigator.of(context).pop();
                               },
                             );
                           },
@@ -373,7 +328,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         if (provider.hasMessage) {
                           chatNotifier.chatWithCharacter();
                         } else {
-                          chatNotifier.sendStaticVoiceMessage();
+                          // chatNotifier.startOrStopRecording();
                         }
                       },
                     ),
@@ -396,7 +351,7 @@ Widget _buildDateSeparator(BuildContext context, DateTime date) {
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
-        color: context.colorExt.border,
+        color: context.colorExt.surface,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
