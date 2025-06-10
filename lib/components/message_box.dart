@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -6,16 +7,19 @@ import 'package:guftagu_mobile/utils/context_less_nav.dart';
 class MessageBox extends StatefulWidget {
   const MessageBox({
     super.key,
-    this.controller,
+    required this.controller,
+    required this.recordingController,
     this.focusNodes,
     required this.hasMessage,
+    required this.isRecordig,
     this.onStarPressed,
     this.onPlusPressed,
   });
 
-  final bool hasMessage;
+  final bool hasMessage, isRecordig;
   final FocusNode? focusNodes;
-  final TextEditingController? controller;
+  final TextEditingController controller;
+  final RecorderController recordingController;
   final VoidCallback? onStarPressed;
   final VoidCallback? onPlusPressed;
 
@@ -25,6 +29,17 @@ class MessageBox extends StatefulWidget {
 
 class _MessageBoxState extends State<MessageBox> {
   bool isFocused = false;
+
+  @override
+  void didUpdateWidget(covariant MessageBox oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isRecordig != oldWidget.isRecordig && widget.isRecordig) {
+      setState(() {
+        isFocused = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Focus(
@@ -36,6 +51,7 @@ class _MessageBoxState extends State<MessageBox> {
       child: AnimatedContainer(
         duration: Durations.short2,
         padding: const EdgeInsets.only(left: 12),
+        constraints: const BoxConstraints(minHeight: 52),
         decoration: BoxDecoration(
           color: context.colorExt.surface,
           borderRadius: BorderRadius.circular(
@@ -47,72 +63,93 @@ class _MessageBoxState extends State<MessageBox> {
             width: 1.5,
           ),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              height: 16,
-              width: 16,
-              alignment: Alignment.center,
-              child: SvgPicture.asset(
-                Assets.svgs.icChatPrefix,
-                height: 16,
-                width: 16,
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                textCapitalization: TextCapitalization.sentences,
-                controller: widget.controller,
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 5,
-                focusNode: widget.focusNodes,
-                style: context.appTextStyle.text,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(
-                    top: 5,
-                    bottom: 5,
-                    left: 8,
-                  ),
+        child: AnimatedSwitcher(
+          duration: Durations.long2,
+          child:
+              widget.isRecordig
+                  ? Center(
+                    child: AudioWaveforms(
+                      size: const Size(double.infinity, 40),
+                      recorderController: widget.recordingController,
+                      waveStyle: const WaveStyle(
+                        waveColor: Colors.white,
+                        extendWaveform: true,
+                        showMiddleLine: false,
+                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                    ),
+                  )
+                  : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: 16,
+                        width: 16,
+                        alignment: Alignment.center,
+                        child: SvgPicture.asset(
+                          Assets.svgs.icChatPrefix,
+                          height: 16,
+                          width: 16,
+                        ),
+                      ),
+                      Expanded(
+                        child: TextField(
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: widget.controller,
+                          keyboardType: TextInputType.multiline,
+                          minLines: 1,
+                          maxLines: 5,
+                          focusNode: widget.focusNodes,
+                          style: context.appTextStyle.text,
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(
+                              top: 5,
+                              bottom: 5,
+                              left: 8,
+                            ),
 
-                  hintText: "Chat here",
-                  hintStyle: context.appTextStyle.textSmall.copyWith(
-                    // list item text font size reduced
-                    fontSize: 14,
-                    color: context.colorExt.textPrimary.withValues(alpha: 0.7),
+                            hintText: "Chat here",
+                            hintStyle: context.appTextStyle.textSmall.copyWith(
+                              // list item text font size reduced
+                              fontSize: 14,
+                              color: context.colorExt.textPrimary.withValues(
+                                alpha: 0.7,
+                              ),
+                            ),
+                            fillColor: context.colorExt.surface,
+                            border: const OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            focusedBorder: const OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                      AnimatedContainer(
+                        height: 40,
+                        width: widget.hasMessage ? 0 : 40,
+                        duration: const Duration(milliseconds: 100),
+                        child: IconButton(
+                          padding: const EdgeInsets.only(right: 8),
+                          onPressed: widget.onPlusPressed,
+                          icon: SvgPicture.asset(
+                            Assets.svgs.icPlus,
+                            height: 28,
+                            width: 28,
+                            colorFilter: ColorFilter.mode(
+                              context.colorExt.textHint,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  fillColor: context.colorExt.surface,
-                  border: const OutlineInputBorder(borderSide: BorderSide.none),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-            AnimatedContainer(
-              height: 40,
-              width: widget.hasMessage ? 0 : 40,
-              duration: const Duration(milliseconds: 100),
-              child: IconButton(
-                padding: const EdgeInsets.only(right: 8),
-                onPressed: widget.onPlusPressed,
-                icon: SvgPicture.asset(
-                  Assets.svgs.icPlus,
-                  height: 28,
-                  width: 28,
-                  colorFilter: ColorFilter.mode(
-                    context.colorExt.textHint,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

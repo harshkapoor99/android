@@ -2,6 +2,8 @@
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
+import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
@@ -11,12 +13,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/audio_provider.gen.dart';
 
-enum PlayerStatus { stopped, playing, paused, loading, error }
-
 @riverpod
 class AudioPlayer extends _$AudioPlayer {
   @override
-  AudioPlayerState build() {
+  AudioPlayerState build({Voice? voice, ChatMessage? message}) {
     final initState = AudioPlayerState(playerController: PlayerController());
     initState.playerController.onPlayerStateChanged.listen((playerState) {
       if (playerState == PlayerState.playing) {
@@ -26,7 +26,7 @@ class AudioPlayer extends _$AudioPlayer {
       } else if (playerState == PlayerState.stopped) {
         state.playerStatus = PlayerStatus.stopped;
       }
-      state = state.updateWith(state);
+      // state = state.updateWith(state);
     });
 
     initState.playerController.onCurrentDurationChanged.listen((duration) {
@@ -51,7 +51,7 @@ class AudioPlayer extends _$AudioPlayer {
     return initState;
   }
 
-  Future<void> preparePlayer(Voice voice, {int samples = 100}) async {
+  Future<void> preparePlayerVoice(Voice voice, {int samples = 100}) async {
     // Skip if we're already preparing/playing the same voice
     if (state.selectedVoice?.id == voice.id &&
         state.playerStatus != PlayerStatus.stopped) {
@@ -110,6 +110,60 @@ class AudioPlayer extends _$AudioPlayer {
           shouldExtractWaveform: true,
           noOfSamples: samples,
         );
+        state.playerController.setFinishMode(finishMode: FinishMode.pause);
+
+        // state.playerStatus = PlayerStatus.stopped;
+        state.playerController.startPlayer();
+        state = state.updateWith(state);
+      }
+    } catch (e) {
+      state.playerStatus = PlayerStatus.error;
+      state = state.updateWith(state);
+      rethrow;
+    }
+  }
+
+  Future<void> preparePlayerAudioMessage({
+    String? url,
+    String? path,
+    int samples = 100,
+  }) async {
+    assert(url != null || path != null, "either url or path must be provided");
+
+    // Stop and clean up previous player if it exists
+    if (state.playerStatus != PlayerStatus.stopped) {
+      await state.playerController.stopPlayer();
+    }
+
+    // Release resources from previous playback
+    if (state.downloadedFilePath != null) {
+      await state.playerController.release();
+    }
+
+    state.playerStatus = PlayerStatus.loading;
+    state = state.updateWith(state);
+
+    try {
+      // await state.playerController.release();
+      // }
+
+      String filePath = "";
+
+      if (path.hasValue) {
+        filePath = path!;
+      } else if (url.hasValue) {
+        final file = await downloadAudio(url!);
+        filePath = file.filePath;
+      }
+
+      if (filePath.hasValue) {
+        state.downloadedFilePath = filePath;
+        await state.playerController.preparePlayer(
+          path: filePath,
+          shouldExtractWaveform: true,
+          noOfSamples: samples,
+        );
+
         state.playerController.setFinishMode(finishMode: FinishMode.pause);
 
         // state.playerStatus = PlayerStatus.stopped;
@@ -182,3 +236,6 @@ class AudioPlayerState {
     currentDuration: state.currentDuration,
   );
 }
+
+// "/data/user/0/com.guftagu.app.guftagu_mobile/cache/09-06-25-11-14-272541046739822349619.m4a"
+// 487163920

@@ -2,9 +2,11 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:guftagu_mobile/components/chat_bubble.dart';
+import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
+import 'package:guftagu_mobile/components/chat_bubble_text.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -12,6 +14,7 @@ import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_compressor.dart';
+import 'package:guftagu_mobile/utils/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -19,23 +22,6 @@ class ChatScreen extends ConsumerStatefulWidget {
   ChatScreen({super.key});
   final _focusNodes = FocusNode();
   final ImagePicker picker = ImagePicker();
-
-  getPermission(Permission permission) async {
-    var checkStatus = await permission.status;
-
-    if (checkStatus.isGranted) {
-      return;
-    } else {
-      var status = await permission.request();
-      if (status.isGranted) {
-      } else if (status.isDenied) {
-        getPermission(permission);
-      } else {
-        openAppSettings();
-        // EasyLoading.showError('Allow the permission');
-      }
-    }
-  }
 
   Future getImage(ImageSource media, WidgetRef ref) async {
     if (media == ImageSource.camera) {
@@ -241,6 +227,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     //     1 -
                                     index; // Normal index when no typing indicator
 
+                            final message = provider.messages[messageIndex];
+
                             bool showDateSeparator = false;
                             if (messageIndex == provider.messages.length - 1) {
                               showDateSeparator = true;
@@ -264,32 +252,26 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 )
                                   _buildDateSeparator(
                                     context,
-                                    provider.messages[messageIndex].time,
+                                    message.timestamp,
                                   ),
-                                ChatBubble(
-                                  text: provider.messages[messageIndex]
-                                            .timestamp
-                                            .toLocal(),
-                                    audioPath:
-                                        provider
-                                            .messages[messageIndex]
-                                            .audioPath,
-                                  ),
-                                if (provider.messages[messageIndex].message !=
-                                    null)
-                                  ChatBubbleText(
-                                    text:
-                                        provider
-                                            .messages[messageIndex]
-                                            .message!,
-                                    isMe: provider.messages[messageIndex].isMe,
+                                if (message.audioPath != null ||
+                                    message.voiceUrl != null)
+                                  ChatBubbleAudio(
+                                    message: message,
+                                    isMe: message.isMe,
                                     imageUrl:
                                         image, // Pass the AI image url (used if isMe is false)
-                                    time:
-                                        provider
-                                            .messages[messageIndex]
-                                            .timestamp
-                                            .toLocal(),
+                                    time: message.timestamp.toLocal(),
+                                    path: message.audioPath,
+                                    url: message.voiceUrl,
+                                  ),
+                                if (message.message != null)
+                                  ChatBubbleText(
+                                    text: message.message!,
+                                    isMe: message.isMe,
+                                    imageUrl:
+                                        image, // Pass the AI image url (used if isMe is false)
+                                    time: message.timestamp.toLocal(),
                                   ),
                               ],
                             );
@@ -310,6 +292,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         child: MessageBox(
                           controller: ref.read(chatProvider).messageController,
                           hasMessage: provider.hasMessage,
+                          recordingController: provider.recordController,
+                          isRecordig: provider.isRecording,
                           focusNodes: widget._focusNodes,
                           onPlusPressed: () {
                             AppConstants.getPickImageAlert(
@@ -344,7 +328,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         if (provider.hasMessage) {
                           chatNotifier.chatWithCharacter();
                         } else {
-                          chatNotifier.sendStaticVoiceMessage();
+                          // chatNotifier.startOrStopRecording();
                         }
                       },
                     ),

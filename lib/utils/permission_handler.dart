@@ -36,3 +36,21 @@ Future<bool> hasStoragePermission() async {
     }
   }
 }
+
+Future<bool> getPermission(Permission permission) async {
+  var checkStatus = await permission.status;
+
+  if (checkStatus.isGranted) {
+    return true;
+  } else {
+    var status = await permission.request();
+    if (status.isGranted) {
+    } else if (status.isDenied) {
+      getPermission(permission);
+    } else {
+      openAppSettings();
+      // EasyLoading.showError('Allow the permission');
+    }
+    return false;
+  }
+}

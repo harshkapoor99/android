@@ -1,3 +1,4 @@
+import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
@@ -178,6 +179,12 @@ class AppConstants {
         ),
         suffixIconColor: context.colorExt.textPrimary,
       );
+
+  static const playerWaveStyle = PlayerWaveStyle(
+    fixedWaveColor: Colors.black,
+    liveWaveColor: Colors.lightBlue,
+    backgroundColor: Colors.black,
+  );
 
   static GlobalKey<ScaffoldMessengerState> snackbarKey =
       GlobalKey<ScaffoldMessengerState>();

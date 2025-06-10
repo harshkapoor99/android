@@ -2,6 +2,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/audio_provider.dart';
@@ -161,8 +162,8 @@ void _showVoiceOptionPopup(
   }) async {
     try {
       await ref
-          .read(audioPlayerProvider.notifier)
-          .preparePlayer(voice, samples: samples);
+          .read(audioPlayerProvider(voice: voice).notifier)
+          .preparePlayerVoice(voice, samples: samples);
     } catch (e) {
       AppConstants.showSnackbar(
         message: "Failed to load audio:",
@@ -171,11 +172,7 @@ void _showVoiceOptionPopup(
     }
   }
 
-  const style = PlayerWaveStyle(
-    fixedWaveColor: Colors.black,
-    liveWaveColor: Colors.lightBlue,
-    backgroundColor: Colors.black,
-  );
+  const style = AppConstants.playerWaveStyle;
 
   final samples = style.getSamplesForWidth(screenWidth / 5);
 
@@ -221,8 +218,8 @@ void _showVoiceOptionPopup(
               ),
               Consumer(
                 builder: (context, ref, child) {
-                  final playerState = ref.watch(audioPlayerProvider);
-                  final player = ref.read(audioPlayerProvider.notifier);
+                  final playerState = ref.watch(audioPlayerProvider());
+                  final player = ref.read(audioPlayerProvider().notifier);
 
                   return options.isEmpty && emptyOptionHint != null
                       ? Text(
