@@ -38,11 +38,7 @@ class MyAi extends _$MyAi {
         .deleteCharacter(characterId: characterId);
     if (res.statusCode == 200) {
       AppConstants.showSnackbar(message: "Character deleted", isSuccess: true);
-      ref
-          .read(myAiServiceProvider)
-          .fetchMyAis(
-            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
-          );
+      fetchMyAis();
     }
   }
 }

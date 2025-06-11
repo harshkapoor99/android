@@ -148,7 +148,10 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                               style: context.appTextStyle.textSmall.copyWith(
                                 // list item text font size reduced
                                 fontSize: 12,
-                                color: context.colorExt.textHint,
+                                color:
+                                    provider.chatList[index].hasNewMessage
+                                        ? context.colorExt.textPrimary
+                                        : context.colorExt.textHint,
                                 fontWeight:
                                     provider.chatList[index].hasNewMessage
                                         ? FontWeight.w700
@@ -159,8 +162,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           if (provider.chatList[index].hasNewMessage)
                             Container(
                               margin: const EdgeInsets.only(left: 10),
-                              width: 7,
-                              height: 7,
+                              width: 10,
+                              height: 10,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(100),
                                 color: Colors.green,

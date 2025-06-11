@@ -213,7 +213,11 @@ class Chat extends _$Chat {
       chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
     }
 
-    state = state._updateWith(character: character, chatList: chatList);
+    state = state._updateWith(
+      character: character,
+      chatList: chatList,
+      messages: [],
+    );
   }
 
   void appendChat({
