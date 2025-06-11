@@ -209,8 +209,9 @@ class Chat extends _$Chat {
     var chatIndex = chatList.indexWhere(
       (element) => element.character.id == character.id,
     );
-
-    chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
+    if (chatIndex != -1) {
+      chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
+    }
 
     state = state._updateWith(character: character, chatList: chatList);
   }
