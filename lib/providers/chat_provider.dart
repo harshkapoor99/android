@@ -209,10 +209,15 @@ class Chat extends _$Chat {
     var chatIndex = chatList.indexWhere(
       (element) => element.character.id == character.id,
     );
+    if (chatIndex != -1) {
+      chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
+    }
 
-    chatList[chatIndex] = chatList[chatIndex].copyWith(hasNewMessage: false);
-
-    state = state._updateWith(character: character, chatList: chatList);
+    state = state._updateWith(
+      character: character,
+      chatList: chatList,
+      messages: [],
+    );
   }
 
   void appendChat({
