@@ -48,7 +48,11 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         leading: IconButton(
-          icon: const Icon(Icons.chevron_left, color: Colors.white, size: 30),
+          icon: Icon(
+            Icons.chevron_left,
+            color: context.colorExt.textPrimary,
+            size: 30,
+          ),
           style: IconButton.styleFrom(
             backgroundColor: context.colorExt.background.withAlpha(100),
           ),
@@ -132,7 +136,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                   padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(16),
-                                    color: const Color(0xFF272730),
+                                    color: context.colorExt.surface,
                                   ),
                                   child: GridView.count(
                                     crossAxisCount: 2,
@@ -156,7 +160,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                               10,
                                             ),
                                             clipBehavior: Clip.antiAlias,
-                                            color: const Color(0xFF272730),
+                                            color: context.colorExt.surface,
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
@@ -240,7 +244,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                               margin: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
-                                color: const Color(0xFF272730),
+                                color: context.colorExt.surface,
                               ),
 
                               child: Stack(
@@ -298,7 +302,9 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                                   },
                                                   style: ElevatedButton.styleFrom(
                                                     backgroundColor:
-                                                        const Color(0xFF1C1B2A),
+                                                        context
+                                                            .colorExt
+                                                            .surface,
                                                     padding:
                                                         const EdgeInsets.symmetric(
                                                           horizontal: 12,
@@ -408,7 +414,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                 width: screenWidth * 0.98,
                                 padding: const EdgeInsets.all(24),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF23222F),
+                                  color: context.colorExt.surface,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Column(
@@ -453,7 +459,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                         //         width: screenWidth * 0.98,
                         //         padding: const EdgeInsets.all(24),
                         //         decoration: BoxDecoration(
-                        //           color: const Color(0xFF23222F),
+                        //           color: context.colorExt.surface,
                         //           borderRadius: BorderRadius.circular(20),
                         //         ),
                         //         child: Column(
@@ -493,7 +499,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                                   width: screenWidth * 0.98,
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF23222F),
+                                    color: context.colorExt.surface,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Column(
@@ -549,7 +555,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                         //         width: screenWidth * 0.98,
                         //         padding: const EdgeInsets.all(24),
                         //         decoration: BoxDecoration(
-                        //           color: const Color(0xFF23222F),
+                        //           color: context.colorExt.surface,
                         //           borderRadius: BorderRadius.circular(20),
                         //         ),
                         //         child: Column(
@@ -598,10 +604,10 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
         Text(
           label,
           style: context.appTextStyle.textSmall.copyWith(
-            color: const Color(0xFFD3D3D3),
+            color: context.colorExt.textPrimary,
           ),
           //  const TextStyle(
-          //   color: Color(0xFFD3D3D3),
+          //   color: context.colorExt.textPrimary,
           //   fontWeight: FontWeight.w400,
           //   fontSize: 14,
           // ),
@@ -611,7 +617,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFF333147),
+            color: context.colorExt.bubble,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(value, style: context.appTextStyle.textSemibold),
@@ -627,7 +633,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
         Text(
           label,
           style: context.appTextStyle.textSmall.copyWith(
-            color: const Color(0xFFD3D3D3),
+            color: context.colorExt.textPrimary,
           ),
         ),
         8.ph,
@@ -643,7 +649,7 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
                         vertical: 12,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF333147),
+                        color: context.colorExt.bubble,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -666,14 +672,14 @@ class _CharacterProfile extends ConsumerState<CharacterProfile> {
           child: Text(
             label,
             style: context.appTextStyle.textSmall.copyWith(
-              color: const Color(0xFFD3D3D3),
+              color: context.colorExt.textPrimary,
             ),
           ),
         ),
         Text(
           ":",
           style: context.appTextStyle.textSmall.copyWith(
-            color: const Color(0xFFD3D3D3),
+            color: context.colorExt.textPrimary,
           ),
         ),
         const SizedBox(width: 8),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
-import 'package:guftagu_mobile/configs/app_text_style.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
@@ -14,15 +13,20 @@ class AppConstants {
     bool implyLeading = true,
     bool showSearchIcon = true,
   }) {
+    bool isDarkModeEnabled = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
       // commit - implyLeading
       backgroundColor: context.colorExt.background,
       automaticallyImplyLeading: implyLeading,
       title: Row(
         children: [
-          SvgPicture.asset(Assets.svgs.logo, height: 50, width: 50),
+          SvgPicture.asset(
+            isDarkModeEnabled ? Assets.svgs.logo : Assets.svgs.logoDark,
+            height: 50,
+            width: 50,
+          ),
           5.pw,
-          Text('Guftagu', style: AppTextStyle(context).appBarText),
+          Text('Guftagu', style: context.appTextStyle.appBarText),
           const Spacer(),
           // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
           // 5.pw,
@@ -31,9 +35,26 @@ class AppConstants {
           //   style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
           // ),
           15.pw,
-          SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
+          SvgPicture.asset(
+            Assets.svgs.icNotification,
+            height: 20,
+            width: 20,
+            colorFilter: ColorFilter.mode(
+              context.colorExt.textPrimary,
+              BlendMode.srcIn,
+            ),
+          ),
           15.pw,
-          SvgPicture.asset(Assets.svgs.icSearch, height: 20, width: 20),
+          if (showSearchIcon)
+            SvgPicture.asset(
+              Assets.svgs.icSearch,
+              height: 20,
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                context.colorExt.textPrimary,
+                BlendMode.srcIn,
+              ),
+            ),
         ],
       ),
     );
