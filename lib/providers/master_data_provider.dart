@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
@@ -21,6 +22,7 @@ class MasterData extends _$MasterData {
       cities: [],
       characterTypes: [],
       characters: [],
+      filteredCharacters: [],
     );
   }
 
@@ -305,15 +307,30 @@ class MasterData extends _$MasterData {
     }
   }
 
-  Future<void> fetchMasterCharacters() async {
-    final response =
-        await ref.read(masterServiceProvider).fetchMasterCharacters();
+  Future<void> fetchMasterCharacters({String? characterTypeId}) async {
+    Response<dynamic> response;
+    if (characterTypeId != null) {
+      response = await ref
+          .read(masterServiceProvider)
+          .fetchMasterCharactersByCharacterType(
+            characterTypeId: characterTypeId,
+          );
+    } else {
+      response = await ref.read(masterServiceProvider).fetchMasterCharacters();
+    }
     try {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data['data'];
         final List<Character> characters =
             data.map((e) => Character.fromMap(e)).toList().cast<Character>();
-        state = state.copyWith(characters: characters);
+        if (characterTypeId != null) {
+          state = state.copyWith(filteredCharacters: characters);
+        } else {
+          state = state.copyWith(
+            characters: characters,
+            filteredCharacters: [],
+          );
+        }
       }
     } catch (e) {
       rethrow;
@@ -324,7 +341,11 @@ class MasterData extends _$MasterData {
 
   void selectCharacterTypeFilter(CharacterType characterType) {
     state = state.copyWith(seletedCharacterTypeTab: characterType);
-    // TODO: get all master Characters with the filter
+    if (characterType.id != "all") {
+      fetchMasterCharacters(characterTypeId: characterType.id);
+      return;
+    }
+    fetchMasterCharacters();
   }
 }
 
@@ -340,6 +361,7 @@ class MasterDataState {
     required this.cities,
     required this.characterTypes,
     required this.characters,
+    required this.filteredCharacters,
     this.seletedCharacterTypeTab,
   });
 
@@ -354,7 +376,7 @@ class MasterDataState {
   final List<City> cities;
   final List<CharacterType> characterTypes;
   final List<Character> characters;
-
+  final List<Character> filteredCharacters;
   final CharacterType? seletedCharacterTypeTab;
 
   MasterDataState copyWith({
@@ -368,6 +390,7 @@ class MasterDataState {
     List<City>? cities,
     List<CharacterType>? characterTypes,
     List<Character>? characters,
+    List<Character>? filteredCharacters,
     CharacterType? seletedCharacterTypeTab,
   }) {
     return MasterDataState(
@@ -381,6 +404,7 @@ class MasterDataState {
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
       characters: characters ?? this.characters,
+      filteredCharacters: filteredCharacters ?? this.filteredCharacters,
       seletedCharacterTypeTab:
           seletedCharacterTypeTab ?? this.seletedCharacterTypeTab,
     );

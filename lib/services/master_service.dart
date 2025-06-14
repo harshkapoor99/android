@@ -31,6 +31,9 @@ abstract class MasterService {
 
   // Admin Characters
   Future<Response> fetchMasterCharacters();
+  Future<Response> fetchMasterCharactersByCharacterType({
+    required String characterTypeId,
+  });
 }
 
 class MasterServiceImpl implements MasterService {
@@ -140,6 +143,17 @@ class MasterServiceImpl implements MasterService {
   Future<Response> fetchMasterCharacters() async {
     final response = await _apiClient.get(
       RemoteEndpoint.fetchMasterCharacters.url,
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> fetchMasterCharactersByCharacterType({
+    required String characterTypeId,
+  }) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.fetchMasterCharactersByCharacterType.url,
+      data: {"charactertype_id": characterTypeId},
     );
     return response;
   }

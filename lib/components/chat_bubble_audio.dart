@@ -10,6 +10,7 @@ import 'package:guftagu_mobile/providers/audio_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:lottie/lottie.dart';
 
 class ChatBubbleAudio extends ConsumerWidget {
@@ -56,7 +57,7 @@ class ChatBubbleAudio extends ConsumerWidget {
     final player = ref.read(audioPlayerProvider(message: message).notifier);
 
     final screenWidth = MediaQuery.sizeOf(context).width;
-    print(
+    printDebug(
       "re-building player ${player.hashCode}, controller ${playerState.playerController.hashCode}",
     );
 

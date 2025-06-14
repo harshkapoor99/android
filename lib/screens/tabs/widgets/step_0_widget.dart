@@ -17,6 +17,7 @@ class Step0Widget extends ConsumerWidget {
     'Straight',
     'Gay',
     'Lesbian',
+    'Bisexual',
   ];
 
   final List<ImageOptions> genderOptions = [
@@ -82,12 +83,14 @@ class Step0Widget extends ConsumerWidget {
             ),
             22.ph,
             const LabelText("Sexual Orientation"),
-            Row(
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
               children:
                   sexualOrientationOptions.map((option) {
                     final isSelected = provider.sexualOrientation == option;
                     return Padding(
-                      padding: const EdgeInsets.only(right: 12.0),
+                      padding: const EdgeInsets.only(right: 0.0),
                       child: InkWell(
                         onTap: () {
                           ref

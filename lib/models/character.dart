@@ -61,7 +61,13 @@ class Character {
     age: json["age"],
     gender: json["gender"],
     style: json["style"],
-    characterDescription: json["character_description"],
+    characterDescription:
+        json["character_description"].runtimeType == String
+            ? (json["character_description"] as String).replaceAll(
+              RegExp(r'[\*\n\\]'),
+              '',
+            ) // Matches *, newline, or a backslash
+            : json["character_description"],
     sexualOrientation: json["sexual_orientation"],
     languageId: json["language_id"],
     charactertypeId: json["charactertype_id"] ?? "",
