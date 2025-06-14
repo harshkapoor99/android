@@ -47,7 +47,9 @@ class DashboardScreen extends ConsumerWidget {
         backgroundColor: context.colorExt.background,
         appBar: AppConstants.appbar(
           context,
-          showSearchIcon: currentIndex == 0 || currentIndex == 2,
+          showSearchIcon:
+              currentIndex == 0 ||
+              (currentIndex == 2 && myAi.myAiList.isNotEmpty),
           showSearch: currentIndex == 2 ? myAi.isSearching : false,
           onSearchPressed: () {
             if (currentIndex == 2) {

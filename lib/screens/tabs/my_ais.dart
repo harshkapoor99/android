@@ -96,7 +96,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
         : AnimatedSwitcher(
           duration: Durations.long4,
           child:
-              provider.filteredAiList.isEmpty && !provider.isSearching
+              provider.filteredAiList.isEmpty
                   ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 32.0),
                     child: Stack(

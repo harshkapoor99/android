@@ -34,6 +34,7 @@ class MyAi extends _$MyAi {
 
   void toggleSearch() {
     state = state._updateWith(isSearching: !state.isSearching);
+    state.searchController.clear();
   }
 
   void fetchMyAis() async {

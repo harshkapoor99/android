@@ -29,11 +29,7 @@ class AppConstants {
                 height: 50,
                 width: 50,
               )
-              : IconButton(
-                splashColor: Colors.transparent,
-                icon: const Icon(Icons.chevron_left_rounded, size: 30),
-                onPressed: onSearchPressed,
-              ),
+              : null,
       leadingWidth: 70,
 
       titleSpacing: 0,
@@ -42,7 +38,7 @@ class AppConstants {
         child:
             showSearch
                 ? Padding(
-                  padding: EdgeInsets.only(left: showSearch ? 0 : 15.0),
+                  padding: const EdgeInsets.only(left: 15),
                   child: SizedBox(
                     height: 50,
                     child: TextInputWidget(
@@ -56,11 +52,29 @@ class AppConstants {
 
       actionsPadding: const EdgeInsets.symmetric(horizontal: 5),
       actions: [
-        if (showSearchIcon && !showSearch)
+        showSearchIcon && !showSearch
+            ? IconButton(
+              onPressed: onSearchPressed,
+              icon: SvgPicture.asset(
+                Assets.svgs.icSearch,
+                height: 20,
+                width: 20,
+                colorFilter: ColorFilter.mode(
+                  context.colorExt.textPrimary,
+                  BlendMode.srcIn,
+                ),
+              ),
+            )
+            : IconButton(
+              splashColor: Colors.transparent,
+              icon: const Icon(Icons.close_rounded, size: 20),
+              onPressed: onSearchPressed,
+            ),
+        if (!showSearch)
           IconButton(
-            onPressed: onSearchPressed,
+            onPressed: onNotificationPressed,
             icon: SvgPicture.asset(
-              Assets.svgs.icSearch,
+              Assets.svgs.icNotification,
               height: 20,
               width: 20,
               colorFilter: ColorFilter.mode(
@@ -69,18 +83,6 @@ class AppConstants {
               ),
             ),
           ),
-        IconButton(
-          onPressed: onNotificationPressed,
-          icon: SvgPicture.asset(
-            Assets.svgs.icNotification,
-            height: 20,
-            width: 20,
-            colorFilter: ColorFilter.mode(
-              context.colorExt.textPrimary,
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
       ],
     );
   }
