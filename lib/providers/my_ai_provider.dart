@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/my_ai_service.dart';
@@ -10,7 +11,30 @@ part '../gen/providers/my_ai_provider.gen.dart';
 class MyAi extends _$MyAi {
   @override
   MyAiState build() {
-    return MyAiState(myAiList: []);
+    MyAiState iniState = MyAiState(
+      searchController: TextEditingController(),
+      myAiList: [],
+      filteredAiList: [],
+    );
+    iniState.searchController.addListener(() {
+      state = state._updateWith(
+        searchController: state.searchController,
+        filteredAiList:
+            state.myAiList
+                .where(
+                  (element) => element.name.toLowerCase().contains(
+                    state.searchController.text,
+                  ),
+                )
+                .toList(),
+      );
+    });
+    return iniState;
+  }
+
+  void toggleSearch() {
+    state = state._updateWith(isSearching: !state.isSearching);
+    state.searchController.clear();
   }
 
   void fetchMyAis() async {
@@ -24,7 +48,7 @@ class MyAi extends _$MyAi {
       final List<dynamic> characters = response.data["characters"];
       final List<Character> myAiList =
           characters.map((character) => Character.fromMap(character)).toList();
-      state = state._updateWith(myAiList: myAiList);
+      state = state._updateWith(myAiList: myAiList, filteredAiList: myAiList);
     } catch (e) {
       rethrow;
     } finally {
@@ -44,15 +68,33 @@ class MyAi extends _$MyAi {
 }
 
 class MyAiState {
-  MyAiState({required this.myAiList, this.isLoading = false});
+  MyAiState({
+    required this.myAiList,
+    required this.filteredAiList,
+    this.isLoading = false,
+    this.isSearching = false,
+    required this.searchController,
+  });
 
   final List<Character> myAiList;
+  final List<Character> filteredAiList;
   final bool isLoading;
+  final TextEditingController searchController;
+  final bool isSearching;
 
-  MyAiState _updateWith({List<Character>? myAiList, bool? isLoading}) {
+  MyAiState _updateWith({
+    List<Character>? myAiList,
+    List<Character>? filteredAiList,
+    bool? isLoading,
+    TextEditingController? searchController,
+    bool? isSearching,
+  }) {
     return MyAiState(
       myAiList: myAiList ?? this.myAiList,
+      filteredAiList: filteredAiList ?? this.filteredAiList,
       isLoading: isLoading ?? this.isLoading,
+      searchController: searchController ?? this.searchController,
+      isSearching: isSearching ?? this.isSearching,
     );
   }
 }

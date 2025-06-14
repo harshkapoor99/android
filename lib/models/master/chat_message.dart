@@ -47,7 +47,8 @@ class ChatMessage {
     characterId: json["character_id"],
     sender: json["sender"],
     creatorId: json["creator_id"],
-    message: json["message"],
+    message: (json["message"] as String).replaceAll(RegExp(r'\n+'), '\n'),
+    // .replaceAll(RegExp(r'[\n]'), '\n')
     timestamp: DateTime.parse(
       json["timestamp"].runtimeType == String
           ? json["timestamp"].contains("Z")

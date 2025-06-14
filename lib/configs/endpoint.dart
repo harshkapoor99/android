@@ -28,6 +28,10 @@ enum RemoteEndpoint {
   fetchCitiesByCountry(path: 'masterservice/city/citiesdetailsbycountryid/'),
   fetchCharacterTypes(path: 'masterservice/charactertype/getallcharactertype/'),
 
+  searchCharacters(
+    path: 'chatgenerationservice/character/admincharactersearchformobile/',
+  ),
+
   // MasterData by id
   fetchBehaviousByPersonality(
     path: 'masterservice/behaviour/behaviourdetailsbypersonalityid/',

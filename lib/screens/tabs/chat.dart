@@ -142,7 +142,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                         children: [
                           Expanded(
                             child: Text(
-                              provider.chatList[index].lastChat.message ?? "",
+                              provider.chatList[index].lastChat.message
+                                      ?.replaceAll(RegExp(r'\n+'), '') ??
+                                  "",
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: context.appTextStyle.textSmall.copyWith(

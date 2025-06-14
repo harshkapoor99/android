@@ -108,10 +108,10 @@ class Step1Widget extends ConsumerWidget {
                     : "Choose a Language to continue",
             optionToString: (v) => v.fullName,
             optionToStringSubtitle: (v) => v.gender,
-            onSelect:
-                (p0) => ref
-                    .read(characterCreationProvider.notifier)
-                    .updateLanguageVoiceWith(voice: p0),
+            // onSelect:
+            //     (p0) => ref
+            //         .read(characterCreationProvider.notifier)
+            //         .updateLanguageVoiceWith(voice: p0),
             selected: provider.voice,
           ),
           20.ph,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
@@ -90,7 +88,7 @@ class ModelCard extends ConsumerWidget {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Expanded(
                           child: Column(
@@ -117,22 +115,22 @@ class ModelCard extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        CircleAvatar(
-                          backgroundColor: const Color(
-                            0xFF414141,
-                          ).withValues(alpha: 0.6),
-                          child: IconButton(
-                            icon: SvgPicture.asset(
-                              Assets.svgs.icChat,
-                              width: 15,
-                              height: 15,
-                            ),
-                            onPressed: () {
-                              onCharTap();
-                              context.nav.pushNamed(Routes.chat);
-                            },
-                          ),
-                        ),
+                        // CircleAvatar(
+                        //   backgroundColor: const Color(
+                        //     0xFF414141,
+                        //   ).withValues(alpha: 0.6),
+                        //   child: IconButton(
+                        //     icon: SvgPicture.asset(
+                        //       Assets.svgs.icChat,
+                        //       width: 15,
+                        //       height: 15,
+                        //     ),
+                        //     onPressed: () {
+                        //       onCharTap();
+                        //       context.nav.pushNamed(Routes.chat);
+                        //     },
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

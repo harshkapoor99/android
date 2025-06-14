@@ -38,4 +38,13 @@ class CharacterType {
     "updated_date": updatedDate.toIso8601String(),
     "status": status,
   };
+
+  static CharacterType all = CharacterType(
+    id: "all",
+    charactertypeName: "All",
+    emoji: "",
+    createdDate: DateTime.now(),
+    updatedDate: DateTime.now(),
+    status: 1,
+  );
 }

@@ -11,17 +11,7 @@ class CategoryList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(masterDataProvider);
-    final categories = [
-      CharacterType(
-        id: "all",
-        charactertypeName: "All",
-        emoji: "",
-        createdDate: DateTime.now(),
-        updatedDate: DateTime.now(),
-        status: 1,
-      ),
-      ...provider.characterTypes,
-    ];
+    final categories = [CharacterType.all, ...provider.sortedCharacterTypes];
     return SizedBox(
       height: 30,
       child: ListView.builder(

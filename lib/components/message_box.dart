@@ -136,13 +136,16 @@ class _MessageBoxState extends State<MessageBox> {
                         duration: const Duration(milliseconds: 100),
                         child: IconButton(
                           padding: const EdgeInsets.only(right: 8),
-                          onPressed: widget.onPlusPressed,
+                          // onPressed: widget.onPlusPressed,
+                          // REMOVE: remove the null duriing tts
+                          onPressed: null,
                           icon: SvgPicture.asset(
                             Assets.svgs.icPlus,
                             height: 28,
                             width: 28,
                             colorFilter: ColorFilter.mode(
-                              context.colorExt.textHint,
+                              // REMOVE: remove the null duriing tts
+                              context.colorExt.textHint.withValues(alpha: 0.5),
                               BlendMode.srcIn,
                             ),
                           ),

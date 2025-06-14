@@ -57,7 +57,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
         ref
             .read(myAiProvider.notifier)
             .deleteCharacter(
-              ref.read(myAiProvider).myAiList[_selectedIndex!].id,
+              ref.read(myAiProvider).filteredAiList[_selectedIndex!].id,
             );
       }
       setState(() {
@@ -75,174 +75,182 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(myAiProvider);
-    return RefreshIndicator(
-      onRefresh: () async {
-        ref.read(myAiProvider.notifier).fetchMyAis();
-      },
-      child:
-          provider.isLoading
-              ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Lottie.asset(
-                      Assets.animations.logo,
-                      width: 200,
-                      height: 200,
-                      animate: false,
-                    ),
-                    const Text(
-                      "Gathering your characters...",
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              )
-              : provider.myAiList.isEmpty
-              ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                child: Stack(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+    return provider.isLoading
+        ? Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Lottie.asset(
+                Assets.animations.logo,
+                width: 200,
+                height: 200,
+                animate: false,
+              ),
+              const Text(
+                "Gathering your characters...",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        )
+        : AnimatedSwitcher(
+          duration: Durations.long4,
+          child:
+              provider.filteredAiList.isEmpty
+                  ? Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                    child: Stack(
                       children: [
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            GradientTextWidgets(
-                              [
-                                Text(
-                                  "IMAGINE",
-                                  style: context.appTextStyle.textBold.copyWith(
-                                    fontSize: 30,
-                                  ),
-                                ),
-                                Text(
-                                  "THE",
-                                  style: context.appTextStyle.textSemibold
-                                      .copyWith(fontSize: 24),
-                                ),
-                                Text(
-                                  "POSSIBILITIES",
-                                  style: context.appTextStyle.textBold.copyWith(
-                                    fontSize: 30,
+                            Column(
+                              children: [
+                                GradientTextWidgets(
+                                  [
+                                    Text(
+                                      "IMAGINE",
+                                      style: context.appTextStyle.textBold
+                                          .copyWith(fontSize: 30),
+                                    ),
+                                    Text(
+                                      "THE",
+                                      style: context.appTextStyle.textSemibold
+                                          .copyWith(fontSize: 24),
+                                    ),
+                                    Text(
+                                      "POSSIBILITIES",
+                                      style: context.appTextStyle.textBold
+                                          .copyWith(fontSize: 30),
+                                    ),
+                                  ],
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      context.colorExt.tertiary,
+                                      context.colorExt.primary,
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
                                   ),
                                 ),
                               ],
-                              gradient: LinearGradient(
-                                colors: [
-                                  context.colorExt.tertiary,
-                                  context.colorExt.primary,
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+                            ),
+                            50.ph,
+                            Text(
+                              "Create your very own Character AI and bring your ideas to life.",
+                              textAlign: TextAlign.center,
+                              style: context.appTextStyle.subTitle,
+                            ),
+                            30.ph,
+                            Text(
+                              "Discover the joy of creation in the create tab.",
+                              textAlign: TextAlign.center,
+                              style: context.appTextStyle.text,
                             ),
                           ],
                         ),
-                        50.ph,
-                        Text(
-                          "Create your very own Character AI and bring your ideas to life.",
-                          textAlign: TextAlign.center,
-                          style: context.appTextStyle.subTitle,
-                        ),
-                        30.ph,
-                        Text(
-                          "Discover the joy of creation in the create tab.",
-                          textAlign: TextAlign.center,
-                          style: context.appTextStyle.text,
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: SvgPicture.asset(
+                              width: MediaQuery.sizeOf(context).width / 4,
+                              Assets.svgs.icSwirlArrow,
+                              colorFilter: ColorFilter.mode(
+                                context.colorExt.primary,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SvgPicture.asset(
-                          width: MediaQuery.sizeOf(context).width / 4,
-                          Assets.svgs.icSwirlArrow,
-                          colorFilter: ColorFilter.mode(
-                            context.colorExt.primary,
-                            BlendMode.srcIn,
-                          ),
+                  )
+                  : Expanded(
+                    child: GestureDetector(
+                      onTap: FocusManager.instance.primaryFocus?.unfocus,
+                      child: SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(height: 26),
+                            Text(
+                              'My AIs',
+                              style: context.appTextStyle.sheetHeader,
+                            ),
+                            const SizedBox(height: 18),
+                            GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 12,
+                                    mainAxisSpacing: 12,
+                                    childAspectRatio: 0.9,
+                                  ),
+                              itemCount: provider.filteredAiList.length,
+                              itemBuilder: (context, index) {
+                                var image =
+                                    provider.filteredAiList[index].imageGallery
+                                        .where(
+                                          (element) => element.selected == true,
+                                        )
+                                        .first
+                                        .url;
+                                // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+                                if (image == null) {
+                                  image =
+                                      provider
+                                          .filteredAiList[index]
+                                          .imageGallery
+                                          .first
+                                          .url;
+                                }
+                                return GestureDetector(
+                                  onLongPress: () {
+                                    setState(() {
+                                      _selectedIndex = index;
+                                    });
+                                  },
+                                  onLongPressStart: (details) {
+                                    _showContextMenu(context, index, details);
+                                  },
+                                  child: AnimatedScale(
+                                    scale:
+                                        _selectedIndex == index
+                                            ? _selectedScale
+                                            : _scale,
+                                    duration: const Duration(milliseconds: 200),
+                                    child: ModelCard(
+                                      selected:
+                                          !(_selectedIndex == index) &&
+                                          _selectedIndex != null,
+                                      imageUrl: image,
+                                      name: provider.filteredAiList[index].name,
+                                      description:
+                                          provider
+                                              .filteredAiList[index]
+                                              .characterDescription,
+                                      onCharTap:
+                                          () => ref
+                                              .read(chatProvider.notifier)
+                                              .setCharacter(
+                                                provider.filteredAiList[index],
+                                              ),
+                                      // onLongPress: _showContextMenu(context, index),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            16.ph,
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              )
-              : SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 26),
-                    Text('My AIs', style: context.appTextStyle.sheetHeader),
-                    const SizedBox(height: 18),
-                    GridView.builder(
-                      // crossAxisCount: 2,
-                      // shrinkWrap: true,
-                      // physics: const NeverScrollableScrollPhysics(),
-                      // mainAxisSpacing: 10,
-                      // crossAxisSpacing: 10,
-                      // childAspectRatio: 127.72 / 131,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 12,
-                            mainAxisSpacing: 12,
-                            childAspectRatio: 0.9,
-                          ),
-                      itemCount: provider.myAiList.length,
-                      itemBuilder: (context, index) {
-                        var image =
-                            provider.myAiList[index].imageGallery
-                                .where((element) => element.selected == true)
-                                .first
-                                .url;
-                        // ignore: unnecessary_null_comparison, prefer_conditional_assignment
-                        if (image == null) {
-                          image =
-                              provider.myAiList[index].imageGallery.first.url;
-                        }
-                        return GestureDetector(
-                          onLongPress: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                          },
-                          onLongPressStart: (details) {
-                            _showContextMenu(context, index, details);
-                          },
-                          child: AnimatedScale(
-                            scale:
-                                _selectedIndex == index
-                                    ? _selectedScale
-                                    : _scale,
-                            duration: const Duration(milliseconds: 200),
-                            child: ModelCard(
-                              selected:
-                                  !(_selectedIndex == index) &&
-                                  _selectedIndex != null,
-                              imageUrl: image,
-                              name: provider.myAiList[index].name,
-                              description:
-                                  provider.myAiList[index].characterDescription,
-                              onCharTap:
-                                  () => ref
-                                      .read(chatProvider.notifier)
-                                      .setCharacter(provider.myAiList[index]),
-                              // onLongPress: _showContextMenu(context, index),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    16.ph,
-                  ],
-                ),
-              ),
-    );
+                  ),
+        );
   }
 }

@@ -34,6 +34,7 @@ abstract class MasterService {
   Future<Response> fetchMasterCharactersByCharacterType({
     required String characterTypeId,
   });
+  Future<Response> searchMasterCharacters({required String searchQuery});
 }
 
 class MasterServiceImpl implements MasterService {
@@ -154,6 +155,15 @@ class MasterServiceImpl implements MasterService {
     final response = await _apiClient.post(
       RemoteEndpoint.fetchMasterCharactersByCharacterType.url,
       data: {"charactertype_id": characterTypeId},
+    );
+    return response;
+  }
+
+  @override
+  Future<Response> searchMasterCharacters({required String searchQuery}) async {
+    final response = await _apiClient.post(
+      RemoteEndpoint.searchCharacters.url,
+      data: {"search_string": searchQuery},
     );
     return response;
   }

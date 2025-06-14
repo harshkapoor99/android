@@ -26,8 +26,9 @@ bool nextButtonStatus(Ref ref) {
       provider.style != null &&
       provider.country != null &&
       provider.city != null &&
-      provider.language != null &&
-      provider.voice != null) {
+      provider.language != null
+  //  && provider.voice != null
+  ) {
     return true;
   } else if (provider.index == 2 &&
       provider.characterType != null &&
@@ -223,7 +224,8 @@ class CharacterCreation extends _$CharacterCreation {
             relationshipId: state.relationship!.id,
             personalityId: state.personality!.id,
             behaviourIds: state.behaviours.map((b) => b.id).toList(),
-            voiceId: state.voice?.id,
+            voiceId:
+                state.voice?.id ?? ref.read(masterDataProvider).voices[0].id,
             countryId: state.country?.id,
             cityId: state.city?.id,
             refImage: state.refImageUrl,

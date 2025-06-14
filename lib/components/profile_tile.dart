@@ -23,12 +23,17 @@ class ProfileTile extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 14),
       child: Ink(
         decoration: BoxDecoration(
-          color: context.colorExt.surface,
+          color: context.colorExt.surface.withValues(
+            alpha: onTap != null ? 1 : 0.5,
+          ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: () => Future.delayed(Durations.short4, onTap),
+          onTap:
+              onTap != null
+                  ? () => Future.delayed(Durations.short4, onTap)
+                  : null,
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 21.29,

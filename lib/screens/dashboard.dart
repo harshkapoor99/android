@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/screens/tabs/chat.dart';
 import 'package:guftagu_mobile/screens/tabs/create.dart';
@@ -30,6 +31,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int currentIndex = ref.watch(tabIndexProvider);
+    final myAi = ref.watch(myAiProvider);
 
     return PopScope(
       canPop: ref.read(tabIndexProvider) == 0,
@@ -45,7 +47,17 @@ class DashboardScreen extends ConsumerWidget {
         backgroundColor: context.colorExt.background,
         appBar: AppConstants.appbar(
           context,
-          showSearchIcon: currentIndex == 0 || currentIndex == 2,
+          showSearchIcon:
+              currentIndex == 0 ||
+              (currentIndex == 2 && myAi.myAiList.isNotEmpty),
+          showSearch: currentIndex == 2 ? myAi.isSearching : false,
+          onSearchPressed: () {
+            if (currentIndex == 2) {
+              ref.read(myAiProvider.notifier).toggleSearch();
+            }
+          },
+          searchController: ref.read(myAiProvider).searchController,
+          onNotificationPressed: () {},
         ),
         body: IndexedStack(index: currentIndex, children: _screens),
 

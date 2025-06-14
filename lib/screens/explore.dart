@@ -5,13 +5,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/category_list.dart';
 import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
+import 'package:guftagu_mobile/components/text_input_widget.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/extensions.dart';
 
 class ExploreScreen extends ConsumerWidget {
   const ExploreScreen({super.key});
@@ -175,25 +176,72 @@ class ExploreScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: context.colorExt.background,
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.chevron_left_rounded, size: 30),
-              onPressed: () {
-                context.nav.pop();
-              },
+        leading: IconButton(
+          icon: const Icon(Icons.chevron_left_rounded, size: 30),
+          onPressed: () {
+            context.nav.pop();
+            Future.delayed(
+              Durations.medium4,
+              () => ref
+                  .read(masterDataProvider.notifier)
+                  .selectCharacterTypeFilter(CharacterType.all),
             );
           },
         ),
-        title: Row(
-          children: [
-            const Spacer(),
-            15.pw,
-            SvgPicture.asset(Assets.svgs.icNotification, height: 20, width: 20),
-            15.pw,
-            SvgPicture.asset(Assets.svgs.icSearch, height: 20, width: 20),
-          ],
+        leadingWidth: masterProvider.isSearching ? 0 : null,
+        titleSpacing: 0,
+
+        title: AnimatedSwitcher(
+          duration: Durations.medium4,
+          child:
+              masterProvider.isSearching
+                  ? Padding(
+                    padding: const EdgeInsets.only(left: 15.0),
+                    child: SizedBox(
+                      height: 50,
+                      child: TextInputWidget(
+                        controller: masterProvider.searchController,
+                        hint: "Search you characters",
+                      ),
+                    ),
+                  )
+                  : const Spacer(),
         ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 5),
+
+        actions: [
+          !masterProvider.isSearching
+              ? IconButton(
+                onPressed: ref.read(masterDataProvider.notifier).toggleSearch,
+                icon: SvgPicture.asset(
+                  Assets.svgs.icSearch,
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    context.colorExt.textPrimary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              )
+              : IconButton(
+                splashColor: Colors.transparent,
+                icon: const Icon(Icons.close_rounded, size: 20),
+                onPressed: ref.read(masterDataProvider.notifier).toggleSearch,
+              ),
+          if (!masterProvider.isSearching)
+            IconButton(
+              onPressed: () {},
+              icon: SvgPicture.asset(
+                Assets.svgs.icNotification,
+                height: 20,
+                width: 20,
+                colorFilter: ColorFilter.mode(
+                  context.colorExt.textPrimary,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -205,9 +253,9 @@ class ExploreScreen extends ConsumerWidget {
             buildCharacterGrid(
               context,
               ref,
-              // masterProvider.filteredCharacters.isNotEmpty &&
-              masterProvider.seletedCharacterTypeTab != null &&
-                      masterProvider.seletedCharacterTypeTab?.id != 'all'
+              masterProvider.filteredCharacters.isNotEmpty ||
+                      (masterProvider.seletedCharacterTypeTab != null &&
+                          masterProvider.seletedCharacterTypeTab?.id != 'all')
                   ? masterProvider.filteredCharacters
                   : masterProvider.characters,
             ),

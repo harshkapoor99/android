@@ -1,53 +1,81 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/text_input_widget.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/extensions.dart';
 
 class AppConstants {
   static appbar(
     BuildContext context, {
     bool implyLeading = true,
     bool showSearchIcon = true,
+    bool showSearch = false,
+    TextEditingController? searchController,
+    required void Function() onSearchPressed,
+    required void Function() onNotificationPressed,
   }) {
     bool isDarkModeEnabled = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
       // commit - implyLeading
       backgroundColor: context.colorExt.background,
       automaticallyImplyLeading: implyLeading,
-      title: Row(
-        children: [
-          SvgPicture.asset(
-            isDarkModeEnabled ? Assets.svgs.logo : Assets.svgs.logoDark,
-            height: 50,
-            width: 50,
-          ),
-          5.pw,
-          Text('Guftagu', style: context.appTextStyle.appBarText),
-          const Spacer(),
-          // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-          // 5.pw,
-          // Text(
-          //   '1200',
-          //   style: AppTextStyle(context).textBold.copyWith(fontSize: 12),
-          // ),
-          15.pw,
-          SvgPicture.asset(
-            Assets.svgs.icNotification,
-            height: 20,
-            width: 20,
-            colorFilter: ColorFilter.mode(
-              context.colorExt.textPrimary,
-              BlendMode.srcIn,
-            ),
-          ),
-          15.pw,
-          if (showSearchIcon)
-            SvgPicture.asset(
-              Assets.svgs.icSearch,
+
+      leading:
+          !showSearch
+              ? SvgPicture.asset(
+                isDarkModeEnabled ? Assets.svgs.logo : Assets.svgs.logoDark,
+                height: 50,
+                width: 50,
+              )
+              : null,
+      leadingWidth: 70,
+
+      titleSpacing: 0,
+      title: AnimatedSwitcher(
+        duration: Durations.medium4,
+        child:
+            showSearch
+                ? Padding(
+                  padding: const EdgeInsets.only(left: 15),
+                  child: SizedBox(
+                    height: 50,
+                    child: TextInputWidget(
+                      controller: searchController,
+                      hint: "Search you characters",
+                    ),
+                  ),
+                )
+                : Text('Guftagu', style: context.appTextStyle.appBarText),
+      ),
+
+      actionsPadding: const EdgeInsets.symmetric(horizontal: 5),
+      actions: [
+        if (showSearchIcon)
+          !showSearch
+              ? IconButton(
+                onPressed: onSearchPressed,
+                icon: SvgPicture.asset(
+                  Assets.svgs.icSearch,
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    context.colorExt.textPrimary,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              )
+              : IconButton(
+                splashColor: Colors.transparent,
+                icon: const Icon(Icons.close_rounded, size: 20),
+                onPressed: onSearchPressed,
+              ),
+        if (!showSearch)
+          IconButton(
+            onPressed: onNotificationPressed,
+            icon: SvgPicture.asset(
+              Assets.svgs.icNotification,
               height: 20,
               width: 20,
               colorFilter: ColorFilter.mode(
@@ -55,8 +83,8 @@ class AppConstants {
                 BlendMode.srcIn,
               ),
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
