@@ -12,6 +12,7 @@ import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/chat_provider.gen.dart';
@@ -268,8 +269,8 @@ class Chat extends _$Chat {
       if (state.isRecording) {
         final path = await state.recordController.stop();
         if (path != null) {
-          print(path);
-          print("Recorded file size: ${File(path).lengthSync()}");
+          printDebug(path);
+          printDebug("Recorded file size: ${File(path).lengthSync()}");
           appendChat(isMe: true, time: DateTime.now(), audioPath: path);
         }
       } else {

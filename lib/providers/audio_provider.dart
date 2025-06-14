@@ -9,6 +9,7 @@ import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/audio_provider.gen.dart';
@@ -44,7 +45,7 @@ class AudioPlayer extends _$AudioPlayer {
             file.deleteSync();
           }
         } catch (e) {
-          print('Error deleting audio file: $e');
+          printDebug('Error deleting audio file: $e');
         }
       }
     });
@@ -97,7 +98,7 @@ class AudioPlayer extends _$AudioPlayer {
               file.deleteSync();
             }
           } catch (e) {
-            print('Error deleting audio file: $e');
+            printDebug('Error deleting audio file: $e');
           }
         }
         final file = await downloadAudio(voiceUrl);

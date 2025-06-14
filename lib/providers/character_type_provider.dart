@@ -5,6 +5,7 @@ import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/user_profile_service.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/character_type_provider.gen.dart';
@@ -75,7 +76,7 @@ class UserInterest extends _$UserInterest {
       }
       return CommonResponse(isSuccess: true, message: res.data["message"]);
     } catch (e) {
-      print(e);
+      printDebug(e);
       return CommonResponse(
         isSuccess: false,
         message: "Something went wrong: ${e.toString()}",
