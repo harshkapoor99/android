@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
@@ -10,9 +13,11 @@ part '../gen/providers/master_data_provider.gen.dart';
 
 @Riverpod(keepAlive: true)
 class MasterData extends _$MasterData {
+  Timer? _debounce;
+
   @override
   MasterDataState build() {
-    return const MasterDataState(
+    MasterDataState iniState = MasterDataState(
       languages: [],
       behaviours: [],
       personalities: [],
@@ -24,7 +29,20 @@ class MasterData extends _$MasterData {
       sortedCharacterTypes: [],
       characters: [],
       filteredCharacters: [],
+      searchController: TextEditingController(),
     );
+    iniState.searchController.addListener(() {
+      state = state.copyWith(searchController: state.searchController);
+      _debounce?.cancel();
+      _debounce = Timer(const Duration(milliseconds: 350), () {
+        searchCharacters();
+      });
+    });
+    ref.onDispose(() {
+      state.searchController.dispose();
+      _debounce?.cancel();
+    });
+    return iniState;
   }
 
   Future<void> fetchLanguages() async {
@@ -43,7 +61,6 @@ class MasterData extends _$MasterData {
     }
   }
 
-  // 25, 64, 73, API
   Future<void> fetchBehaviours() async {
     final response = await ref.read(masterServiceProvider).fetchBehavious();
     try {
@@ -227,8 +244,8 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void fetchAllMasterData() async {
-    Future.wait([
+  Future<void> fetchAllMasterData() async {
+    await Future.wait([
       fetchCharacterTypes(),
       fetchCountries(),
       fetchLanguages(),
@@ -342,19 +359,48 @@ class MasterData extends _$MasterData {
     }
   }
 
-  void selectCharacterTypeFilter(CharacterType characterType) {
+  Future<void> searchCharacters() async {
+    final response = await ref
+        .read(masterServiceProvider)
+        .searchMasterCharacters(searchQuery: state.searchController.text);
+    try {
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'];
+        final List<Character> characters =
+            data.map((e) => Character.fromMap(e)).toList().cast<Character>();
+        state = state.copyWith(filteredCharacters: characters);
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  void selectCharacterTypeFilter(
+    CharacterType characterType, {
+    bool? clearing,
+  }) {
     state = state.copyWith(seletedCharacterTypeTab: characterType);
     if (characterType.id != "all") {
       fetchMasterCharacters(characterTypeId: characterType.id);
-      return;
+    } else {
+      state = state.copyWith(filteredCharacters: []);
+      if (clearing != true) {
+        fetchMasterCharacters();
+      }
     }
-    fetchMasterCharacters();
+  }
+
+  void toggleSearch() {
+    state.searchController.clear();
+    selectCharacterTypeFilter(CharacterType.all, clearing: true);
+    state = state.copyWith(isSearching: !state.isSearching);
   }
 }
 
 class MasterDataState {
   const MasterDataState({
     this.isLoading = false,
+    this.isSearching = false,
     required this.languages,
     required this.behaviours,
     required this.personalities,
@@ -367,9 +413,10 @@ class MasterDataState {
     required this.characters,
     required this.filteredCharacters,
     this.seletedCharacterTypeTab,
+    required this.searchController,
   });
 
-  final bool isLoading;
+  final bool isLoading, isSearching;
 
   final List<Language> languages;
   final List<Behaviour> behaviours;
@@ -383,9 +430,11 @@ class MasterDataState {
   final List<Character> characters;
   final List<Character> filteredCharacters;
   final CharacterType? seletedCharacterTypeTab;
+  final TextEditingController searchController;
 
   MasterDataState copyWith({
     bool? isLoading,
+    bool? isSearching,
     List<Language>? languages,
     List<Behaviour>? behaviours,
     List<Personality>? personalities,
@@ -398,9 +447,11 @@ class MasterDataState {
     List<Character>? characters,
     List<Character>? filteredCharacters,
     CharacterType? seletedCharacterTypeTab,
+    TextEditingController? searchController,
   }) {
     return MasterDataState(
       isLoading: isLoading ?? this.isLoading,
+      isSearching: isSearching ?? this.isSearching,
       languages: languages ?? this.languages,
       behaviours: behaviours ?? this.behaviours,
       personalities: personalities ?? this.personalities,
@@ -414,6 +465,7 @@ class MasterDataState {
       filteredCharacters: filteredCharacters ?? this.filteredCharacters,
       seletedCharacterTypeTab:
           seletedCharacterTypeTab ?? this.seletedCharacterTypeTab,
+      searchController: searchController ?? this.searchController,
     );
   }
 }

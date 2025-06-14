@@ -52,24 +52,25 @@ class AppConstants {
 
       actionsPadding: const EdgeInsets.symmetric(horizontal: 5),
       actions: [
-        showSearchIcon && !showSearch
-            ? IconButton(
-              onPressed: onSearchPressed,
-              icon: SvgPicture.asset(
-                Assets.svgs.icSearch,
-                height: 20,
-                width: 20,
-                colorFilter: ColorFilter.mode(
-                  context.colorExt.textPrimary,
-                  BlendMode.srcIn,
+        if (showSearchIcon)
+          !showSearch
+              ? IconButton(
+                onPressed: onSearchPressed,
+                icon: SvgPicture.asset(
+                  Assets.svgs.icSearch,
+                  height: 20,
+                  width: 20,
+                  colorFilter: ColorFilter.mode(
+                    context.colorExt.textPrimary,
+                    BlendMode.srcIn,
+                  ),
                 ),
+              )
+              : IconButton(
+                splashColor: Colors.transparent,
+                icon: const Icon(Icons.close_rounded, size: 20),
+                onPressed: onSearchPressed,
               ),
-            )
-            : IconButton(
-              splashColor: Colors.transparent,
-              icon: const Icon(Icons.close_rounded, size: 20),
-              onPressed: onSearchPressed,
-            ),
         if (!showSearch)
           IconButton(
             onPressed: onNotificationPressed,
