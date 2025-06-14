@@ -23,7 +23,9 @@ class AnimatedSendButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(100),
       ),
       child: IconButton(
-        onPressed: onPressed,
+        // onPressed: onPressed,
+        // REMOVE: remove the null duriing tts
+        onPressed: hasText ? onPressed : null,
         icon: AnimatedSwitcher(
           duration: const Duration(milliseconds: 200),
           transitionBuilder: (Widget child, Animation<double> animation) {
@@ -38,6 +40,11 @@ class AnimatedSendButton extends StatelessWidget {
                   : SvgPicture.asset(
                     Assets.svgs.icMic,
                     key: const ValueKey("mic"),
+                    colorFilter: ColorFilter.mode(
+                      // REMOVE: remove the null duriing tts
+                      context.colorExt.textHint.withValues(alpha: 0.5),
+                      BlendMode.srcIn,
+                    ),
                   ),
         ),
       ),
