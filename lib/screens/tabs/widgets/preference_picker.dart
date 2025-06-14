@@ -25,7 +25,7 @@ Widget buildOptionTile<T>({
   T? selected,
   String? selectedValue,
   List<T>? multiSelected,
-  required Function(T) onSelect,
+  Function(T)? onSelect,
   Function(List<T>)? onMultiSelect,
   bool? isMultiple,
   int? maxSelectToClose,
@@ -37,93 +37,102 @@ Widget buildOptionTile<T>({
       color: context.colorExt.surface,
       borderRadius: BorderRadius.circular(10),
     ),
-    child: ListTile(
-      leading: icon,
-      title: Text(
-        selectedValue ??
-            (selected != null
-                ? optionToString(selected)
-                : isMultiple == true &&
-                    multiSelected != null &&
-                    multiSelected.isNotEmpty
-                ? "${multiSelected.length} $title Selected"
-                : "Select"),
-        style:
-            selectedValue != null ||
-                    selected != null ||
-                    (isMultiple == true &&
-                        multiSelected != null &&
-                        multiSelected.isNotEmpty)
-                ? titleStyle
-                : AppConstants.inputDecoration(context).hintStyle,
-      ),
-      trailing:
-          showLoading
-              ? SizedBox(
-                height: 16,
-                width: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+    child: Opacity(
+      opacity: onSelect != null ? 1 : 0.5,
+      child: ListTile(
+        selected: false,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        enabled: onSelect != null,
+        leading: icon,
+
+        title: Text(
+          selectedValue ??
+              (selected != null
+                  ? optionToString(selected)
+                  : isMultiple == true &&
+                      multiSelected != null &&
+                      multiSelected.isNotEmpty
+                  ? "${multiSelected.length} $title Selected"
+                  : "Select"),
+          style:
+              selectedValue != null ||
+                      selected != null ||
+                      (isMultiple == true &&
+                          multiSelected != null &&
+                          multiSelected.isNotEmpty)
+                  ? titleStyle
+                  : AppConstants.inputDecoration(context).hintStyle,
+        ),
+        trailing:
+            showLoading
+                ? SizedBox(
+                  height: 16,
+                  width: 16,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: context.colorExt.textPrimary,
+                  ),
+                )
+                : Icon(
+                  Icons.arrow_forward_ios,
                   color: context.colorExt.textPrimary,
+                  size: 16,
                 ),
-              )
-              : Icon(
-                Icons.arrow_forward_ios,
-                color: context.colorExt.textPrimary,
-                size: 16,
-              ),
-      onTap: () {
-        if (showLoading) return;
-        if (T == Voice) {
-          _showVoiceOptionPopup(
-            context,
-            ref,
-            title,
-            options as List<Voice>,
-            optionToString: optionToString as String Function(Voice),
-            optionToStringSubtitle:
-                optionToStringSubtitle as String Function(Voice)?,
-            emptyOptionHint: emptyOptionHint,
-            onSelect: onSelect as Function(Voice),
-            selected: selected as Voice?,
-          );
-        } else if (T == Country || T == City || T == Language) {
-          _showOptionPopupWithSearch<T>(
-            context,
-            ref,
-            title,
-            options,
-            optionToString: optionToString,
-            onSelect: onSelect,
-            selected: selected,
-          );
-        } else {
-          if (isMultiple == true) {
-            _showOptionPopupWithMultiselect<T>(
+        onTap: () {
+          if (showLoading || onSelect == null) return;
+          if (T == Voice) {
+            _showVoiceOptionPopup(
               context,
               ref,
               title,
-              options,
+              options as List<Voice>,
+              optionToString: optionToString as String Function(Voice),
+              optionToStringSubtitle:
+                  optionToStringSubtitle as String Function(Voice)?,
               emptyOptionHint: emptyOptionHint,
-              optionToString: optionToString,
-              onSelect: onMultiSelect!,
-              selected: multiSelected,
-              maxSelectToClose: maxSelectToClose,
+              onSelect: onSelect as Function(Voice),
+              selected: selected as Voice?,
             );
-          } else {
-            _showOptionPopup<T>(
+          } else if (T == Country || T == City || T == Language) {
+            _showOptionPopupWithSearch<T>(
               context,
               ref,
               title,
               options,
-              emptyOptionHint: emptyOptionHint,
               optionToString: optionToString,
               onSelect: onSelect,
               selected: selected,
             );
+          } else {
+            if (isMultiple == true) {
+              _showOptionPopupWithMultiselect<T>(
+                context,
+                ref,
+                title,
+                options,
+                emptyOptionHint: emptyOptionHint,
+                optionToString: optionToString,
+                onSelect: onMultiSelect!,
+                selected: multiSelected,
+                maxSelectToClose: maxSelectToClose,
+              );
+            } else {
+              _showOptionPopup<T>(
+                context,
+                ref,
+                title,
+                options,
+                emptyOptionHint: emptyOptionHint,
+                optionToString: optionToString,
+                onSelect: onSelect,
+                selected: selected,
+              );
+            }
           }
-        }
-      },
+        },
+      ),
     ),
   );
 }

@@ -21,7 +21,7 @@ class ProfileTab extends ConsumerStatefulWidget {
 }
 
 class _ProfileTabState extends ConsumerState<ProfileTab> {
-  bool isSwitched = true;
+  bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -106,9 +106,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               trailing: Switch(
                 value: isSwitched,
                 onChanged: (val) {
-                  setState(() {
-                    isSwitched = val;
-                  });
+                  // setState(() {
+                  //   isSwitched = val;
+                  // });
                 },
                 activeColor: const Color(
                   0xFF47C8FC,
@@ -223,9 +223,10 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               // onTap: () => context.nav.pushNamed(Routes.audioWave),
             ),
             ProfileTile(
-              onTap: () {
-                context.nav.pushNamed(Routes.subscription);
-              },
+              // REMOVE: after subscription module added
+              // onTap: () {
+              //   context.nav.pushNamed(Routes.subscription);
+              // },
               icon: 'assets/icons/profile07.svg',
               title: 'Subscription',
               trailing: Icon(

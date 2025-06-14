@@ -90,7 +90,7 @@ class ModelCard extends ConsumerWidget {
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Expanded(
                           child: Column(
@@ -117,22 +117,22 @@ class ModelCard extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        CircleAvatar(
-                          backgroundColor: const Color(
-                            0xFF414141,
-                          ).withValues(alpha: 0.6),
-                          child: IconButton(
-                            icon: SvgPicture.asset(
-                              Assets.svgs.icChat,
-                              width: 15,
-                              height: 15,
-                            ),
-                            onPressed: () {
-                              onCharTap();
-                              context.nav.pushNamed(Routes.chat);
-                            },
-                          ),
-                        ),
+                        // CircleAvatar(
+                        //   backgroundColor: const Color(
+                        //     0xFF414141,
+                        //   ).withValues(alpha: 0.6),
+                        //   child: IconButton(
+                        //     icon: SvgPicture.asset(
+                        //       Assets.svgs.icChat,
+                        //       width: 15,
+                        //       height: 15,
+                        //     ),
+                        //     onPressed: () {
+                        //       onCharTap();
+                        //       context.nav.pushNamed(Routes.chat);
+                        //     },
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

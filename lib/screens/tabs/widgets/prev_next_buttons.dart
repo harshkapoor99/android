@@ -61,6 +61,7 @@ class PrevNextButtons extends ConsumerWidget {
       curve: Curves.fastLinearToSlowEaseIn,
       duration: Durations.short4,
       height: height,
+      // decoration: BoxDecoration(color: context.colorExt.background),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

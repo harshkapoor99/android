@@ -21,6 +21,7 @@ class MasterData extends _$MasterData {
       countries: [],
       cities: [],
       characterTypes: [],
+      sortedCharacterTypes: [],
       characters: [],
       filteredCharacters: [],
     );
@@ -205,16 +206,18 @@ class MasterData extends _$MasterData {
         final resCharacterTypesCopy = List<CharacterType>.from(
           resCharacterTypes,
         );
+        final List<CharacterType> sortedCharacterTypes = resCharacterTypesCopy;
 
         for (var element in resCharacterTypesCopy) {
           if (userInterests.contains(element.id)) {
-            resCharacterTypes.remove(element);
-            resCharacterTypes.add(element);
+            sortedCharacterTypes.remove(element);
+            sortedCharacterTypes.insert(0, element);
           }
         }
 
         state = state.copyWith(
-          characterTypes: resCharacterTypes.reversed.toList(),
+          characterTypes: resCharacterTypes.toList(),
+          sortedCharacterTypes: sortedCharacterTypes.toList(),
         );
       }
     } catch (e) {
@@ -360,6 +363,7 @@ class MasterDataState {
     required this.countries,
     required this.cities,
     required this.characterTypes,
+    required this.sortedCharacterTypes,
     required this.characters,
     required this.filteredCharacters,
     this.seletedCharacterTypeTab,
@@ -375,6 +379,7 @@ class MasterDataState {
   final List<Country> countries;
   final List<City> cities;
   final List<CharacterType> characterTypes;
+  final List<CharacterType> sortedCharacterTypes;
   final List<Character> characters;
   final List<Character> filteredCharacters;
   final CharacterType? seletedCharacterTypeTab;
@@ -389,6 +394,7 @@ class MasterDataState {
     List<Country>? countries,
     List<City>? cities,
     List<CharacterType>? characterTypes,
+    List<CharacterType>? sortedCharacterTypes,
     List<Character>? characters,
     List<Character>? filteredCharacters,
     CharacterType? seletedCharacterTypeTab,
@@ -403,6 +409,7 @@ class MasterDataState {
       countries: countries ?? this.countries,
       cities: cities ?? this.cities,
       characterTypes: characterTypes ?? this.characterTypes,
+      sortedCharacterTypes: sortedCharacterTypes ?? this.sortedCharacterTypes,
       characters: characters ?? this.characters,
       filteredCharacters: filteredCharacters ?? this.filteredCharacters,
       seletedCharacterTypeTab:

@@ -7,6 +7,7 @@ import 'package:guftagu_mobile/components/gradient_text.dart';
 import 'package:guftagu_mobile/components/model_card.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -181,6 +182,12 @@ class ExploreScreen extends ConsumerWidget {
               icon: const Icon(Icons.chevron_left_rounded, size: 30),
               onPressed: () {
                 context.nav.pop();
+                Future.delayed(
+                  Durations.medium4,
+                  () => ref
+                      .read(masterDataProvider.notifier)
+                      .selectCharacterTypeFilter(CharacterType.all),
+                );
               },
             );
           },

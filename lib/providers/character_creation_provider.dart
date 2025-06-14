@@ -26,8 +26,9 @@ bool nextButtonStatus(Ref ref) {
       provider.style != null &&
       provider.country != null &&
       provider.city != null &&
-      provider.language != null &&
-      provider.voice != null) {
+      provider.language != null
+  //  && provider.voice != null
+  ) {
     return true;
   } else if (provider.index == 2 &&
       provider.characterType != null &&
