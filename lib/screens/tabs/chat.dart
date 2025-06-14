@@ -129,7 +129,8 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                           ),
                           Text(
                             formatTime(
-                              provider.chatList[index].lastChat.timestamp,
+                              provider.chatList[index].lastChat.timestamp
+                                  .toLocal(),
                             ),
                             style: context.appTextStyle.textSemibold.copyWith(
                               fontSize: 12,
