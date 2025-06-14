@@ -23,6 +23,7 @@ class Chat extends _$Chat {
   ChatState build() {
     final initialState = ChatState(
       messageController: TextEditingController(),
+      searchController: TextEditingController(),
       recordController:
           RecorderController()
             ..androidEncoder = AndroidEncoder.aac
@@ -423,12 +424,14 @@ class ChatState {
     required this.messageController,
     required this.recordController,
     required this.playerController,
+    required this.searchController,
     this.playerStatus = PlayerStatus.stopped,
     this.hasMessage = false,
     this.isTyping = false,
     this.isFetchingHistory = true,
     this.isFetchingChatList = true,
     this.isRecording = false,
+    this.isSearching = false,
     this.character,
     this.characterDetail,
     required this.messages,
@@ -438,7 +441,9 @@ class ChatState {
       isTyping,
       isFetchingHistory,
       isFetchingChatList,
-      isRecording;
+      isRecording,
+      isSearching;
+  final TextEditingController searchController;
   final TextEditingController messageController;
   final RecorderController recordController;
   final PlayerController playerController;
@@ -456,7 +461,9 @@ class ChatState {
     bool? isFetchingHistory,
     bool? isFetchingChatList,
     bool? isRecording,
+    bool? isSearching,
     TextEditingController? messageController,
+    TextEditingController? searchController,
     RecorderController? recordController,
     PlayerController? playerController,
     PlayerStatus? playerStatus,
@@ -475,6 +482,8 @@ class ChatState {
       playerController: playerController ?? this.playerController,
       playerStatus: playerStatus ?? this.playerStatus,
       isRecording: isRecording ?? this.isRecording,
+      searchController: searchController ?? this.searchController,
+      isSearching: isSearching ?? this.isSearching,
       character: character ?? this.character,
       characterDetail: characterDetail ?? this.characterDetail,
       messages: messages ?? this.messages,

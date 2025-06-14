@@ -224,7 +224,8 @@ class CharacterCreation extends _$CharacterCreation {
             relationshipId: state.relationship!.id,
             personalityId: state.personality!.id,
             behaviourIds: state.behaviours.map((b) => b.id).toList(),
-            voiceId: state.voice?.id,
+            voiceId:
+                state.voice?.id ?? ref.read(masterDataProvider).voices[0].id,
             countryId: state.country?.id,
             cityId: state.city?.id,
             refImage: state.refImageUrl,
