@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
-import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
@@ -192,13 +191,14 @@ class HeaderCharacterRow extends ConsumerWidget {
     final masterCharacters = ref.watch(
       masterDataProvider.select((value) => value.characters),
     );
-    List<Character> characters = List<Character>.from(masterCharacters);
-    characters.sort((a, b) => b.createdDate.compareTo(a.createdDate));
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ...characters
-            .sublist(0, characters.length <= 10 ? characters.length : 10)
+        ...masterCharacters
+            .sublist(
+              0,
+              masterCharacters.length <= 10 ? masterCharacters.length : 10,
+            )
             .map((ai) {
               return Padding(
                 padding: const EdgeInsets.only(right: 8),

@@ -42,6 +42,10 @@ enum RemoteEndpoint {
   fetchMasterCharacters(
     path: 'chatgenerationservice/character/getallcharacterformobile/',
   ),
+  fetchMasterCharactersByCharacterType(
+    path:
+        'chatgenerationservice/character/characterdetailsbycharactertypeidformobile/',
+  ),
 
   // Generate Random prompt
   generateRandomPrompt(
