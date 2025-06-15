@@ -10,6 +10,7 @@ class AppConstants {
   static appbar(
     BuildContext context, {
     bool implyLeading = true,
+    bool showNotificationIcon = true,
     bool showSearchIcon = true,
     bool showSearch = false,
     TextEditingController? searchController,
@@ -71,7 +72,7 @@ class AppConstants {
                 icon: const Icon(Icons.close_rounded, size: 20),
                 onPressed: onSearchPressed,
               ),
-        if (!showSearch)
+        if (showNotificationIcon && !showSearch)
           IconButton(
             onPressed: onNotificationPressed,
             icon: SvgPicture.asset(

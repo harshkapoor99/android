@@ -32,13 +32,13 @@ Widget buildOptionTile<T>({
   bool showLoading = false,
 }) {
   final titleStyle = context.appTextStyle.textSemibold;
-  return Container(
-    decoration: BoxDecoration(
-      color: context.colorExt.surface,
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Opacity(
-      opacity: onSelect != null ? 1 : 0.5,
+  return Opacity(
+    opacity: onSelect != null ? 1 : 0.3,
+    child: Container(
+      decoration: BoxDecoration(
+        color: context.colorExt.surface,
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: ListTile(
         selected: false,
         shape: RoundedRectangleBorder(
