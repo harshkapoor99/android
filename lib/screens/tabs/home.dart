@@ -189,7 +189,15 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           buildHeader(context, ref),
           buildGradientTexts(context),
           const CategoryList(),
-          buildCharacterGrid(context, ref, masterProvider.characters),
+          buildCharacterGrid(
+            context,
+            ref,
+            masterProvider.filteredCharacters.isNotEmpty ||
+                    (masterProvider.seletedCharacterTypeTab != null &&
+                        masterProvider.seletedCharacterTypeTab?.id != 'all')
+                ? masterProvider.filteredCharacters
+                : masterProvider.characters,
+          ),
         ],
       ),
     );

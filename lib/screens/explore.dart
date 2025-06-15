@@ -205,7 +205,7 @@ class ExploreScreen extends ConsumerWidget {
                       ),
                     ),
                   )
-                  : const Spacer(),
+                  : const SizedBox.shrink(),
         ),
         actionsPadding: const EdgeInsets.symmetric(horizontal: 5),
 

@@ -166,88 +166,86 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                       ],
                     ),
                   )
-                  : Expanded(
-                    child: GestureDetector(
-                      onTap: FocusManager.instance.primaryFocus?.unfocus,
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 26),
-                            Text(
-                              'My AIs',
-                              style: context.appTextStyle.sheetHeader,
-                            ),
-                            const SizedBox(height: 18),
-                            GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 12,
-                                    mainAxisSpacing: 12,
-                                    childAspectRatio: 0.9,
-                                  ),
-                              itemCount: provider.filteredAiList.length,
-                              itemBuilder: (context, index) {
-                                var image =
-                                    provider.filteredAiList[index].imageGallery
-                                        .where(
-                                          (element) => element.selected == true,
-                                        )
+                  : GestureDetector(
+                    onTap: FocusManager.instance.primaryFocus?.unfocus,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 26),
+                          Text(
+                            'My AIs',
+                            style: context.appTextStyle.sheetHeader,
+                          ),
+                          const SizedBox(height: 18),
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  crossAxisSpacing: 12,
+                                  mainAxisSpacing: 12,
+                                  childAspectRatio: 0.9,
+                                ),
+                            itemCount: provider.filteredAiList.length,
+                            itemBuilder: (context, index) {
+                              var image =
+                                  provider.filteredAiList[index].imageGallery
+                                      .where(
+                                        (element) => element.selected == true,
+                                      )
+                                      .first
+                                      .url;
+                              // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+                              if (image == null) {
+                                image =
+                                    provider
+                                        .filteredAiList[index]
+                                        .imageGallery
                                         .first
                                         .url;
-                                // ignore: unnecessary_null_comparison, prefer_conditional_assignment
-                                if (image == null) {
-                                  image =
-                                      provider
-                                          .filteredAiList[index]
-                                          .imageGallery
-                                          .first
-                                          .url;
-                                }
-                                return GestureDetector(
-                                  onLongPress: () {
-                                    setState(() {
-                                      _selectedIndex = index;
-                                    });
-                                  },
-                                  onLongPressStart: (details) {
-                                    _showContextMenu(context, index, details);
-                                  },
-                                  child: AnimatedScale(
-                                    scale:
-                                        _selectedIndex == index
-                                            ? _selectedScale
-                                            : _scale,
-                                    duration: const Duration(milliseconds: 200),
-                                    child: ModelCard(
-                                      selected:
-                                          !(_selectedIndex == index) &&
-                                          _selectedIndex != null,
-                                      imageUrl: image,
-                                      name: provider.filteredAiList[index].name,
-                                      description:
-                                          provider
-                                              .filteredAiList[index]
-                                              .characterDescription,
-                                      onCharTap:
-                                          () => ref
-                                              .read(chatProvider.notifier)
-                                              .setCharacter(
-                                                provider.filteredAiList[index],
-                                              ),
-                                      // onLongPress: _showContextMenu(context, index),
-                                    ),
+                              }
+                              return GestureDetector(
+                                onLongPress: () {
+                                  setState(() {
+                                    _selectedIndex = index;
+                                  });
+                                },
+                                onLongPressStart: (details) {
+                                  _showContextMenu(context, index, details);
+                                },
+                                child: AnimatedScale(
+                                  scale:
+                                      _selectedIndex == index
+                                          ? _selectedScale
+                                          : _scale,
+                                  duration: const Duration(milliseconds: 200),
+                                  child: ModelCard(
+                                    selected:
+                                        !(_selectedIndex == index) &&
+                                        _selectedIndex != null,
+                                    imageUrl: image,
+                                    name: provider.filteredAiList[index].name,
+                                    description:
+                                        provider
+                                            .filteredAiList[index]
+                                            .characterDescription,
+                                    onCharTap:
+                                        () => ref
+                                            .read(chatProvider.notifier)
+                                            .setCharacter(
+                                              provider.filteredAiList[index],
+                                            ),
+                                    // onLongPress: _showContextMenu(context, index),
                                   ),
-                                );
-                              },
-                            ),
-                            16.ph,
-                          ],
-                        ),
+                                ),
+                              );
+                            },
+                          ),
+                          16.ph,
+                        ],
                       ),
                     ),
                   ),
