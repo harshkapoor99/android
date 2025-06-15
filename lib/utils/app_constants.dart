@@ -1,15 +1,19 @@
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/text_input_widget.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/master_data_provider.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
 class AppConstants {
   static appbar(
     BuildContext context, {
     bool implyLeading = true,
+    bool showNotificationIcon = true,
     bool showSearchIcon = true,
     bool showSearch = false,
     TextEditingController? searchController,
@@ -24,10 +28,24 @@ class AppConstants {
 
       leading:
           !showSearch
-              ? SvgPicture.asset(
-                isDarkModeEnabled ? Assets.svgs.logo : Assets.svgs.logoDark,
-                height: 50,
-                width: 50,
+              ? Consumer(
+                builder: (context, ref, child) {
+                  return GestureDetector(
+                    onTap: () {
+                      ref
+                          .read(masterDataProvider.notifier)
+                          .fetchMasterCharacters();
+                      context.nav.pushNamed(Routes.explore);
+                    },
+                    child: SvgPicture.asset(
+                      isDarkModeEnabled
+                          ? Assets.svgs.logo
+                          : Assets.svgs.logoDark,
+                      height: 50,
+                      width: 50,
+                    ),
+                  );
+                },
               )
               : null,
       leadingWidth: 70,
@@ -71,7 +89,7 @@ class AppConstants {
                 icon: const Icon(Icons.close_rounded, size: 20),
                 onPressed: onSearchPressed,
               ),
-        if (!showSearch)
+        if (showNotificationIcon && !showSearch)
           IconButton(
             onPressed: onNotificationPressed,
             icon: SvgPicture.asset(
