@@ -11,8 +11,8 @@ String userToMap(User data) => json.encode(data.toMap());
 class User {
   final String id;
   final String username;
-  final String email;
-  final String mobileNumber;
+  final String? email;
+  final String? mobileNumber;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
