@@ -59,8 +59,10 @@ class Step2Widget extends ConsumerWidget {
             options: ref.watch(
               masterDataProvider.select((state) => state.relationships),
             ),
-            // .where(
             optionToString: (c) => "${c.title} ${c.emoji}",
+            showLoading: ref.watch(
+              masterDataProvider.select((v) => v.isRelationshipLoading),
+            ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).characterType != null
                     ? "No relationship found for this Category"
@@ -90,6 +92,9 @@ class Step2Widget extends ConsumerWidget {
               masterDataProvider.select((state) => state.personalities),
             ),
             optionToString: (c) => "${c.title} ${c.emoji}",
+            showLoading: ref.watch(
+              masterDataProvider.select((v) => v.isPersonalityLoading),
+            ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).relationship != null
                     ? "No personality found for this relationship"
@@ -119,6 +124,9 @@ class Step2Widget extends ConsumerWidget {
               masterDataProvider.select((state) => state.behaviours),
             ),
             optionToString: (c) => "${c.title.capitalize()} ${c.emoji}",
+            showLoading: ref.watch(
+              masterDataProvider.select((v) => v.isBehaviourLoading),
+            ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
                     ? "No Behaviour found for this personality"

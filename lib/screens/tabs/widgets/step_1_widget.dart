@@ -62,7 +62,7 @@ class Step1Widget extends ConsumerWidget {
                 context: context,
                 ref: ref,
                 title: "City",
-                showLoading: masterData.isLoading,
+                showLoading: masterData.isCityLoading,
                 options:
                     masterData.cities
                         .where(
@@ -101,17 +101,17 @@ class Step1Widget extends ConsumerWidget {
             ref: ref,
             title: 'Voices',
             options: masterData.voices,
-            showLoading: masterData.isLoading,
+            showLoading: masterData.isVoiceLoading,
             emptyOptionHint:
                 ref.read(characterCreationProvider).language != null
                     ? "No Voice found for this Language"
                     : "Choose a Language to continue",
             optionToString: (v) => v.fullName,
             optionToStringSubtitle: (v) => v.gender,
-            // onSelect:
-            //     (p0) => ref
-            //         .read(characterCreationProvider.notifier)
-            //         .updateLanguageVoiceWith(voice: p0),
+            onSelect:
+                (p0) => ref
+                    .read(characterCreationProvider.notifier)
+                    .updateLanguageVoiceWith(voice: p0),
             selected: provider.voice,
           ),
           20.ph,
