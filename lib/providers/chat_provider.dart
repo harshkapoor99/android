@@ -8,7 +8,6 @@ import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
-import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
@@ -280,7 +279,7 @@ class Chat extends _$Chat {
           state = state._updateWith(isTyping: true);
           state.messageController.clear();
           final response = await ref
-              .read(audioServiceProvider)
+              .read(chatServiceProvider)
               .sendAudioChatMessage(
                 audioFile: File(path),
                 sessionId:

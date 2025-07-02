@@ -180,7 +180,8 @@ class UserProfileScreen extends ConsumerWidget {
                                 profileState
                                     .initialUserInfo!
                                     .profile
-                                    .profilePicture,
+                                    .profilePicture ??
+                                "",
                             placeholder: SvgPicture.asset(
                               Assets.svgs.icProfilePlaceholder,
                             ),
@@ -291,7 +292,7 @@ class UserProfileScreen extends ConsumerWidget {
                   onSelect:
                       (p0) =>
                           profileNotifier.updateCountryCityWith(country: p0),
-                  selectedValue: profileState.country,
+                  selectedValue: profileState.country?.countryName,
                 ),
                 26.ph,
                 Text("City", style: context.appTextStyle.characterGenLabel),
@@ -301,9 +302,6 @@ class UserProfileScreen extends ConsumerWidget {
                     final masterDataCities = ref.watch(
                       masterDataProvider.select((value) => value.cities),
                     );
-                    final seletedCountryId = ref.watch(
-                      userProfileProvider.select((value) => value.countryId),
-                    );
                     final seletedCity = ref.watch(
                       userProfileProvider.select((value) => value.city),
                     );
@@ -312,23 +310,18 @@ class UserProfileScreen extends ConsumerWidget {
                       userProfileProvider.notifier,
                     );
 
-                    final filteredCities =
-                        masterDataCities
-                            .where((c) => c.countryId == seletedCountryId)
-                            .toList();
-
                     return buildOptionTile<City>(
                       context: context,
                       ref: ref,
                       title: "City",
                       showLoading: masterData.isLoading,
-                      options: filteredCities,
+                      options: masterDataCities,
                       optionToString: (c) => c.cityName,
                       onSelect:
                           (p0) => profileNotifierCity.updateCountryCityWith(
                             city: p0,
                           ),
-                      selectedValue: seletedCity,
+                      selectedValue: seletedCity?.cityName,
                     );
                   },
                 ),

@@ -46,7 +46,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                         height: 126,
                         width: 126,
                         child: NetworkImageWithPlaceholder(
-                          imageUrl: userInfo.profile.profilePicture,
+                          imageUrl: userInfo.profile.profilePicture ?? "",
                           placeholder: SvgPicture.asset(
                             Assets.svgs.icProfilePlaceholder,
                           ),
@@ -59,7 +59,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                     ),
                     12.ph,
                     Text(
-                      userInfo.profile.fullName,
+                      userInfo.profile.fullName ?? "",
                       style: context.appTextStyle.textBold.copyWith(
                         fontSize: 18,
                         // color: Color(0xFFF2F2F2),

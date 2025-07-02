@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:guftagu_mobile/models/master/master_models.dart';
+
 User userFromMap(String str) => User.fromMap(json.decode(str));
 
 String userToMap(User data) => json.encode(data.toMap());
@@ -11,8 +13,8 @@ String userToMap(User data) => json.encode(data.toMap());
 class User {
   final String id;
   final String username;
-  final String? email;
-  final String? mobileNumber;
+  final String email;
+  final String mobileNumber;
   final DateTime createdDate;
   final DateTime updatedDate;
   final int status;
@@ -56,7 +58,7 @@ class User {
   factory User.fromMap(Map<String, dynamic> json) => User(
     id: json["id"] ?? json["_id"],
     username: json["username"],
-    email: json["email"],
+    email: json["email"] ?? "",
     mobileNumber: json["mobile_number"] ?? "",
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
@@ -82,24 +84,24 @@ class User {
 }
 
 class Profile {
-  final String fullName;
+  final String? fullName;
   final String? dateOfBirth;
-  final String gender;
-  final String profilePicture;
-  final String bio;
-  final String country;
-  final String city;
-  final String timezone;
+  final String? gender;
+  final String? profilePicture;
+  final String? bio;
+  final Country? country;
+  final City? city;
+  final String? timezone;
 
   Profile({
-    required this.fullName,
-    required this.dateOfBirth,
-    required this.gender,
-    required this.profilePicture,
-    required this.bio,
-    required this.country,
-    required this.city,
-    required this.timezone,
+    this.fullName,
+    this.dateOfBirth,
+    this.gender,
+    this.profilePicture,
+    this.bio,
+    this.country,
+    this.city,
+    this.timezone,
   });
 
   Profile copyWith({
@@ -108,8 +110,8 @@ class Profile {
     String? gender,
     String? profilePicture,
     String? bio,
-    String? country,
-    String? city,
+    Country? country,
+    City? city,
     String? timezone,
   }) => Profile(
     fullName: fullName ?? this.fullName,
@@ -128,8 +130,8 @@ class Profile {
     gender: json["gender"],
     profilePicture: json["profile_picture"],
     bio: json["bio"],
-    country: json["country"],
-    city: json["city"],
+    country: json["country"] != null ? Country.fromMap(json["country"]) : null,
+    city: json["city"] != null ? City.fromMap(json["city"]) : null,
     timezone: json["timezone"],
   );
 
@@ -139,8 +141,8 @@ class Profile {
     "gender": gender,
     "profile_picture": profilePicture,
     "bio": bio,
-    "country": country,
-    "city": city,
+    "country": country?.toMap(),
+    "city": city?.toMap(),
     "timezone": timezone,
   };
 }
