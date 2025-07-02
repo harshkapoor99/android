@@ -171,7 +171,7 @@ void _showVoiceOptionPopup(
   }) async {
     try {
       await ref
-          .read(audioPlayerProvider(voice: voice).notifier)
+          .read(audioPlayerProvider(voiceId: voice.id).notifier)
           .preparePlayerVoice(voice, samples: samples);
     } catch (e) {
       AppConstants.showSnackbar(
@@ -225,30 +225,29 @@ void _showVoiceOptionPopup(
                   ],
                 ),
               ),
-              Consumer(
-                builder: (context, ref, child) {
-                  final playerState = ref.watch(audioPlayerProvider());
-                  final player = ref.read(audioPlayerProvider().notifier);
+              options.isEmpty && emptyOptionHint != null
+                  ? Text(emptyOptionHint, style: context.appTextStyle.textSmall)
+                  : Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(
+                        left: horizontalPadding,
+                        right: horizontalPadding,
+                        bottom: 10,
+                        top: 5,
+                      ),
+                      itemCount: options.length,
+                      itemBuilder: (context, index) {
+                        final option = options[index];
+                        final isSelected = selected == option;
 
-                  return options.isEmpty && emptyOptionHint != null
-                      ? Text(
-                        emptyOptionHint,
-                        style: context.appTextStyle.textSmall,
-                      )
-                      : Flexible(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.only(
-                            left: horizontalPadding,
-                            right: horizontalPadding,
-                            bottom: 10,
-                            top: 5,
-                          ),
-                          itemCount: options.length,
-                          itemBuilder: (context, index) {
-                            final option = options[index];
-                            final isSelected = selected == option;
-
+                        return Consumer(
+                          builder: (context, ref, child) {
+                            final provider = audioPlayerProvider(
+                              voiceId: option.id,
+                            );
+                            final playerState = ref.watch(provider);
+                            final player = ref.read(provider.notifier);
                             return Container(
                               margin: const EdgeInsets.only(bottom: 10),
                               padding: const EdgeInsets.symmetric(
@@ -266,8 +265,8 @@ void _showVoiceOptionPopup(
                                 children: [
                                   GestureDetector(
                                     onTap: () async {
-                                      if (playerState.selectedVoice?.id !=
-                                          option.id) {
+                                      if (playerState.playerStatus ==
+                                          PlayerStatus.idle) {
                                         initializePlayer(
                                           ref,
                                           option,
@@ -283,10 +282,8 @@ void _showVoiceOptionPopup(
                                       }
                                     },
                                     child: SvgPicture.asset(
-                                      playerState.selectedVoice?.id ==
-                                                  option.id &&
-                                              playerState.playerStatus ==
-                                                  PlayerStatus.playing
+                                      playerState.playerStatus ==
+                                              PlayerStatus.playing
                                           ? Assets.svgs.icPause
                                           : Assets.svgs.icPlay,
                                     ),
@@ -329,45 +326,40 @@ void _showVoiceOptionPopup(
 
                                   Expanded(
                                     child:
-                                        option.id ==
-                                                playerState.selectedVoice?.id
+                                        playerState.playerStatus !=
+                                                PlayerStatus.idle
                                             ? Center(
-                                              child: SizedBox(
-                                                // height: 50,
-                                                child:
-                                                    playerState.playerStatus ==
-                                                            PlayerStatus.loading
-                                                        ? CircularProgressIndicator(
-                                                          constraints:
-                                                              BoxConstraints.tight(
-                                                                const Size(
-                                                                  20,
-                                                                  20,
-                                                                ),
+                                              child:
+                                                  playerState.playerStatus ==
+                                                          PlayerStatus.loading
+                                                      ? CircularProgressIndicator(
+                                                        constraints:
+                                                            BoxConstraints.tight(
+                                                              const Size(
+                                                                20,
+                                                                20,
                                                               ),
-                                                          strokeWidth: 2,
-                                                        )
-                                                        : AudioFileWaveforms(
-                                                          size: Size(
-                                                            screenWidth / 5,
-                                                            30,
-                                                          ),
-                                                          playerController:
-                                                              playerState
-                                                                  .playerController,
-                                                          enableSeekGesture:
-                                                              true,
-                                                          waveformType:
-                                                              WaveformType
-                                                                  .fitWidth,
-                                                          waveformData:
-                                                              playerState
-                                                                  .playerController
-                                                                  .waveformData,
-                                                          playerWaveStyle:
-                                                              style,
+                                                            ),
+                                                        strokeWidth: 2,
+                                                      )
+                                                      : AudioFileWaveforms(
+                                                        size: Size(
+                                                          screenWidth / 5,
+                                                          30,
                                                         ),
-                                              ),
+                                                        playerController:
+                                                            playerState
+                                                                .playerController,
+                                                        enableSeekGesture: true,
+                                                        waveformType:
+                                                            WaveformType
+                                                                .fitWidth,
+                                                        waveformData:
+                                                            playerState
+                                                                .playerController
+                                                                .waveformData,
+                                                        playerWaveStyle: style,
+                                                      ),
                                             )
                                             : const SizedBox.shrink(),
                                   ),
@@ -405,10 +397,10 @@ void _showVoiceOptionPopup(
                               ),
                             );
                           },
-                        ),
-                      );
-                },
-              ),
+                        );
+                      },
+                    ),
+                  ),
               SizedBox(height: verticalPadding),
             ],
           ),
