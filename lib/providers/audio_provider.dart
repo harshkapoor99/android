@@ -127,12 +127,14 @@ class AudioPlayer extends _$AudioPlayer {
     }
   }
 
-  Future<void> preparePlayerAudioMessage({
-    String? url,
-    String? path,
+  Future<void> preparePlayerAudioMessage(
+    ChatMessage message, {
     int samples = 100,
   }) async {
-    assert(url != null || path != null, "either url or path must be provided");
+    // Skip if we're already preparing/playing the same message
+    if (state.playerStatus != PlayerStatus.idle) {
+      return;
+    }
 
     // Stop and clean up previous player if it exists
     if (state.playerStatus != PlayerStatus.stopped) {
@@ -148,15 +150,12 @@ class AudioPlayer extends _$AudioPlayer {
     state = state.updateWith(state);
 
     try {
-      // await state.playerController.release();
-      // }
-
       String filePath = "";
 
-      if (path.hasValue) {
-        filePath = path!;
-      } else if (url.hasValue) {
-        final file = await downloadAudio(url!);
+      if (message.audioPath.hasValue) {
+        filePath = message.audioPath!;
+      } else if (message.voiceUrl.hasValue) {
+        final file = await downloadAudio(message.voiceUrl!);
         filePath = file.filePath;
       }
 
@@ -171,6 +170,7 @@ class AudioPlayer extends _$AudioPlayer {
         state.playerController.setFinishMode(finishMode: FinishMode.pause);
 
         // state.playerStatus = PlayerStatus.stopped;
+        state.playerController.pauseAllPlayers();
         state.playerController.startPlayer();
         state = state.updateWith(state);
       }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:lottie/lottie.dart';
@@ -45,13 +48,20 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
           if (!widget.isMe)
             Container(
               margin: const EdgeInsets.only(right: 10, bottom: 15),
+
               width: 30,
               height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                  image: Image.network(widget.imageUrl).image,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30),
+                child: NetworkImageWithPlaceholder(
+                  imageUrl: widget.imageUrl,
+                  placeholder: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                  ),
                   fit: BoxFit.cover,
+                  errorWidget: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                  ),
                 ),
               ),
             ),

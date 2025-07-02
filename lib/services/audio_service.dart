@@ -51,8 +51,16 @@ class AudioServiceImpl implements AudioService {
     required String characterId,
     required String sessionId,
     required String creatorId,
-  }) {
-    // TODO: implement sendAudioChatMessage
-    throw UnimplementedError();
+  }) async {
+    return _apiClient.post(
+      RemoteEndpoint.audioMessage.url,
+      data: FormData.fromMap({
+        'audio_file': await MultipartFile.fromFile(audioFile.path),
+        'character_id': characterId,
+        'session_id': sessionId,
+        'creator_id': creatorId,
+      }),
+      timeout: const Duration(seconds: 30),
+    );
   }
 }

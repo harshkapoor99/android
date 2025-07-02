@@ -2,10 +2,13 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
 import 'package:guftagu_mobile/components/chat_bubble_text.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -134,8 +137,22 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 },
                 child: Hero(
                   tag: "character_image",
+                  child: CircleAvatar(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
 
-                  child: CircleAvatar(backgroundImage: NetworkImage(image)),
+                      child: NetworkImageWithPlaceholder(
+                        imageUrl: image,
+                        placeholder: SvgPicture.asset(
+                          Assets.svgs.icProfilePlaceholder,
+                        ),
+                        fit: BoxFit.cover,
+                        errorWidget: SvgPicture.asset(
+                          Assets.svgs.icProfilePlaceholder,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
               10.pw,
@@ -327,7 +344,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                         if (provider.hasMessage) {
                           chatNotifier.chatWithCharacter();
                         } else {
-                          // chatNotifier.startOrStopRecording();
+                          chatNotifier.startOrStopRecording();
                         }
                       },
                     ),

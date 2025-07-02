@@ -2,6 +2,7 @@ import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -40,8 +41,8 @@ class ChatBubbleAudio extends ConsumerWidget {
   }) async {
     try {
       await ref
-          .read(audioPlayerProvider(message: message).notifier)
-          .preparePlayerAudioMessage(path: path, url: url, samples: samples);
+          .read(audioPlayerProvider(messageId: message.id).notifier)
+          .preparePlayerAudioMessage(message, samples: samples);
     } catch (e) {
       AppConstants.showSnackbar(
         message: "Failed to load audio",
@@ -53,8 +54,9 @@ class ChatBubbleAudio extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final playerState = ref.watch(audioPlayerProvider(message: message));
-    final player = ref.read(audioPlayerProvider(message: message).notifier);
+    final provider = audioPlayerProvider(messageId: message.id);
+    final playerState = ref.watch(provider);
+    final player = ref.read(provider.notifier);
 
     final screenWidth = MediaQuery.sizeOf(context).width;
     printDebug(
@@ -62,7 +64,7 @@ class ChatBubbleAudio extends ConsumerWidget {
     );
 
     final samples = AppConstants.playerWaveStyle.getSamplesForWidth(
-      screenWidth / 5,
+      screenWidth / 2,
     );
 
     return Align(
@@ -75,13 +77,20 @@ class ChatBubbleAudio extends ConsumerWidget {
           if (!isMe)
             Container(
               margin: const EdgeInsets.only(right: 10, bottom: 15),
+
               width: 30,
               height: 30,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                  image: Image.network(imageUrl).image,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: NetworkImageWithPlaceholder(
+                  imageUrl: imageUrl,
+                  placeholder: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                  ),
                   fit: BoxFit.cover,
+                  errorWidget: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                  ),
                 ),
               ),
             ),
@@ -107,13 +116,6 @@ class ChatBubbleAudio extends ConsumerWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      // gradient:
-                      //     isMe
-                      //         ? const LinearGradient(
-                      //           colors: [Color(0xFF9D00C6), Color(0xFF00B1A4)],
-                      //         )
-                      //         : null,
-                      // color: isMe ? null : context.colorExt.bubble,
                       color: context.colorExt.bubble,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10),
@@ -158,19 +160,27 @@ class ChatBubbleAudio extends ConsumerWidget {
                               ),
                             ),
                             Expanded(
-                              child: ColoredBox(
-                                color: Colors.green,
-                                child: AudioFileWaveforms(
-                                  size: Size(screenWidth / 2, 40),
-
-                                  playerController:
-                                      playerState.playerController,
-                                  enableSeekGesture: true,
-                                  waveformType: WaveformType.fitWidth,
-                                  waveformData:
-                                      playerState.playerController.waveformData,
-                                  playerWaveStyle: AppConstants.playerWaveStyle,
-                                ),
+                              child: Center(
+                                child:
+                                    playerState.playerStatus ==
+                                            PlayerStatus.idle
+                                        ? Text(
+                                          "Tap to play",
+                                          style: context.appTextStyle.textSmall,
+                                        )
+                                        : AudioFileWaveforms(
+                                          size: Size(screenWidth / 2, 40),
+                                          playerController:
+                                              playerState.playerController,
+                                          enableSeekGesture: true,
+                                          waveformType: WaveformType.fitWidth,
+                                          waveformData:
+                                              playerState
+                                                  .playerController
+                                                  .waveformData,
+                                          playerWaveStyle:
+                                              AppConstants.playerWaveStyle,
+                                        ),
                               ),
                             ),
                           ],
@@ -189,6 +199,15 @@ class ChatBubbleAudio extends ConsumerWidget {
                 ],
               ),
 
+              // Text(
+              //   "Duration ${(playerState.playerController.maxDuration / 1000).floor()}",
+              // ),
+              // Text(
+              //   "ph${provider.messageId} pch${playerState.playerController.hashCode} wfh${playerState.playerController.waveformData.hashCode}",
+              // ),
+              // Text(
+              //   "ph${provider.hashCode} plh${player.hashCode} psh${playerState.hashCode}",
+              // ),
               Text(
                 time != null ? formatTime(time!) : "",
                 style: context.appTextStyle.textSmall.copyWith(fontSize: 10),

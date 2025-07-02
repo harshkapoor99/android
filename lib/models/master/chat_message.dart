@@ -10,6 +10,7 @@ ChatMessage chatMessageFromJson(String str) =>
 String chatMessageToJson(ChatMessage data) => json.encode(data.toMap());
 
 class ChatMessage {
+  String id;
   bool isMe;
   String characterId;
   String sender;
@@ -26,6 +27,7 @@ class ChatMessage {
   String? audioPath;
 
   ChatMessage({
+    required this.id,
     required this.isMe,
     required this.characterId,
     required this.sender,
@@ -43,11 +45,15 @@ class ChatMessage {
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> json) => ChatMessage(
+    id: json["id"] ?? json["_id"],
     isMe: json["sender"] == "user" ? true : false,
     characterId: json["character_id"],
     sender: json["sender"],
     creatorId: json["creator_id"],
-    message: (json["message"] as String).replaceAll(RegExp(r'\n+'), '\n'),
+    message:
+        json["message"] != null
+            ? (json["message"] as String).replaceAll(RegExp(r'\n+'), '\n')
+            : null,
     // .replaceAll(RegExp(r'[\n]'), '\n')
     timestamp: DateTime.parse(
       json["timestamp"].runtimeType == String
@@ -66,6 +72,7 @@ class ChatMessage {
   );
 
   Map<String, dynamic> toMap() => {
+    "_id": id,
     "character_id": characterId,
     "sender": sender,
     "creator_id": creatorId,

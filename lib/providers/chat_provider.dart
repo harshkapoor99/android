@@ -8,6 +8,7 @@ import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
+import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
@@ -227,8 +228,10 @@ class Chat extends _$Chat {
     String? text,
     required DateTime time,
     String? audioPath,
+    String? voiceUrl,
   }) {
     ChatMessage newMessage = ChatMessage(
+      id: UniqueKey().toString(),
       characterId: state.character!.id,
       sender: isMe ? "user" : "ai",
       creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
@@ -240,6 +243,7 @@ class Chat extends _$Chat {
       message: text,
       timestamp: time,
       audioPath: audioPath,
+      voiceUrl: voiceUrl,
     );
 
     updateChatList(newMessage, state.messages.isEmpty);
@@ -273,21 +277,36 @@ class Chat extends _$Chat {
           printDebug(path);
           printDebug("Recorded file size: ${File(path).lengthSync()}");
           appendChat(isMe: true, time: DateTime.now(), audioPath: path);
+          state = state._updateWith(isTyping: true);
+          state.messageController.clear();
+          final response = await ref
+              .read(audioServiceProvider)
+              .sendAudioChatMessage(
+                audioFile: File(path),
+                sessionId:
+                    state.character!.id +
+                    ref.read(hiveServiceProvider.notifier).getUserId()!,
+                characterId: state.character!.id,
+                creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+              );
+
+          String replyUrl = response.data["tts_audio_url"];
+          final file = await downloadAudio(replyUrl);
+
+          appendChat(
+            isMe: false,
+            time: DateTime.now(),
+            audioPath: file.filePath,
+          );
         }
       } else {
         state.recordController.record();
       }
     } catch (e) {
       rethrow;
+    } finally {
+      state = state._updateWith(isTyping: false);
     }
-
-    // Future.delayed(const Duration(milliseconds: 500), () {
-    //   appendChat(
-    //     isMe: false,
-    //     text: "🤖 Got your voice message!",
-    //     time: DateTime.now(),
-    //   );
-    // });
   }
 
   Future<void> preparePlayer({
