@@ -116,263 +116,272 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ref.read(chatProvider.notifier).clearHistory();
         }
       },
-      child: Scaffold(
-        backgroundColor: context.colorExt.background,
-        appBar: AppBar(
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
           backgroundColor: context.colorExt.background,
-          // automaticallyImplyLeading: false,
-          titleSpacing: 0,
-          leading: IconButton(
-            splashColor: Colors.transparent,
-            icon: const Icon(Icons.chevron_left_rounded, size: 30),
-            onPressed: () {
-              context.nav.pop();
-            },
-          ),
-          title: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  context.nav.pushNamed(Routes.characterProfile);
-                },
-                child: Hero(
-                  tag: "character_image",
-                  child: CircleAvatar(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(26),
+          appBar: AppBar(
+            backgroundColor: context.colorExt.background,
+            // automaticallyImplyLeading: false,
+            titleSpacing: 0,
+            leading: IconButton(
+              splashColor: Colors.transparent,
+              icon: const Icon(Icons.chevron_left_rounded, size: 30),
+              onPressed: () {
+                context.nav.pop();
+              },
+            ),
+            title: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    context.nav.pushNamed(Routes.characterProfile);
+                  },
+                  child: Hero(
+                    tag: "character_image",
+                    child: CircleAvatar(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(26),
 
-                      child: NetworkImageWithPlaceholder(
-                        imageUrl: image,
-                        placeholder: SvgPicture.asset(
-                          Assets.svgs.icProfilePlaceholder,
-                        ),
-                        fit: BoxFit.cover,
-                        errorWidget: SvgPicture.asset(
-                          Assets.svgs.icProfilePlaceholder,
+                        child: NetworkImageWithPlaceholder(
+                          imageUrl: image,
+                          placeholder: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
+                          fit: BoxFit.cover,
+                          errorWidget: SvgPicture.asset(
+                            Assets.svgs.icProfilePlaceholder,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              10.pw,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    provider.character!.name,
-                    style: context.appTextStyle.textBold,
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: Colors.green,
-                        ),
-                      ),
-                      5.pw,
-                      Text(
-                        "Online",
-                        style: context.appTextStyle.text.copyWith(fontSize: 14),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const Spacer(),
-              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              // 5.pw,
-              // Text(
-              //   '1200',
-              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              // ),
-              // 25.pw,
-              // IconButton(
-              //   onPressed: () => context.nav.pushNamed(Routes.call),
-              //   icon: const Icon(Icons.call, color: Colors.white),
-              // ),
-              20.pw,
-            ],
-          ),
-        ),
-        body: GestureDetector(
-          onTap: () => widget._focusNodes.unfocus(),
-          child: Column(
-            children: [
-              Expanded(
-                child:
-                    provider.isFetchingHistory
-                        ? const SizedBox.shrink() // Show nothing while fetching history
-                        : ListView.builder(
-                          reverse:
-                              true, // Keep showing latest messages at the bottom
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          // Adjust itemCount based on whether typing indicator should be shown
-                          itemCount:
-                              provider.isTyping
-                                  ? provider.messages.length +
-                                      1 // +1 for the typing indicator
-                                  : provider.messages.length,
-                          itemBuilder: (context, index) {
-                            // --- Handle typing indicator ---
-                            if (provider.isTyping && index == 0) {
-                              // Display Lottie animation when typing
-                              return ChatBubbleTyping(
-                                isMe: false,
-                                imageUrl: image,
-                              );
-                            }
-                            // --- End typing indicator ---
-
-                            // Adjust index to get the correct message from the list
-                            // This logic correctly accounts for the presence/absence of the typing indicator
-                            final messageIndex =
-                                provider.isTyping
-                                    ?
-                                    // provider.messages.length -
-                                    //     1 -
-                                    (index -
-                                        1) // Adjust index when typing indicator is present
-                                    :
-                                    // provider.messages.length -
-                                    //     1 -
-                                    index; // Normal index when no typing indicator
-
-                            final message = provider.messages[messageIndex];
-
-                            bool showDateSeparator = false;
-                            if (messageIndex == provider.messages.length - 1) {
-                              showDateSeparator = true;
-                            } else if (messageIndex <
-                                provider.messages.length - 1) {
-                              final prevMessage =
-                                  provider.messages[messageIndex + 1];
-                              showDateSeparator =
-                                  !isSameDay(
-                                    provider.messages[messageIndex].timestamp,
-                                    prevMessage.timestamp,
-                                  );
-                            }
-
-                            // Return the actual chat message bubble
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (showDateSeparator
-                                // && messageIndex < provider.messages.length - 1
-                                )
-                                  _buildDateSeparator(
-                                    context,
-                                    message.timestamp,
-                                  ),
-                                if (message.chatType == ChatType.audio.name)
-                                  ChatBubbleAudio(
-                                    message: message,
-                                    isMe: message.isMe,
-                                    imageUrl:
-                                        image, // Pass the AI image url (used if isMe is false)
-                                    time: message.timestamp.toLocal(),
-                                    path: message.audioPath,
-                                    url: message.voiceUrl,
-                                  ),
-                                if (message.chatType == ChatType.file.name ||
-                                    message.chatType == ChatType.image.name)
-                                  ChatBubbleFile(
-                                    message: message,
-                                    isMe: message.isMe,
-                                    imageUrl:
-                                        image, // Pass the AI image url (used if isMe is false)
-                                    time: message.timestamp.toLocal(),
-                                    path: message.filePath,
-                                    url: message.fileUrl,
-                                  ),
-                                if (message.chatType == ChatType.text.name)
-                                  ChatBubbleText(
-                                    text: message.message!,
-                                    isMe: message.isMe,
-                                    imageUrl:
-                                        image, // Pass the AI image url (used if isMe is false)
-                                    time: message.timestamp.toLocal(),
-                                  ),
-                              ],
-                            );
-                          },
-                        ),
-              ),
-              AnimatedContainer(
-                duration: Durations.long2,
-                height: provider.isFetchingHistory ? 25 : 0,
-                child: const Text("Loading your chat history..."),
-              ),
-              Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
+                10.pw,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        child: MessageBox(
-                          controller: ref.read(chatProvider).messageController,
-                          hasMessage:
-                              provider.hasMessage ||
-                              provider.uploadFile != null,
-                          recordingController: provider.recordController,
-                          isRecordig: provider.isRecording,
-                          focusNodes: widget._focusNodes,
-                          onPlusPressed: () {
-                            AppConstants.getPickImageAlert(
-                              context: context,
-                              pressCamera: () {
-                                widget.getImage(ImageSource.camera, ref);
-                                Navigator.of(context).pop();
-                              },
-                              pressGallery: () {
-                                widget.getImage(ImageSource.gallery, ref);
-                                Navigator.of(context).pop();
-                              },
-                              pressDocument: () async {
-                                widget.getDocument(ref);
-                                Navigator.of(context).pop();
-                              },
-                              pressAudio: () async {
-                                widget.getAudio(ref);
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                          attachedFile: provider.uploadFile,
-                          onFileRemovePressed:
-                              provider.uploadFile != null
-                                  ? ref.read(chatProvider.notifier).dettachFile
-                                  : null,
-                          isImage: provider.isAttachmentImage,
-                        ),
-                      ),
+                    Text(
+                      provider.character!.name,
+                      style: context.appTextStyle.textBold,
                     ),
-                    10.pw,
-                    AnimatedSendButton(
-                      hasText:
-                          provider.hasMessage || provider.uploadFile != null,
-                      onPressed: () {
-                        final chatNotifier = ref.read(chatProvider.notifier);
-
-                        if (provider.uploadFile != null) {
-                          chatNotifier.fileChatWithCharacter(
-                            isImage: provider.isAttachmentImage,
-                          );
-                        } else if (provider.hasMessage) {
-                          chatNotifier.chatWithCharacter();
-                        } else {
-                          chatNotifier.startOrStopRecording();
-                        }
-                      },
+                    Row(
+                      children: [
+                        Container(
+                          width: 7,
+                          height: 7,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
+                            color: Colors.green,
+                          ),
+                        ),
+                        5.pw,
+                        Text(
+                          "Online",
+                          style: context.appTextStyle.text.copyWith(
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ),
-            ],
+                const Spacer(),
+                // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+                // 5.pw,
+                // Text(
+                //   '1200',
+                //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+                // ),
+                // 25.pw,
+                IconButton(
+                  onPressed: () => context.nav.pushNamed(Routes.call),
+                  icon: const Icon(Icons.call, color: Colors.white),
+                ),
+                20.pw,
+              ],
+            ),
+          ),
+          body: GestureDetector(
+            onTap: () => widget._focusNodes.unfocus(),
+            child: Column(
+              children: [
+                Expanded(
+                  child:
+                      provider.isFetchingHistory
+                          ? const SizedBox.shrink() // Show nothing while fetching history
+                          : ListView.builder(
+                            reverse:
+                                true, // Keep showing latest messages at the bottom
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            // Adjust itemCount based on whether typing indicator should be shown
+                            itemCount:
+                                provider.isTyping
+                                    ? provider.messages.length +
+                                        1 // +1 for the typing indicator
+                                    : provider.messages.length,
+                            itemBuilder: (context, index) {
+                              // --- Handle typing indicator ---
+                              if (provider.isTyping && index == 0) {
+                                // Display Lottie animation when typing
+                                return ChatBubbleTyping(
+                                  isMe: false,
+                                  imageUrl: image,
+                                );
+                              }
+                              // --- End typing indicator ---
+
+                              // Adjust index to get the correct message from the list
+                              // This logic correctly accounts for the presence/absence of the typing indicator
+                              final messageIndex =
+                                  provider.isTyping
+                                      ?
+                                      // provider.messages.length -
+                                      //     1 -
+                                      (index -
+                                          1) // Adjust index when typing indicator is present
+                                      :
+                                      // provider.messages.length -
+                                      //     1 -
+                                      index; // Normal index when no typing indicator
+
+                              final message = provider.messages[messageIndex];
+
+                              bool showDateSeparator = false;
+                              if (messageIndex ==
+                                  provider.messages.length - 1) {
+                                showDateSeparator = true;
+                              } else if (messageIndex <
+                                  provider.messages.length - 1) {
+                                final prevMessage =
+                                    provider.messages[messageIndex + 1];
+                                showDateSeparator =
+                                    !isSameDay(
+                                      provider.messages[messageIndex].timestamp,
+                                      prevMessage.timestamp,
+                                    );
+                              }
+
+                              // Return the actual chat message bubble
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (showDateSeparator
+                                  // && messageIndex < provider.messages.length - 1
+                                  )
+                                    _buildDateSeparator(
+                                      context,
+                                      message.timestamp,
+                                    ),
+                                  if (message.chatType == ChatType.audio.name)
+                                    ChatBubbleAudio(
+                                      message: message,
+                                      isMe: message.isMe,
+                                      imageUrl:
+                                          image, // Pass the AI image url (used if isMe is false)
+                                      time: message.timestamp.toLocal(),
+                                      path: message.audioPath,
+                                      url: message.voiceUrl,
+                                    ),
+                                  if (message.chatType == ChatType.file.name ||
+                                      message.chatType == ChatType.image.name)
+                                    ChatBubbleFile(
+                                      message: message,
+                                      isMe: message.isMe,
+                                      imageUrl:
+                                          image, // Pass the AI image url (used if isMe is false)
+                                      time: message.timestamp.toLocal(),
+                                      path: message.filePath,
+                                      url: message.fileUrl,
+                                    ),
+                                  if (message.chatType == ChatType.text.name)
+                                    ChatBubbleText(
+                                      text: message.message!,
+                                      isMe: message.isMe,
+                                      imageUrl:
+                                          image, // Pass the AI image url (used if isMe is false)
+                                      time: message.timestamp.toLocal(),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                ),
+                AnimatedContainer(
+                  duration: Durations.long2,
+                  height: provider.isFetchingHistory ? 25 : 0,
+                  child: const Text("Loading your chat history..."),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          child: MessageBox(
+                            controller:
+                                ref.read(chatProvider).messageController,
+                            hasMessage:
+                                provider.hasMessage ||
+                                provider.uploadFile != null,
+                            recordingController: provider.recordController,
+                            isRecordig: provider.isRecording,
+                            focusNodes: widget._focusNodes,
+                            onPlusPressed: () {
+                              AppConstants.getPickImageAlert(
+                                context: context,
+                                pressCamera: () {
+                                  widget.getImage(ImageSource.camera, ref);
+                                  Navigator.of(context).pop();
+                                },
+                                pressGallery: () {
+                                  widget.getImage(ImageSource.gallery, ref);
+                                  Navigator.of(context).pop();
+                                },
+                                pressDocument: () async {
+                                  widget.getDocument(ref);
+                                  Navigator.of(context).pop();
+                                },
+                                pressAudio: () async {
+                                  widget.getAudio(ref);
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                            },
+                            attachedFile: provider.uploadFile,
+                            onFileRemovePressed:
+                                provider.uploadFile != null
+                                    ? ref
+                                        .read(chatProvider.notifier)
+                                        .dettachFile
+                                    : null,
+                            isImage: provider.isAttachmentImage,
+                          ),
+                        ),
+                      ),
+                      10.pw,
+                      AnimatedSendButton(
+                        hasText:
+                            provider.hasMessage || provider.uploadFile != null,
+                        onPressed: () {
+                          final chatNotifier = ref.read(chatProvider.notifier);
+
+                          if (provider.uploadFile != null) {
+                            chatNotifier.fileChatWithCharacter(
+                              isImage: provider.isAttachmentImage,
+                            );
+                          } else if (provider.hasMessage) {
+                            chatNotifier.chatWithCharacter();
+                          } else {
+                            chatNotifier.startOrStopRecording();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
