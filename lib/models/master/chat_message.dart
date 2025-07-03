@@ -19,12 +19,14 @@ class ChatMessage {
   DateTime timestamp;
   String sessionId;
   String? voiceUrl;
-  String? imageUrl;
+  String? fileUrl;
+  String? fileName;
   String? chatType;
   DateTime? createdDate;
   DateTime? updatedDate;
   int? status;
   String? audioPath;
+  String? filePath;
 
   ChatMessage({
     required this.id,
@@ -36,12 +38,14 @@ class ChatMessage {
     required this.timestamp,
     required this.sessionId,
     this.voiceUrl,
-    this.imageUrl,
+    this.fileUrl,
+    this.fileName,
     this.chatType,
     this.createdDate,
     this.updatedDate,
     this.status,
     this.audioPath,
+    this.filePath,
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> json) => ChatMessage(
@@ -64,7 +68,8 @@ class ChatMessage {
     ),
     sessionId: json["session_id"],
     voiceUrl: json["voice_url"],
-    imageUrl: json["image_url"],
+    fileUrl: json["image_url"],
+    fileName: json["file_name"],
     chatType: json["chat_type"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
@@ -80,7 +85,8 @@ class ChatMessage {
     "timestamp": timestamp.toIso8601String(),
     "session_id": sessionId,
     "voice_url": voiceUrl,
-    "image_url": imageUrl,
+    "image_url": fileUrl,
+    "file_name": fileName,
     "chat_type": chatType,
     "created_date": createdDate?.toIso8601String(),
     "updated_date": updatedDate?.toIso8601String(),

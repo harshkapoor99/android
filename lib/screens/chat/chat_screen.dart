@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
+import 'package:guftagu_mobile/components/chat_bubble_file.dart';
 import 'package:guftagu_mobile/components/chat_bubble_text.dart';
+import 'package:guftagu_mobile/components/chat_bubble_typing.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
@@ -15,9 +18,9 @@ import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
-import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:guftagu_mobile/utils/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -33,36 +36,33 @@ class ChatScreen extends ConsumerStatefulWidget {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      var image = await compressImage(File(img.path));
-      if (image != null) {
-        // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
-        // ref
-        //     .read(characterCreationProvider.notifier)
-        //     .uploadImage(image: XFile(image.path));
-        image = null;
-      }
+      var image = File(img.path);
+      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+      ref.read(chatProvider.notifier).attachFile(image, isImage: true);
     }
   }
 
-  void getDocument(File file, WidgetRef ref) async {
+  void getDocument(WidgetRef ref) async {
     await getPermission(Permission.storage);
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx'],
+      allowedExtensions: ['pdf', 'csv', 'docx'],
     );
 
     if (result != null && result.files.single.path != null) {
-      File pickedFile = File(result.files.single.path!);
+      var pickedFile = File(result.files.single.path!);
       // You can compress or validate the document if needed
-      // Example: ref.read(chatProvider.notifier).uploadDocument(pickedFile);
-      debugPrint("Document picked: ${pickedFile.path}");
+      ref.read(chatProvider.notifier).attachFile(pickedFile);
+      debugPrint(
+        "Document picked: ${pickedFile.path} ${lookupMimeType(pickedFile.path)}",
+      );
     } else {
       debugPrint("No document selected.");
     }
   }
 
-  void getAudio(File file, WidgetRef ref) async {
+  void getAudio(WidgetRef ref) async {
     await getPermission(Permission.storage);
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -220,11 +220,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                             // --- Handle typing indicator ---
                             if (provider.isTyping && index == 0) {
                               // Display Lottie animation when typing
-                              return ChatBubbleText(
-                                text: "text",
+                              return ChatBubbleTyping(
                                 isMe: false,
                                 imageUrl: image,
-                                showTyping: true,
                               );
                             }
                             // --- End typing indicator ---
@@ -270,8 +268,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     context,
                                     message.timestamp,
                                   ),
-                                if (message.audioPath != null ||
-                                    message.voiceUrl != null)
+                                if (message.chatType == ChatType.audio.name)
                                   ChatBubbleAudio(
                                     message: message,
                                     isMe: message.isMe,
@@ -281,7 +278,18 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     path: message.audioPath,
                                     url: message.voiceUrl,
                                   ),
-                                if (message.message != null)
+                                if (message.chatType == ChatType.file.name ||
+                                    message.chatType == ChatType.image.name)
+                                  ChatBubbleFile(
+                                    message: message,
+                                    isMe: message.isMe,
+                                    imageUrl:
+                                        image, // Pass the AI image url (used if isMe is false)
+                                    time: message.timestamp.toLocal(),
+                                    path: message.filePath,
+                                    url: message.fileUrl,
+                                  ),
+                                if (message.chatType == ChatType.text.name)
                                   ChatBubbleText(
                                     text: message.message!,
                                     isMe: message.isMe,
@@ -307,7 +315,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                       child: SizedBox(
                         child: MessageBox(
                           controller: ref.read(chatProvider).messageController,
-                          hasMessage: provider.hasMessage,
+                          hasMessage:
+                              provider.hasMessage ||
+                              provider.uploadFile != null,
                           recordingController: provider.recordController,
                           isRecordig: provider.isRecording,
                           focusNodes: widget._focusNodes,
@@ -323,25 +333,36 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                 Navigator.of(context).pop();
                               },
                               pressDocument: () async {
-                                widget.getDocument(File(''), ref);
+                                widget.getDocument(ref);
                                 Navigator.of(context).pop();
                               },
                               pressAudio: () async {
-                                widget.getAudio(File(''), ref);
+                                widget.getAudio(ref);
                                 Navigator.of(context).pop();
                               },
                             );
                           },
+                          attachedFile: provider.uploadFile,
+                          onFileRemovePressed:
+                              provider.uploadFile != null
+                                  ? ref.read(chatProvider.notifier).dettachFile
+                                  : null,
+                          isImage: provider.isAttachmentImage,
                         ),
                       ),
                     ),
                     10.pw,
                     AnimatedSendButton(
-                      hasText: provider.hasMessage,
+                      hasText:
+                          provider.hasMessage || provider.uploadFile != null,
                       onPressed: () {
                         final chatNotifier = ref.read(chatProvider.notifier);
 
-                        if (provider.hasMessage) {
+                        if (provider.uploadFile != null) {
+                          chatNotifier.fileChatWithCharacter(
+                            isImage: provider.isAttachmentImage,
+                          );
+                        } else if (provider.hasMessage) {
                           chatNotifier.chatWithCharacter();
                         } else {
                           chatNotifier.startOrStopRecording();

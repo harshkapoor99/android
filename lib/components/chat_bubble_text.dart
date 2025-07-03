@@ -6,13 +6,11 @@ import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:lottie/lottie.dart';
 
 class ChatBubbleText extends StatefulWidget {
   final String text;
   final bool isMe;
   final String imageUrl;
-  final bool showTyping;
   final DateTime? time;
 
   const ChatBubbleText({
@@ -21,7 +19,6 @@ class ChatBubbleText extends StatefulWidget {
     required this.isMe,
     required this.imageUrl,
     this.time,
-    this.showTyping = false,
   });
 
   @override
@@ -104,66 +101,52 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7,
                     ),
-                    child: Builder(
-                      builder: (context) {
-                        if (widget.showTyping) {
-                          return Lottie.asset(
-                            'assets/animations/du.json',
-                            height: 20,
-                            fit: BoxFit.contain,
-                          );
-                        }
-                        if (widget.text.isNotEmpty) {
-                          return SelectableText(
-                            key: textKey,
-                            widget.text,
-                            style: context.appTextStyle.text.copyWith(
-                              fontSize: 14,
-                              color:
-                                  widget.isMe
-                                      ? context.colorExt.buttonText
-                                      : context.colorExt.textPrimary,
-                              fontStyle: FontStyle.normal,
+                    child: SelectableText(
+                      key: textKey,
+                      widget.text,
+                      style: context.appTextStyle.text.copyWith(
+                        fontSize: 14,
+                        color:
+                            widget.isMe
+                                ? context.colorExt.buttonText
+                                : context.colorExt.textPrimary,
+                        fontStyle: FontStyle.normal,
+                      ),
+                      contextMenuBuilder: (context, editableTextState) {
+                        final selectedText = editableTextState
+                            .textEditingValue
+                            .selection
+                            .textInside(widget.text);
+                        return AdaptiveTextSelectionToolbar.buttonItems(
+                          buttonItems: [
+                            if (selectedText.isNotEmpty)
+                              ContextMenuButtonItem(
+                                label: 'Copy',
+                                onPressed: () {
+                                  Clipboard.setData(
+                                    ClipboardData(text: selectedText),
+                                  );
+                                  _deselectText();
+                                },
+                              ),
+                            ContextMenuButtonItem(
+                              label: 'Copy All',
+                              onPressed: () {
+                                Clipboard.setData(
+                                  ClipboardData(text: widget.text),
+                                );
+                                _deselectText();
+                              },
                             ),
-                            contextMenuBuilder: (context, editableTextState) {
-                              final selectedText = editableTextState
-                                  .textEditingValue
-                                  .selection
-                                  .textInside(widget.text);
-                              return AdaptiveTextSelectionToolbar.buttonItems(
-                                buttonItems: [
-                                  if (selectedText.isNotEmpty)
-                                    ContextMenuButtonItem(
-                                      label: 'Copy',
-                                      onPressed: () {
-                                        Clipboard.setData(
-                                          ClipboardData(text: selectedText),
-                                        );
-                                        _deselectText();
-                                      },
-                                    ),
-                                  ContextMenuButtonItem(
-                                    label: 'Copy All',
-                                    onPressed: () {
-                                      Clipboard.setData(
-                                        ClipboardData(text: widget.text),
-                                      );
-                                      _deselectText();
-                                    },
-                                  ),
-                                ],
-                                anchors: TextSelectionToolbarAnchors(
-                                  primaryAnchor:
-                                      editableTextState
-                                          .contextMenuAnchors
-                                          .primaryAnchor -
-                                      const Offset(0, 0),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                        return const SizedBox.shrink();
+                          ],
+                          anchors: TextSelectionToolbarAnchors(
+                            primaryAnchor:
+                                editableTextState
+                                    .contextMenuAnchors
+                                    .primaryAnchor -
+                                const Offset(0, 0),
+                          ),
+                        );
                       },
                     ),
                   ),

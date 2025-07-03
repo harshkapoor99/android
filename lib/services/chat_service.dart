@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/services/chat_service.gen.dart';
@@ -31,6 +34,21 @@ abstract class ChatSerice {
   Future<Response> chatList({required String creatorId});
 
   Future<Response> fetchCharacterDetails({required String characterId});
+
+  Future<Response> sendAudioChatMessage({
+    required File audioFile,
+    required String characterId,
+    required String sessionId,
+    required String creatorId,
+  });
+
+  Future<Response> sendFileChatMessage({
+    required File file,
+    required String characterId,
+    required String creatorId,
+    required String fileName,
+    String? message,
+  });
 }
 
 class ChatSericeImpl implements ChatSerice {
@@ -104,5 +122,46 @@ class ChatSericeImpl implements ChatSerice {
       data: {"character_id": characterId},
     );
     return response;
+  }
+
+  @override
+  Future<Response> sendAudioChatMessage({
+    required File audioFile,
+    required String characterId,
+    required String sessionId,
+    required String creatorId,
+  }) async {
+    return _apiClient.post(
+      RemoteEndpoint.audioMessage.url,
+      data: FormData.fromMap({
+        'audio_file': await MultipartFile.fromFile(audioFile.path),
+        'character_id': characterId,
+        'session_id': sessionId,
+        'creator_id': creatorId,
+      }),
+      timeout: const Duration(seconds: 30),
+    );
+  }
+
+  @override
+  Future<Response> sendFileChatMessage({
+    required File file,
+    required String characterId,
+    required String creatorId,
+    required String fileName,
+    String? message,
+  }) async {
+    return _apiClient.post(
+      RemoteEndpoint.fileMessage.url,
+      data: FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path),
+        'character_id': characterId,
+        'session_id': '$characterId$creatorId',
+        'creator_id': creatorId,
+        'message': message.hasValue ? message : "What is this?",
+        "file_name": fileName,
+      }),
+      timeout: const Duration(seconds: 30),
+    );
   }
 }

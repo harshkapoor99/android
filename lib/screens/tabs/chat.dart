@@ -10,6 +10,7 @@ import 'package:guftagu_mobile/screens/tabs/home.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/message_by_chat_type.dart';
 import 'package:lottie/lottie.dart';
 
 class ChatTab extends ConsumerStatefulWidget {
@@ -142,9 +143,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                         children: [
                           Expanded(
                             child: Text(
-                              provider.chatList[index].lastChat.message
-                                      ?.replaceAll(RegExp(r'\n+'), '') ??
-                                  "",
+                              getMessageFromChatType(
+                                provider.chatList[index].lastChat,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: context.appTextStyle.textSmall.copyWith(

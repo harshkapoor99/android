@@ -69,9 +69,9 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                       opacity: 0.6,
                       child: Text(
                         userInfo.email.hasValue
-                            ? userInfo.email!
+                            ? userInfo.email
                             : userInfo.mobileNumber.hasValue
-                            ? userInfo.mobileNumber!
+                            ? userInfo.mobileNumber
                             : "",
                         style: context.appTextStyle.text.copyWith(
                           fontSize: 14,

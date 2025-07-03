@@ -175,7 +175,7 @@ class AppConstants {
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 1),
                   child: const ListTile(
-                    leading: Icon(Icons.attach_file),
+                    leading: Icon(Icons.image),
                     title: Text("Upload from Gallery"),
                   ),
                 ),
@@ -200,7 +200,7 @@ class AppConstants {
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 1),
                     child: const ListTile(
-                      leading: Icon(Icons.insert_drive_file),
+                      leading: Icon(Icons.upload_file_rounded),
                       title: Text("Upload Document"),
                     ),
                   ),
