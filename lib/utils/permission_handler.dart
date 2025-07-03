@@ -11,10 +11,16 @@ Future<bool> hasStoragePermission() async {
     final status = await Permission.manageExternalStorage.status;
     if (status.isGranted) {
       return true;
+    } else if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
     } else {
       final result = await Permission.manageExternalStorage.request();
       if (result.isGranted) {
         return true;
+      } else if (result.isPermanentlyDenied) {
+        await openAppSettings();
+        return false;
       } else {
         // Handle permission denied
         return false;
@@ -25,10 +31,16 @@ Future<bool> hasStoragePermission() async {
     final status = await Permission.storage.status;
     if (status.isGranted) {
       return true;
+    } else if (status.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
     } else {
       final result = await Permission.storage.request();
       if (result.isGranted) {
         return true;
+      } else if (result.isPermanentlyDenied) {
+        await openAppSettings();
+        return false;
       } else {
         // Handle permission denied
         return false;
@@ -38,19 +50,24 @@ Future<bool> hasStoragePermission() async {
 }
 
 Future<bool> getPermission(Permission permission) async {
-  var checkStatus = await permission.status;
+  var status = await permission.status;
 
-  if (checkStatus.isGranted) {
+  if (status.isGranted) {
     return true;
-  } else {
-    var status = await permission.request();
-    if (status.isGranted) {
-    } else if (status.isDenied) {
-      getPermission(permission);
-    } else {
-      openAppSettings();
-      // EasyLoading.showError('Allow the permission');
-    }
+  } else if (status.isPermanentlyDenied) {
+    // The user opted to never ask again, direct to app settings
+    await openAppSettings();
     return false;
+  } else {
+    var result = await permission.request();
+    if (result.isGranted) {
+      return true;
+    } else if (result.isPermanentlyDenied) {
+      await openAppSettings();
+      return false;
+    } else {
+      // Permission denied (but not permanently)
+      return false;
+    }
   }
 }
