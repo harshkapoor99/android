@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
@@ -12,7 +13,7 @@ import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
-import 'package:guftagu_mobile/utils/print_debug.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/chat_provider.gen.dart';
@@ -29,7 +30,8 @@ class Chat extends _$Chat {
             ..androidEncoder = AndroidEncoder.aac
             ..androidOutputFormat = AndroidOutputFormat.mpeg4
             ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
-            ..sampleRate = 44100,
+            ..sampleRate = 44100
+            ..bitRate = 256000,
       playerController: PlayerController(),
       hasMessage: false,
       messages: [],
@@ -90,7 +92,12 @@ class Chat extends _$Chat {
 
       String reply = response.data["reply"];
 
-      appendChat(isMe: false, text: reply, time: DateTime.now());
+      appendChat(
+        isMe: false,
+        type: ChatType.text,
+        text: reply,
+        time: DateTime.now(),
+      );
     } catch (e) {
       rethrow;
     } finally {
@@ -102,6 +109,7 @@ class Chat extends _$Chat {
     try {
       appendChat(
         isMe: true,
+        type: ChatType.text,
         text: state.messageController.text,
         time: DateTime.now(),
       );
@@ -118,7 +126,92 @@ class Chat extends _$Chat {
 
       String reply = response.data["reply"];
 
-      appendChat(isMe: false, text: reply, time: DateTime.now());
+      appendChat(
+        isMe: false,
+        type: ChatType.text,
+        text: reply,
+        time: DateTime.now(),
+      );
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state._updateWith(isTyping: false);
+    }
+  }
+
+  void audioChatWithCharacter(String path) async {
+    try {
+      appendChat(
+        isMe: true,
+        type: ChatType.audio,
+        time: DateTime.now(),
+        audioPath: path,
+      );
+      state = state._updateWith(isTyping: true);
+      state.messageController.clear();
+      final response = await ref
+          .read(chatServiceProvider)
+          .sendAudioChatMessage(
+            audioFile: File(path),
+            sessionId:
+                state.character!.id +
+                ref.read(hiveServiceProvider.notifier).getUserId()!,
+            characterId: state.character!.id,
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+          );
+
+      String replyUrl = response.data["tts_audio_url"];
+      final file = await downloadAssetFromUrl(replyUrl);
+
+      appendChat(
+        isMe: false,
+        type: ChatType.audio,
+        time: DateTime.now(),
+        audioPath: file.filePath,
+      );
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state._updateWith(isTyping: false);
+    }
+  }
+
+  void fileChatWithCharacter({bool isImage = false}) async {
+    try {
+      if (state.uploadFile != null) {
+        String fileName = basename(state.uploadFile!.path);
+        appendChat(
+          isMe: true,
+          type: isImage ? ChatType.image : ChatType.file,
+          text: state.messageController.text,
+          time: DateTime.now(),
+          filePath: state.uploadFile?.path,
+          fileName: fileName,
+        );
+        state = state._updateWith(isTyping: true);
+        String message = state.messageController.text;
+        File? file = state.uploadFile;
+        dettachFile();
+        state.messageController.clear();
+        final response = await ref
+            .read(chatServiceProvider)
+            .sendFileChatMessage(
+              file: file!,
+              fileName: fileName,
+              characterId: state.character!.id,
+              creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+              message: message,
+            );
+
+        String reply = response.data["assistant_response"];
+
+        appendChat(
+          isMe: false,
+          type: ChatType.text,
+          text: reply,
+          time: DateTime.now(),
+        );
+      }
     } catch (e) {
       rethrow;
     } finally {
@@ -224,11 +317,18 @@ class Chat extends _$Chat {
 
   void appendChat({
     required bool isMe,
+    required ChatType type,
     String? text,
     required DateTime time,
     String? audioPath,
+    String? voiceUrl,
+    String? fileUrl,
+    String? filePath,
+    String? fileName,
   }) {
     ChatMessage newMessage = ChatMessage(
+      chatType: type.name,
+      id: UniqueKey().toString(),
       characterId: state.character!.id,
       sender: isMe ? "user" : "ai",
       creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
@@ -240,6 +340,10 @@ class Chat extends _$Chat {
       message: text,
       timestamp: time,
       audioPath: audioPath,
+      voiceUrl: voiceUrl,
+      fileUrl: fileUrl,
+      filePath: filePath,
+      fileName: fileName,
     );
 
     updateChatList(newMessage, state.messages.isEmpty);
@@ -270,24 +374,16 @@ class Chat extends _$Chat {
       if (state.isRecording) {
         final path = await state.recordController.stop();
         if (path != null) {
-          printDebug(path);
-          printDebug("Recorded file size: ${File(path).lengthSync()}");
-          appendChat(isMe: true, time: DateTime.now(), audioPath: path);
+          audioChatWithCharacter(path);
         }
       } else {
         state.recordController.record();
       }
     } catch (e) {
       rethrow;
+    } finally {
+      state = state._updateWith(isTyping: false);
     }
-
-    // Future.delayed(const Duration(milliseconds: 500), () {
-    //   appendChat(
-    //     isMe: false,
-    //     text: "🤖 Got your voice message!",
-    //     time: DateTime.now(),
-    //   );
-    // });
   }
 
   Future<void> preparePlayer({
@@ -313,7 +409,7 @@ class Chat extends _$Chat {
     if (path.hasValue) {
       filePath = path!;
     } else if (url.hasValue) {
-      final file = await downloadAudio(url!);
+      final file = await downloadAssetFromUrl(url!);
       filePath = file.filePath;
     }
 
@@ -332,80 +428,6 @@ class Chat extends _$Chat {
     }
   }
 
-  // Future<void> preparePlayer({
-  //   String? url,
-  //   String? path,
-  //   int samples = 100,
-  // }) async {
-  //   assert(url != null || path != null, "either url or path must be provided");
-  //   // Skip if we're already preparing/playing the same voice
-  //   if (state.selectedVoice?.id == voice.id &&
-  //       state.playerStatus != PlayerStatus.stopped) {
-  //     return;
-  //   }
-
-  //   // Stop and clean up previous player if it exists
-  //   if (state.playerStatus != PlayerStatus.stopped) {
-  //     await state.playerController.stopPlayer();
-  //   }
-
-  //   // Release resources from previous playback
-  //   if (state.downloadedFilePath != null) {
-  //     await state.playerController.release();
-  //   }
-
-  //   state.selectedVoice = voice;
-  //   state.playerStatus = PlayerStatus.loading;
-  //   state = state.updateWith(state);
-
-  //   final res = await ref
-  //       .read(audioServiceProvider)
-  //       .generateAudio(
-  //         text:
-  //             "Hello, ${ref.read(hiveServiceProvider.notifier).getUserInfo()?.profile.fullName ?? ""}! It's nice to meet you! How are you?",
-  //         languageId: voice.languageId,
-  //         vocalId: voice.vocalId,
-  //       );
-
-  //   final String voiceUrl = res.data["tts_audio_url"];
-
-  //   state.currentPath = voiceUrl ?? path;
-  //   state = state.updateWith(state);
-
-  //   try {
-  //     if (voiceUrl.hasValue) {
-  //       String filePath = voiceUrl;
-
-  //       if (state.downloadedFilePath != null) {
-  //         try {
-  //           final file = File(state.downloadedFilePath!);
-  //           if (file.existsSync()) {
-  //             file.deleteSync();
-  //           }
-  //         } catch (e) {
-  //           print('Error deleting audio file: $e');
-  //         }
-  //       }
-  //       await _downloadAudio(voiceUrl);
-  //       filePath = state.downloadedFilePath!;
-  //       await state.playerController.preparePlayer(
-  //         path: filePath,
-  //         shouldExtractWaveform: true,
-  //         noOfSamples: samples,
-  //       );
-  //       state.playerController.setFinishMode(finishMode: FinishMode.pause);
-
-  //       // state.playerStatus = PlayerStatus.stopped;
-  //       state.playerController.startPlayer();
-  //       state = state.updateWith(state);
-  //     }
-  //   } catch (e) {
-  //     state.playerStatus = PlayerStatus.error;
-  //     state = state.updateWith(state);
-  //     rethrow;
-  //   }
-  // }
-
   Future<void> startPlayer() async {
     await state.playerController.startPlayer();
   }
@@ -416,6 +438,15 @@ class Chat extends _$Chat {
 
   Future<void> stopPlayer() async {
     await state.playerController.stopPlayer();
+  }
+
+  void attachFile(File file, {bool isImage = false}) {
+    state = state._updateWith(uploadFile: file, isAttachmentImage: isImage);
+  }
+
+  void dettachFile() {
+    state.uploadFile = null;
+    state = state._copyWith(state);
   }
 }
 
@@ -432,27 +463,31 @@ class ChatState {
     this.isFetchingChatList = true,
     this.isRecording = false,
     this.isSearching = false,
+    this.uploadFile,
+    this.isAttachmentImage = false,
     this.character,
     this.characterDetail,
     required this.messages,
     required this.chatList,
   });
-  final bool hasMessage,
+  bool hasMessage,
       isTyping,
       isFetchingHistory,
       isFetchingChatList,
       isRecording,
-      isSearching;
-  final TextEditingController searchController;
-  final TextEditingController messageController;
-  final RecorderController recordController;
-  final PlayerController playerController;
-  final PlayerStatus playerStatus;
-  final List<ChatMessage> messages;
-  final List<ChatListItem> chatList;
+      isSearching,
+      isAttachmentImage;
+  TextEditingController searchController;
+  TextEditingController messageController;
+  RecorderController recordController;
+  PlayerController playerController;
+  PlayerStatus playerStatus;
+  List<ChatMessage> messages;
+  List<ChatListItem> chatList;
+  File? uploadFile;
 
-  final Character? character;
-  final CharacterDetail? characterDetail;
+  Character? character;
+  CharacterDetail? characterDetail;
 
   // ignore: unused_element
   ChatState _updateWith({
@@ -467,6 +502,8 @@ class ChatState {
     RecorderController? recordController,
     PlayerController? playerController,
     PlayerStatus? playerStatus,
+    File? uploadFile,
+    bool? isAttachmentImage,
     Character? character,
     CharacterDetail? characterDetail,
     List<ChatMessage>? messages,
@@ -484,10 +521,34 @@ class ChatState {
       isRecording: isRecording ?? this.isRecording,
       searchController: searchController ?? this.searchController,
       isSearching: isSearching ?? this.isSearching,
+      uploadFile: uploadFile ?? this.uploadFile,
+      isAttachmentImage: isAttachmentImage ?? this.isAttachmentImage,
       character: character ?? this.character,
       characterDetail: characterDetail ?? this.characterDetail,
       messages: messages ?? this.messages,
       chatList: chatList ?? this.chatList,
+    );
+  }
+
+  ChatState _copyWith(ChatState state) {
+    return ChatState(
+      hasMessage: state.hasMessage,
+      isTyping: state.isTyping,
+      isFetchingHistory: state.isFetchingHistory,
+      isFetchingChatList: state.isFetchingChatList,
+      messageController: state.messageController,
+      recordController: state.recordController,
+      playerController: state.playerController,
+      playerStatus: state.playerStatus,
+      isRecording: state.isRecording,
+      searchController: state.searchController,
+      isSearching: state.isSearching,
+      uploadFile: state.uploadFile,
+      isAttachmentImage: state.isAttachmentImage,
+      character: state.character,
+      characterDetail: state.characterDetail,
+      messages: state.messages,
+      chatList: state.chatList,
     );
   }
 }

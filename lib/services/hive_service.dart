@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:guftagu_mobile/configs/hive_contants.dart';
@@ -67,8 +68,8 @@ class HiveService extends _$HiveService {
     String? gender,
     String? profilePicture,
     String? bio,
-    String? country,
-    String? city,
+    Country? country,
+    City? city,
     String? timezone,
     List<String>? characterTypeIds,
   }) {

@@ -17,17 +17,21 @@ part '../gen/providers/audio_provider.gen.dart';
 @riverpod
 class AudioPlayer extends _$AudioPlayer {
   @override
-  AudioPlayerState build({Voice? voice, ChatMessage? message}) {
+  AudioPlayerState build({String? voiceId, String? messageId}) {
     final initState = AudioPlayerState(playerController: PlayerController());
     initState.playerController.onPlayerStateChanged.listen((playerState) {
       if (playerState == PlayerState.playing) {
         state.playerStatus = PlayerStatus.playing;
-      } else if (playerState == PlayerState.paused) {
+        state = state.updateWith(state);
+      } else if (playerState == PlayerState.paused &&
+          state.playerStatus == PlayerStatus.playing) {
         state.playerStatus = PlayerStatus.paused;
-      } else if (playerState == PlayerState.stopped) {
+        state = state.updateWith(state);
+      } else if (playerState == PlayerState.stopped &&
+          state.playerStatus != PlayerStatus.loading) {
         state.playerStatus = PlayerStatus.stopped;
+        state = state.updateWith(state);
       }
-      // state = state.updateWith(state);
     });
 
     initState.playerController.onCurrentDurationChanged.listen((duration) {
@@ -54,8 +58,7 @@ class AudioPlayer extends _$AudioPlayer {
 
   Future<void> preparePlayerVoice(Voice voice, {int samples = 100}) async {
     // Skip if we're already preparing/playing the same voice
-    if (state.selectedVoice?.id == voice.id &&
-        state.playerStatus != PlayerStatus.stopped) {
+    if (state.playerStatus != PlayerStatus.idle) {
       return;
     }
 
@@ -69,27 +72,27 @@ class AudioPlayer extends _$AudioPlayer {
       await state.playerController.release();
     }
 
-    state.selectedVoice = voice;
     state.playerStatus = PlayerStatus.loading;
     state = state.updateWith(state);
 
-    final res = await ref
-        .read(audioServiceProvider)
-        .generateAudio(
-          text:
-              "Hello, ${ref.read(hiveServiceProvider.notifier).getUserInfo()?.profile.fullName ?? ""}! It's nice to meet you! How are you?",
-          languageId: voice.languageId,
-          vocalId: voice.vocalId,
-        );
-
-    final String voiceUrl = res.data["tts_audio_url"];
-
-    state.currentPath = voiceUrl;
-    state = state.updateWith(state);
-
     try {
+      String filePath = "";
+      final res = await ref
+          .read(audioServiceProvider)
+          .generateAudio(
+            text:
+                "Hello, ${ref.read(hiveServiceProvider.notifier).getUserInfo()?.profile.fullName ?? ""}! It's nice to meet you! How are you?",
+            languageId: voice.languageId,
+            vocalId: voice.vocalId,
+          );
+
+      final String voiceUrl = res.data["tts_audio_url"];
+
+      state.currentPath = voiceUrl;
+      state = state.updateWith(state);
+
       if (voiceUrl.hasValue) {
-        String filePath = voiceUrl;
+        filePath = voiceUrl;
 
         if (state.downloadedFilePath != null) {
           try {
@@ -101,22 +104,22 @@ class AudioPlayer extends _$AudioPlayer {
             printDebug('Error deleting audio file: $e');
           }
         }
-        final file = await downloadAudio(voiceUrl);
+        final file = await downloadAssetFromUrl(voiceUrl);
         state.downloadedFilePath = file.filePath;
         state = state.updateWith(state);
-
         filePath = state.downloadedFilePath!;
-        await state.playerController.preparePlayer(
-          path: filePath,
-          shouldExtractWaveform: true,
-          noOfSamples: samples,
-        );
-        state.playerController.setFinishMode(finishMode: FinishMode.pause);
-
-        // state.playerStatus = PlayerStatus.stopped;
-        state.playerController.startPlayer();
-        state = state.updateWith(state);
       }
+
+      await state.playerController.preparePlayer(
+        path: filePath,
+        shouldExtractWaveform: true,
+        noOfSamples: samples,
+      );
+      state.playerController.setFinishMode(finishMode: FinishMode.pause);
+
+      state.playerController.pauseAllPlayers();
+      state.playerController.startPlayer();
+      state = state.updateWith(state);
     } catch (e) {
       state.playerStatus = PlayerStatus.error;
       state = state.updateWith(state);
@@ -124,12 +127,14 @@ class AudioPlayer extends _$AudioPlayer {
     }
   }
 
-  Future<void> preparePlayerAudioMessage({
-    String? url,
-    String? path,
+  Future<void> preparePlayerAudioMessage(
+    ChatMessage message, {
     int samples = 100,
   }) async {
-    assert(url != null || path != null, "either url or path must be provided");
+    // Skip if we're already preparing/playing the same message
+    if (state.playerStatus != PlayerStatus.idle) {
+      return;
+    }
 
     // Stop and clean up previous player if it exists
     if (state.playerStatus != PlayerStatus.stopped) {
@@ -145,15 +150,12 @@ class AudioPlayer extends _$AudioPlayer {
     state = state.updateWith(state);
 
     try {
-      // await state.playerController.release();
-      // }
-
       String filePath = "";
 
-      if (path.hasValue) {
-        filePath = path!;
-      } else if (url.hasValue) {
-        final file = await downloadAudio(url!);
+      if (message.audioPath.hasValue) {
+        filePath = message.audioPath!;
+      } else if (message.voiceUrl.hasValue) {
+        final file = await downloadAssetFromUrl(message.voiceUrl!);
         filePath = file.filePath;
       }
 
@@ -168,6 +170,7 @@ class AudioPlayer extends _$AudioPlayer {
         state.playerController.setFinishMode(finishMode: FinishMode.pause);
 
         // state.playerStatus = PlayerStatus.stopped;
+        state.playerController.pauseAllPlayers();
         state.playerController.startPlayer();
         state = state.updateWith(state);
       }
@@ -179,6 +182,7 @@ class AudioPlayer extends _$AudioPlayer {
   }
 
   Future<void> startPlayer() async {
+    await state.playerController.pauseAllPlayers();
     await state.playerController.startPlayer();
   }
 
@@ -215,13 +219,11 @@ class AudioPlayer extends _$AudioPlayer {
 class AudioPlayerState {
   AudioPlayerState({
     required this.playerController,
-    this.selectedVoice,
     this.currentDuration = 0,
     this.currentPath,
     this.downloadedFilePath,
-    this.playerStatus = PlayerStatus.stopped,
+    this.playerStatus = PlayerStatus.idle,
   });
-  Voice? selectedVoice;
   PlayerController playerController;
   String? currentPath;
   String? downloadedFilePath;
@@ -230,13 +232,9 @@ class AudioPlayerState {
 
   AudioPlayerState updateWith(AudioPlayerState state) => AudioPlayerState(
     playerController: state.playerController,
-    selectedVoice: state.selectedVoice,
     currentPath: state.currentPath,
     downloadedFilePath: state.downloadedFilePath,
     playerStatus: state.playerStatus,
     currentDuration: state.currentDuration,
   );
 }
-
-// "/data/user/0/com.guftagu.app.guftagu_mobile/cache/09-06-25-11-14-272541046739822349619.m4a"
-// 487163920

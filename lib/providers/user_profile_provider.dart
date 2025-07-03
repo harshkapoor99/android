@@ -92,7 +92,6 @@ class UserProfile extends _$UserProfile {
   @override
   UserProfileState build() {
     final user = _loadUserData();
-    final countries = ref.read(masterDataProvider).countries;
     final initialState = UserProfileState(
       nameController: TextEditingController(),
       emailController: TextEditingController(),
@@ -101,18 +100,11 @@ class UserProfile extends _$UserProfile {
       phoneOtpController: TextEditingController(),
       initialUserInfo: user,
       gender:
-          user?.profile.gender.isNotEmpty == true ? user!.profile.gender : null,
-      country:
-          user?.profile.country.isNotEmpty == true
-              ? user?.profile.country
+          user?.profile.gender?.isNotEmpty == true
+              ? user!.profile.gender
               : null,
-      countryId:
-          countries
-              .firstWhereOrNull(
-                (element) => element.countryName == user?.profile.country,
-              )
-              ?.id,
-      city: user?.profile.city.isNotEmpty == true ? user?.profile.city : null,
+      country: user?.profile.country,
+      city: user?.profile.city,
       dob: DateTime.tryParse(user?.profile.dateOfBirth ?? ""),
     );
 
@@ -152,21 +144,20 @@ class UserProfile extends _$UserProfile {
   }
 
   void updateCountryCityWith({Country? country, City? city}) {
-    String? updatedCountryName = state.country;
-    String? updatedCityName = state.city;
+    Country? updatedCountryName = state.country;
+    City? updatedCityName = state.city;
 
-    if (country != null && country.countryName != state.country) {
-      updatedCountryName = country.countryName;
+    if (country != null && country != state.country) {
+      updatedCountryName = country;
       updatedCityName = null;
-      state.countryId = country.id;
 
       ref
           .read(masterDataProvider.notifier)
           .fetchCitiesByCountry(country: country);
     }
 
-    if (city != null && city.cityName != state.city) {
-      updatedCityName = city.cityName;
+    if (city != null && city != state.city) {
+      updatedCityName = city;
     }
 
     state.country = updatedCountryName;
@@ -196,8 +187,8 @@ class UserProfile extends _$UserProfile {
         name: state.nameController.text.trim(),
         gender: state.gender ?? '',
         dateOfBirth: formattedDob,
-        country: state.country,
-        city: state.city,
+        country: state.country?.id,
+        city: state.city?.id,
         imageUrl: state.imageUrl,
       );
 
@@ -373,9 +364,8 @@ class UserProfileState {
   final TextEditingController phoneOtpController;
   DateTime? dob;
   String? gender;
-  String? country;
-  String? countryId;
-  String? city;
+  Country? country;
+  City? city;
   bool isLoading;
   String? error;
   String? imageUrl;
@@ -396,7 +386,6 @@ class UserProfileState {
     this.dob,
     this.gender,
     this.country,
-    this.countryId,
     this.city,
     this.isLoading = false,
     this.isEmailOtpSent = false,
@@ -418,8 +407,8 @@ class UserProfileState {
     TextEditingController? phoneOtpController,
     DateTime? dob,
     String? gender,
-    String? country,
-    String? city,
+    Country? country,
+    City? city,
     bool? isLoading,
     bool? isEmailOtpSent,
     bool? isEmailVerified,
@@ -464,7 +453,6 @@ class UserProfileState {
       dob: state.dob,
       gender: state.gender,
       country: state.country,
-      countryId: state.countryId,
       city: state.city,
       isLoading: state.isLoading,
       isEmailOtpSent: state.isEmailOtpSent,

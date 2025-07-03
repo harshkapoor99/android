@@ -1,18 +1,23 @@
-import 'package:audio_waveforms/audio_waveforms.dart';
+import 'dart:io';
+
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
-import 'package:guftagu_mobile/enums/player_status.dart';
+import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
-import 'package:guftagu_mobile/providers/audio_provider.dart';
-import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
+import 'package:guftagu_mobile/utils/download_audio.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/file_name_form_url.dart';
+import 'package:guftagu_mobile/utils/file_type_from_mime.dart';
+import 'package:mime/mime.dart';
 
-class ChatBubbleAudio extends ConsumerWidget {
+class ChatBubbleFile extends ConsumerWidget {
   final ChatMessage message;
   final bool isMe;
   final String imageUrl;
@@ -20,7 +25,7 @@ class ChatBubbleAudio extends ConsumerWidget {
   final String? path;
   final String? url;
 
-  const ChatBubbleAudio({
+  const ChatBubbleFile({
     super.key,
     required this.message,
     required this.isMe,
@@ -30,36 +35,9 @@ class ChatBubbleAudio extends ConsumerWidget {
     this.url,
   });
 
-  Future<void> initializePlayer(
-    BuildContext context,
-    WidgetRef ref, {
-    required int samples,
-  }) async {
-    try {
-      await ref
-          .read(audioPlayerProvider(messageId: message.id).notifier)
-          .preparePlayerAudioMessage(message, samples: samples);
-    } catch (e) {
-      AppConstants.showSnackbar(
-        message: "Failed to load audio",
-        isSuccess: false,
-      );
-      rethrow;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = audioPlayerProvider(messageId: message.id);
-    final playerState = ref.watch(provider);
-    final player = ref.read(provider.notifier);
-
     final screenWidth = MediaQuery.sizeOf(context).width;
-
-    final samples = AppConstants.playerWaveStyle.getSamplesForWidth(
-      screenWidth / 2,
-    );
-
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
@@ -106,8 +84,9 @@ class ChatBubbleAudio extends ConsumerWidget {
                     margin: const EdgeInsets.only(top: 5),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
-                      vertical: 6,
+                      vertical: 8,
                     ),
+
                     decoration: BoxDecoration(
                       color: context.colorExt.bubble,
                       borderRadius: BorderRadius.only(
@@ -118,50 +97,82 @@ class ChatBubbleAudio extends ConsumerWidget {
                       ),
                     ),
                     constraints: BoxConstraints(maxWidth: screenWidth * 0.7),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment:
+                          isMe
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                      spacing: 10,
                       children: [
-                        GestureDetector(
-                          onTap: () async {
-                            if (playerState.downloadedFilePath == null) {
-                              initializePlayer(context, ref, samples: samples);
-                              return;
-                            }
-                            if (playerState.playerStatus ==
-                                PlayerStatus.playing) {
-                              await player.pausePlayer();
-                            } else {
-                              await player.startPlayer();
-                            }
-                          },
-                          child: SvgPicture.asset(
-                            playerState.playerStatus == PlayerStatus.playing
-                                ? Assets.svgs.icPause
-                                : Assets.svgs.icPlay,
+                        Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: context.colorExt.primary.withAlpha(50),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child:
-                                playerState.playerStatus == PlayerStatus.idle
-                                    ? Text(
-                                      "Tap to play",
-                                      style: context.appTextStyle.textSmall,
-                                    )
-                                    : AudioFileWaveforms(
-                                      size: Size(screenWidth / 2, 40),
-                                      playerController:
-                                          playerState.playerController,
-                                      enableSeekGesture: true,
-                                      waveformType: WaveformType.fitWidth,
-                                      waveformData:
-                                          playerState
-                                              .playerController
-                                              .waveformData,
-                                      playerWaveStyle:
-                                          AppConstants.playerWaveStyle,
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (message.chatType == ChatType.image.name) {
+                                if (message.filePath != null) {
+                                  showImageViewer(
+                                    context,
+                                    Image.file(File(message.filePath!)).image,
+                                  );
+                                } else if (message.fileUrl != null) {
+                                  var res = await downloadAssetFromUrl(
+                                    message.fileUrl!,
+                                  );
+                                  showImageViewer(
+                                    context,
+                                    Image.file(File(res.filePath)).image,
+                                  );
+                                }
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 10,
+                              children: [
+                                message.chatType == ChatType.image.name
+                                    ? const Icon(Icons.image, size: 30)
+                                    : const Icon(
+                                      Icons.file_present_rounded,
+                                      size: 30,
                                     ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        message.fileName ??
+                                            getFileNameFromUrl(url ?? ""),
+                                        style: context.appTextStyle.textSmall,
+                                        overflow: TextOverflow.fade,
+                                      ),
+                                      Text(
+                                        getFileTypeFromMime(
+                                          lookupMimeType(
+                                            message.fileName ??
+                                                path ??
+                                                getFileNameFromUrl(url ?? ""),
+                                          ),
+                                        ),
+                                        style: context.appTextStyle.textSmall
+                                            .copyWith(fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
+                        if (message.message.hasValue)
+                          Text(
+                            message.message!,
+                            style: context.appTextStyle.textSmall,
+                          ),
                       ],
                     ),
                   ),

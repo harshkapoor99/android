@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
@@ -20,12 +18,6 @@ abstract class AudioService {
     required String vocalId,
     required String languageId,
   });
-  Future<Response> sendAudioChatMessage({
-    required File audioFile,
-    required String characterId,
-    required String sessionId,
-    required String creatorId,
-  });
 }
 
 class AudioServiceImpl implements AudioService {
@@ -43,16 +35,5 @@ class AudioServiceImpl implements AudioService {
       data: {"text": text, "vocal_id": vocalId, "language_id": languageId},
     );
     return response;
-  }
-
-  @override
-  Future<Response> sendAudioChatMessage({
-    required File audioFile,
-    required String characterId,
-    required String sessionId,
-    required String creatorId,
-  }) {
-    // TODO: implement sendAudioChatMessage
-    throw UnimplementedError();
   }
 }

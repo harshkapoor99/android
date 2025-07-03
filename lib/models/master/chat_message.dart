@@ -10,6 +10,7 @@ ChatMessage chatMessageFromJson(String str) =>
 String chatMessageToJson(ChatMessage data) => json.encode(data.toMap());
 
 class ChatMessage {
+  String id;
   bool isMe;
   String characterId;
   String sender;
@@ -18,14 +19,17 @@ class ChatMessage {
   DateTime timestamp;
   String sessionId;
   String? voiceUrl;
-  String? imageUrl;
+  String? fileUrl;
+  String? fileName;
   String? chatType;
   DateTime? createdDate;
   DateTime? updatedDate;
   int? status;
   String? audioPath;
+  String? filePath;
 
   ChatMessage({
+    required this.id,
     required this.isMe,
     required this.characterId,
     required this.sender,
@@ -34,20 +38,26 @@ class ChatMessage {
     required this.timestamp,
     required this.sessionId,
     this.voiceUrl,
-    this.imageUrl,
+    this.fileUrl,
+    this.fileName,
     this.chatType,
     this.createdDate,
     this.updatedDate,
     this.status,
     this.audioPath,
+    this.filePath,
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> json) => ChatMessage(
+    id: json["id"] ?? json["_id"],
     isMe: json["sender"] == "user" ? true : false,
     characterId: json["character_id"],
     sender: json["sender"],
     creatorId: json["creator_id"],
-    message: (json["message"] as String).replaceAll(RegExp(r'\n+'), '\n'),
+    message:
+        json["message"] != null
+            ? (json["message"] as String).replaceAll(RegExp(r'\n+'), '\n')
+            : null,
     // .replaceAll(RegExp(r'[\n]'), '\n')
     timestamp: DateTime.parse(
       json["timestamp"].runtimeType == String
@@ -58,7 +68,8 @@ class ChatMessage {
     ),
     sessionId: json["session_id"],
     voiceUrl: json["voice_url"],
-    imageUrl: json["image_url"],
+    fileUrl: json["image_url"],
+    fileName: json["file_name"],
     chatType: json["chat_type"],
     createdDate: DateTime.parse(json["created_date"]),
     updatedDate: DateTime.parse(json["updated_date"]),
@@ -66,6 +77,7 @@ class ChatMessage {
   );
 
   Map<String, dynamic> toMap() => {
+    "_id": id,
     "character_id": characterId,
     "sender": sender,
     "creator_id": creatorId,
@@ -73,7 +85,8 @@ class ChatMessage {
     "timestamp": timestamp.toIso8601String(),
     "session_id": sessionId,
     "voice_url": voiceUrl,
-    "image_url": imageUrl,
+    "image_url": fileUrl,
+    "file_name": fileName,
     "chat_type": chatType,
     "created_date": createdDate?.toIso8601String(),
     "updated_date": updatedDate?.toIso8601String(),

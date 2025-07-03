@@ -22,7 +22,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50),
+        padding: const EdgeInsets.only(top: 50),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,59 +40,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
               "Tap on 4 - 5 of your favorite categories",
               style: AppTextStyle(context).textSmall.copyWith(fontSize: 12),
             ),
-            50.ph,
-
-            // Expanded(
-            //   child: ListView.builder(
-            //     shrinkWrap: true,
-            //     itemCount: characterTypes.length,
-            //     itemBuilder: (context, index) {
-            //       bool isSelected = selectedTypes.contains(
-            //         characterTypes[index],
-            //       );
-            //       return Row(
-            //         children: [
-            //           GestureDetector(
-            //             onTap: () {
-            //               setState(() {
-            //                 if (isSelected) {
-            //                   selectedTypes.remove(characterTypes[index]);
-            //                 } else {
-            //                   if (selectedTypes.length < 5) {
-            //                     selectedTypes.add(characterTypes[index]);
-            //                   }
-            //                 }
-            //               });
-            //             },
-            //             child: Container(
-            //               padding: const EdgeInsets.symmetric(
-            //                 horizontal: 16,
-            //                 vertical: 10,
-            //               ),
-            //               decoration: BoxDecoration(
-            //                 borderRadius: BorderRadius.circular(20),
-            //                 gradient:
-            //                     isSelected
-            //                         ? const LinearGradient(
-            //                           colors: [Colors.yellow, Colors.pink],
-            //                         )
-            //                         : null,
-            //                 color: isSelected ? null : Colors.grey[900],
-            //               ),
-            //               child: Text(
-            //                 characterTypes[index],
-            //                 style: TextStyle(
-            //                   color: Colors.white,
-            //                   fontWeight: FontWeight.bold,
-            //                 ),
-            //               ),
-            //             ),
-            //           ),
-            //         ],
-            //       );
-            //     },
-            //   ),
-            // ),
+            20.ph,
             providerAsync.when(
               loading:
                   () => Expanded(
@@ -108,62 +56,67 @@ class CharacterSelectionScreen extends ConsumerWidget {
               data:
                   (data) => Expanded(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Wrap(
-                        spacing: 10,
-                        runSpacing: 14,
-                        alignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        children:
-                            data.characterTypes.map((type) {
-                              bool isSelected = data.selectedCharacterTypes
-                                  .contains(type);
-                              return GestureDetector(
-                                onTap: () {
-                                  ref
-                                      .read(userInterestProvider.notifier)
-                                      .toggleCharacterType(type);
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 10,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient:
-                                        isSelected
-                                            ? const LinearGradient(
-                                              colors: [
-                                                Color(0xFFFC5159),
-                                                Color(0xFFF237EF),
-                                              ],
-                                              begin: Alignment.bottomLeft,
-                                              end: Alignment.topRight,
-                                              stops: [0, 0.6],
-                                            )
-                                            : null,
-                                    color:
-                                        isSelected
-                                            ? null
-                                            : context.colorExt.surface,
-                                  ),
-                                  child: Text(
-                                    type.charactertypeName.toUpperCase(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 20,
+                        ),
+                        child: Wrap(
+                          spacing: 10,
+                          runSpacing: 14,
+                          alignment: WrapAlignment.start,
+                          crossAxisAlignment: WrapCrossAlignment.start,
+                          children:
+                              data.characterTypes.map((type) {
+                                bool isSelected = data.selectedCharacterTypes
+                                    .contains(type);
+                                return GestureDetector(
+                                  onTap: () {
+                                    ref
+                                        .read(userInterestProvider.notifier)
+                                        .toggleCharacterType(type);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      gradient:
+                                          isSelected
+                                              ? const LinearGradient(
+                                                colors: [
+                                                  Color(0xFFFC5159),
+                                                  Color(0xFFF237EF),
+                                                ],
+                                                begin: Alignment.bottomLeft,
+                                                end: Alignment.topRight,
+                                                stops: [0, 0.6],
+                                              )
+                                              : null,
+                                      color:
+                                          isSelected
+                                              ? null
+                                              : context.colorExt.surface,
+                                    ),
+                                    child: Text(
+                                      type.charactertypeName.toUpperCase(),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              );
-                            }).toList(),
+                                );
+                              }).toList(),
+                        ),
                       ),
                     ),
                   ),
             ),
 
-            40.ph,
+            20.ph,
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GradientButton(
@@ -194,6 +147,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
                 },
               ),
             ),
+            20.ph,
           ],
         ),
       ),

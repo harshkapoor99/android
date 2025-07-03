@@ -12,6 +12,7 @@ import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 
 class OtpScreen extends ConsumerWidget {
   const OtpScreen({super.key});
@@ -37,6 +38,7 @@ class OtpScreen extends ConsumerWidget {
         })
         .onError((error, stackTrace) {
           AppConstants.showSnackbar(message: error.toString(), isSuccess: true);
+          printDebug(error);
         });
   }
 

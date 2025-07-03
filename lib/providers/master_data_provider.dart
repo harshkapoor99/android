@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/character_creation_provider.dart';
@@ -133,6 +133,7 @@ class MasterData extends _$MasterData {
   }
 
   Future<void> fetchVoicesByLanguage({required Language language}) async {
+    state = state.copyWith(isVoiceLoading: true);
     final response = await ref
         .read(masterServiceProvider)
         .fetchVoicesByLanguage(languageId: language.id);
@@ -146,7 +147,7 @@ class MasterData extends _$MasterData {
     } catch (e) {
       rethrow;
     } finally {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isVoiceLoading: false);
     }
   }
 
@@ -183,7 +184,7 @@ class MasterData extends _$MasterData {
   }
 
   Future<void> fetchCitiesByCountry({required Country country}) async {
-    state = state.copyWith(isLoading: true);
+    state = state.copyWith(isCityLoading: true);
     final response = await ref
         .read(masterServiceProvider)
         .fetchCitiesByCountry(countryId: country.id);
@@ -197,7 +198,7 @@ class MasterData extends _$MasterData {
     } catch (e) {
       rethrow;
     } finally {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isCityLoading: false);
     }
   }
 
@@ -258,6 +259,7 @@ class MasterData extends _$MasterData {
   }
 
   Future<void> fetchBehaviousByPersonality() async {
+    state = state.copyWith(isBehaviourLoading: true);
     final response = await ref
         .read(masterServiceProvider)
         .fetchBehaviousByPersonality(
@@ -273,11 +275,12 @@ class MasterData extends _$MasterData {
     } catch (e) {
       rethrow;
     } finally {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isBehaviourLoading: false);
     }
   }
 
   Future<void> fetchPersionalitiesByRelationship() async {
+    state = state.copyWith(isPersonalityLoading: true);
     final response = await ref
         .read(masterServiceProvider)
         .fetchPersionalitiesByRelationship(
@@ -296,11 +299,12 @@ class MasterData extends _$MasterData {
     } catch (e) {
       rethrow;
     } finally {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isPersonalityLoading: false);
     }
   }
 
   Future<void> fetchRelationshipsByCharactertype() async {
+    state = state.copyWith(isRelationshipLoading: true);
     final response = await ref
         .read(masterServiceProvider)
         .fetchRelationshipsByCharactertype(
@@ -323,7 +327,7 @@ class MasterData extends _$MasterData {
     } catch (e) {
       rethrow;
     } finally {
-      state = state.copyWith(isLoading: false);
+      state = state.copyWith(isRelationshipLoading: false);
     }
   }
 
@@ -401,6 +405,11 @@ class MasterDataState {
   const MasterDataState({
     this.isLoading = false,
     this.isSearching = false,
+    this.isCityLoading = false,
+    this.isVoiceLoading = false,
+    this.isRelationshipLoading = false,
+    this.isPersonalityLoading = false,
+    this.isBehaviourLoading = false,
     required this.languages,
     required this.behaviours,
     required this.personalities,
@@ -416,7 +425,13 @@ class MasterDataState {
     required this.searchController,
   });
 
-  final bool isLoading, isSearching;
+  final bool isLoading,
+      isSearching,
+      isCityLoading,
+      isVoiceLoading,
+      isRelationshipLoading,
+      isPersonalityLoading,
+      isBehaviourLoading;
 
   final List<Language> languages;
   final List<Behaviour> behaviours;
@@ -435,6 +450,11 @@ class MasterDataState {
   MasterDataState copyWith({
     bool? isLoading,
     bool? isSearching,
+    bool? isCityLoading,
+    bool? isVoiceLoading,
+    bool? isRelationshipLoading,
+    bool? isPersonalityLoading,
+    bool? isBehaviourLoading,
     List<Language>? languages,
     List<Behaviour>? behaviours,
     List<Personality>? personalities,
@@ -452,6 +472,12 @@ class MasterDataState {
     return MasterDataState(
       isLoading: isLoading ?? this.isLoading,
       isSearching: isSearching ?? this.isSearching,
+      isCityLoading: isCityLoading ?? this.isCityLoading,
+      isVoiceLoading: isVoiceLoading ?? this.isVoiceLoading,
+      isRelationshipLoading:
+          isRelationshipLoading ?? this.isRelationshipLoading,
+      isPersonalityLoading: isPersonalityLoading ?? this.isPersonalityLoading,
+      isBehaviourLoading: isBehaviourLoading ?? this.isBehaviourLoading,
       languages: languages ?? this.languages,
       behaviours: behaviours ?? this.behaviours,
       personalities: personalities ?? this.personalities,
