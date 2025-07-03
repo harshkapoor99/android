@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 // import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 void addApiInterceptors(Dio dio) {
@@ -6,18 +7,19 @@ void addApiInterceptors(Dio dio) {
   dio.options.receiveTimeout = const Duration(seconds: 10);
   dio.options.headers['Accept'] = 'application/json';
   dio.options.headers['contentType'] = 'application/json';
-  // logger
-  // dio.interceptors.add(
-  //   PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     error: true,
-  //     compact: true,
-  //     maxWidth: 90,
-  //   ),
-  // );
+
+  /// logger
+  dio.interceptors.add(
+    PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
+      maxWidth: 90,
+    ),
+  );
 
   // respone handler
   dio.interceptors.add(

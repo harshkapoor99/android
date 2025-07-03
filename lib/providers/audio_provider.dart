@@ -104,7 +104,7 @@ class AudioPlayer extends _$AudioPlayer {
             printDebug('Error deleting audio file: $e');
           }
         }
-        final file = await downloadAudio(voiceUrl);
+        final file = await downloadAssetFromUrl(voiceUrl);
         state.downloadedFilePath = file.filePath;
         state = state.updateWith(state);
         filePath = state.downloadedFilePath!;
@@ -155,7 +155,7 @@ class AudioPlayer extends _$AudioPlayer {
       if (message.audioPath.hasValue) {
         filePath = message.audioPath!;
       } else if (message.voiceUrl.hasValue) {
-        final file = await downloadAudio(message.voiceUrl!);
+        final file = await downloadAssetFromUrl(message.voiceUrl!);
         filePath = file.filePath;
       }
 

@@ -360,7 +360,7 @@ class Chat extends _$Chat {
               );
 
           String replyUrl = response.data["tts_audio_url"];
-          final file = await downloadAudio(replyUrl);
+          final file = await downloadAssetFromUrl(replyUrl);
 
           appendChat(
             isMe: false,
@@ -402,7 +402,7 @@ class Chat extends _$Chat {
     if (path.hasValue) {
       filePath = path!;
     } else if (url.hasValue) {
-      final file = await downloadAudio(url!);
+      final file = await downloadAssetFromUrl(url!);
       filePath = file.filePath;
     }
 

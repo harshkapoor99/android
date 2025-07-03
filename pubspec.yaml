@@ -38,6 +38,7 @@ dependencies:
   path: ^1.9.1
   device_info_plus: ^11.4.0
   mime: ^2.0.0
+  easy_image_viewer: ^1.5.1
 
 dev_dependencies:
   flutter_test:

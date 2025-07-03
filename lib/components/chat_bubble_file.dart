@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,6 +11,7 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
+import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_name_form_url.dart';
 import 'package:guftagu_mobile/utils/file_type_from_mime.dart';
@@ -106,41 +110,62 @@ class ChatBubbleFile extends ConsumerWidget {
                             color: context.colorExt.primary.withAlpha(50),
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            spacing: 10,
-                            children: [
-                              message.chatType == ChatType.image.name
-                                  ? const Icon(Icons.image, size: 30)
-                                  : const Icon(
-                                    Icons.file_present_rounded,
-                                    size: 30,
-                                  ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      message.fileName ??
-                                          getFileNameFromUrl(url ?? ""),
-                                      style: context.appTextStyle.textSmall,
-                                      overflow: TextOverflow.fade,
+                          child: GestureDetector(
+                            onTap: () async {
+                              if (message.chatType == ChatType.image.name) {
+                                if (message.filePath != null) {
+                                  showImageViewer(
+                                    context,
+                                    Image.file(File(message.filePath!)).image,
+                                  );
+                                } else if (message.fileUrl != null) {
+                                  var res = await downloadAssetFromUrl(
+                                    message.fileUrl!,
+                                  );
+                                  showImageViewer(
+                                    context,
+                                    Image.file(File(res.filePath)).image,
+                                  );
+                                }
+                              }
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 10,
+                              children: [
+                                message.chatType == ChatType.image.name
+                                    ? const Icon(Icons.image, size: 30)
+                                    : const Icon(
+                                      Icons.file_present_rounded,
+                                      size: 30,
                                     ),
-                                    Text(
-                                      getFileTypeFromMime(
-                                        lookupMimeType(
-                                          message.fileName ??
-                                              path ??
-                                              getFileNameFromUrl(url ?? ""),
-                                        ),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        message.fileName ??
+                                            getFileNameFromUrl(url ?? ""),
+                                        style: context.appTextStyle.textSmall,
+                                        overflow: TextOverflow.fade,
                                       ),
-                                      style: context.appTextStyle.textSmall
-                                          .copyWith(fontSize: 10),
-                                    ),
-                                  ],
+                                      Text(
+                                        getFileTypeFromMime(
+                                          lookupMimeType(
+                                            message.fileName ??
+                                                path ??
+                                                getFileNameFromUrl(url ?? ""),
+                                          ),
+                                        ),
+                                        style: context.appTextStyle.textSmall
+                                            .copyWith(fontSize: 10),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         if (message.message.hasValue)

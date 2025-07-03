@@ -8,7 +8,7 @@ class DownloadedFile {
   final String filePath;
 }
 
-Future<DownloadedFile> downloadAudio(String url) async {
+Future<DownloadedFile> downloadAssetFromUrl(String url) async {
   final tempDir = await getTemporaryDirectory();
   final fileName = url.split('/').last.split("?").first;
   final filePath = path.join(tempDir.path, fileName);
