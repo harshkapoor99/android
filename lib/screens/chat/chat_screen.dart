@@ -19,8 +19,8 @@ import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/permission_handler.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mime/mime.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
@@ -54,11 +54,8 @@ class ChatScreen extends ConsumerStatefulWidget {
       var pickedFile = File(result.files.single.path!);
       // You can compress or validate the document if needed
       ref.read(chatProvider.notifier).attachFile(pickedFile);
-      debugPrint(
-        "Document picked: ${pickedFile.path} ${lookupMimeType(pickedFile.path)}",
-      );
     } else {
-      debugPrint("No document selected.");
+      printDebug("No document selected.");
     }
   }
 
@@ -73,10 +70,9 @@ class ChatScreen extends ConsumerStatefulWidget {
     if (result != null && result.files.single.path != null) {
       File pickedAudio = File(result.files.single.path!);
       // You can process the audio here (e.g., upload or transcribe)
-      // Example: ref.read(chatProvider.notifier).uploadAudio(pickedAudio);
-      debugPrint("Audio picked: ${pickedAudio.path}");
+      ref.read(chatProvider.notifier).audioChatWithCharacter(pickedAudio.path);
     } else {
-      debugPrint("No audio file selected.");
+      printDebug("No audio file selected.");
     }
   }
 

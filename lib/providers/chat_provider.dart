@@ -13,7 +13,6 @@ import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
-import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -132,6 +131,43 @@ class Chat extends _$Chat {
         type: ChatType.text,
         text: reply,
         time: DateTime.now(),
+      );
+    } catch (e) {
+      rethrow;
+    } finally {
+      state = state._updateWith(isTyping: false);
+    }
+  }
+
+  void audioChatWithCharacter(String path) async {
+    try {
+      appendChat(
+        isMe: true,
+        type: ChatType.audio,
+        time: DateTime.now(),
+        audioPath: path,
+      );
+      state = state._updateWith(isTyping: true);
+      state.messageController.clear();
+      final response = await ref
+          .read(chatServiceProvider)
+          .sendAudioChatMessage(
+            audioFile: File(path),
+            sessionId:
+                state.character!.id +
+                ref.read(hiveServiceProvider.notifier).getUserId()!,
+            characterId: state.character!.id,
+            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+          );
+
+      String replyUrl = response.data["tts_audio_url"];
+      final file = await downloadAssetFromUrl(replyUrl);
+
+      appendChat(
+        isMe: false,
+        type: ChatType.audio,
+        time: DateTime.now(),
+        audioPath: file.filePath,
       );
     } catch (e) {
       rethrow;
@@ -338,36 +374,7 @@ class Chat extends _$Chat {
       if (state.isRecording) {
         final path = await state.recordController.stop();
         if (path != null) {
-          printDebug(path);
-          printDebug("Recorded file size: ${File(path).lengthSync()}");
-          appendChat(
-            isMe: true,
-            type: ChatType.audio,
-            time: DateTime.now(),
-            audioPath: path,
-          );
-          state = state._updateWith(isTyping: true);
-          state.messageController.clear();
-          final response = await ref
-              .read(chatServiceProvider)
-              .sendAudioChatMessage(
-                audioFile: File(path),
-                sessionId:
-                    state.character!.id +
-                    ref.read(hiveServiceProvider.notifier).getUserId()!,
-                characterId: state.character!.id,
-                creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
-              );
-
-          String replyUrl = response.data["tts_audio_url"];
-          final file = await downloadAssetFromUrl(replyUrl);
-
-          appendChat(
-            isMe: false,
-            type: ChatType.audio,
-            time: DateTime.now(),
-            audioPath: file.filePath,
-          );
+          audioChatWithCharacter(path);
         }
       } else {
         state.recordController.record();
