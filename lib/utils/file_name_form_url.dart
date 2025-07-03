@@ -1,3 +1,5 @@
+import 'package:guftagu_mobile/utils/print_debug.dart';
+
 /// A utility function to extract the filename from a given URL string.
 ///
 /// This function parses the URL, retrieves its path, and then extracts the
@@ -37,11 +39,11 @@ String getFileNameFromUrl(String url) {
     return '';
   } on FormatException catch (e) {
     // Catch FormatException if the URL string is not a valid URI.
-    print('Error parsing URL "$url": $e');
+    printDebug('Error parsing URL "$url": $e');
     return ''; // Return empty string for invalid URLs
   } catch (e) {
     // Catch any other potential errors during processing.
-    print('An unexpected error occurred while processing URL "$url": $e');
+    printDebug('An unexpected error occurred while processing URL "$url": $e');
     return '';
   }
 }
