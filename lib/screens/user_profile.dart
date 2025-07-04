@@ -194,8 +194,8 @@ class UserProfileScreen extends ConsumerWidget {
                       ),
 
                       Positioned(
-                        bottom: -10,
-                        right: -25,
+                        bottom: 0,
+                        right: 0,
                         child: IconButton(
                           icon: SvgPicture.asset(
                             'assets/icons/solar_pen-2-bold.svg',

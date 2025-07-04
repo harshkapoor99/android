@@ -43,7 +43,14 @@ class ProfileTile extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  SvgPicture.asset(icon, height: 40, width: 42.57),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: context.colorExt.background,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: SvgPicture.asset(icon, height: 24, width: 24),
+                  ),
                   14.pw,
                   Expanded(
                     child: Text(title, style: context.appTextStyle.textBold),
