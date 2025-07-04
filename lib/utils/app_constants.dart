@@ -20,7 +20,7 @@ class AppConstants {
     required void Function() onSearchPressed,
     required void Function() onNotificationPressed,
   }) {
-    bool isDarkModeEnabled = Theme.of(context).brightness == Brightness.dark;
+    // bool isDarkModeEnabled = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
       // commit - implyLeading
       backgroundColor: context.colorExt.background,
@@ -38,9 +38,7 @@ class AppConstants {
                       context.nav.pushNamed(Routes.explore);
                     },
                     child: SvgPicture.asset(
-                      isDarkModeEnabled
-                          ? Assets.svgs.logo
-                          : Assets.svgs.logoDark,
+                      Assets.svgs.logo,
                       height: 50,
                       width: 50,
                     ),
