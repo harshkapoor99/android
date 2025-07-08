@@ -132,9 +132,9 @@ jobs:
             # e.g., deploy to a specific beta Firebase distribution group
 
 workflows:
-  version_control_workflow:
+  build_app_workflow:
     jobs:
-      - build_alpha:
+      - build_alpha_android_job:
           # This job will run ONLY if the tag matches the regex `.*alpha.*`
           # and the workflow is triggered by a tag.
           filters:
@@ -143,7 +143,7 @@ workflows:
             branches:
               only: /alpha-rc/ # Only branches for this specific job
 
-      - build_beta:
+      - build_beta_android_job:
           # This job will run ONLY if the tag matches the regex `.*beta.*`
           # and the workflow is triggered by a tag.
           filters:
