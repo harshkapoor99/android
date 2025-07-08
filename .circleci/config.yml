@@ -7,6 +7,10 @@ commands:
     description: "Checkout, restore cache, install Flutter, get dependencies, and save cache."
     steps:
       - checkout
+      - run:
+          name: Check checkout path
+          command: |
+            ls -al ~
       - restore_cache:
           keys:
             - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
