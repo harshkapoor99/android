@@ -1,0 +1,60 @@
+# .circleci/config.yml
+version: 2.1
+
+# Define reusable commands, executors, or jobs here if needed
+# For this example, we'll keep it simple with inline commands.
+
+jobs:
+  # Job to run if the tag contains "alpha"
+  build_alpha:
+    docker:
+      - image: cimg/base:2024.06 # Using a base image
+    steps:
+      - checkout
+      - run:
+          name: "Alpha Tag Detected"
+          command: |
+            echo "Building for alpha release: $CIRCLE_TAG"
+            # Add your alpha-specific build or deployment commands here
+            # For example:
+            # npm install
+            # npm run build:alpha
+            # deploy_to_alpha_environment.sh
+
+  # Job to run if the tag contains "beta"
+  build_beta:
+    docker:
+      - image: cimg/base:2024.06
+    steps:
+      - checkout
+      - run:
+          name: "Beta Tag Detected"
+          command: |
+            echo "Building for beta release: $CIRCLE_TAG"
+            # Add your beta-specific build or deployment commands here
+            # For example:
+            # npm install
+            # npm run build:beta
+            # deploy_to_beta_environment.sh
+
+workflows:
+  version_control_workflow:
+    jobs:
+      - build_alpha:
+          # This job will run ONLY if the tag matches the regex `.*alpha.*`
+          # and the workflow is triggered by a tag.
+          filters:
+            tags:
+              only: /.*alpha.*/ # Matches any tag containing "alpha"
+            branches:
+              only: /alpha-rc/ # Only branches for this specific job
+
+      - build_beta:
+          # This job will run ONLY if the tag matches the regex `.*beta.*`
+          # and the workflow is triggered by a tag.
+          filters:
+            tags:
+              only: /.*beta.*/ # Matches any tag containing "beta"
+            branches:
+              only: /beta-rc/ # Only branches for this specific job
+
