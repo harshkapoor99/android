@@ -57,6 +57,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         final authToken = hiveService.getAuthToken();
         final user = hiveService.getUserInfo();
 
+        if (user == null) {
+          hiveService.removeAllData();
+          context.nav.pushReplacementNamed(Routes.login);
+        }
+
         if (!isOnboarded) {
           context.nav.pushReplacementNamed(Routes.onboarding);
         } else if (authToken == null || user == null) {

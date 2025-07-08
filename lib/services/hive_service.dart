@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:guftagu_mobile/models/master/master_models.dart';
+import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:guftagu_mobile/configs/hive_contants.dart';
@@ -49,7 +50,12 @@ class HiveService extends _$HiveService {
   User? getUserInfo() {
     Map<dynamic, dynamic>? userInfo = _userBox.get(AppHSC.userInfo);
     if (userInfo != null) {
-      return User.fromMap(userInfo.cast<String, dynamic>());
+      try {
+        return User.fromMap(userInfo.cast<String, dynamic>());
+      } catch (e) {
+        printDebug(e);
+        return null;
+      }
     }
     return null;
   }

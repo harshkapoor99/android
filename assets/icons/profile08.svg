@@ -1,12 +1,38 @@
-<svg width="43" height="40" viewBox="0 0 43 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-<foreignObject x="-99.7136" y="-100" width="242.573" height="240"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(50px);clip-path:url(#bgblur_0_44_1364_clip_path);height:100%;width:100%"></div></foreignObject><rect data-figma-bg-blur-radius="100" x="0.286377" width="42.5731" height="40" rx="16" fill="#111016"/>
-<g clip-path="url(#clip1_44_1364)">
-<path d="M26.3772 21.6159C26.0099 21.6159 25.712 21.8957 25.712 22.2409V24.6806C25.712 25.1518 25.304 25.5352 24.8025 25.5352H21.3144V15.7716C21.3144 14.9995 20.9062 14.3352 20.1944 13.9491L15.2188 11.25H24.8025C25.304 11.25 25.712 11.6333 25.712 12.1045V14.8874C25.712 15.2326 26.0099 15.5124 26.3772 15.5124C26.7446 15.5124 27.0424 15.2326 27.0424 14.8874V12.1045C27.0424 10.9441 26.0376 10 24.8025 10H14.311C13.0759 10 12.071 10.9441 12.071 12.1045V25.3059C12.071 26.0782 12.4792 26.7424 13.191 27.1286L17.9545 29.7125C18.3105 29.9055 18.6925 30.0021 19.0745 30.0021C19.4565 30.002 19.8386 29.9055 20.1944 29.7125C20.9062 29.3264 21.3144 28.6621 21.3144 27.89V26.7852H24.8025C26.0376 26.7852 27.0424 25.8411 27.0424 24.6806V22.2409C27.0424 21.8957 26.7446 21.6159 26.3772 21.6159ZM19.984 27.89C19.984 28.2081 19.8225 28.4709 19.5292 28.63C19.236 28.789 18.913 28.789 18.6198 28.63L13.8562 26.046C13.5629 25.887 13.4015 25.6241 13.4015 25.3059V12.1045C13.4015 11.9787 13.4305 11.8592 13.4827 11.7516L19.5292 15.0316C19.8225 15.1907 19.984 15.4535 19.984 15.7716V27.89ZM30.8802 18.8345L28.7187 20.8655C28.5888 20.9875 28.4185 21.0486 28.2483 21.0486C28.0781 21.0486 27.9079 20.9875 27.778 20.8655C27.5182 20.6214 27.5182 20.2257 27.778 19.9816L28.804 19.0176H22.6925C22.3251 19.0176 22.0272 18.7378 22.0272 18.3926C22.0272 18.0474 22.3251 17.7676 22.6925 17.7676H28.804L27.778 16.8036C27.5182 16.5595 27.5182 16.1638 27.778 15.9197C28.0377 15.6756 28.4589 15.6756 28.7187 15.9197L30.8803 17.9506C31.1401 18.1947 31.1401 18.5905 30.8802 18.8345Z" fill="#47C8FC"/>
-</g>
-<defs>
-<clipPath id="bgblur_0_44_1364_clip_path" transform="translate(99.7136 100)"><rect x="0.286377" width="42.5731" height="40" rx="16"/>
-</clipPath><clipPath id="clip1_44_1364">
-<rect width="21.2866" height="20" fill="white" transform="translate(10.9298 10)"/>
-</clipPath>
-</defs>
+<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
+	xmlns:xhtml="http://www.w3.org/1999/xhtml">
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1289_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1364_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1298_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1317_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1308_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1346_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1335_clip_path)" />
+	</foreignObject>
+	<foreignObject x="-99.714" y="-100" width="242.573" height="240">
+		<xhtml:div style="backdrop-filter:blur(50px);height:100%;width:100%"
+			clip-path="url(#prefix__bgblur_0_44_1326_clip_path)" />
+	</foreignObject>
+	<path
+		d="M18.067 13.938c-.464 0-.84.335-.84.75v2.927c0 .565-.515 1.025-1.149 1.025h-4.405V6.925c0-.926-.515-1.723-1.414-2.187L3.975 1.5h12.103c.634 0 1.149.46 1.149 1.025v3.34c0 .413.376.75.84.75.464 0 .84-.337.84-.75v-3.34C18.907 1.133 17.638 0 16.078 0H2.828C1.27 0 0 1.133 0 2.525v15.84c0 .927.516 1.724 1.414 2.187l6.016 3.1c.45.232.932.348 1.415.348.482 0 .965-.116 1.414-.347.899-.464 1.414-1.26 1.414-2.187V20.14h4.405c1.56 0 2.83-1.133 2.83-2.525v-2.927c0-.415-.377-.75-.84-.75zm-8.074 7.528c0 .381-.204.697-.574.888-.37.19-.778.19-1.149 0l-6.015-3.1c-.37-.192-.575-.507-.575-.889V2.525c0-.15.037-.294.103-.423l7.636 3.935c.37.191.574.507.574.888zM23.753 10.6l-2.729 2.437a.892.892 0 01-.594.22.892.892 0 01-.594-.22.694.694 0 010-1.06l1.296-1.157h-7.718c-.464 0-.84-.336-.84-.75s.376-.75.84-.75h7.718l-1.296-1.157a.694.694 0 010-1.06.913.913 0 011.188 0l2.73 2.437a.694.694 0 010 1.06z"
+		fill="#47c8fc" />
 </svg>
