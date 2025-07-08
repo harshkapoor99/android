@@ -99,7 +99,6 @@ jobs:
             mv "$OLD_PATH/MainActivity.kt" "$NEW_PATH/MainActivity.kt"
             sed -i "s/package ${OLD_PACKAGE}/package ${NEW_PACKAGE}/g" "$NEW_PATH/MainActivity.kt"
             rmdir "$OLD_PATH" # Remove old empty directories
-            rmdir "android/app/src/main/kotlin/com/guftagu/app" # Remove old empty directories
 
             # --- Android App Name Change ---
             sed -i "" -e 's/Guftagu/Guftagu(Beta)/g' android/app/src/main/AndroidManifest.xml
