@@ -81,8 +81,6 @@ jobs:
       - run:
           name: "Change Package Name for Alpha"
           command: |
-            cd ~/project
-
             OLD_PACKAGE="com.guftagu.app"
             NEW_PACKAGE="com.guftagu.alpha"
 
@@ -91,7 +89,8 @@ jobs:
             # Replace in AndroidManifest.xml
             sed -i "s/${OLD_PACKAGE}/${NEW_PACKAGE}/g" android/app/src/main/AndroidManifest.xml
             # Replace in build.gradle (applicationId)
-            sed -i "s/applicationId \"${OLD_PACKAGE}\"/applicationId \"${NEW_PACKAGE}\"/g" android/app/build.gradle
+            sed -i "s/applicationId = \"${OLD_PACKAGE}\"/applicationId = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
+            sed -i "s/namespace = \"${OLD_PACKAGE}\"/namespace = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
 
             # Rename directory structure and update MainActivity.kt
             OLD_PATH="android/app/src/main/kotlin/com/guftagu/app"
