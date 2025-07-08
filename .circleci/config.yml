@@ -12,11 +12,11 @@ commands:
       #     command: |
       #       ls -al ~
       #       ls -al ~/project
-      - restore_cache:
-          keys:
-            - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
-            - flutter-{{ .Branch }}
-            - flutter-
+      # - restore_cache:
+      #     keys:
+      #       - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
+      #       - flutter-{{ .Branch }}
+      #       - flutter-
       - run:
           name: Install Flutter SDK
           command: |
@@ -34,11 +34,11 @@ commands:
       - run:
           name: Get Flutter Dependencies
           command: flutter pub get
-      - save_cache:
-          paths:
-            - ~/.pub-cache
-            - $HOME/flutter
-          key: flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
+      # - save_cache:
+      #     paths:
+      #       - ~/.pub-cache
+      #       - $HOME/flutter
+      #     key: flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
 
   android_build_and_artifact:
     description: "Builds the Android release APK and stores it as an artifact."
