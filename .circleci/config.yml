@@ -101,17 +101,17 @@ jobs:
             rmdir "$OLD_PATH" # Remove old empty directories
 
             # --- Android App Name Change ---
-            sed -i "" -e 's/Guftagu/Guftagu(Beta)/g' android/app/src/main/AndroidManifest.xml
+            sed -i 's/Guftagu/Guftagu(Beta)/g' android/app/src/main/AndroidManifest.xml
 
             # --- iOS Bundle ID Change ---
             echo "Changing iOS bundle ID from $OLD_PACKAGE to $NEW_PACKAGE"
             # Replace in project.pbxproj
-            sed -i '' "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
+            sed -i "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
             # For iOS, you might also need to update Info.plist if the bundle identifier is explicitly set there.
-            sed -i '' "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
+            sed -i "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
 
             # --- iOS App name Change ---
-            sed -i "" -e 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
 
       - android_build_and_artifact # Use the reusable command
       - run:
