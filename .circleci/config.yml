@@ -7,12 +7,11 @@ commands:
     description: "Checkout, restore cache, install Flutter, get dependencies, and save cache."
     steps:
       - checkout
-      - run:
-          name: Check checkout path
-          command: |
-            ls -al ~
-            ls -al ~/project
-            ls -al ~/project/guftagu_mobile
+      # - run:
+      #     name: Check checkout path
+      #     command: |
+      #       ls -al ~
+      #       ls -al ~/project
       - restore_cache:
           keys:
             - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
@@ -82,7 +81,7 @@ jobs:
       - run:
           name: "Change Package Name for Alpha"
           command: |
-            cd ~/project/guftagu_mobile
+            cd ~/project
 
             OLD_PACKAGE="com.guftagu.app"
             NEW_PACKAGE="com.guftagu.alpha"
