@@ -18,6 +18,11 @@ commands:
       #       - flutter-{{ .Branch }}
       #       - flutter-
       - run:
+          name: Install Ninja Build
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y ninja-build # -y to auto-confirm
+      - run:
           name: Install Flutter SDK
           command: |
             if ! command -v flutter &> /dev/null
