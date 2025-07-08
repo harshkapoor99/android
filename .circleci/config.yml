@@ -44,6 +44,10 @@ commands:
     description: "Builds the Android release APK and stores it as an artifact."
     steps:
       - run:
+          name: Generating asset, font and code files
+          command: |
+            dart run build_runner build
+      - run:
           name: Build Android Release APK
           command: |
             flutter build apk --release
@@ -53,7 +57,7 @@ commands:
             # Generate a timestamp (YYYYMMDDHHMMSS)
             TIMESTAMP=$(date +%F_%H-%M)
 
-            # Construct the new filename for the artifact (e.g., app-v1.0.0-alpha.1-20240708184500.apk)
+            # Construct the new filename for the artifact (e.g., app-alpha1-2024-07-08_18-45.apk)
             DYNAMIC_ARTIFACT_FILENAME="app-${TAG_NAME}-${TIMESTAMP}.apk"
             echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
 
