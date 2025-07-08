@@ -1,4 +1,4 @@
-package com.guftagu.app.guftagu_mobile
+package com.guftagu.app
 
 import io.flutter.embedding.android.FlutterActivity
 
