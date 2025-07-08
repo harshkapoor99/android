@@ -7,6 +7,86 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:19508565659:android:3f1df04fcbf7294937d83e",
+        "android_client_info": {
+          "package_name": "com.guftagu.alpha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19508565659-gvbg88irkbj5d3uqf182gm6fn43vf89l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guftagu.alpha",
+            "certificate_hash": "16bb228f1eaf4f3a82c74da4ae4bad25b51bef4d"
+          }
+        },
+        {
+          "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9M47zB1Tyx1VjSGT_gVtlyK0a345HN2c"
+        },
+        {
+          "current_key": "AIzaSyBm5TnAowIBv4vWIf6xirg6Wy1M2YNIysc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:19508565659:android:0d151bac5f36ed0b37d83e",
+        "android_client_info": {
+          "package_name": "com.guftagu.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "19508565659-cku84gv6140uveh0jufspnb1qqf7tppa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.guftagu.app",
+            "certificate_hash": "16bb228f1eaf4f3a82c74da4ae4bad25b51bef4d"
+          }
+        },
+        {
+          "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9M47zB1Tyx1VjSGT_gVtlyK0a345HN2c"
+        },
+        {
+          "current_key": "AIzaSyBm5TnAowIBv4vWIf6xirg6Wy1M2YNIysc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "19508565659-07vgud5vvceck7vapgksbruktg0hp129.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:19508565659:android:b7cb254dbe52793e37d83e",
         "android_client_info": {
           "package_name": "com.guftagu.app.guftagu_mobile"
@@ -27,6 +107,9 @@
         }
       ],
       "api_key": [
+        {
+          "current_key": "AIzaSyB9M47zB1Tyx1VjSGT_gVtlyK0a345HN2c"
+        },
         {
           "current_key": "AIzaSyBm5TnAowIBv4vWIf6xirg6Wy1M2YNIysc"
         }
