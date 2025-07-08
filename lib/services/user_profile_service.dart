@@ -6,7 +6,7 @@ import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part '../gen/services/profile_settings_service.gen.dart';
+part '../gen/services/user_profile_service.gen.dart';
 
 @riverpod
 UserProfileService profileService(Ref ref) {
