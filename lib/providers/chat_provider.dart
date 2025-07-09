@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
-import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
@@ -32,7 +31,6 @@ class Chat extends _$Chat {
             ..iosEncoder = IosEncoder.kAudioFormatMPEG4AAC
             ..sampleRate = 44100
             ..bitRate = 256000,
-      playerController: PlayerController(),
       hasMessage: false,
       messages: [],
       chatList: [],
@@ -47,17 +45,6 @@ class Chat extends _$Chat {
     });
     initialState.recordController.onRecorderStateChanged.listen((recState) {
       state = state._updateWith(isRecording: recState.isRecording);
-    });
-    initialState.playerController.onPlayerStateChanged.listen((playerState) {
-      late PlayerStatus status;
-      if (playerState == PlayerState.playing) {
-        status = PlayerStatus.playing;
-      } else if (playerState == PlayerState.paused) {
-        status = PlayerStatus.paused;
-      } else if (playerState == PlayerState.stopped) {
-        status = PlayerStatus.stopped;
-      }
-      state = state._updateWith(playerStatus: status);
     });
 
     // Dispose controller when provider is disposed
@@ -386,60 +373,6 @@ class Chat extends _$Chat {
     }
   }
 
-  Future<void> preparePlayer({
-    required ChatMessage message,
-    String? url,
-    String? path,
-    int samples = 100,
-  }) async {
-    assert(url != null || path != null, "either url or path must be provided");
-
-    // Stop and clean up previous player if it exists
-    if (state.playerStatus != PlayerStatus.stopped) {
-      await state.playerController.stopPlayer();
-    }
-
-    // Release resources from previous playback
-    // if (message.audioPath != path) {
-    await state.playerController.release();
-    // }
-
-    String filePath = "";
-
-    if (path.hasValue) {
-      filePath = path!;
-    } else if (url.hasValue) {
-      final file = await downloadAssetFromUrl(url!);
-      filePath = file.filePath;
-    }
-
-    if (filePath.hasValue) {
-      await state.playerController.preparePlayer(
-        path: filePath,
-        shouldExtractWaveform: true,
-        noOfSamples: samples,
-      );
-
-      state.playerController.setFinishMode(finishMode: FinishMode.pause);
-
-      // state.playerStatus = PlayerStatus.stopped;
-      state.playerController.startPlayer();
-      state = state._updateWith();
-    }
-  }
-
-  Future<void> startPlayer() async {
-    await state.playerController.startPlayer();
-  }
-
-  Future<void> pausePlayer() async {
-    await state.playerController.pausePlayer();
-  }
-
-  Future<void> stopPlayer() async {
-    await state.playerController.stopPlayer();
-  }
-
   void attachFile(File file, {bool isImage = false}) {
     state = state._updateWith(uploadFile: file, isAttachmentImage: isImage);
   }
@@ -454,9 +387,7 @@ class ChatState {
   ChatState({
     required this.messageController,
     required this.recordController,
-    required this.playerController,
     required this.searchController,
-    this.playerStatus = PlayerStatus.stopped,
     this.hasMessage = false,
     this.isTyping = false,
     this.isFetchingHistory = true,
@@ -480,8 +411,6 @@ class ChatState {
   TextEditingController searchController;
   TextEditingController messageController;
   RecorderController recordController;
-  PlayerController playerController;
-  PlayerStatus playerStatus;
   List<ChatMessage> messages;
   List<ChatListItem> chatList;
   File? uploadFile;
@@ -500,8 +429,6 @@ class ChatState {
     TextEditingController? messageController,
     TextEditingController? searchController,
     RecorderController? recordController,
-    PlayerController? playerController,
-    PlayerStatus? playerStatus,
     File? uploadFile,
     bool? isAttachmentImage,
     Character? character,
@@ -516,8 +443,6 @@ class ChatState {
       isFetchingChatList: isFetchingChatList ?? this.isFetchingChatList,
       messageController: messageController ?? this.messageController,
       recordController: recordController ?? this.recordController,
-      playerController: playerController ?? this.playerController,
-      playerStatus: playerStatus ?? this.playerStatus,
       isRecording: isRecording ?? this.isRecording,
       searchController: searchController ?? this.searchController,
       isSearching: isSearching ?? this.isSearching,
@@ -538,8 +463,6 @@ class ChatState {
       isFetchingChatList: state.isFetchingChatList,
       messageController: state.messageController,
       recordController: state.recordController,
-      playerController: state.playerController,
-      playerStatus: state.playerStatus,
       isRecording: state.isRecording,
       searchController: state.searchController,
       isSearching: state.isSearching,
