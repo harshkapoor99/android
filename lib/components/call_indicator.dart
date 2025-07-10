@@ -15,17 +15,17 @@ class CallIndicator extends ConsumerWidget {
     );
     var name = ref.watch(callProvider.select((value) => value.character?.name));
     if (callStartTime != null) {
-      return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 10),
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
-          color: context.colorExt.primary,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        width: double.infinity,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: () => context.nav.pushNamed(Routes.call),
+      return GestureDetector(
+        onTap: () => context.nav.pushNamed(Routes.call),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          decoration: BoxDecoration(
+            color: context.colorExt.primary,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          width: double.infinity,
+          alignment: Alignment.center,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 10,
