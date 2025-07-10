@@ -248,28 +248,37 @@ class Chat extends _$Chat {
   }
 
   void fetchChatHistory() async {
-    try {
-      final response = await ref
-          .read(chatServiceProvider)
-          .chatHistory(
-            characterId: state.character!.id,
-            creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
-          );
+    if (state.page <= state.totalPage) {
+      state = state._updateWith(isFetchingHistory: true);
+      try {
+        final response = await ref
+            .read(chatServiceProvider)
+            .chatHistory(
+              characterId: state.character!.id,
+              creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+              page: state.page,
+            );
 
-      final List<dynamic> chats = response.data["chats"];
-      final List<ChatMessage> parsedChats =
-          chats.map((e) {
-            return ChatMessage.fromMap(e);
-          }).toList();
-      if (chats.isNotEmpty) {
-        state = state._updateWith(messages: parsedChats);
-      } else {
-        initiateChatWithCharacter();
+        List<dynamic> chats = response.data["chats"];
+        int totalPage = response.data["total_pages"];
+        List<ChatMessage> parsedChats =
+            chats.map((e) {
+              return ChatMessage.fromMap(e);
+            }).toList();
+        if (chats.isNotEmpty) {
+          state = state._updateWith(
+            messages: state.messages + parsedChats,
+            page: state.page + 1,
+            totalPage: totalPage,
+          );
+        } else if (state.page == state.totalPage) {
+          initiateChatWithCharacter();
+        }
+      } catch (e) {
+        rethrow;
+      } finally {
+        state = state._updateWith(isFetchingHistory: false);
       }
-    } catch (e) {
-      rethrow;
-    } finally {
-      state = state._updateWith(isFetchingHistory: false);
     }
   }
 
@@ -279,6 +288,8 @@ class Chat extends _$Chat {
       messages: [],
       isFetchingHistory: true,
       isTyping: false,
+      page: 1,
+      totalPage: 1,
     );
   }
 
@@ -312,6 +323,7 @@ class Chat extends _$Chat {
     String? fileUrl,
     String? filePath,
     String? fileName,
+    String? callMessage,
   }) {
     ChatMessage newMessage = ChatMessage(
       chatType: type.name,
@@ -331,6 +343,7 @@ class Chat extends _$Chat {
       fileUrl: fileUrl,
       filePath: filePath,
       fileName: fileName,
+      audioContext: callMessage,
     );
 
     updateChatList(newMessage, state.messages.isEmpty);
@@ -399,6 +412,8 @@ class ChatState {
     this.character,
     this.characterDetail,
     required this.messages,
+    this.page = 1,
+    this.totalPage = 1,
     required this.chatList,
   });
   bool hasMessage,
@@ -413,6 +428,8 @@ class ChatState {
   RecorderController recordController;
   List<ChatMessage> messages;
   List<ChatListItem> chatList;
+  int page;
+  int totalPage;
   File? uploadFile;
 
   Character? character;
@@ -434,6 +451,8 @@ class ChatState {
     Character? character,
     CharacterDetail? characterDetail,
     List<ChatMessage>? messages,
+    int? page,
+    int? totalPage,
     List<ChatListItem>? chatList,
   }) {
     return ChatState(
@@ -451,6 +470,8 @@ class ChatState {
       character: character ?? this.character,
       characterDetail: characterDetail ?? this.characterDetail,
       messages: messages ?? this.messages,
+      page: page ?? this.page,
+      totalPage: totalPage ?? this.totalPage,
       chatList: chatList ?? this.chatList,
     );
   }
@@ -471,6 +492,8 @@ class ChatState {
       character: state.character,
       characterDetail: state.characterDetail,
       messages: state.messages,
+      page: state.page,
+      totalPage: state.totalPage,
       chatList: state.chatList,
     );
   }

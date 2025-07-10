@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
-import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/services/chat_service.gen.dart';
@@ -30,12 +29,20 @@ abstract class ChatSerice {
   Future<Response> chatHistory({
     required String characterId,
     required String creatorId,
+    required int page,
   });
   Future<Response> chatList({required String creatorId});
 
   Future<Response> fetchCharacterDetails({required String characterId});
 
   Future<Response> sendAudioChatMessage({
+    required File audioFile,
+    required String characterId,
+    required String sessionId,
+    required String creatorId,
+  });
+
+  Future<Response> voiceCall({
     required File audioFile,
     required String characterId,
     required String sessionId,
@@ -95,12 +102,14 @@ class ChatSericeImpl implements ChatSerice {
   Future<Response> chatHistory({
     required String characterId,
     required String creatorId,
+    required int page,
   }) async {
     final response = await _apiClient.post(
       RemoteEndpoint.chatHistory.url,
       data: {
         "character_id": characterId,
         "session_id": '$characterId$creatorId',
+        "page": page,
       },
     );
     return response;
@@ -144,6 +153,25 @@ class ChatSericeImpl implements ChatSerice {
   }
 
   @override
+  Future<Response> voiceCall({
+    required File audioFile,
+    required String characterId,
+    required String sessionId,
+    required String creatorId,
+  }) async {
+    return _apiClient.post(
+      RemoteEndpoint.voiceCall.url,
+      data: FormData.fromMap({
+        'audio_file': await MultipartFile.fromFile(audioFile.path),
+        'character_id': characterId,
+        'session_id': sessionId,
+        'creator_id': creatorId,
+      }),
+      timeout: const Duration(seconds: 30),
+    );
+  }
+
+  @override
   Future<Response> sendFileChatMessage({
     required File file,
     required String characterId,
@@ -158,7 +186,7 @@ class ChatSericeImpl implements ChatSerice {
         'character_id': characterId,
         'session_id': '$characterId$creatorId',
         'creator_id': creatorId,
-        'message': message.hasValue ? message : "What is this?",
+        'message': message,
         "file_name": fileName,
       }),
       timeout: const Duration(seconds: 30),

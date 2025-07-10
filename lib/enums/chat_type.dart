@@ -2,7 +2,8 @@ enum ChatType {
   text,
   audio,
   file,
-  image;
+  image,
+  call;
 
   static ChatType? fromString(String? value) {
     if (value == null) {
