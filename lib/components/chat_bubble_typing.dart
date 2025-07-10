@@ -18,7 +18,8 @@ class ChatBubbleTyping extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisAlignment:
@@ -84,14 +85,10 @@ class ChatBubbleTyping extends StatelessWidget {
                     constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.7,
                     ),
-                    child: Builder(
-                      builder: (context) {
-                        return Lottie.asset(
-                          'assets/animations/du.json',
-                          height: 20,
-                          fit: BoxFit.contain,
-                        );
-                      },
+                    child: Lottie.asset(
+                      'assets/animations/du.json',
+                      height: 20,
+                      fit: BoxFit.contain,
                     ),
                   ),
                   if (isMe)

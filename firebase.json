@@ -1,1 +1,22 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"guftagu-dev","appId":"1:19508565659:android:b7cb254dbe52793e37d83e","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"guftagu-dev","configurations":{"android":"1:19508565659:android:b7cb254dbe52793e37d83e"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "guftagu-dev",
+          "appId": "1:19508565659:android:0d151bac5f36ed0b37d83e",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "guftagu-dev",
+          "configurations": {
+            "android": "1:19508565659:android:0d151bac5f36ed0b37d83e",
+            "ios": "1:19508565659:ios:0fee6e27d7c6335937d83e"
+          }
+        }
+      }
+    }
+  }
+}

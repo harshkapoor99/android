@@ -27,6 +27,7 @@ class ChatMessage {
   int? status;
   String? audioPath;
   String? filePath;
+  String? audioContext;
 
   ChatMessage({
     required this.id,
@@ -46,6 +47,7 @@ class ChatMessage {
     this.status,
     this.audioPath,
     this.filePath,
+    this.audioContext,
   });
 
   factory ChatMessage.fromMap(Map<String, dynamic> json) => ChatMessage(
@@ -68,6 +70,7 @@ class ChatMessage {
     ),
     sessionId: json["session_id"],
     voiceUrl: json["voice_url"],
+    audioContext: json["audio_context"],
     fileUrl: json["image_url"],
     fileName: json["file_name"],
     chatType: json["chat_type"],

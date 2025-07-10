@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
+import 'package:guftagu_mobile/components/timer_widget.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/call_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -34,13 +36,31 @@ class CallScreen extends ConsumerWidget {
         title: Row(
           children: [
             CircleAvatar(
-              backgroundImage: Assets.images.model.modImg1.provider(),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(26),
+
+                child: NetworkImageWithPlaceholder(
+                  imageUrl: provider.character?.imageGallery.first.url ?? "",
+                  placeholder: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                    fit: BoxFit.cover,
+                  ),
+                  fit: BoxFit.cover,
+                  errorWidget: SvgPicture.asset(
+                    Assets.svgs.icProfilePlaceholder,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
             ),
             10.pw,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Jaan", style: context.appTextStyle.textBold),
+                Text(
+                  provider.character?.name ?? "",
+                  style: context.appTextStyle.textBold,
+                ),
                 Row(
                   children: [
                     5.pw,
@@ -100,20 +120,24 @@ class CallScreen extends ConsumerWidget {
                         alignment: Alignment.center,
                         child: CircleAvatar(
                           maxRadius: 105,
-                          backgroundImage:
-                              Assets.images.model.modImg1.provider(),
+                          backgroundImage: NetworkImage(
+                            provider.character?.imageGallery.first.url ?? "",
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 20.ph,
-                const Text(
-                  "12:36",
-                  style: TextStyle(color: Colors.white54, fontSize: 12),
-                ),
+                provider.isCallStarted && provider.callStartTime != null
+                    ? TimerWidget(startTime: provider.callStartTime!)
+                    : const Text("Connecting..."),
                 20.ph,
-                SvgPicture.asset(Assets.svgs.icAudioSpectrum, width: 150),
+                Text(provider.isSilent ? "Silent" : "Taking"),
+                Text("Decibel: ${provider.decibel}"),
+                Text("InFlight: ${provider.inFlight}"),
+                Text("Player: ${provider.playerStatus.name}"),
+                // SvgPicture.asset(Assets.svgs.icAudioSpectrum, width: 150),
                 const Spacer(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -129,7 +153,10 @@ class CallScreen extends ConsumerWidget {
                       const Icon(Icons.call_end, color: Colors.white, size: 30),
                       const Color(0xFFFC015B),
                       size: 60,
-                      onPressed: context.nav.pop,
+                      onPressed: () {
+                        ref.read(callProvider.notifier).stopCall();
+                        context.nav.pop();
+                      },
                     ),
                     _buildCircleButton(
                       context,

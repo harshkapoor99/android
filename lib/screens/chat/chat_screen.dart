@@ -3,7 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/call_indicator.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
+import 'package:guftagu_mobile/components/chat_bubble_call_message.dart';
 import 'package:guftagu_mobile/components/chat_bubble_file.dart';
 import 'package:guftagu_mobile/components/chat_bubble_text.dart';
 import 'package:guftagu_mobile/components/chat_bubble_typing.dart';
@@ -12,12 +14,14 @@ import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/call_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/file_compressor.dart';
 import 'package:guftagu_mobile/utils/permission_handler.dart';
 import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,9 +40,11 @@ class ChatScreen extends ConsumerStatefulWidget {
     }
     var img = await picker.pickImage(source: media);
     if (img != null) {
-      var image = File(img.path);
-      // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
-      ref.read(chatProvider.notifier).attachFile(image, isImage: true);
+      var image = await compressImage(File(img.path));
+      if (image != null) {
+        // ref.read(characterCreationProvider.notifier).updateWith(uploadImage: img);
+        ref.read(chatProvider.notifier).attachFile(image, isImage: true);
+      }
     }
   }
 
@@ -47,7 +53,7 @@ class ChatScreen extends ConsumerStatefulWidget {
 
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'csv', 'docx'],
+      allowedExtensions: ['pdf'],
     );
 
     if (result != null && result.files.single.path != null) {
@@ -81,16 +87,37 @@ class ChatScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatScreenState extends ConsumerState<ChatScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       init();
     });
-    super.initState();
   }
 
   void init() {
     ref.read(chatProvider.notifier).fetchChatHistory();
+  }
+
+  void _onScroll() {
+    // If user scrolls near the top, fetch more messages
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 100) {
+      // 100 px threshold, adjust as needed
+      if (!ref.read(chatProvider).isFetchingHistory) {
+        ref.read(chatProvider.notifier).fetchChatHistory();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -182,132 +209,143 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ],
                 ),
-                const Spacer(),
-                // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-                // 5.pw,
-                // Text(
-                //   '1200',
-                //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-                // ),
-                // 25.pw,
-                IconButton(
-                  onPressed: () => context.nav.pushNamed(Routes.call),
-                  icon: const Icon(Icons.call, color: Colors.white),
-                ),
-                20.pw,
               ],
             ),
+            actionsPadding: const EdgeInsets.only(right: 10),
+            actions: [
+              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              // 5.pw,
+              // Text(
+              //   '1200',
+              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              // ),
+              // 5.pw,
+              IconButton(
+                onPressed: () {
+                  if (!ref.read(callProvider).isCallStarted) {
+                    ref
+                        .read(callProvider.notifier)
+                        .setCharacter(provider.character!);
+                  }
+                  context.nav.pushNamed(Routes.call);
+                },
+                icon: const Icon(Icons.call, color: Colors.white),
+              ),
+            ],
           ),
           body: GestureDetector(
             onTap: () => widget._focusNodes.unfocus(),
             child: Column(
               children: [
-                Expanded(
+                const CallIndicator(),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child:
                       provider.isFetchingHistory
-                          ? const SizedBox.shrink() // Show nothing while fetching history
-                          : ListView.builder(
-                            reverse:
-                                true, // Keep showing latest messages at the bottom
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            // Adjust itemCount based on whether typing indicator should be shown
-                            itemCount:
-                                provider.isTyping
-                                    ? provider.messages.length +
-                                        1 // +1 for the typing indicator
-                                    : provider.messages.length,
-                            itemBuilder: (context, index) {
-                              // --- Handle typing indicator ---
-                              if (provider.isTyping && index == 0) {
-                                // Display Lottie animation when typing
-                                return ChatBubbleTyping(
-                                  isMe: false,
-                                  imageUrl: image,
-                                );
-                              }
-                              // --- End typing indicator ---
-
-                              // Adjust index to get the correct message from the list
-                              // This logic correctly accounts for the presence/absence of the typing indicator
-                              final messageIndex =
-                                  provider.isTyping
-                                      ?
-                                      // provider.messages.length -
-                                      //     1 -
-                                      (index -
-                                          1) // Adjust index when typing indicator is present
-                                      :
-                                      // provider.messages.length -
-                                      //     1 -
-                                      index; // Normal index when no typing indicator
-
-                              final message = provider.messages[messageIndex];
-
-                              bool showDateSeparator = false;
-                              if (messageIndex ==
-                                  provider.messages.length - 1) {
-                                showDateSeparator = true;
-                              } else if (messageIndex <
-                                  provider.messages.length - 1) {
-                                final prevMessage =
-                                    provider.messages[messageIndex + 1];
-                                showDateSeparator =
-                                    !isSameDay(
-                                      provider.messages[messageIndex].timestamp,
-                                      prevMessage.timestamp,
-                                    );
-                              }
-
-                              // Return the actual chat message bubble
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (showDateSeparator
-                                  // && messageIndex < provider.messages.length - 1
-                                  )
-                                    _buildDateSeparator(
-                                      context,
-                                      message.timestamp,
-                                    ),
-                                  if (message.chatType == ChatType.audio.name)
-                                    ChatBubbleAudio(
-                                      message: message,
-                                      isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
-                                      time: message.timestamp.toLocal(),
-                                      path: message.audioPath,
-                                      url: message.voiceUrl,
-                                    ),
-                                  if (message.chatType == ChatType.file.name ||
-                                      message.chatType == ChatType.image.name)
-                                    ChatBubbleFile(
-                                      message: message,
-                                      isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
-                                      time: message.timestamp.toLocal(),
-                                      path: message.filePath,
-                                      url: message.fileUrl,
-                                    ),
-                                  if (message.chatType == ChatType.text.name)
-                                    ChatBubbleText(
-                                      text: message.message!,
-                                      isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
-                                      time: message.timestamp.toLocal(),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
+                          ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                          : null,
                 ),
-                AnimatedContainer(
-                  duration: Durations.long2,
-                  height: provider.isFetchingHistory ? 25 : 0,
-                  child: const Text("Loading your chat history..."),
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    reverse: true, // Keep showing latest messages at the bottom
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    // Adjust itemCount based on whether typing indicator should be shown
+                    itemCount:
+                        provider.isTyping
+                            ? provider.messages.length +
+                                1 // +1 for the typing indicator
+                            : provider.messages.length,
+                    itemBuilder: (context, index) {
+                      // --- Handle typing indicator ---
+                      if (provider.isTyping && index == 0) {
+                        // Display Lottie animation when typing
+                        return ChatBubbleTyping(isMe: false, imageUrl: image);
+                      }
+                      // --- End typing indicator ---
+
+                      // Adjust index to get the correct message from the list
+                      // This logic correctly accounts for the presence/absence of the typing indicator
+                      final messageIndex =
+                          provider.isTyping ? (index - 1) : index;
+                      final message = provider.messages[messageIndex];
+
+                      bool showDateSeparator = false;
+                      if (messageIndex == provider.messages.length - 1) {
+                        showDateSeparator = true;
+                      } else if (messageIndex < provider.messages.length - 1) {
+                        final prevMessage = provider.messages[messageIndex + 1];
+                        showDateSeparator =
+                            !isSameDay(
+                              provider.messages[messageIndex].timestamp,
+                              prevMessage.timestamp,
+                            );
+                      }
+
+                      // Return the actual chat message bubble
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (showDateSeparator
+                          // && messageIndex < provider.messages.length - 1
+                          )
+                            _buildDateSeparator(context, message.timestamp),
+                          if (message.chatType == ChatType.audio.name)
+                            ChatBubbleAudio(
+                              message: message,
+                              isMe: message.isMe,
+                              imageUrl: image,
+                              time: message.timestamp.toLocal(),
+                              path: message.audioPath,
+                              url: message.voiceUrl,
+                            ),
+                          if (message.chatType == ChatType.file.name ||
+                              message.chatType == ChatType.image.name)
+                            ChatBubbleFile(
+                              message: message,
+                              isMe: message.isMe,
+                              imageUrl: image,
+                              time: message.timestamp.toLocal(),
+                              path: message.filePath,
+                              url: message.fileUrl,
+                            ),
+                          if (message.chatType == ChatType.call.name)
+                            ChatBubbleCallMessage(
+                              text: message.audioContext!,
+                              isMe: message.isMe,
+                              imageUrl: image,
+                              time: message.timestamp.toLocal(),
+                              isFirst:
+                                  index == 0 ||
+                                  provider
+                                          .messages[messageIndex - 1]
+                                          .chatType !=
+                                      ChatType.call.name,
+                              isLast:
+                                  messageIndex ==
+                                      provider.messages.length - 1 ||
+                                  provider
+                                          .messages[messageIndex + 1]
+                                          .chatType !=
+                                      ChatType.call.name,
+                            ),
+                          if (message.chatType == ChatType.text.name)
+                            ChatBubbleText(
+                              text: message.message!,
+                              isMe: message.isMe,
+                              imageUrl: image,
+                              time: message.timestamp.toLocal(),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                 ),
+
                 Container(
                   padding: const EdgeInsets.all(10),
                   child: Row(

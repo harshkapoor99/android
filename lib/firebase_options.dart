@@ -26,10 +26,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -53,10 +50,22 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBm5TnAowIBv4vWIf6xirg6Wy1M2YNIysc',
-    appId: '1:19508565659:android:b7cb254dbe52793e37d83e',
+    apiKey: 'AIzaSyB9M47zB1Tyx1VjSGT_gVtlyK0a345HN2c',
+    appId: '1:19508565659:android:0d151bac5f36ed0b37d83e',
     messagingSenderId: '19508565659',
     projectId: 'guftagu-dev',
     storageBucket: 'guftagu-dev.firebasestorage.app',
   );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyCGYGBYoUC0c-RfOEYB3eV0vLYXexzMWVE',
+    appId: '1:19508565659:ios:0fee6e27d7c6335937d83e',
+    messagingSenderId: '19508565659',
+    projectId: 'guftagu-dev',
+    storageBucket: 'guftagu-dev.firebasestorage.app',
+    androidClientId: '19508565659-2c7co4a8fdj92t49dl2amf6knio41pm1.apps.googleusercontent.com',
+    iosClientId: '19508565659-ochoi50fgcs5i5j0trkcu5q21m6vu5eh.apps.googleusercontent.com',
+    iosBundleId: 'com.guftagu.app',
+  );
+
 }

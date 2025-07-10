@@ -60,7 +60,8 @@ class ChatBubbleAudio extends ConsumerWidget {
       screenWidth / 2,
     );
 
-    return Align(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisAlignment:

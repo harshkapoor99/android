@@ -38,7 +38,8 @@ class ChatBubbleFile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.sizeOf(context).width;
-    return Align(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisAlignment:
