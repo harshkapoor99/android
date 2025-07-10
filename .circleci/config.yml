@@ -110,7 +110,7 @@ jobs:
             rmdir "$OLD_PATH" # Remove old empty directories
 
             # --- Android App Name Change ---
-            sed -i 's/Guftagu/Guftagu(Beta)/g' android/app/src/main/AndroidManifest.xml
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' android/app/src/main/AndroidManifest.xml
 
             # --- iOS Bundle ID Change ---
             echo "Changing iOS bundle ID from $OLD_PACKAGE to $NEW_PACKAGE"
