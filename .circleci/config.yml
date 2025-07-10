@@ -68,16 +68,16 @@ commands:
 
             # Rename the built APK to a temporary, predictable name
             # This temporary name is what 'store_artifacts' will look for in the 'path' field.
-            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/temp_renamed_app.apk
+            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
 
             # Export the dynamic filename so it can be used in the 'destination' field of store_artifacts
             echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
       - store_artifacts:
           # The 'path' refers to the file's location after the 'mv' command
-          path: build/app/outputs/flutter-apk/temp_renamed_app.apk
+          path: build/app/outputs/flutter-apk
           # The 'destination' is the name the artifact will have in the CircleCI UI,
-          # which can use the dynamically set environment variable.
-          destination: ${DYNAMIC_ARTIFACT_FILENAME}
+          # # which can use the dynamically set environment variable.
+          # destination: ${DYNAMIC_ARTIFACT_FILENAME}
 
 jobs:
   # Job for Alpha builds
