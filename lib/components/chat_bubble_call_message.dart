@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
-import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
-import 'package:guftagu_mobile/utils/date_formats.dart';
 
-class ChatBubbleText extends StatefulWidget {
+class ChatBubbleCallMessage extends StatefulWidget {
   final String text;
-  final bool isMe;
+  final bool isMe, isFirst, isLast;
   final String imageUrl;
   final DateTime? time;
 
-  const ChatBubbleText({
+  const ChatBubbleCallMessage({
     super.key,
     required this.text,
     required this.isMe,
     required this.imageUrl,
+    this.isFirst = false,
+    this.isLast = false,
     this.time,
   });
 
   @override
-  State<ChatBubbleText> createState() => _ChatBubbleTextState();
+  State<ChatBubbleCallMessage> createState() => _ChatBubbleCallMessageState();
 }
 
-class _ChatBubbleTextState extends State<ChatBubbleText> {
+class _ChatBubbleCallMessageState extends State<ChatBubbleCallMessage> {
   Key textKey = UniqueKey();
   void _deselectText() {
     setState(() {
@@ -37,6 +37,15 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: context.colorExt.primary.withAlpha(35),
+        borderRadius: BorderRadius.only(
+          bottomLeft: widget.isFirst ? const Radius.circular(10) : Radius.zero,
+          bottomRight: widget.isFirst ? const Radius.circular(10) : Radius.zero,
+          topLeft: widget.isLast ? const Radius.circular(10) : Radius.zero,
+          topRight: widget.isLast ? const Radius.circular(10) : Radius.zero,
+        ),
+      ),
       alignment: widget.isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisAlignment:
@@ -70,14 +79,14 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  if (!widget.isMe)
-                    CustomPaint(
-                      size: const Size(6, 6),
-                      painter: BubbleNipPainter(
-                        color: context.colorExt.bubble,
-                        isMe: widget.isMe,
-                      ),
-                    ),
+                  // if (!widget.isMe)
+                  //   CustomPaint(
+                  //     size: const Size(6, 6),
+                  //     painter: BubbleNipPainter(
+                  //       color: context.colorExt.bubble,
+                  //       isMe: widget.isMe,
+                  //     ),
+                  //   ),
                   Container(
                     margin: const EdgeInsets.only(top: 5),
                     padding: const EdgeInsets.symmetric(
@@ -85,13 +94,16 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      gradient:
-                          widget.isMe
-                              ? const LinearGradient(
-                                colors: [Color(0xFF9D00C6), Color(0xFF00B1A4)],
-                              )
-                              : null,
-                      color: widget.isMe ? null : context.colorExt.bubble,
+                      // gradient:
+                      //     widget.isMe
+                      //         ? const LinearGradient(
+                      //           colors: [
+                      //             Color(0xFF9D00C6),
+                      //             Color(0xFF00B1A4),
+                      //           ],
+                      //         )
+                      //         : null,
+                      // color: widget.isMe ? null : context.colorExt.bubble,
                       borderRadius: BorderRadius.only(
                         topLeft: const Radius.circular(10),
                         topRight: const Radius.circular(10),
@@ -111,7 +123,7 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
                             widget.isMe
                                 ? context.colorExt.buttonText
                                 : context.colorExt.textPrimary,
-                        fontStyle: FontStyle.normal,
+                        fontStyle: FontStyle.italic,
                       ),
                       contextMenuBuilder: (context, editableTextState) {
                         final selectedText = editableTextState
@@ -151,21 +163,21 @@ class _ChatBubbleTextState extends State<ChatBubbleText> {
                       },
                     ),
                   ),
-                  if (widget.isMe)
-                    CustomPaint(
-                      size: const Size(6, 6),
-                      painter: BubbleNipPainter(
-                        color: const Color(0xFF00B1A4),
-                        isMe: widget.isMe,
-                      ),
-                    ),
+                  //   if (widget.isMe)
+                  //     CustomPaint(
+                  //       size: const Size(6, 6),
+                  //       painter: BubbleNipPainter(
+                  //         color: const Color(0xFF00B1A4),
+                  //         isMe: widget.isMe,
+                  //       ),
+                  //     ),
                 ],
               ),
 
-              Text(
-                widget.time != null ? formatTime(widget.time!) : "",
-                style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
-              ),
+              // Text(
+              //   widget.time != null ? formatTime(widget.time!) : "",
+              //   style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
+              // ),
             ],
           ),
         ],

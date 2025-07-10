@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
+import 'package:guftagu_mobile/components/chat_bubble_call_message.dart';
 import 'package:guftagu_mobile/components/chat_bubble_file.dart';
 import 'package:guftagu_mobile/components/chat_bubble_text.dart';
 import 'package:guftagu_mobile/components/chat_bubble_typing.dart';
@@ -12,6 +13,7 @@ import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/call_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -182,21 +184,27 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                     ),
                   ],
                 ),
-                const Spacer(),
-                // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-                // 5.pw,
-                // Text(
-                //   '1200',
-                //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-                // ),
-                // 25.pw,
-                IconButton(
-                  onPressed: () => context.nav.pushNamed(Routes.call),
-                  icon: const Icon(Icons.call, color: Colors.white),
-                ),
-                20.pw,
               ],
             ),
+            actionsPadding: const EdgeInsets.only(right: 10),
+            actions: [
+              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+              // 5.pw,
+              // Text(
+              //   '1200',
+              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+              // ),
+              // 5.pw,
+              IconButton(
+                onPressed: () {
+                  ref
+                      .read(callProvider.notifier)
+                      .setCharacter(provider.character!);
+                  context.nav.pushNamed(Routes.call);
+                },
+                icon: const Icon(Icons.call, color: Colors.white),
+              ),
+            ],
           ),
           body: GestureDetector(
             onTap: () => widget._focusNodes.unfocus(),
@@ -209,7 +217,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           : ListView.builder(
                             reverse:
                                 true, // Keep showing latest messages at the bottom
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
                             // Adjust itemCount based on whether typing indicator should be shown
                             itemCount:
                                 provider.isTyping
@@ -273,8 +281,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     ChatBubbleAudio(
                                       message: message,
                                       isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
+                                      imageUrl: image,
                                       time: message.timestamp.toLocal(),
                                       path: message.audioPath,
                                       url: message.voiceUrl,
@@ -284,18 +291,36 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                                     ChatBubbleFile(
                                       message: message,
                                       isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
+                                      imageUrl: image,
                                       time: message.timestamp.toLocal(),
                                       path: message.filePath,
                                       url: message.fileUrl,
+                                    ),
+                                  if (message.chatType == ChatType.call.name)
+                                    ChatBubbleCallMessage(
+                                      text: message.audioContext!,
+                                      isMe: message.isMe,
+                                      imageUrl: image,
+                                      time: message.timestamp.toLocal(),
+                                      isFirst:
+                                          index == 0 ||
+                                          provider
+                                                  .messages[messageIndex - 1]
+                                                  .chatType !=
+                                              ChatType.call.name,
+                                      isLast:
+                                          messageIndex ==
+                                              provider.messages.length - 1 ||
+                                          provider
+                                                  .messages[messageIndex + 1]
+                                                  .chatType !=
+                                              ChatType.call.name,
                                     ),
                                   if (message.chatType == ChatType.text.name)
                                     ChatBubbleText(
                                       text: message.message!,
                                       isMe: message.isMe,
-                                      imageUrl:
-                                          image, // Pass the AI image url (used if isMe is false)
+                                      imageUrl: image,
                                       time: message.timestamp.toLocal(),
                                     ),
                                 ],
