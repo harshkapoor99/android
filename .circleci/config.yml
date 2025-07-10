@@ -63,7 +63,7 @@ commands:
             TIMESTAMP=$(date +%F_%H-%M)
 
             # Construct the new filename for the artifact (e.g., app-alpha1-2024-07-08_18-45.apk)
-            DYNAMIC_ARTIFACT_FILENAME="app-${TAG_NAME}-${TIMESTAMP}.apk"
+            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}.apk"
             echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
 
             # Rename the built APK to a temporary, predictable name
