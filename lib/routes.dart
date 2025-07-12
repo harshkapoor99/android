@@ -33,6 +33,7 @@ class Routes {
 
   static Route generatedRoutes(RouteSettings settings) {
     Widget child;
+    PageTransitionType type = PageTransitionType.theme;
 
     switch (settings.name) {
       case Routes.splash:
@@ -59,6 +60,7 @@ class Routes {
         child = const CallScreen();
       case Routes.userProfile:
         child = UserProfileScreen();
+      // type = PageTransitionType.rightToLeft;
       case Routes.subscription:
         child = const SubscriptionScreen();
       default:
@@ -68,7 +70,7 @@ class Routes {
 
     return PageTransition(
       child: child,
-      type: PageTransitionType.theme,
+      type: type,
       alignment: Alignment.center,
       settings: settings,
       duration: const Duration(milliseconds: 500),
