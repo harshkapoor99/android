@@ -190,129 +190,121 @@ void _showVoiceOptionPopup(
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (context) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-        child: Container(
-          decoration: BoxDecoration(
-            color: context.colorExt.sheet,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  top: verticalPadding,
-                  bottom: verticalPadding,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Choose from $title",
-                        style: context.appTextStyle.sheetHeader,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close,
-                        color: context.colorExt.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
+      return SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.colorExt.sheet,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
               ),
-              options.isEmpty && emptyOptionHint != null
-                  ? Text(emptyOptionHint, style: context.appTextStyle.textSmall)
-                  : Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.only(
-                        left: horizontalPadding,
-                        right: horizontalPadding,
-                        bottom: 10,
-                        top: 5,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                    top: verticalPadding,
+                    bottom: verticalPadding,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Choose from $title",
+                          style: context.appTextStyle.sheetHeader,
+                        ),
                       ),
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final option = options[index];
-                        final isSelected = selected == option;
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(
+                          Icons.close,
+                          color: context.colorExt.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                options.isEmpty && emptyOptionHint != null
+                    ? Text(
+                      emptyOptionHint,
+                      style: context.appTextStyle.textSmall,
+                    )
+                    : Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.only(
+                          left: horizontalPadding,
+                          right: horizontalPadding,
+                          bottom: 10,
+                          top: 5,
+                        ),
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final option = options[index];
+                          final isSelected = selected == option;
 
-                        return Consumer(
-                          builder: (context, ref, child) {
-                            final provider = audioPlayerProvider(
-                              voiceId: option.id,
-                            );
-                            final playerState = ref.watch(provider);
-                            final player = ref.read(provider.notifier);
-                            return Container(
-                              margin: const EdgeInsets.only(bottom: 10),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color:
-                                    isSelected
-                                        ? context.colorExt.primary
-                                        : context.colorExt.surface,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () async {
-                                      if (playerState.playerStatus ==
-                                          PlayerStatus.idle) {
-                                        initializePlayer(
-                                          ref,
-                                          option,
-                                          samples: samples,
-                                        );
-                                        return;
-                                      }
-                                      if (playerState.playerStatus ==
-                                          PlayerStatus.playing) {
-                                        await player.pausePlayer();
-                                      } else {
-                                        await player.startPlayer();
-                                      }
-                                    },
-                                    child: SvgPicture.asset(
-                                      playerState.playerStatus ==
-                                              PlayerStatus.playing
-                                          ? Assets.svgs.icPause
-                                          : Assets.svgs.icPlay,
-                                    ),
-                                  ),
-                                  12.pw,
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        optionToString(option),
-                                        style: context.appTextStyle.textSemibold
-                                            .copyWith(
-                                              color:
-                                                  isSelected
-                                                      ? context
-                                                          .colorExt
-                                                          .buttonText
-                                                      : null,
-                                            ),
+                          return Consumer(
+                            builder: (context, ref, child) {
+                              final provider = audioPlayerProvider(
+                                voiceId: option.id,
+                              );
+                              final playerState = ref.watch(provider);
+                              final player = ref.read(provider.notifier);
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isSelected
+                                          ? context.colorExt.primary
+                                          : context.colorExt.surface,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () async {
+                                        if (playerState.playerStatus ==
+                                            PlayerStatus.idle) {
+                                          initializePlayer(
+                                            ref,
+                                            option,
+                                            samples: samples,
+                                          );
+                                          return;
+                                        }
+                                        if (playerState.playerStatus ==
+                                            PlayerStatus.playing) {
+                                          await player.pausePlayer();
+                                        } else {
+                                          await player.startPlayer();
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                        playerState.playerStatus ==
+                                                PlayerStatus.playing
+                                            ? Assets.svgs.icPause
+                                            : Assets.svgs.icPlay,
                                       ),
-                                      if (optionToStringSubtitle != null)
+                                    ),
+                                    12.pw,
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
                                         Text(
-                                          optionToStringSubtitle(option),
+                                          optionToString(option),
                                           style: context
                                               .appTextStyle
                                               .textSemibold
                                               .copyWith(
-                                                fontSize: 12,
                                                 color:
                                                     isSelected
                                                         ? context
@@ -321,88 +313,109 @@ void _showVoiceOptionPopup(
                                                         : null,
                                               ),
                                         ),
-                                    ],
-                                  ),
-
-                                  Expanded(
-                                    child:
-                                        playerState.playerStatus !=
-                                                PlayerStatus.idle
-                                            ? Center(
-                                              child:
-                                                  playerState.playerStatus ==
-                                                          PlayerStatus.loading
-                                                      ? CircularProgressIndicator(
-                                                        constraints:
-                                                            BoxConstraints.tight(
-                                                              const Size(
-                                                                20,
-                                                                20,
-                                                              ),
-                                                            ),
-                                                        strokeWidth: 2,
-                                                      )
-                                                      : AudioFileWaveforms(
-                                                        size: Size(
-                                                          screenWidth / 5,
-                                                          30,
-                                                        ),
-                                                        playerController:
-                                                            playerState
-                                                                .playerController,
-                                                        enableSeekGesture: true,
-                                                        waveformType:
-                                                            WaveformType
-                                                                .fitWidth,
-                                                        waveformData:
-                                                            playerState
-                                                                .playerController
-                                                                .waveformData,
-                                                        playerWaveStyle: style,
-                                                      ),
-                                            )
-                                            : const SizedBox.shrink(),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      onSelect(option);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: context.colorExt.surface,
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(
-                                          color: context.colorExt.border,
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: SvgPicture.asset(
-                                          Assets.svgs.clarityArrowLine,
-                                          colorFilter: ColorFilter.mode(
-                                            context.colorExt.textPrimary,
-                                            BlendMode.srcIn,
+                                        if (optionToStringSubtitle != null)
+                                          Text(
+                                            optionToStringSubtitle(option),
+                                            style: context
+                                                .appTextStyle
+                                                .textSemibold
+                                                .copyWith(
+                                                  fontSize: 12,
+                                                  color:
+                                                      isSelected
+                                                          ? context
+                                                              .colorExt
+                                                              .buttonText
+                                                          : null,
+                                                ),
                                           ),
-                                          width: 26,
-                                          height: 26,
-                                          semanticsLabel: 'Arrow icon',
+                                      ],
+                                    ),
+
+                                    Expanded(
+                                      child:
+                                          playerState.playerStatus !=
+                                                  PlayerStatus.idle
+                                              ? Center(
+                                                child:
+                                                    playerState.playerStatus ==
+                                                            PlayerStatus.loading
+                                                        ? CircularProgressIndicator(
+                                                          constraints:
+                                                              BoxConstraints.tight(
+                                                                const Size(
+                                                                  20,
+                                                                  20,
+                                                                ),
+                                                              ),
+                                                          strokeWidth: 2,
+                                                        )
+                                                        : AudioFileWaveforms(
+                                                          size: Size(
+                                                            screenWidth / 5,
+                                                            30,
+                                                          ),
+                                                          playerController:
+                                                              playerState
+                                                                  .playerController,
+                                                          enableSeekGesture:
+                                                              true,
+                                                          waveformType:
+                                                              WaveformType
+                                                                  .fitWidth,
+                                                          waveformData:
+                                                              playerState
+                                                                  .playerController
+                                                                  .waveformData,
+                                                          playerWaveStyle:
+                                                              style,
+                                                        ),
+                                              )
+                                              : const SizedBox.shrink(),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        onSelect(option);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: context.colorExt.surface,
+                                          borderRadius: BorderRadius.circular(
+                                            5,
+                                          ),
+                                          border: Border.all(
+                                            color: context.colorExt.border,
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: SvgPicture.asset(
+                                            Assets.svgs.clarityArrowLine,
+                                            colorFilter: ColorFilter.mode(
+                                              context.colorExt.textPrimary,
+                                              BlendMode.srcIn,
+                                            ),
+                                            width: 26,
+                                            height: 26,
+                                            semanticsLabel: 'Arrow icon',
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-              SizedBox(height: verticalPadding),
-            ],
+                SizedBox(height: verticalPadding),
+              ],
+            ),
           ),
         ),
       );
@@ -441,103 +454,110 @@ void _showOptionPopup<T>(
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (context) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-        child: Container(
-          decoration: BoxDecoration(
-            color: context.colorExt.sheet,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                  top: verticalPadding,
-                  bottom: verticalPadding,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "Choose a $title",
-                        style: context.appTextStyle.sheetHeader,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Icon(
-                        Icons.close,
-                        color: context.colorExt.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
+      return SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+          child: Container(
+            decoration: BoxDecoration(
+              color: context.colorExt.sheet,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
               ),
-              options.isEmpty && emptyOptionHint != null
-                  ? Text(emptyOptionHint, style: context.appTextStyle.textSmall)
-                  : Flexible(
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: horizontalPadding,
-                          right: horizontalPadding,
-                          bottom: 10,
-                          top: 5,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: horizontalPadding,
+                    right: horizontalPadding,
+                    top: verticalPadding,
+                    bottom: verticalPadding,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Choose a $title",
+                          style: context.appTextStyle.sheetHeader,
                         ),
-                        child: Align(
-                          alignment: Alignment.topLeft,
-                          child: Wrap(
-                            spacing: 10,
-                            runSpacing: 14,
-                            alignment: WrapAlignment.start,
-                            crossAxisAlignment: WrapCrossAlignment.start,
-                            children:
-                                options.map((option) {
-                                  final isSelected = selected == option;
-                                  return GestureDetector(
-                                    onTap: () {
-                                      onSelect(option);
-                                      Navigator.pop(context);
-                                    },
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 10,
-                                        horizontal: 18,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color:
-                                            isSelected
-                                                ? context.colorExt.button
-                                                : context.colorExt.surface,
-                                        borderRadius: BorderRadius.circular(
-                                          100,
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Icon(
+                          Icons.close,
+                          color: context.colorExt.textPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                options.isEmpty && emptyOptionHint != null
+                    ? Text(
+                      emptyOptionHint,
+                      style: context.appTextStyle.textSmall,
+                    )
+                    : Flexible(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 10,
+                            top: 5,
+                          ),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: Wrap(
+                              spacing: 10,
+                              runSpacing: 14,
+                              alignment: WrapAlignment.start,
+                              crossAxisAlignment: WrapCrossAlignment.start,
+                              children:
+                                  options.map((option) {
+                                    final isSelected = selected == option;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        onSelect(option);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 18,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              isSelected
+                                                  ? context.colorExt.button
+                                                  : context.colorExt.surface,
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          optionToString(option),
+                                          style: context.appTextStyle.text
+                                              .copyWith(
+                                                color:
+                                                    isSelected
+                                                        ? context
+                                                            .colorExt
+                                                            .buttonText
+                                                        : null,
+                                              ),
                                         ),
                                       ),
-                                      child: Text(
-                                        optionToString(option),
-                                        style: context.appTextStyle.text
-                                            .copyWith(
-                                              color:
-                                                  isSelected
-                                                      ? context
-                                                          .colorExt
-                                                          .buttonText
-                                                      : null,
-                                            ),
-                                      ),
-                                    ),
-                                  );
-                                }).toList(),
+                                    );
+                                  }).toList(),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-              SizedBox(height: verticalPadding),
-            ],
+                SizedBox(height: verticalPadding),
+              ],
+            ),
           ),
         ),
       );
@@ -606,151 +626,157 @@ void _showOptionPopupWithMultiselect<T>(
             onSelect(ref.read(multiSelectProvider));
           }
         },
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.colorExt.sheet,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    top: verticalPadding,
-                    bottom: verticalPadding,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Choose upto $maxSelectToClose $title",
-                          style: context.appTextStyle.sheetHeader,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap:
-                            () => Navigator.pop<List<T>>(
-                              context,
-                              ref.read(multiSelectProvider),
-                            ),
-                        child: Icon(
-                          Icons.close,
-                          color: context.colorExt.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
+        child: SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: context.colorExt.sheet,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
                 ),
-                options.isEmpty && emptyOptionHint != null
-                    ? Text(
-                      emptyOptionHint,
-                      style: context.appTextStyle.textSmall,
-                    )
-                    : Consumer(
-                      builder: (context, ref, child) {
-                        final seletedOptions = ref.watch(multiSelectProvider);
-                        return Flexible(
-                          child: SingleChildScrollView(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                left: horizontalPadding,
-                                right: horizontalPadding,
-                                bottom: 10,
-                                top: 5,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      top: verticalPadding,
+                      bottom: verticalPadding,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Choose upto $maxSelectToClose $title",
+                            style: context.appTextStyle.sheetHeader,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap:
+                              () => Navigator.pop<List<T>>(
+                                context,
+                                ref.read(multiSelectProvider),
                               ),
-                              child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Wrap(
-                                  spacing: 10,
-                                  runSpacing: 14,
-                                  alignment: WrapAlignment.start,
-                                  crossAxisAlignment: WrapCrossAlignment.start,
-                                  children:
-                                      options.map((option) {
-                                        final isSelected = seletedOptions
-                                            .contains(option);
-                                        return GestureDetector(
-                                          onTap: () {
-                                            // onSelect(option);
-                                            toggleSelect(ref, option);
-                                            //   Navigator.pop(context);
-                                          },
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                              horizontal: 18,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  isSelected
-                                                      ? context.colorExt.button
-                                                      : context
-                                                          .colorExt
-                                                          .surface,
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                // Radio<T>(
-                                                //   value: option,
-                                                //   groupValue:
-                                                //       seletedOptions.contains(
-                                                //             option,
-                                                //           )
-                                                //           ? option
-                                                //           : null,
-                                                //   onChanged: (_) {
-                                                //     toggleSelect(ref, option);
-                                                //   },
-                                                //   fillColor:
-                                                //       WidgetStatePropertyAll(
-                                                //         isSelected
-                                                //             ? context
-                                                //                 .colorExt
-                                                //                 .textPrimary
-                                                //             : context
-                                                //                 .colorExt
-                                                //                 .surface,
-                                                //       ),
-                                                // ),
-                                                Flexible(
-                                                  child: Text(
-                                                    optionToString(option),
-                                                    style: context
-                                                        .appTextStyle
-                                                        .text
-                                                        .copyWith(
-                                                          color:
-                                                              isSelected
-                                                                  ? context
-                                                                      .colorExt
-                                                                      .buttonText
-                                                                  : null,
-                                                        ),
+                          child: Icon(
+                            Icons.close,
+                            color: context.colorExt.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  options.isEmpty && emptyOptionHint != null
+                      ? Text(
+                        emptyOptionHint,
+                        style: context.appTextStyle.textSmall,
+                      )
+                      : Consumer(
+                        builder: (context, ref, child) {
+                          final seletedOptions = ref.watch(multiSelectProvider);
+                          return Flexible(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: horizontalPadding,
+                                  right: horizontalPadding,
+                                  bottom: 10,
+                                  top: 5,
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Wrap(
+                                    spacing: 10,
+                                    runSpacing: 14,
+                                    alignment: WrapAlignment.start,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.start,
+                                    children:
+                                        options.map((option) {
+                                          final isSelected = seletedOptions
+                                              .contains(option);
+                                          return GestureDetector(
+                                            onTap: () {
+                                              // onSelect(option);
+                                              toggleSelect(ref, option);
+                                              //   Navigator.pop(context);
+                                            },
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                    horizontal: 18,
                                                   ),
-                                                ),
-                                              ],
+                                              decoration: BoxDecoration(
+                                                color:
+                                                    isSelected
+                                                        ? context
+                                                            .colorExt
+                                                            .button
+                                                        : context
+                                                            .colorExt
+                                                            .surface,
+                                                borderRadius:
+                                                    BorderRadius.circular(100),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // Radio<T>(
+                                                  //   value: option,
+                                                  //   groupValue:
+                                                  //       seletedOptions.contains(
+                                                  //             option,
+                                                  //           )
+                                                  //           ? option
+                                                  //           : null,
+                                                  //   onChanged: (_) {
+                                                  //     toggleSelect(ref, option);
+                                                  //   },
+                                                  //   fillColor:
+                                                  //       WidgetStatePropertyAll(
+                                                  //         isSelected
+                                                  //             ? context
+                                                  //                 .colorExt
+                                                  //                 .textPrimary
+                                                  //             : context
+                                                  //                 .colorExt
+                                                  //                 .surface,
+                                                  //       ),
+                                                  // ),
+                                                  Flexible(
+                                                    child: Text(
+                                                      optionToString(option),
+                                                      style: context
+                                                          .appTextStyle
+                                                          .text
+                                                          .copyWith(
+                                                            color:
+                                                                isSelected
+                                                                    ? context
+                                                                        .colorExt
+                                                                        .buttonText
+                                                                    : null,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      }).toList(),
+                                          );
+                                        }).toList(),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                SizedBox(height: verticalPadding),
-              ],
+                          );
+                        },
+                      ),
+                  SizedBox(height: verticalPadding),
+                ],
+              ),
             ),
           ),
         ),
@@ -803,165 +829,168 @@ void _showOptionPopupWithSearch<T>(
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (context) {
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
-        child: GestureDetector(
-          onTap: () {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.colorExt.sheet,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(30),
-              ),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    top: verticalPadding,
-                    bottom: verticalPadding,
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "Choose a $title",
-                          style: context.appTextStyle.sheetHeader,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Icon(
-                          Icons.close,
-                          color: context.colorExt.textPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
+      return SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: screenHeight * 0.8),
+          child: GestureDetector(
+            onTap: () {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: context.colorExt.sheet,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(30),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: horizontalPadding,
-                    right: horizontalPadding,
-                    bottom: verticalPadding,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      top: verticalPadding,
+                      bottom: verticalPadding,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "Choose a $title",
+                            style: context.appTextStyle.sheetHeader,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Icon(
+                            Icons.close,
+                            color: context.colorExt.textPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  child: SizedBox(
-                    height: 45,
-                    child: TextField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        // Update the search text provider when text changes
-                        ref.read(searchTextProvider.notifier).state = value;
-                      },
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                        ),
-                        hintText: "Search",
-                        hintStyle: context.appTextStyle.text.copyWith(
-                          color: context.colorExt.textHint.withValues(
-                            // alpha: 0.7,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: horizontalPadding,
+                      right: horizontalPadding,
+                      bottom: verticalPadding,
+                    ),
+                    child: SizedBox(
+                      height: 45,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) {
+                          // Update the search text provider when text changes
+                          ref.read(searchTextProvider.notifier).state = value;
+                        },
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
                           ),
-                        ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 13,
-                          ),
-                          child: SvgPicture.asset(
-                            Assets.svgs.icSearch,
-                            height: 5,
-                            width: 5,
-                            colorFilter: ColorFilter.mode(
-                              context.colorExt.textHint,
-                              BlendMode.srcIn,
+                          hintText: "Search",
+                          hintStyle: context.appTextStyle.text.copyWith(
+                            color: context.colorExt.textHint.withValues(
+                              // alpha: 0.7,
                             ),
                           ),
-                        ),
-                        filled: true,
-                        fillColor: context.colorExt.surface,
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(60),
-                          borderSide: BorderSide.none,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF47C8FC),
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 13,
+                            ),
+                            child: SvgPicture.asset(
+                              Assets.svgs.icSearch,
+                              height: 5,
+                              width: 5,
+                              colorFilter: ColorFilter.mode(
+                                context.colorExt.textHint,
+                                BlendMode.srcIn,
+                              ),
+                            ),
+                          ),
+                          filled: true,
+                          fillColor: context.colorExt.surface,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(60),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF47C8FC),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Consumer(
-                  builder: (context, ref, child) {
-                    final filteredOption = ref.watch(filteredOptionsProvider);
-                    return Flexible(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: horizontalPadding,
-                          right: horizontalPadding,
-                          bottom: 10,
-                          top: 5,
-                        ),
-                        child: ListView.builder(
-                          // spacing: 10,
-                          // runSpacing: 14,
-                          // alignment: WrapAlignment.start,
-                          // crossAxisAlignment: WrapCrossAlignment.start,
-                          // children:
-                          itemCount: filteredOption.length,
-                          itemBuilder: (context, index) {
-                            bool isSelected = filteredOption[index] == selected;
-                            return GestureDetector(
-                              onTap: () {
-                                onSelect(filteredOption[index]);
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 18,
-                                ),
-                                decoration: BoxDecoration(
-                                  color:
-                                      isSelected
-                                          ? context.colorExt.primary
-                                          : null,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      width: 1,
-                                      color: context.colorExt.surface,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final filteredOption = ref.watch(filteredOptionsProvider);
+                      return Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: horizontalPadding,
+                            right: horizontalPadding,
+                            bottom: 10,
+                            top: 5,
+                          ),
+                          child: ListView.builder(
+                            // spacing: 10,
+                            // runSpacing: 14,
+                            // alignment: WrapAlignment.start,
+                            // crossAxisAlignment: WrapCrossAlignment.start,
+                            // children:
+                            itemCount: filteredOption.length,
+                            itemBuilder: (context, index) {
+                              bool isSelected =
+                                  filteredOption[index] == selected;
+                              return GestureDetector(
+                                onTap: () {
+                                  onSelect(filteredOption[index]);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 18,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        isSelected
+                                            ? context.colorExt.primary
+                                            : null,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        width: 1,
+                                        color: context.colorExt.surface,
+                                      ),
                                     ),
                                   ),
+                                  child: Text(
+                                    optionToString(filteredOption[index]),
+                                    style: context.appTextStyle.textSmall
+                                        .copyWith(
+                                          color:
+                                              isSelected
+                                                  ? context.colorExt.buttonText
+                                                  : null,
+                                        ),
+                                  ),
                                 ),
-                                child: Text(
-                                  optionToString(filteredOption[index]),
-                                  style: context.appTextStyle.textSmall
-                                      .copyWith(
-                                        color:
-                                            isSelected
-                                                ? context.colorExt.buttonText
-                                                : null,
-                                      ),
-                                ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

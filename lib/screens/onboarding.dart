@@ -55,117 +55,123 @@ class _OnboardingState extends ConsumerState<Onboarding> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-            right: 40,
-            bottom: 400,
-            child: Assets.images.bgGradLarge.image(),
-          ),
-          Positioned(
-            left: 40,
-            top: 300,
-            child: Assets.images.bgGradSmall.image(),
-          ),
-          Transform.translate(
-            offset: const Offset(0, -130),
-            child: Transform.rotate(angle: pi / 12.0, child: const ImageGrid()),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.black87,
-                      Colors.transparent,
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Positioned(
+              right: 40,
+              bottom: 400,
+              child: Assets.images.bgGradLarge.image(),
+            ),
+            Positioned(
+              left: 40,
+              top: 300,
+              child: Assets.images.bgGradSmall.image(),
+            ),
+            Transform.translate(
+              offset: const Offset(0, -130),
+              child: Transform.rotate(
+                angle: pi / 12.0,
+                child: const ImageGrid(),
+              ),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.black87,
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                  ),
+                  height: 170,
+                  child: PageView(
+                    controller: _pageController,
+                    scrollDirection: Axis.horizontal,
+                    physics: const NeverScrollableScrollPhysics(),
+
+                    onPageChanged: (index) {
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                    },
+                    children: const [
+                      TextContainer(
+                        title: "Endless Possibilities",
+                        subTitle:
+                            "Find solace in the infinite possibilities of AI\na companion who listens, responds, and evolves with you",
+                      ),
+                      TextContainer(
+                        title: "Infinite Fantasy",
+                        subTitle:
+                            "Enter a realm where imagination has no limits—your dreams, your desires, your rules",
+                      ),
+                      TextContainer(
+                        title: "Emotional Freedom",
+                        subTitle:
+                            "Build a world where emotions are not just felt but understood, where your deepest desires become real",
+                      ),
                     ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
                   ),
                 ),
-                height: 170,
-                child: PageView(
-                  controller: _pageController,
-                  scrollDirection: Axis.horizontal,
-                  physics: const NeverScrollableScrollPhysics(),
-
-                  onPageChanged: (index) {
-                    setState(() {
-                      selectedIndex = index;
-                    });
-                  },
-                  children: const [
-                    TextContainer(
-                      title: "Endless Possibilities",
-                      subTitle:
-                          "Find solace in the infinite possibilities of AI\na companion who listens, responds, and evolves with you",
-                    ),
-                    TextContainer(
-                      title: "Infinite Fantasy",
-                      subTitle:
-                          "Enter a realm where imagination has no limits—your dreams, your desires, your rules",
-                    ),
-                    TextContainer(
-                      title: "Emotional Freedom",
-                      subTitle:
-                          "Build a world where emotions are not just felt but understood, where your deepest desires become real",
-                    ),
-                  ],
-                ),
-              ),
-              20.ph,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(3, (index) {
-                  bool isSelected = selectedIndex == index;
-                  return GestureDetector(
-                    onTap: () {
-                      _pageController.animateToPage(
-                        index,
+                20.ph,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (index) {
+                    bool isSelected = selectedIndex == index;
+                    return GestureDetector(
+                      onTap: () {
+                        _pageController.animateToPage(
+                          index,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.ease,
+                        );
+                      },
+                      child: AnimatedContainer(
+                        width: isSelected ? 30 : 8,
+                        height: 8,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: isSelected ? 6 : 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected
+                                  ? const Color(0xFF242424)
+                                  : Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(40),
+                        ),
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.ease,
-                      );
-                    },
-                    child: AnimatedContainer(
-                      width: isSelected ? 30 : 8,
-                      height: 8,
-                      margin: EdgeInsets.symmetric(
-                        horizontal: isSelected ? 6 : 3,
                       ),
-                      decoration: BoxDecoration(
-                        color:
-                            isSelected
-                                ? const Color(0xFF242424)
-                                : Colors.grey.shade400,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.ease,
-                    ),
-                  );
-                }),
-              ),
-              30.ph,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: GradientButton(
-                  title: "Get started",
-                  onTap: () {
-                    ref
-                        .read(hiveServiceProvider.notifier)
-                        .setOnboardingValue(value: true);
-                    context.nav.pushReplacementNamed(Routes.login);
-                  },
+                    );
+                  }),
                 ),
-              ),
-              20.ph,
-            ],
-          ),
-        ],
+                30.ph,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: GradientButton(
+                    title: "Get started",
+                    onTap: () {
+                      ref
+                          .read(hiveServiceProvider.notifier)
+                          .setOnboardingValue(value: true);
+                      context.nav.pushReplacementNamed(Routes.login);
+                    },
+                  ),
+                ),
+                20.ph,
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
