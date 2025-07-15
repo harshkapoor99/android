@@ -4,6 +4,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/hive_contants.dart';
 import 'package:guftagu_mobile/configs/theme.dart';
+import 'package:guftagu_mobile/gen/l10n/app_localizations.gen.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -35,14 +36,28 @@ class MyApp extends StatelessWidget {
             AppHSC.isDarkTheme,
             defaultValue: true,
           );
-          // final selectedLocal = appSettingsBox.get(AppHSC.appLocal) as String?;
-          // if (selectedLocal == null) {
-          //   appSettingsBox.put(AppHSC.appLocal, 'en');
-          // }
+          final selectedLocal = appSettingsBox.get(AppHSC.appLocal) as String?;
+          if (selectedLocal == null) {
+            appSettingsBox.put(AppHSC.appLocal, 'en');
+          }
           return MaterialApp(
             navigatorKey: AppConstants.navigatorKey,
             scaffoldMessengerKey: AppConstants.snackbarKey,
             title: 'Guftagu',
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: Locale(selectedLocal ?? 'en'),
+            localeResolutionCallback: (deviceLocal, supportedLocales) {
+              if (selectedLocal == '') {
+                appSettingsBox.put(AppHSC.appLocal, deviceLocal?.languageCode);
+              }
+              for (final locale in supportedLocales) {
+                if (locale.languageCode == deviceLocal!.languageCode) {
+                  return deviceLocal;
+                }
+              }
+              return supportedLocales.first;
+            },
             themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
             theme: getAppTheme(context: context, isDarkTheme: false),
             darkTheme: getAppTheme(context: context, isDarkTheme: true),
