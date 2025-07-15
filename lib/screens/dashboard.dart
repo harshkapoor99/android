@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/components/call_indicator.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -59,14 +58,7 @@ class DashboardScreen extends ConsumerWidget {
           searchController: ref.read(myAiProvider).searchController,
           onNotificationPressed: () {},
         ),
-        body: Column(
-          children: [
-            const CallIndicator(),
-            Expanded(
-              child: IndexedStack(index: currentIndex, children: _screens),
-            ),
-          ],
-        ),
+        body: IndexedStack(index: currentIndex, children: _screens),
 
         // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(

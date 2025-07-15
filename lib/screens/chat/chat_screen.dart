@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:guftagu_mobile/components/call_indicator.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
 import 'package:guftagu_mobile/components/chat_bubble_call_message.dart';
 import 'package:guftagu_mobile/components/chat_bubble_file.dart';
@@ -237,7 +236,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             onTap: () => widget._focusNodes.unfocus(),
             child: Column(
               children: [
-                const CallIndicator(),
+                // const CallIndicator(),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child:
