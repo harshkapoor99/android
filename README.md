@@ -6,13 +6,13 @@ The Guftagu mobile application project in flutter
 
 - [x] English
 - [x] Hindi
-- [ ] Bengali
+- [x] Bengali
 - [ ] Marathi
 - [ ] Tamil
 - [ ] Telugu
 - [ ] Gujarati
 - [ ] Kannada
-- [ ] Odia
+- [x] Odia
 - [ ] Urdu
 - [ ] Malayalam
 - [ ] Spanish

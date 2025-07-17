@@ -36,7 +36,6 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.sizeOf(context).width / 2;
     String language = Hive.box(
       AppHSC.appSettingsBox,
     ).get(AppHSC.appLocal, defaultValue: 'en');
