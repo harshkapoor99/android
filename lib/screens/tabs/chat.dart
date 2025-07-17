@@ -67,7 +67,10 @@ class _ChatTabState extends ConsumerState<ChatTab> {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text("Chats", style: context.appTextStyle.textSemibold),
+                child: Text(
+                  context.l.chats,
+                  style: context.appTextStyle.textSemibold,
+                ),
               ),
             ),
             Expanded(

@@ -69,7 +69,7 @@ class OtpScreen extends ConsumerWidget {
                     Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'OTP Verify',
+                        context.l.otpVerify,
                         style: AppTextStyle(context).title,
                       ),
                     ),
@@ -89,7 +89,8 @@ class OtpScreen extends ConsumerWidget {
                             children: [
                               TextSpan(
                                 text:
-                                    "We've sent a one-time password (OTP) to your ${provider.isEmail ? "email" : "phonenumber"} ",
+                                    context.l.weSentOtp +
+                                    "${provider.isEmail ? context.l.email : context.l.phonenumber} ",
                                 style: context.appTextStyle.textSmall,
                               ),
                               TextSpan(
@@ -100,7 +101,7 @@ class OtpScreen extends ConsumerWidget {
                                 ),
                               ),
                               TextSpan(
-                                text: ". Please enter it below to continue.",
+                                text: context.l.enterOtp,
                                 style: context.appTextStyle.textSmall,
                               ),
                             ],
@@ -119,7 +120,7 @@ class OtpScreen extends ConsumerWidget {
                     30.ph,
 
                     GradientButton(
-                      title: "verify",
+                      title: context.l.bVerify,
                       showLoading: provider.isLoading,
                       disabled: !provider.canVerify,
                       onTap: () => verify(context, ref),
@@ -134,27 +135,24 @@ class OtpScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: RichText(
                           textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            style: TextStyle(
+                          text: TextSpan(
+                            style: const TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey,
                               fontFamily: 'Arial', // Change as needed
                             ),
                             children: [
+                              TextSpan(text: context.l.acceptOur),
                               TextSpan(
-                                text:
-                                    "By continuing you're indicating that you accept\nour ",
-                              ),
-                              TextSpan(
-                                text: "Terms of Use",
-                                style: TextStyle(
+                                text: context.l.termOfPolicy,
+                                style: const TextStyle(
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
-                              TextSpan(text: " and our "),
+                              TextSpan(text: context.l.andOur),
                               TextSpan(
-                                text: "Privacy Policy",
-                                style: TextStyle(
+                                text: context.l.privacyPolicy,
+                                style: const TextStyle(
                                   decoration: TextDecoration.underline,
                                 ),
                               ),

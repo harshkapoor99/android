@@ -150,7 +150,7 @@ class UserProfileScreen extends ConsumerWidget {
                                           }
                                           : null,
                                   child: Text(
-                                    'Save',
+                                    context.l.save,
                                     style: context.appTextStyle.text.copyWith(
                                       color:
                                           hasChanges
@@ -219,7 +219,7 @@ class UserProfileScreen extends ConsumerWidget {
                             padding: EdgeInsets.zero,
                             constraints: const BoxConstraints(),
                             splashRadius: 24,
-                            tooltip: 'Change Profile Picture',
+                            tooltip: context.l.changeProfilePicture,
                           ),
                         ),
                       ],
@@ -229,13 +229,13 @@ class UserProfileScreen extends ConsumerWidget {
 
                   LabeledTextField(
                     controller: profileState.nameController,
-                    label: 'Name',
-                    hintText: "Name",
+                    label: context.l.name,
+                    hintText: context.l.name,
                   ),
                   26.ph,
                   // Age Dropdown
                   DatePickerField(
-                    label: 'Date Of Birth',
+                    label: context.l.dateOfBirth,
                     selectedDate: profileState.dob,
                     onTap: () async {
                       final DateTime? picked = await showDatePicker(
@@ -273,7 +273,7 @@ class UserProfileScreen extends ConsumerWidget {
                     },
                   ),
                   DropdownField(
-                    label: 'Gender',
+                    label: context.l.gender,
                     value: profileState.gender,
                     items: profileState.genders,
                     onChanged: (value) {
@@ -283,14 +283,14 @@ class UserProfileScreen extends ConsumerWidget {
                   ),
                   26.ph,
                   Text(
-                    "Country",
+                    context.l.country,
                     style: context.appTextStyle.characterGenLabel,
                   ),
                   16.ph,
                   buildOptionTile<Country>(
                     context: context,
                     ref: ref,
-                    title: "Country",
+                    title: context.l.country,
                     options: masterData.countries,
                     optionToString: (c) => c.countryName,
                     onSelect:
@@ -299,7 +299,10 @@ class UserProfileScreen extends ConsumerWidget {
                     selectedValue: profileState.country?.countryName,
                   ),
                   26.ph,
-                  Text("City", style: context.appTextStyle.characterGenLabel),
+                  Text(
+                    context.l.city,
+                    style: context.appTextStyle.characterGenLabel,
+                  ),
                   16.ph,
                   Consumer(
                     builder: (context, ref, child) {
@@ -317,7 +320,7 @@ class UserProfileScreen extends ConsumerWidget {
                       return buildOptionTile<City>(
                         context: context,
                         ref: ref,
-                        title: "City",
+                        title: context.l.city,
                         showLoading: masterData.isLoading,
                         options: masterDataCities,
                         optionToString: (c) => c.cityName,
@@ -333,7 +336,7 @@ class UserProfileScreen extends ConsumerWidget {
                   26.ph,
 
                   VerificationSection(
-                    label: "Email",
+                    label: context.l.email,
                     controller: profileState.emailController,
                     otpController: profileState.emailOtpController,
                     keyboardType: TextInputType.emailAddress,
@@ -343,10 +346,10 @@ class UserProfileScreen extends ConsumerWidget {
                     isLoading: profileState.isEmailLoading,
                     onSendOtp: () => profileNotifier.sendOtp(true),
                     onVerifyOtp: (otp) => profileNotifier.verifyOtp(true, otp),
-                    hintText: "Enter your email",
+                    hintText: context.l.enterHint,
                   ),
                   VerificationSection(
-                    label: "Phone",
+                    label: context.l.phone,
                     controller: profileState.phoneController,
                     otpController: profileState.phoneOtpController,
                     keyboardType: TextInputType.phone,
@@ -356,7 +359,7 @@ class UserProfileScreen extends ConsumerWidget {
                     isLoading: profileState.isPhoneLoading,
                     onSendOtp: () => profileNotifier.sendOtp(false),
                     onVerifyOtp: (otp) => profileNotifier.verifyOtp(false, otp),
-                    hintText: "Enter your phone",
+                    hintText: context.l.phoneHint,
                     prefixText: "+91",
                     maxLength: 10,
                   ),

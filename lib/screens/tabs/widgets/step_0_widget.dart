@@ -53,13 +53,13 @@ class Step0Widget extends ConsumerWidget {
           children: [
             LabeledTextField(
               controller: provider.characterNameController,
-              label: 'Character Name',
+              label: context.l.characterName,
               hintText: 'Name',
             ),
             22.ph,
             LabeledTextField(
               controller: provider.ageController,
-              label: 'Age (years - minimum 18+)',
+              label: context.l.characterAge,
               hintText: 'Eg. 26',
               keyboardType: TextInputType.number,
               // maxLength: 2,
@@ -70,7 +70,7 @@ class Step0Widget extends ConsumerWidget {
               ],
             ),
             22.ph,
-            const LabelText("Gender"),
+            LabelText(context.l.characterGender),
             ImageOptionSelector(
               options: genderOptions,
               selected: provider.gender ?? "",
@@ -82,7 +82,7 @@ class Step0Widget extends ConsumerWidget {
               },
             ),
             22.ph,
-            const LabelText("Sexual Orientation"),
+            LabelText(context.l.characterSexualOrientation),
             Wrap(
               spacing: 12,
               runSpacing: 12,

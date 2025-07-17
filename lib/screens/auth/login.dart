@@ -78,7 +78,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Align(
                         alignment: Alignment.center,
                         child: Text(
-                          isLogin ? 'Log In' : 'Sign Up',
+                          isLogin ? context.l.login : context.l.signUp,
                           style: AppTextStyle(context).title,
                         ),
                       ),
@@ -87,7 +87,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(
-                          "Email / Mobile no.",
+                          context.l.emailMobile,
                           style: AppTextStyle(context).labelText,
                         ),
                       ),
@@ -136,7 +136,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Haven't registered yet? ",
+                            context.l.notRegistered,
                             style: AppTextStyle(context).textSmall,
                           ),
                           GestureDetector(
@@ -144,7 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             // () =>
                             //     context.nav.pushReplacementNamed(Routes.signup),
                             child: Text(
-                              !isLogin ? "Log in!" : "Sign up!",
+                              !isLogin ? context.l.loginEx : context.l.signUpEx,
                               style: AppTextStyle(context).textSmall.copyWith(
                                 color: context.colorExt.primary,
                               ),

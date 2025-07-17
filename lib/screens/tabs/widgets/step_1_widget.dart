@@ -5,32 +5,36 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
 import 'package:guftagu_mobile/screens/tabs/widgets/preference_picker.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import '../../../components/image_option_selector.dart';
 import '../../../providers/character_creation_provider.dart';
 
 class Step1Widget extends ConsumerWidget {
-  Step1Widget({super.key});
-
-  final List<ImageOptions> styleOptions = [
-    ImageOptions(
-      label: 'Realistic',
-      image: Assets.images.realistic,
-      value: 'realistic',
-    ),
-    ImageOptions(label: 'Animated', image: Assets.images.anime, value: 'anime'),
-  ];
+  const Step1Widget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(characterCreationProvider);
     final masterData = ref.watch(masterDataProvider);
+    final List<ImageOptions> styleOptions = [
+      ImageOptions(
+        label: context.l.characterImageRealistic,
+        image: Assets.images.realistic,
+        value: 'realistic',
+      ),
+      ImageOptions(
+        label: context.l.characterImageAnimated,
+        image: Assets.images.anime,
+        value: 'anime',
+      ),
+    ];
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 28),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const LabelText('Character Style'),
+          LabelText(context.l.characterStyle),
           ImageOptionSelector(
             options: styleOptions,
             selected: provider.style ?? "",
@@ -40,7 +44,7 @@ class Step1Widget extends ConsumerWidget {
                     .updateWith(style: style),
           ),
           22.ph,
-          const LabelText("Companion's Country"),
+          LabelText(context.l.characterCountry),
           buildOptionTile<Country>(
             context: context,
             ref: ref,
@@ -54,7 +58,7 @@ class Step1Widget extends ConsumerWidget {
             selected: provider.country,
           ),
           22.ph,
-          const LabelText("Companion's City"),
+          LabelText(context.l.characterCity),
           Consumer(
             builder: (context, ref, child) {
               final masterData = ref.watch(masterDataProvider);
@@ -81,7 +85,7 @@ class Step1Widget extends ConsumerWidget {
             },
           ),
           22.ph,
-          const LabelText("Companion's  Language"),
+          LabelText(context.l.characterLanguage),
           buildOptionTile<Language>(
             context: context,
             ref: ref,
@@ -95,7 +99,7 @@ class Step1Widget extends ConsumerWidget {
             selected: provider.language,
           ),
           22.ph,
-          const LabelText("Companion's  Voice"),
+          LabelText(context.l.characterVoice),
           buildOptionTile<Voice>(
             context: context,
             ref: ref,

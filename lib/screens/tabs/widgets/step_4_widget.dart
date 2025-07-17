@@ -20,8 +20,8 @@ class Step4Widget extends ConsumerWidget {
                 child: Column(
                   children: [
                     Lottie.asset(Assets.animations.logo),
-                    const Text(
-                      "Generating Character...",
+                    Text(
+                      context.l.characterGenerating,
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -64,13 +64,9 @@ class Step4Widget extends ConsumerWidget {
                             ),
                           ),
                           10.ph,
-                          const Text(
-                            'Here is your Chat Partner',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                            ),
+                          Text(
+                            context.l.chatPartner,
+                            style: context.appTextStyle.text,
                           ),
                         ],
                       ),
@@ -78,7 +74,7 @@ class Step4Widget extends ConsumerWidget {
                   26.ph,
                   Text(
                     // '${proivider.refImageUrl.hasValue ? "Or" : ""} Choose from images',
-                    'Choose from images',
+                    context.l.chooseImage,
                     style: context.appTextStyle.text.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,

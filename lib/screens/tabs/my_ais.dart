@@ -48,7 +48,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
               Icons.delete_rounded,
               color: context.colorExt.textPrimary,
             ),
-            title: Text("Delete", style: context.appTextStyle.text),
+            title: Text(context.l.bDelete, style: context.appTextStyle.text),
           ),
         ),
       ],
@@ -86,10 +86,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                 height: 200,
                 animate: false,
               ),
-              const Text(
-                "Gathering your characters...",
-                textAlign: TextAlign.center,
-              ),
+              Text(context.l.gatheringCharacters, textAlign: TextAlign.center),
             ],
           ),
         )
@@ -137,13 +134,13 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                             ),
                             50.ph,
                             Text(
-                              "Create your very own Character AI and bring your ideas to life.",
+                              context.l.createOwnCharacter,
                               textAlign: TextAlign.center,
                               style: context.appTextStyle.subTitle,
                             ),
                             30.ph,
                             Text(
-                              "Discover the joy of creation in the create tab.",
+                              context.l.discoverJoy,
                               textAlign: TextAlign.center,
                               style: context.appTextStyle.text,
                             ),
@@ -175,7 +172,7 @@ class _MyAisTabState extends ConsumerState<MyAisTab> {
                         children: [
                           const SizedBox(height: 26),
                           Text(
-                            'My AIs',
+                            context.l.tabMyAIs,
                             style: context.appTextStyle.sheetHeader,
                           ),
                           const SizedBox(height: 18),
