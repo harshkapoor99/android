@@ -29,7 +29,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
           children: [
             20.ph,
             Text(
-              "Select your preferred\ncharacter types",
+              context.l.selectCharacterType,
               textAlign: TextAlign.center,
               style: AppTextStyle(
                 context,
@@ -37,7 +37,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
             ),
             10.ph,
             Text(
-              "Tap on 4 - 5 of your favorite categories",
+              context.l.tapOnCharacterType,
               style: AppTextStyle(context).textSmall.copyWith(fontSize: 12),
             ),
             20.ph,
@@ -120,7 +120,7 @@ class CharacterSelectionScreen extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: GradientButton(
-                title: "done",
+                title: context.l.bDone,
                 disabled: ref.watch(userInterestButtonStatusProvider),
                 showLoading: ref
                     .watch(userInterestProvider)

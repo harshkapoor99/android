@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:audio_waveforms/audio_waveforms.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_recorder/flutter_recorder.dart';
-import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/models/character.dart';
-import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_audio.dart';
@@ -15,6 +14,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/call_provider.gen.dart';
+
+const double minumumDecibal = -27.0;
 
 @Riverpod(keepAlive: true)
 // @riverpod
@@ -33,13 +34,20 @@ class Call extends _$Call {
         state.playerStatus = PlayerStatus.paused;
       } else if (playerState == PlayerState.stopped) {
         state.playerStatus = PlayerStatus.stopped;
+        // Start recording only after player has stopped
+        if (state.isCallStarted &&
+            state.recordPath != null &&
+            !state.inFlight) {
+          // state.recorder.startRecording(completeFilePath: state.recordPath!);
+          // state.isRecording = true;
+          // state = state._updateWith(state);
+        }
       }
       state = state._updateWith(state);
     });
 
     ref.onDispose(() {
       initialState.player.dispose();
-      state = ref.refresh(callProvider);
     });
 
     return initialState;
@@ -71,8 +79,8 @@ class Call extends _$Call {
       sampleRate: sampleRate,
       channels: channels,
     );
-    state.recorder.setSilenceThresholdDb(-27);
-    state.recorder.setSilenceDuration(1);
+    state.recorder.setSilenceThresholdDb(state.minimumDecibal);
+    state.recorder.setSilenceDuration(1.5);
     state.recorder.setSecondsOfAudioToWriteBefore(0.0);
     state.recorder.setSilenceDetection(
       enable: true,
@@ -84,11 +92,23 @@ class Call extends _$Call {
         state.isSilent = isSilent;
         state.decibel = decibel;
         state = state._updateWith(state);
-        if (!state.inFlight && state.playerStatus != PlayerStatus.playing) {
+        if (!state.inFlight &&
+            state.playerStatus != PlayerStatus.playing &&
+            state.recordPath != null &&
+            state.isRecording) {
           if (isSilent) {
+            if (state.decibel != 0 && decibel < minumumDecibal) {
+              var avgDecibel = (state.minimumDecibal + decibel) / 2;
+              if (avgDecibel > minumumDecibal) {
+                state.minimumDecibal = avgDecibel;
+                state.recorder.setSilenceThresholdDb(avgDecibel);
+              }
+            }
             state.recorder.stopRecording();
+            state.isRecording = false;
             await state.player.stopPlayer();
-            // await state.player.release();ight = true;
+            // await state.player.release();
+            state.inFlight = true;
             state = state._updateWith(state);
             final response = await ref
                 .read(chatServiceProvider)
@@ -102,29 +122,11 @@ class Call extends _$Call {
                       ref.read(hiveServiceProvider.notifier).getUserId()!,
                 );
             try {
-              String replyUrl = response.data["tts_audio_url"];
-              String myText = response.data["transcription"];
-              String replyText = response.data["openai_response"];
-              final file = await downloadAssetFromUrl(replyUrl);
-              ref
-                  .read(chatProvider.notifier)
-                  .appendChat(
-                    isMe: true,
-                    type: ChatType.call,
-                    time: DateTime.now(),
-                    callMessage: myText,
-                  );
-              ref
-                  .read(chatProvider.notifier)
-                  .appendChat(
-                    isMe: false,
-                    type: ChatType.call,
-                    time: DateTime.now(),
-                    callMessage: replyText,
-                  );
+              final file = await writeToFile(response.data);
               await state.player.preparePlayer(path: file.filePath);
               state.player.setFinishMode(finishMode: FinishMode.stop);
               if (state.isCallStarted) {
+                print("Playing Audio");
                 state.player.startPlayer();
               }
             } catch (e) {
@@ -133,8 +135,14 @@ class Call extends _$Call {
               state.inFlight = false;
               state = state._updateWith(state);
             }
-          } else {
+          }
+        } else {
+          // Only start recording if player is not playing or paused
+          if (state.playerStatus == PlayerStatus.stopped &&
+              state.recordPath != null) {
             state.recorder.startRecording(completeFilePath: state.recordPath!);
+            state.isRecording = true;
+            state = state._updateWith(state);
           }
         }
       },
@@ -146,7 +154,9 @@ class Call extends _$Call {
     String filePath = '${tempDir.path}/flutter_recorder.wav';
 
     state.recordPath = filePath;
+    // Do not start recording here; it will be started after player stops
     state.recorder.startRecording(completeFilePath: filePath);
+    state.isRecording = true;
 
     state.isCallStarted = true;
     state.callStartTime = DateTime.now();
@@ -156,9 +166,15 @@ class Call extends _$Call {
   void stopCall() async {
     state.recorder.stopRecording();
     state.recorder.stop();
-    state.isCallStarted = false;
+    state.recorder.deinit();
+    state.player.stopAllPlayers();
+    state.inFlight = false;
     state.callStartTime = null;
     state = state._updateWith(state);
+    await Future.delayed(Durations.extralong4 * 1000, () {
+      state.isCallStarted = false;
+      state._updateWith(state);
+    });
   }
 }
 
@@ -169,16 +185,19 @@ class CallState {
     this.inFlight = false,
     this.isSpeakerOn = false,
     this.isSilent = true,
+    this.isRecording = false,
     this.character,
     this.isCallStarted = false,
     this.recordPath,
     this.decibel = 0,
+    this.minimumDecibal = -27,
     this.playerStatus = PlayerStatus.idle,
     this.callStartTime,
   });
 
-  bool isSpeakerOn, isCallStarted, isSilent, inFlight;
+  bool isSpeakerOn, isCallStarted, isSilent, inFlight, isRecording;
   double decibel;
+  double minimumDecibal;
   String? recordPath;
   Character? character;
   final Recorder recorder;
@@ -192,9 +211,11 @@ class CallState {
       player: state.player,
       inFlight: state.inFlight,
       isSpeakerOn: state.isSpeakerOn,
+      isRecording: state.isRecording,
       isCallStarted: state.isCallStarted,
       character: state.character,
       decibel: state.decibel,
+      minimumDecibal: state.minimumDecibal,
       isSilent: state.isSilent,
       recordPath: state.recordPath,
       playerStatus: state.playerStatus,

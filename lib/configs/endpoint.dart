@@ -84,7 +84,7 @@ enum RemoteEndpoint {
   audioMessage(path: "chatgenerationservice/character/speechtotextgeneration/"),
 
   // call
-  voiceCall(path: "chatgenerationservice/character/voicecalling/"),
+  voiceCall(path: "chatgenerationservice/character/voicecall/"),
 
   // File/Image
   fileMessage(path: "chatgenerationservice/character/fileuploadinchat/"),

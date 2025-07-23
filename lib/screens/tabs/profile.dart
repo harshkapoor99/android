@@ -5,12 +5,14 @@ import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/profile_tile.dart';
 import 'package:guftagu_mobile/configs/hive_contants.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/gen/l10n/app_localizations.gen.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/get_locale_name.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class ProfileTab extends ConsumerStatefulWidget {
@@ -23,8 +25,20 @@ class ProfileTab extends ConsumerStatefulWidget {
 class _ProfileTabState extends ConsumerState<ProfileTab> {
   bool isSwitched = false;
 
+  final GlobalKey _menuKey = GlobalKey();
+
+  void _openPopupMenu() {
+    dynamic state = _menuKey.currentState;
+    if (state is PopupMenuButtonState) {
+      state.showButtonMenu();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String language = Hive.box(
+      AppHSC.appSettingsBox,
+    ).get(AppHSC.appLocal, defaultValue: 'en');
     return SafeArea(
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
@@ -93,7 +107,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 context.nav.pushNamed(Routes.userProfile);
               },
               icon: 'assets/icons/profile01.svg',
-              title: 'Profile setting',
+              title: context.l.profileSettings,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
@@ -102,7 +116,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ),
             ProfileTile(
               icon: 'assets/icons/profile02.svg',
-              title: 'Notification',
+              title: context.l.profileNotification,
               trailing: Switch(
                 value: isSwitched,
                 onChanged: (val) {
@@ -125,21 +139,48 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 }),
               ),
             ),
-            ProfileTile(
-              icon: 'assets/icons/profile03.svg',
-              title: 'Language',
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text('English', style: context.appTextStyle.textSmall),
-                  8.pw,
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 18,
-                    color: context.colorExt.textPrimary,
-                  ),
-                ],
+            PopupMenuButton(
+              key: _menuKey,
+              position: PopupMenuPosition.over,
+              offset: const Offset(1, 25),
+              color: context.colorExt.surface,
+              itemBuilder:
+                  (context) =>
+                      AppLocalizations.supportedLocales
+                          .map(
+                            (e) => PopupMenuItem(
+                              height: 50,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              value: e.languageCode,
+                              child: Text(getLocaleName(e.languageCode)),
+                            ),
+                          )
+                          .toList(),
+              child: ProfileTile(
+                icon: 'assets/icons/profile03.svg',
+                title: context.l.profileLanguage,
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      getLocaleName(language),
+                      style: context.appTextStyle.textSmall,
+                    ),
+                    8.pw,
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 18,
+                      color: context.colorExt.textPrimary,
+                    ),
+                  ],
+                ),
+                onTap: _openPopupMenu,
               ),
+              onSelected: (value) {
+                Hive.box(AppHSC.appSettingsBox).put(AppHSC.appLocal, value);
+              },
             ),
             ValueListenableBuilder(
               valueListenable: Hive.box(AppHSC.appSettingsBox).listenable(),
@@ -150,7 +191,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
                 );
                 return ProfileTile(
                   icon: 'assets/icons/profile04.svg',
-                  title: 'Theme',
+                  title: context.l.profileTheme,
                   trailing: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
@@ -205,7 +246,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ),
             ProfileTile(
               icon: 'assets/icons/profile05.svg',
-              title: 'Help',
+              title: context.l.profileHelp,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
@@ -214,7 +255,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
             ),
             ProfileTile(
               icon: 'assets/icons/profile06.svg',
-              title: 'Refer a friend',
+              title: context.l.profileRefer,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
@@ -228,7 +269,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               //   context.nav.pushNamed(Routes.subscription);
               // },
               icon: 'assets/icons/profile07.svg',
-              title: 'Subscription',
+              title: context.l.profileSubscription,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,
@@ -238,7 +279,7 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
 
             ProfileTile(
               icon: 'assets/icons/profile08.svg',
-              title: 'Log out',
+              title: context.l.profileLogout,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,

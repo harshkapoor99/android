@@ -26,11 +26,11 @@ class Step2Widget extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const LabelText("What type of category fits your companion"),
+          LabelText(context.l.characterCategory),
           buildOptionTile<CharacterType>(
             context: context,
             ref: ref,
-            title: "Category",
+            title: context.l.category,
             options: ref.watch(
               masterDataProvider.select((state) => state.characterTypes),
             ),
@@ -51,11 +51,11 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          const LabelText("What's your companion's relationship to you"),
+          LabelText(context.l.characterRelationship),
           buildOptionTile<Relationship>(
             context: context,
             ref: ref,
-            title: "Relationship",
+            title: context.l.relationship,
             options: ref.watch(
               masterDataProvider.select((state) => state.relationships),
             ),
@@ -65,8 +65,8 @@ class Step2Widget extends ConsumerWidget {
             ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).characterType != null
-                    ? "No relationship found for this Category"
-                    : "Choose a category to continue",
+                    ? context.l.characterRelationshipNone
+                    : context.l.characterRelationshipChoose,
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
@@ -83,11 +83,11 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          const LabelText("What's your companion's personality type"),
+          LabelText(context.l.characterPersonality),
           buildOptionTile<Personality>(
             context: context,
             ref: ref,
-            title: "Personality",
+            title: context.l.personality,
             options: ref.watch(
               masterDataProvider.select((state) => state.personalities),
             ),
@@ -97,8 +97,8 @@ class Step2Widget extends ConsumerWidget {
             ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).relationship != null
-                    ? "No personality found for this relationship"
-                    : "Choose a relationship to continue",
+                    ? context.l.characterPersonalityNone
+                    : context.l.characterPersonalityChoose,
             onSelect:
                 (p0) => ref
                     .read(characterCreationProvider.notifier)
@@ -115,11 +115,11 @@ class Step2Widget extends ConsumerWidget {
             ),
           ),
           26.ph,
-          const LabelText("Which behaviour's match your companion"),
+          LabelText(context.l.characterBehaviour),
           buildOptionTile<Behaviour>(
             context: context,
             ref: ref,
-            title: "Behaviours",
+            title: context.l.behaviour,
             options: ref.watch(
               masterDataProvider.select((state) => state.behaviours),
             ),
@@ -129,8 +129,8 @@ class Step2Widget extends ConsumerWidget {
             ),
             emptyOptionHint:
                 ref.read(characterCreationProvider).personality != null
-                    ? "No Behaviour found for this personality"
-                    : "Choose a personality to continue",
+                    ? context.l.characterBehaviourNone
+                    : context.l.characterBehaviourChoose,
             onSelect: (p0) => {},
             onMultiSelect:
                 (p0) => ref

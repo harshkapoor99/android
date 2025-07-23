@@ -45,128 +45,129 @@ class OtpScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var provider = ref.watch(authProvider);
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Stack(
-          children: [
-            Assets.images.bgGrad.image(width: double.infinity),
-            if (context.nav.canPop())
-              BackButtonWidget(
-                onPop: ref.read(authProvider).otpControler.clear,
-              ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Spacer(),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: [
+              Assets.images.bgGrad.image(width: double.infinity),
+              if (context.nav.canPop())
+                BackButtonWidget(
+                  onPop: ref.read(authProvider).otpControler.clear,
+                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Spacer(),
 
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'OTP Verify',
-                      style: AppTextStyle(context).title,
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        context.l.otpVerify,
+                        style: AppTextStyle(context).title,
+                      ),
                     ),
-                  ),
-                  20.ph,
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
-                            fontFamily: 'Opensans', // Change as needed
-                          ),
-                          children: [
-                            TextSpan(
-                              text:
-                                  "We've sent a one-time password (OTP) to your ${provider.isEmail ? "email" : "phonenumber"} ",
-                              style: context.appTextStyle.textSmall,
+                    20.ph,
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                              fontFamily: 'Opensans', // Change as needed
                             ),
-                            TextSpan(
-                              text: provider.credentialControler.text,
-                              style: context.appTextStyle.textSmall.copyWith(
-                                fontWeight: FontWeight.w700,
-                                // color: context.colorExt.primary,
+                            children: [
+                              TextSpan(
+                                text:
+                                    context.l.weSentOtp +
+                                    "${provider.isEmail ? context.l.email : context.l.phonenumber} ",
+                                style: context.appTextStyle.textSmall,
                               ),
-                            ),
-                            TextSpan(
-                              text: ". Please enter it below to continue.",
-                              style: context.appTextStyle.textSmall,
-                            ),
-                          ],
+                              TextSpan(
+                                text: provider.credentialControler.text,
+                                style: context.appTextStyle.textSmall.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  // color: context.colorExt.primary,
+                                ),
+                              ),
+                              TextSpan(
+                                text: context.l.enterOtp,
+                                style: context.appTextStyle.textSmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  50.ph,
-                  PinPutWidget(
-                    pinCodeController: provider.otpControler,
-                    onCompleted: (pin) {},
-                    validator: (value) {
-                      return null;
-                    },
-                  ),
-                  30.ph,
+                    50.ph,
+                    PinPutWidget(
+                      pinCodeController: provider.otpControler,
+                      onCompleted: (pin) {},
+                      validator: (value) {
+                        return null;
+                      },
+                    ),
+                    30.ph,
 
-                  GradientButton(
-                    title: "verify",
-                    showLoading: provider.isLoading,
-                    disabled: !provider.canVerify,
-                    onTap: () => verify(context, ref),
-                  ),
-                  20.ph,
-                  ResendTimer(pinCodeController: provider.otpControler),
+                    GradientButton(
+                      title: context.l.bVerify,
+                      showLoading: provider.isLoading,
+                      disabled: !provider.canVerify,
+                      onTap: () => verify(context, ref),
+                    ),
+                    20.ph,
+                    ResendTimer(pinCodeController: provider.otpControler),
 
-                  const Spacer(),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: const TextSpan(
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.grey,
-                            fontFamily: 'Arial', // Change as needed
+                    const Spacer(),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                              fontFamily: 'Arial', // Change as needed
+                            ),
+                            children: [
+                              TextSpan(text: context.l.acceptOur),
+                              TextSpan(
+                                text: context.l.termOfPolicy,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                              TextSpan(text: context.l.andOur),
+                              TextSpan(
+                                text: context.l.privacyPolicy,
+                                style: const TextStyle(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ],
                           ),
-                          children: [
-                            TextSpan(
-                              text:
-                                  "By continuing you're indicating that you accept\nour ",
-                            ),
-                            TextSpan(
-                              text: "Terms of Use",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            TextSpan(text: " and our "),
-                            TextSpan(
-                              text: "Privacy Policy",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ),
-                  ),
 
-                  20.ph,
-                ],
+                    20.ph,
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

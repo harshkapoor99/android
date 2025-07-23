@@ -3,7 +3,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:guftagu_mobile/components/call_indicator.dart';
 import 'package:guftagu_mobile/components/chat_bubble_audio.dart';
 import 'package:guftagu_mobile/components/chat_bubble_call_message.dart';
 import 'package:guftagu_mobile/components/chat_bubble_file.dart';
@@ -139,105 +138,102 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ref.read(chatProvider.notifier).clearHistory();
         }
       },
-      child: SafeArea(
-        top: false,
-        child: Scaffold(
+      child: Scaffold(
+        backgroundColor: context.colorExt.background,
+        appBar: AppBar(
           backgroundColor: context.colorExt.background,
-          appBar: AppBar(
-            backgroundColor: context.colorExt.background,
-            // automaticallyImplyLeading: false,
-            titleSpacing: 0,
-            leading: IconButton(
-              splashColor: Colors.transparent,
-              icon: const Icon(Icons.chevron_left_rounded, size: 30),
-              onPressed: () {
-                context.nav.pop();
-              },
-            ),
-            title: Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    context.nav.pushNamed(Routes.characterProfile);
-                  },
-                  child: Hero(
-                    tag: "character_image",
-                    child: CircleAvatar(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(26),
+          // automaticallyImplyLeading: false,
+          titleSpacing: 0,
+          leading: IconButton(
+            splashColor: Colors.transparent,
+            icon: const Icon(Icons.chevron_left_rounded, size: 30),
+            onPressed: () {
+              context.nav.pop();
+            },
+          ),
+          title: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  context.nav.pushNamed(Routes.characterProfile);
+                },
+                child: Hero(
+                  tag: "character_image",
+                  child: CircleAvatar(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(26),
 
-                        child: NetworkImageWithPlaceholder(
-                          imageUrl: image,
-                          placeholder: SvgPicture.asset(
-                            Assets.svgs.icProfilePlaceholder,
-                          ),
-                          fit: BoxFit.cover,
-                          errorWidget: SvgPicture.asset(
-                            Assets.svgs.icProfilePlaceholder,
-                          ),
+                      child: NetworkImageWithPlaceholder(
+                        imageUrl: image,
+                        placeholder: SvgPicture.asset(
+                          Assets.svgs.icProfilePlaceholder,
+                        ),
+                        fit: BoxFit.cover,
+                        errorWidget: SvgPicture.asset(
+                          Assets.svgs.icProfilePlaceholder,
                         ),
                       ),
                     ),
                   ),
                 ),
-                10.pw,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      provider.character!.name,
-                      style: context.appTextStyle.textBold,
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 7,
-                          height: 7,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
-                            color: Colors.green,
-                          ),
+              ),
+              10.pw,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    provider.character!.name,
+                    style: context.appTextStyle.textBold,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.green,
                         ),
-                        5.pw,
-                        Text(
-                          "Online",
-                          style: context.appTextStyle.text.copyWith(
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            actionsPadding: const EdgeInsets.only(right: 10),
-            actions: [
-              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              // 5.pw,
-              // Text(
-              //   '1200',
-              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              // ),
-              // 5.pw,
-              IconButton(
-                onPressed: () {
-                  if (!ref.read(callProvider).isCallStarted) {
-                    ref
-                        .read(callProvider.notifier)
-                        .setCharacter(provider.character!);
-                  }
-                  context.nav.pushNamed(Routes.call);
-                },
-                icon: const Icon(Icons.call, color: Colors.white),
+                      ),
+                      5.pw,
+                      Text(
+                        "Online",
+                        style: context.appTextStyle.text.copyWith(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
-          body: GestureDetector(
+          actionsPadding: const EdgeInsets.only(right: 10),
+          actions: [
+            // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
+            // 5.pw,
+            // Text(
+            //   '1200',
+            //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
+            // ),
+            // 5.pw,
+            IconButton(
+              onPressed: () {
+                if (!ref.read(callProvider).isCallStarted) {
+                  ref
+                      .read(callProvider.notifier)
+                      .setCharacter(provider.character!);
+                }
+                context.nav.pushNamed(Routes.call);
+              },
+              icon: const Icon(Icons.call, color: Colors.white),
+            ),
+          ],
+        ),
+        body: SafeArea(
+          child: GestureDetector(
             onTap: () => widget._focusNodes.unfocus(),
             child: Column(
               children: [
-                const CallIndicator(),
+                // const CallIndicator(),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child:

@@ -98,291 +98,299 @@ class UserProfileScreen extends ConsumerWidget {
       ),
       body: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                10.ph,
-                Align(
-                  alignment: Alignment.centerRight,
-                  child:
-                      profileState.isLoading
-                          ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                context.colorExt.primary,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  10.ph,
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child:
+                        profileState.isLoading
+                            ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  context.colorExt.primary,
+                                ),
+                              ),
+                            )
+                            : Consumer(
+                              builder: (context, ref, child) {
+                                bool hasChanges = ref.watch(
+                                  hasUnsavedChangesProvider,
+                                );
+                                return TextButton(
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        hasChanges
+                                            ? WidgetStateProperty.all(
+                                              context.colorExt.surface,
+                                            )
+                                            : null,
+                                  ),
+                                  onPressed:
+                                      hasChanges
+                                          ? () async {
+                                            final success =
+                                                await profileNotifier
+                                                    .updateProfile();
+                                            if (success) {
+                                              AppConstants.showSnackbar(
+                                                message:
+                                                    "   'Profile updated successfully!',",
+                                                isSuccess: true,
+                                              );
+                                            }
+                                          }
+                                          : null,
+                                  child: Text(
+                                    context.l.save,
+                                    style: context.appTextStyle.text.copyWith(
+                                      color:
+                                          hasChanges
+                                              ? context.colorExt.textPrimary
+                                              : context.colorExt.textHint,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                  ),
+                  10.ph,
+                  Center(
+                    // Profile Picture
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(70),
+                          child: SizedBox(
+                            height: 126,
+                            width: 126,
+                            child: NetworkImageWithPlaceholder(
+                              imageUrl:
+                                  profileState.imageUrl ??
+                                  profileState
+                                      .initialUserInfo!
+                                      .profile
+                                      .profilePicture ??
+                                  "",
+                              placeholder: SvgPicture.asset(
+                                Assets.svgs.icProfilePlaceholder,
+                              ),
+                              fit: BoxFit.cover,
+                              errorWidget: SvgPicture.asset(
+                                Assets.svgs.icProfilePlaceholder,
                               ),
                             ),
-                          )
-                          : Consumer(
-                            builder: (context, ref, child) {
-                              bool hasChanges = ref.watch(
-                                hasUnsavedChangesProvider,
-                              );
-                              return TextButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      hasChanges
-                                          ? WidgetStateProperty.all(
-                                            context.colorExt.surface,
-                                          )
-                                          : null,
-                                ),
-                                onPressed:
-                                    hasChanges
-                                        ? () async {
-                                          final success =
-                                              await profileNotifier
-                                                  .updateProfile();
-                                          if (success) {
-                                            AppConstants.showSnackbar(
-                                              message:
-                                                  "   'Profile updated successfully!',",
-                                              isSuccess: true,
-                                            );
-                                          }
-                                        }
-                                        : null,
-                                child: Text(
-                                  'Save',
-                                  style: context.appTextStyle.text.copyWith(
-                                    color:
-                                        hasChanges
-                                            ? context.colorExt.textPrimary
-                                            : context.colorExt.textHint,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                          ),
+                        ),
+
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: SvgPicture.asset(
+                              'assets/icons/solar_pen-2-bold.svg',
+                              width: 30,
+                              height: 30,
+                            ),
+                            onPressed: () {
+                              AppConstants.getPickImageAlert(
+                                context: context,
+                                pressCamera: () {
+                                  getImage(ImageSource.camera, ref);
+                                  Navigator.of(context).pop();
+                                },
+                                pressGallery: () {
+                                  getImage(ImageSource.gallery, ref);
+                                  Navigator.of(context).pop();
+                                },
                               );
                             },
-                          ),
-                ),
-                10.ph,
-                Center(
-                  // Profile Picture
-                  child: Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(70),
-                        child: SizedBox(
-                          height: 126,
-                          width: 126,
-                          child: NetworkImageWithPlaceholder(
-                            imageUrl:
-                                profileState.imageUrl ??
-                                profileState
-                                    .initialUserInfo!
-                                    .profile
-                                    .profilePicture ??
-                                "",
-                            placeholder: SvgPicture.asset(
-                              Assets.svgs.icProfilePlaceholder,
-                            ),
-                            fit: BoxFit.cover,
-                            errorWidget: SvgPicture.asset(
-                              Assets.svgs.icProfilePlaceholder,
-                            ),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                            splashRadius: 24,
+                            tooltip: context.l.changeProfilePicture,
                           ),
                         ),
-                      ),
-
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/icons/solar_pen-2-bold.svg',
-                            width: 30,
-                            height: 30,
-                          ),
-                          onPressed: () {
-                            AppConstants.getPickImageAlert(
-                              context: context,
-                              pressCamera: () {
-                                getImage(ImageSource.camera, ref);
-                                Navigator.of(context).pop();
-                              },
-                              pressGallery: () {
-                                getImage(ImageSource.gallery, ref);
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          },
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                          splashRadius: 24,
-                          tooltip: 'Change Profile Picture',
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                40.ph,
+                  40.ph,
 
-                LabeledTextField(
-                  controller: profileState.nameController,
-                  label: 'Name',
-                  hintText: "Name",
-                ),
-                26.ph,
-                // Age Dropdown
-                DatePickerField(
-                  label: 'Date Of Birth',
-                  selectedDate: profileState.dob,
-                  onTap: () async {
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate:
-                          profileState.dob ??
-                          DateTime.now().subtract(
-                            const Duration(days: 20 * 365),
-                          ),
-                      firstDate: DateTime.now().subtract(
-                        const Duration(days: 100 * 365),
-                      ),
-                      lastDate: DateTime.now(), // Today
-                      builder: (context, child) {
-                        return Theme(
-                          data: Theme.of(context).copyWith(
-                            colorScheme: const ColorScheme.dark(
-                              primary: Colors.blueAccent,
-                              onPrimary: Colors.white,
-                              onSurface: Colors.white,
+                  LabeledTextField(
+                    controller: profileState.nameController,
+                    label: context.l.name,
+                    hintText: context.l.name,
+                  ),
+                  26.ph,
+                  // Age Dropdown
+                  DatePickerField(
+                    label: context.l.dateOfBirth,
+                    selectedDate: profileState.dob,
+                    onTap: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate:
+                            profileState.dob ??
+                            DateTime.now().subtract(
+                              const Duration(days: 20 * 365),
                             ),
-                            textButtonTheme: TextButtonThemeData(
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.blueAccent,
+                        firstDate: DateTime.now().subtract(
+                          const Duration(days: 100 * 365),
+                        ),
+                        lastDate: DateTime.now(), // Today
+                        builder: (context, child) {
+                          return Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: const ColorScheme.dark(
+                                primary: Colors.blueAccent,
+                                onPrimary: Colors.white,
+                                onSurface: Colors.white,
+                              ),
+                              textButtonTheme: TextButtonThemeData(
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.blueAccent,
+                                ),
                               ),
                             ),
-                          ),
-                          child: child!,
-                        );
-                      },
-                    );
-                    if (picked != null && picked != profileState.dob) {
-                      profileNotifier.setDob(picked);
-                    }
-                  },
-                ),
-                DropdownField(
-                  label: 'Gender',
-                  value: profileState.gender,
-                  items: profileState.genders,
-                  onChanged: (value) {
-                    profileNotifier.setGender(value);
-                  },
-                  inputDecoration: AppConstants.inputDecoration(context),
-                ),
-                26.ph,
-                Text("Country", style: context.appTextStyle.characterGenLabel),
-                16.ph,
-                buildOptionTile<Country>(
-                  context: context,
-                  ref: ref,
-                  title: "Country",
-                  options: masterData.countries,
-                  optionToString: (c) => c.countryName,
-                  onSelect:
-                      (p0) =>
-                          profileNotifier.updateCountryCityWith(country: p0),
-                  selectedValue: profileState.country?.countryName,
-                ),
-                26.ph,
-                Text("City", style: context.appTextStyle.characterGenLabel),
-                16.ph,
-                Consumer(
-                  builder: (context, ref, child) {
-                    final masterDataCities = ref.watch(
-                      masterDataProvider.select((value) => value.cities),
-                    );
-                    final seletedCity = ref.watch(
-                      userProfileProvider.select((value) => value.city),
-                    );
+                            child: child!,
+                          );
+                        },
+                      );
+                      if (picked != null && picked != profileState.dob) {
+                        profileNotifier.setDob(picked);
+                      }
+                    },
+                  ),
+                  DropdownField(
+                    label: context.l.gender,
+                    value: profileState.gender,
+                    items: profileState.genders,
+                    onChanged: (value) {
+                      profileNotifier.setGender(value);
+                    },
+                    inputDecoration: AppConstants.inputDecoration(context),
+                  ),
+                  26.ph,
+                  Text(
+                    context.l.country,
+                    style: context.appTextStyle.characterGenLabel,
+                  ),
+                  16.ph,
+                  buildOptionTile<Country>(
+                    context: context,
+                    ref: ref,
+                    title: context.l.country,
+                    options: masterData.countries,
+                    optionToString: (c) => c.countryName,
+                    onSelect:
+                        (p0) =>
+                            profileNotifier.updateCountryCityWith(country: p0),
+                    selectedValue: profileState.country?.countryName,
+                  ),
+                  26.ph,
+                  Text(
+                    context.l.city,
+                    style: context.appTextStyle.characterGenLabel,
+                  ),
+                  16.ph,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final masterDataCities = ref.watch(
+                        masterDataProvider.select((value) => value.cities),
+                      );
+                      final seletedCity = ref.watch(
+                        userProfileProvider.select((value) => value.city),
+                      );
 
-                    final profileNotifierCity = ref.read(
-                      userProfileProvider.notifier,
-                    );
+                      final profileNotifierCity = ref.read(
+                        userProfileProvider.notifier,
+                      );
 
-                    return buildOptionTile<City>(
-                      context: context,
-                      ref: ref,
-                      title: "City",
-                      showLoading: masterData.isLoading,
-                      options: masterDataCities,
-                      optionToString: (c) => c.cityName,
-                      onSelect:
-                          (p0) => profileNotifierCity.updateCountryCityWith(
-                            city: p0,
-                          ),
-                      selectedValue: seletedCity?.cityName,
-                    );
-                  },
-                ),
+                      return buildOptionTile<City>(
+                        context: context,
+                        ref: ref,
+                        title: context.l.city,
+                        showLoading: masterData.isLoading,
+                        options: masterDataCities,
+                        optionToString: (c) => c.cityName,
+                        onSelect:
+                            (p0) => profileNotifierCity.updateCountryCityWith(
+                              city: p0,
+                            ),
+                        selectedValue: seletedCity?.cityName,
+                      );
+                    },
+                  ),
 
-                26.ph,
+                  26.ph,
 
-                VerificationSection(
-                  label: "Email",
-                  controller: profileState.emailController,
-                  otpController: profileState.emailOtpController,
-                  keyboardType: TextInputType.emailAddress,
-                  showButton: ref.watch(hasEmailChangedProvider),
-                  isOtpSent: profileState.isEmailOtpSent,
-                  isVerified: profileState.isEmailVerified,
-                  isLoading: profileState.isEmailLoading,
-                  onSendOtp: () => profileNotifier.sendOtp(true),
-                  onVerifyOtp: (otp) => profileNotifier.verifyOtp(true, otp),
-                  hintText: "Enter your email",
-                ),
-                VerificationSection(
-                  label: "Phone",
-                  controller: profileState.phoneController,
-                  otpController: profileState.phoneOtpController,
-                  keyboardType: TextInputType.phone,
-                  showButton: ref.watch(hasPhoneChangedProvider),
-                  isOtpSent: profileState.isPhoneOtpSent,
-                  isVerified: profileState.isPhoneVerified,
-                  isLoading: profileState.isPhoneLoading,
-                  onSendOtp: () => profileNotifier.sendOtp(false),
-                  onVerifyOtp: (otp) => profileNotifier.verifyOtp(false, otp),
-                  hintText: "Enter your phone",
-                  prefixText: "+91",
-                  maxLength: 10,
-                ),
+                  VerificationSection(
+                    label: context.l.email,
+                    controller: profileState.emailController,
+                    otpController: profileState.emailOtpController,
+                    keyboardType: TextInputType.emailAddress,
+                    showButton: ref.watch(hasEmailChangedProvider),
+                    isOtpSent: profileState.isEmailOtpSent,
+                    isVerified: profileState.isEmailVerified,
+                    isLoading: profileState.isEmailLoading,
+                    onSendOtp: () => profileNotifier.sendOtp(true),
+                    onVerifyOtp: (otp) => profileNotifier.verifyOtp(true, otp),
+                    hintText: context.l.enterHint,
+                  ),
+                  VerificationSection(
+                    label: context.l.phone,
+                    controller: profileState.phoneController,
+                    otpController: profileState.phoneOtpController,
+                    keyboardType: TextInputType.phone,
+                    showButton: ref.watch(hasPhoneChangedProvider),
+                    isOtpSent: profileState.isPhoneOtpSent,
+                    isVerified: profileState.isPhoneVerified,
+                    isLoading: profileState.isPhoneLoading,
+                    onSendOtp: () => profileNotifier.sendOtp(false),
+                    onVerifyOtp: (otp) => profileNotifier.verifyOtp(false, otp),
+                    hintText: context.l.phoneHint,
+                    prefixText: "+91",
+                    maxLength: 10,
+                  ),
 
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 20.0),
-                //   child: LabeledTextField(
-                //     controller: profileState.emailController,
-                //     label: 'Email ID',
-                //     keyboardType: TextInputType.emailAddress,
-                //     fillColor: inputBackgroundColor,
-                //     labelColor: primaryTextColor,
-                //     borderRadius: 12.0,
-                //   ),
-                // ),
-                // // Phone
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 20.0),
-                //   child: LabeledTextField(
-                //     controller: profileState.phoneController,
-                //     label: 'Phone number',
-                //     hintText: "",
-                //     keyboardType: TextInputType.phone,
-                //     fillColor: inputBackgroundColor,
-                //     labelColor: primaryTextColor,
-                //     borderRadius: 12.0,
-                //   ),
-                // ),
-                const SizedBox(height: 20),
-              ],
+                  // Padding(
+                  //   padding: const EdgeInsets.only(bottom: 20.0),
+                  //   child: LabeledTextField(
+                  //     controller: profileState.emailController,
+                  //     label: 'Email ID',
+                  //     keyboardType: TextInputType.emailAddress,
+                  //     fillColor: inputBackgroundColor,
+                  //     labelColor: primaryTextColor,
+                  //     borderRadius: 12.0,
+                  //   ),
+                  // ),
+                  // // Phone
+                  // Padding(
+                  //   padding: const EdgeInsets.only(bottom: 20.0),
+                  //   child: LabeledTextField(
+                  //     controller: profileState.phoneController,
+                  //     label: 'Phone number',
+                  //     hintText: "",
+                  //     keyboardType: TextInputType.phone,
+                  //     fillColor: inputBackgroundColor,
+                  //     labelColor: primaryTextColor,
+                  //     borderRadius: 12.0,
+                  //   ),
+                  // ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),

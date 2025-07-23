@@ -2,6 +2,30 @@
 
 The Guftagu mobile application project in flutter
 
+## Localisation Status
+
+- [x] English
+- [x] Hindi
+- [x] Bengali
+- [ ] Marathi
+- [ ] Tamil
+- [ ] Telugu
+- [ ] Gujarati
+- [ ] Kannada
+- [x] Odia
+- [ ] Urdu
+- [ ] Malayalam
+- [ ] Spanish
+- [ ] Arabic
+- [ ] Mandarin Chinese
+- [ ] French
+- [ ] German
+- [ ] Portuguese
+- [ ] Japanese
+- [ ] Russian
+- [ ] Korean
+
+
 ## Build
 
 #### Generate assets + fonts code + riverpod code
@@ -23,6 +47,10 @@ _PS: generated files are at **lib/gen**_
 #### Generate app icons 
 
  - `dart run flutter_launcher_icons`
+
+#### Generate locales 
+
+ - `flutter gen-l10n  --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=intl_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart`
 
 <!-- #### Generate native splash icon 
 

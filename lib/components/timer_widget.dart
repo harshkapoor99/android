@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -26,7 +27,9 @@ class _TimerWidgetState extends State<TimerWidget> {
     super.initState();
     _startTime =
         widget.startTime; // Initialize to the current time when mounted
-    _startTimer();
+    if (kReleaseMode) {
+      _startTimer();
+    }
   }
 
   @override

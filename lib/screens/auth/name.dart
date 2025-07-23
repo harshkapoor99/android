@@ -54,14 +54,17 @@ class _NameScreenState extends ConsumerState<NameScreen> {
                   Align(
                     alignment: Alignment.center,
                     child: Text(
-                      'Your Name',
+                      context.l.your,
                       style: AppTextStyle(context).title,
                     ),
                   ),
                   50.ph,
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0),
-                    child: Text("Name", style: AppTextStyle(context).labelText),
+                    child: Text(
+                      context.l.name,
+                      style: AppTextStyle(context).labelText,
+                    ),
                   ),
                   10.ph,
                   TextInputWidget(
@@ -71,7 +74,7 @@ class _NameScreenState extends ConsumerState<NameScreen> {
                   ),
                   30.ph,
                   GradientButton(
-                    title: "Continue",
+                    title: context.l.bContinue,
                     showLoading: ref.read(authProvider).isLoading,
                     onTap: () => updateName(),
                   ),

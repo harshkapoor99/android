@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:guftagu_mobile/components/call_indicator.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/my_ai_provider.dart';
 import 'package:guftagu_mobile/providers/tab.dart';
@@ -22,18 +21,29 @@ class DashboardScreen extends ConsumerWidget {
     const ProfileTab(),
   ];
 
-  final List<BottomBarIconLabel> _tabWidgets = [
-    BottomBarIconLabel(assetName: Assets.svgs.icChat, label: 'Chat'),
-    BottomBarIconLabel(assetName: Assets.svgs.icCreate, label: 'Create'),
-    BottomBarIconLabel(assetName: Assets.svgs.icMyAi, label: 'My AIs'),
-    BottomBarIconLabel(assetName: Assets.svgs.icProfile, label: 'Profile'),
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int currentIndex = ref.watch(tabIndexProvider);
     final myAi = ref.watch(myAiProvider);
 
+    final List<BottomBarIconLabel> tabWidgets = [
+      BottomBarIconLabel(
+        assetName: Assets.svgs.icChat,
+        label: context.l.tabChat,
+      ),
+      BottomBarIconLabel(
+        assetName: Assets.svgs.icCreate,
+        label: context.l.tabCreate,
+      ),
+      BottomBarIconLabel(
+        assetName: Assets.svgs.icMyAi,
+        label: context.l.tabMyAIs,
+      ),
+      BottomBarIconLabel(
+        assetName: Assets.svgs.icProfile,
+        label: context.l.tabProfile,
+      ),
+    ];
     return PopScope(
       canPop: ref.read(tabIndexProvider) == 0,
       onPopInvokedWithResult: (bool didPop, result) {
@@ -59,14 +69,7 @@ class DashboardScreen extends ConsumerWidget {
           searchController: ref.read(myAiProvider).searchController,
           onNotificationPressed: () {},
         ),
-        body: Column(
-          children: [
-            const CallIndicator(),
-            Expanded(
-              child: IndexedStack(index: currentIndex, children: _screens),
-            ),
-          ],
-        ),
+        body: IndexedStack(index: currentIndex, children: _screens),
 
         // Bottom Navigation Bar
         bottomNavigationBar: BottomNavigationBar(
@@ -79,7 +82,7 @@ class DashboardScreen extends ConsumerWidget {
           onTap:
               (index) => ref.read(tabIndexProvider.notifier).changeTab(index),
           items:
-              _tabWidgets
+              tabWidgets
                   .map(
                     (BottomBarIconLabel iconLabel) => BottomNavigationBarItem(
                       activeIcon: SvgPicture.asset(

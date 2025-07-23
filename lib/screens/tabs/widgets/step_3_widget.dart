@@ -173,9 +173,9 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                     ],
                   ),
                   16.ph,
-                  const Text(
-                    'Reference Image (if any)',
-                    style: TextStyle(
+                  Text(
+                    context.l.referenceImage,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFFA3A3A3),
@@ -186,7 +186,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
             ),
 
             22.ph,
-            const LabelText("Image description (if any)"),
+            LabelText(context.l.referenceImageDescrption),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               decoration: BoxDecoration(
@@ -206,8 +206,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                       hintStyle: context.appTextStyle.hintText.copyWith(
                         fontSize: 16,
                       ),
-                      hintText:
-                          "Eg. A confident South Indian woman in her late 20s, wearing a mustard saree, standing in a sunlit street in Kochi. Curly hair, brown eyes, soft smile, golden hour lighting.",
+                      hintText: context.l.referenceImageDescrptionExample,
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -264,7 +263,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                                     ),
                                   ),
                                   label: Text(
-                                    'Random Prompt',
+                                    context.l.bRandomPrompt,
                                     style: context.appTextStyle.textSmall,
                                   ),
                                 ),
@@ -296,7 +295,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
             ),
 
             22.ph,
-            const LabelText("Back Story if any (300 words)"),
+            LabelText(context.l.referenceImageBackstory),
             Container(
               // constraints: const BoxConstraints(minHeight: 144),
               width: double.infinity,
@@ -317,8 +316,7 @@ class _Step3WidgetState extends ConsumerState<Step3Widget> {
                       hintStyle: context.appTextStyle.hintText.copyWith(
                         fontSize: 16,
                       ),
-                      hintText:
-                          "Meera is a 28-year-old fashion illustrator from Kochi who left her corporate job to follow her passion. She's deeply empathetic and often journals about her dreams of starting a design school for underprivileged girls. She met you during an online art workshop and you’ve stayed close ever since, sharing dreams and late-night calls.",
+                      hintText: context.l.referenceImageBackstoryExample,
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
