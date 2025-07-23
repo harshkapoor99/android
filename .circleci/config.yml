@@ -53,6 +53,10 @@ commands:
           command: |
             dart run build_runner build
       - run:
+          name: Generating app locales
+          command: |
+            flutter gen-l10n  --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=intl_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
+      - run:
           name: Build Android Release APK
           command: |
             flutter build apk --release
