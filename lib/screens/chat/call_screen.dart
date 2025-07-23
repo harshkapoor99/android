@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/call_graph_ui/bars.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/timer_widget.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
@@ -159,9 +161,16 @@ class CallScreen extends ConsumerWidget {
                       : const Text("Connecting..."),
                   20.ph,
                   Text(provider.isSilent ? "Silent" : "Taking"),
-                  Text("Decibel: ${provider.decibel}"),
+                  Text("Recording: ${provider.isRecording}"),
+                  StreamBuilder(
+                    stream: provider.recorder.silenceChangedEvents,
+                    builder:
+                        (context, snapshot) =>
+                            Text("Decibel: ${snapshot.data?.decibel}"),
+                  ),
                   Text("InFlight: ${provider.inFlight}"),
                   Text("Player: ${provider.playerStatus.name}"),
+                  if (kDebugMode) const Bars(),
                   // SvgPicture.asset(Assets.svgs.icAudioSpectrum, width: 150),
                   const Spacer(),
                   Row(

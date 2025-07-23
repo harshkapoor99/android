@@ -36,11 +36,13 @@ class ApiClient {
     dynamic data,
     Map<String, dynamic>? headers,
     Duration? timeout,
+    ResponseType? responseType,
   }) async {
     return _dio.post(
       url,
       data: data,
       options: Options(
+        responseType: responseType,
         headers: headers ?? defaultHeaders,
         followRedirects: true,
         validateStatus: ((status) {

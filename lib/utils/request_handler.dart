@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-// import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 void addApiInterceptors(Dio dio) {
   dio.options.connectTimeout = const Duration(seconds: 20);
@@ -8,17 +8,17 @@ void addApiInterceptors(Dio dio) {
   dio.options.headers['contentType'] = 'application/json';
 
   /// logger
-  // dio.interceptors.add(
-  //   PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     error: true,
-  //     compact: true,
-  //     maxWidth: 90,
-  //   ),
-  // );
+  dio.interceptors.add(
+    PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      error: true,
+      compact: true,
+      maxWidth: 90,
+    ),
+  );
 
   // respone handler
   dio.interceptors.add(
@@ -27,7 +27,10 @@ void addApiInterceptors(Dio dio) {
         handler.next(options);
       },
       onResponse: (response, handler) {
-        final status = response.data['status'];
+        dynamic status;
+        if (response.requestOptions.responseType != ResponseType.bytes) {
+          status = response.data['status'];
+        }
         // final status = response.statusCode;
         switch (status) {
           case 401:

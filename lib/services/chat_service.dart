@@ -168,6 +168,7 @@ class ChatSericeImpl implements ChatSerice {
         'creator_id': creatorId,
       }),
       timeout: const Duration(seconds: 30),
+      responseType: ResponseType.bytes,
     );
   }
 
