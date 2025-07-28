@@ -7,7 +7,7 @@ import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/models/character.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
-import 'package:guftagu_mobile/utils/download_audio.dart';
+import 'package:guftagu_mobile/utils/download_util.dart';
 import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';

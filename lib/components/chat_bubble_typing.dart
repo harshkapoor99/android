@@ -101,6 +101,10 @@ class ChatBubbleTyping extends StatelessWidget {
                     ),
                 ],
               ),
+              Text(
+                "",
+                style: context.appTextStyle.textSmall.copyWith(fontSize: 10),
+              ),
             ],
           ),
         ],

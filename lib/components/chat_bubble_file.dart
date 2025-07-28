@@ -4,6 +4,8 @@ import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:guftagu_mobile/components/easy_image_provider.dart';
+import 'package:guftagu_mobile/components/fade_asset_placeholder_image.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
@@ -11,7 +13,7 @@ import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
-import 'package:guftagu_mobile/utils/download_audio.dart';
+import 'package:guftagu_mobile/utils/download_util.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_name_form_url.dart';
 import 'package:guftagu_mobile/utils/file_type_from_mime.dart';
@@ -106,9 +108,15 @@ class ChatBubbleFile extends ConsumerWidget {
                       spacing: 10,
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(5),
+                          padding:
+                              message.chatType != ChatType.image.name
+                                  ? const EdgeInsets.all(5)
+                                  : null,
                           decoration: BoxDecoration(
-                            color: context.colorExt.primary.withAlpha(50),
+                            color:
+                                message.chatType != ChatType.image.name
+                                    ? context.colorExt.primary.withAlpha(50)
+                                    : null,
                             borderRadius: BorderRadius.circular(5),
                           ),
                           child: GestureDetector(
@@ -117,7 +125,9 @@ class ChatBubbleFile extends ConsumerWidget {
                                 if (message.filePath != null) {
                                   showImageViewer(
                                     context,
-                                    Image.file(File(message.filePath!)).image,
+                                    ProgressWidgetProvider(
+                                      Image.file(File(message.filePath!)).image,
+                                    ).provider,
                                   );
                                 } else if (message.fileUrl != null) {
                                   var res = await downloadAssetFromUrl(
@@ -125,46 +135,93 @@ class ChatBubbleFile extends ConsumerWidget {
                                   );
                                   showImageViewer(
                                     context,
-                                    Image.file(File(res.filePath)).image,
+                                    ProgressWidgetProvider(
+                                      Image.file(File(res.filePath)).image,
+                                    ).provider,
                                   );
                                 }
                               }
                             },
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 10,
+                            child: Column(
                               children: [
-                                message.chatType == ChatType.image.name
-                                    ? const Icon(Icons.image, size: 30)
-                                    : const Icon(
-                                      Icons.file_present_rounded,
-                                      size: 30,
+                                if (message.chatType == ChatType.image.name)
+                                  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Center(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(2),
+                                        child: Builder(
+                                          builder: (context) {
+                                            if (message.filePath != null) {
+                                              return AssetImageWithPlaceholder(
+                                                imagePath: message.filePath,
+                                                // width: screenWidth * 0.6,
+                                                // height: screenWidth * 0.6,
+                                                // fit: BoxFit.cover,
+                                              );
+                                            }
+                                            if (message.fileUrl != null) {
+                                              return NetworkImageWithPlaceholder(
+                                                imageUrl: message.fileUrl!,
+                                                // width: screenWidth * 0.6,
+                                                // height: screenWidth * 0.6,
+                                                // fit: BoxFit.cover,
+                                              );
+                                            }
+                                            return const Text(
+                                              "Some error occured with image display.",
+                                            );
+                                          },
+                                        ),
+                                      ),
                                     ),
-                                Expanded(
-                                  child: Column(
+                                  ),
+                                if (message.chatType != ChatType.image.name)
+                                  Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
+                                    spacing: 10,
                                     children: [
-                                      Text(
-                                        message.fileName ??
-                                            getFileNameFromUrl(url ?? ""),
-                                        style: context.appTextStyle.textSmall,
-                                        overflow: TextOverflow.fade,
+                                      const Icon(
+                                        Icons.file_present_rounded,
+                                        size: 30,
                                       ),
-                                      Text(
-                                        getFileTypeFromMime(
-                                          lookupMimeType(
-                                            message.fileName ??
-                                                path ??
-                                                getFileNameFromUrl(url ?? ""),
-                                          ),
+
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              message.fileName ??
+                                                  getFileNameFromUrl(url ?? ""),
+                                              style:
+                                                  context
+                                                      .appTextStyle
+                                                      .textSmall,
+                                              overflow: TextOverflow.fade,
+                                            ),
+
+                                            Text(
+                                              getFileTypeFromMime(
+                                                lookupMimeType(
+                                                  message.fileName ??
+                                                      path ??
+                                                      getFileNameFromUrl(
+                                                        url ?? "",
+                                                      ),
+                                                ),
+                                              ),
+                                              style: context
+                                                  .appTextStyle
+                                                  .textSmall
+                                                  .copyWith(fontSize: 10),
+                                            ),
+                                          ],
                                         ),
-                                        style: context.appTextStyle.textSmall
-                                            .copyWith(fontSize: 10),
                                       ),
                                     ],
                                   ),
-                                ),
                               ],
                             ),
                           ),

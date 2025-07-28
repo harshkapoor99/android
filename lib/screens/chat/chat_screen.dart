@@ -125,12 +125,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     var image =
         provider.character!.imageGallery
             .where((element) => element.selected == true)
-            .first
-            .url;
-    // ignore: unnecessary_null_comparison, prefer_conditional_assignment
-    if (image == null) {
-      image = provider.character!.imageGallery.first.url;
-    }
+            .firstOrNull
+            ?.url ??
+        "";
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
         if (didPop) {
