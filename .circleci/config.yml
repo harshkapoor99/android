@@ -60,11 +60,18 @@ commands:
           name: Decode and store signing key
           command: |
             echo "Decoding and storing key.properties file..."
+            echo $KEYSTOREFILE | base64 --decode > android/app/guftagu-release.jks
+            if [ -f android/app/guftagu-release.jks ]; then
+              echo "Keystore file created successfully."
+            else
+              echo "Failed to create keystore file!"
+              exit 1
+            fi
             echo $KEYPROPERTIES | base64 --decode > android/key.properties
             if [ -f android/key.properties ]; then
-              echo "key.properties created successfully."
+              echo "Keystore properties created successfully."
             else
-              echo "Failed to create key.properties!"
+              echo "Failed to create Keystore properties!"
               exit 1
             fi
       - run:
