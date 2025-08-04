@@ -264,12 +264,11 @@ class _ProfileTabState extends ConsumerState<ProfileTab> {
               // onTap: () => context.nav.pushNamed(Routes.audioWave),
             ),
             ProfileTile(
-              // REMOVE: after subscription module added
-              // onTap: () {
-              //   context.nav.pushNamed(Routes.subscription);
-              // },
+              onTap: () {
+                context.nav.pushNamed(Routes.subscription);
+              },
               icon: 'assets/icons/profile07.svg',
-              title: context.l.profileSubscription,
+              title: context.l.profileRecharge,
               trailing: Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 18,

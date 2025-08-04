@@ -7,7 +7,7 @@ import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/master/master_models.dart';
 import 'package:guftagu_mobile/services/audio_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
-import 'package:guftagu_mobile/utils/download_audio.dart';
+import 'package:guftagu_mobile/utils/download_util.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/print_debug.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

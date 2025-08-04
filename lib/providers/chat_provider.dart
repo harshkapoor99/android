@@ -8,9 +8,10 @@ import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
-import 'package:guftagu_mobile/utils/download_audio.dart';
+import 'package:guftagu_mobile/utils/download_util.dart';
 import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -111,14 +112,29 @@ class Chat extends _$Chat {
             creatorId: ref.read(hiveServiceProvider.notifier).getUserId()!,
           );
 
-      String reply = response.data["reply"];
-
-      appendChat(
-        isMe: false,
-        type: ChatType.text,
-        text: reply,
-        time: DateTime.now(),
-      );
+      String? reply = response.data["reply"];
+      if (reply != null) {
+        appendChat(
+          isMe: false,
+          type: ChatType.text,
+          text: reply,
+          time: DateTime.now(),
+        );
+      } else {
+        String? image = response.data["gcp_image_url"];
+        if (image != null) {
+          appendChat(
+            isMe: false,
+            type: ChatType.image,
+            text: reply,
+            fileUrl: image,
+            time: DateTime.now(),
+          );
+        }
+      }
+      ref
+          .read(walletProvider.notifier)
+          .deductCoins(response.data["coins_used"] ?? 0);
     } catch (e) {
       rethrow;
     } finally {
@@ -156,6 +172,9 @@ class Chat extends _$Chat {
         time: DateTime.now(),
         audioPath: file.filePath,
       );
+      ref
+          .read(walletProvider.notifier)
+          .deductCoins(response.data["coins_used"] ?? 0);
     } catch (e) {
       rethrow;
     } finally {
@@ -198,6 +217,9 @@ class Chat extends _$Chat {
           text: reply,
           time: DateTime.now(),
         );
+        ref
+            .read(walletProvider.notifier)
+            .deductCoins(response.data["coins_used"] ?? 0);
       }
     } catch (e) {
       rethrow;

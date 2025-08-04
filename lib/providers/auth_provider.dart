@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:guftagu_mobile/models/common/common_response_model.dart';
 import 'package:guftagu_mobile/models/user_model.dart';
+import 'package:guftagu_mobile/models/wallet.dart';
 import 'package:guftagu_mobile/providers/user_profile_provider.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/services/auth_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/user_profile_service.dart';
@@ -120,6 +122,11 @@ class Auth extends _$Auth {
       User user = User.fromMap(response.data['user_info']);
       String authAccessToken = response.data['access'];
       String authRefreshToken = response.data['refresh'];
+      Map<String, dynamic>? wallet = response.data["user_info"]["wallet"];
+      if (wallet != null) {
+        WalletModel userWallet = WalletModel.fromJson(wallet);
+        ref.read(walletProvider.notifier).setWalletCoin(userWallet.coin);
+      }
 
       // Save user info and tokens to Hive or any other storage
       final hiver = ref.read(hiveServiceProvider.notifier);
@@ -203,6 +210,11 @@ class Auth extends _$Auth {
       User user = User.fromMap(response.data['user_info']);
       String authAccessToken = response.data['access'];
       String authRefreshToken = response.data['refresh'];
+      Map<String, dynamic>? wallet = response.data["user_info"]["wallet"];
+      if (wallet != null) {
+        WalletModel userWallet = WalletModel.fromJson(wallet);
+        ref.read(walletProvider.notifier).setWalletCoin(userWallet.coin);
+      }
 
       // Save user info and tokens to Hive or any other storage
       final hiver = ref.read(hiveServiceProvider.notifier);

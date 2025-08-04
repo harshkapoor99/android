@@ -105,8 +105,9 @@ class _ChatTabState extends ConsumerState<ChatTab> {
                                     .chatList[index]
                                     .character
                                     .imageGallery
-                                    .first
-                                    .url,
+                                    .firstOrNull
+                                    ?.url ??
+                                "",
                             placeholder: SvgPicture.asset(
                               Assets.svgs.icProfilePlaceholder,
                             ),

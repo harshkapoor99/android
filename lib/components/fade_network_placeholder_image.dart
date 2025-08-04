@@ -13,8 +13,8 @@ class NetworkImageWithPlaceholder extends StatelessWidget {
   const NetworkImageWithPlaceholder({
     super.key,
     required this.imageUrl,
-    this.placeholder = const _DefaultPlaceholder(),
-    this.errorWidget = const _DefaultErrorWidget(),
+    this.placeholder = const _DefaultPlaceholder(200),
+    this.errorWidget = const _DefaultErrorWidget(200),
     this.fit,
     this.width,
     this.height,
@@ -35,27 +35,28 @@ class NetworkImageWithPlaceholder extends StatelessWidget {
 
 // Default placeholder widget (can be customized)
 class _DefaultPlaceholder extends StatelessWidget {
-  const _DefaultPlaceholder();
+  final double height;
+
+  const _DefaultPlaceholder(this.height);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.colorExt.surface,
-      child: Center(
-        child: Icon(Icons.image, color: context.colorExt.textPrimary),
-      ),
+    return SizedBox(
+      height: height,
+      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }
 
 // Default error widget (can be customized)
 class _DefaultErrorWidget extends StatelessWidget {
-  const _DefaultErrorWidget();
+  final double height;
+  const _DefaultErrorWidget(this.height);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.colorExt.surface,
+    return SizedBox(
+      height: height,
       child: Center(
         child: Icon(Icons.broken_image, color: context.colorExt.textPrimary),
       ),

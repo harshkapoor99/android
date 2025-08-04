@@ -41,6 +41,8 @@ dependencies:
   mime: ^2.0.0
   easy_image_viewer: ^1.5.1
   flutter_recorder: ^1.1.2
+  in_app_purchase: ^3.2.3
+  animated_flip_counter: ^0.3.4
 
 dev_dependencies:
   flutter_test:

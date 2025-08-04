@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
@@ -51,7 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             .toList();
     // Adjust the provider based on the image type
     Future.wait(precacheFutures).then((value) {
-      Future.delayed(const Duration(seconds: 1)).then((value) {
+      Future.delayed(const Duration(seconds: 1)).then((value) async {
         final hiveService = ref.read(hiveServiceProvider.notifier);
         final isOnboarded = hiveService.getOnboardingStatus();
         final authToken = hiveService.getAuthToken();
@@ -68,6 +69,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           context.nav.pushReplacementNamed(Routes.login);
         } else {
           ref.read(apiClientProvider).updateToken(authToken);
+          await ref.read(walletProvider.notifier).fetchWallet();
           if (!user.profile.fullName.hasValue) {
             context.nav.pushReplacementNamed(Routes.name);
           } else if (user.characterTypeIds.isEmpty) {

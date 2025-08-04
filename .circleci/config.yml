@@ -57,6 +57,17 @@ commands:
           command: |
             flutter gen-l10n  --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=intl_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
       - run:
+          name: Decode and store signing key
+          command: |
+            echo "Decoding and storing key.properties file..."
+            echo $KEYPROPERTIES | base64 --decode > android/key.properties
+            if [ -f android/key.properties ]; then
+              echo "key.properties created successfully."
+            else
+              echo "Failed to create key.properties!"
+              exit 1
+            fi
+      - run:
           name: Build Android Release APK
           command: |
             flutter build apk --release
