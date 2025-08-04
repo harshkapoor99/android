@@ -1,6 +1,7 @@
 import 'dart:io'; // Required for File class
 
 import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 // Removed: import 'package:cached_network_image/cached_network_image.dart';
 // Removed: import 'package:guftagu_mobile/utils/context_less_nav.dart';
 
@@ -33,8 +34,8 @@ class AssetImageWithPlaceholder extends StatelessWidget {
   const AssetImageWithPlaceholder({
     super.key,
     required this.imagePath, // Changed from imageUrl to imagePath
-    this.placeholder = const _DefaultPlaceholder(),
-    this.errorWidget = const _DefaultErrorWidget(),
+    this.placeholder = const _DefaultPlaceholder(200),
+    this.errorWidget = const _DefaultErrorWidget(200),
     this.fit,
     this.width,
     this.height,
@@ -63,44 +64,33 @@ class AssetImageWithPlaceholder extends StatelessWidget {
 
 /// Default placeholder widget displayed when the image path is null/empty.
 class _DefaultPlaceholder extends StatelessWidget {
-  const _DefaultPlaceholder();
+  final double height;
+
+  const _DefaultPlaceholder(this.height);
 
   @override
   Widget build(BuildContext context) {
     // Using Theme.of(context).colorScheme for standard color access,
     // as context.colorExt was a custom extension.
-    return Container(
-      color: Theme.of(context).colorScheme.surface,
-      child: Center(
-        child: Icon(
-          Icons.image,
-          color:
-              Theme.of(
-                context,
-              ).colorScheme.onSurface, // Icon color for contrast
-        ),
-      ),
+    return SizedBox(
+      height: height,
+      child: const Center(child: CircularProgressIndicator()),
     );
   }
 }
 
 /// Default error widget displayed when the image fails to load from the file path.
 class _DefaultErrorWidget extends StatelessWidget {
-  const _DefaultErrorWidget();
+  final double height;
+
+  const _DefaultErrorWidget(this.height);
 
   @override
   Widget build(BuildContext context) {
-    // Using Theme.of(context).colorScheme for standard color access.
-    return Container(
-      color: Theme.of(context).colorScheme.surface,
+    return SizedBox(
+      height: height,
       child: Center(
-        child: Icon(
-          Icons.broken_image,
-          color:
-              Theme.of(
-                context,
-              ).colorScheme.onSurface, // Icon color for contrast
-        ),
+        child: Icon(Icons.broken_image, color: context.colorExt.textPrimary),
       ),
     );
   }
