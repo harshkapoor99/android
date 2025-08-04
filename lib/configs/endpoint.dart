@@ -96,8 +96,16 @@ enum RemoteEndpoint {
 
   // User profile verify
   userVerify(path: "userservice/user/userverifybyphoneoremail/"),
-  userVerifyOtp(path: "userservice/user/otpverify/")
-  // ending semicolon
+  userVerifyOtp(path: "userservice/user/otpverify/"),
+
+  // subscription
+  fetchSubscriptions(
+    path: "subscriptionandbillingservice/subscription/getallsubscription/",
+  ),
+  fetchWallet(
+    path: "subscriptionandbillingservice/wallet/walletdetailsbyuserid/",
+  )
+  // ending semicolon - DONT REMOVE THIS COMMENT
   ;
 
   const RemoteEndpoint({required this.path});

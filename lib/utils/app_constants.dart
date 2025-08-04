@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/text_input_widget.dart';
+import 'package:guftagu_mobile/components/wallet_coin_wiget.dart';
 import 'package:guftagu_mobile/configs/app_color.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/master_data_provider.dart';
@@ -100,6 +101,7 @@ class AppConstants {
               ),
             ),
           ),
+        const WalletCoinWiget(),
       ],
     );
   }

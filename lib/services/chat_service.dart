@@ -94,6 +94,7 @@ class ChatSericeImpl implements ChatSerice {
         "session_id": '$characterId$creatorId',
         "creator_id": creatorId,
       },
+      timeout: const Duration(seconds: 10),
     );
     return response;
   }

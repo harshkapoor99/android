@@ -11,6 +11,7 @@ import 'package:guftagu_mobile/components/chat_bubble_typing.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/message_box.dart';
 import 'package:guftagu_mobile/components/send_button.dart';
+import 'package:guftagu_mobile/components/wallet_coin_wiget.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/call_provider.dart';
@@ -205,13 +206,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
           ),
           actionsPadding: const EdgeInsets.only(right: 10),
           actions: [
-            // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-            // 5.pw,
-            // Text(
-            //   '1200',
-            //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-            // ),
-            // 5.pw,
+            const WalletCoinWiget(),
             IconButton(
               onPressed: () {
                 if (!ref.read(callProvider).isCallStarted) {

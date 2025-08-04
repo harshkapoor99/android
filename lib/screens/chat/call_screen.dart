@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:guftagu_mobile/components/call_graph_ui/bars.dart';
 import 'package:guftagu_mobile/components/fade_network_placeholder_image.dart';
 import 'package:guftagu_mobile/components/timer_widget.dart';
+import 'package:guftagu_mobile/components/wallet_coin_wiget.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/call_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -91,12 +92,7 @@ class CallScreen extends ConsumerWidget {
                 ],
               ),
               const Spacer(),
-              // SvgPicture.asset(Assets.svgs.icDiamonGold, height: 20),
-              // 5.pw,
-              // Text(
-              //   '1200',
-              //   style: context.appTextStyle.textBold.copyWith(fontSize: 12),
-              // ),
+              const WalletCoinWiget(),
               20.pw,
             ],
           ),

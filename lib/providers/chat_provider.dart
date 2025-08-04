@@ -8,6 +8,7 @@ import 'package:guftagu_mobile/models/chat_list_item.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_util.dart';
@@ -131,6 +132,9 @@ class Chat extends _$Chat {
           );
         }
       }
+      ref
+          .read(walletProvider.notifier)
+          .deductCoins(response.data["coins_used"] ?? 0);
     } catch (e) {
       rethrow;
     } finally {
@@ -168,6 +172,9 @@ class Chat extends _$Chat {
         time: DateTime.now(),
         audioPath: file.filePath,
       );
+      ref
+          .read(walletProvider.notifier)
+          .deductCoins(response.data["coins_used"] ?? 0);
     } catch (e) {
       rethrow;
     } finally {
@@ -210,6 +217,9 @@ class Chat extends _$Chat {
           text: reply,
           time: DateTime.now(),
         );
+        ref
+            .read(walletProvider.notifier)
+            .deductCoins(response.data["coins_used"] ?? 0);
       }
     } catch (e) {
       rethrow;
