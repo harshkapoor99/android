@@ -8,6 +8,7 @@ import 'package:guftagu_mobile/screens/chat/chat_screen.dart';
 import 'package:guftagu_mobile/screens/dashboard.dart';
 import 'package:guftagu_mobile/screens/explore.dart';
 import 'package:guftagu_mobile/screens/onboarding.dart';
+import 'package:guftagu_mobile/screens/pdf_viewer.dart';
 import 'package:guftagu_mobile/screens/user_profile.dart';
 import 'package:guftagu_mobile/screens/splash.dart';
 import 'package:guftagu_mobile/screens/character_profile.dart';
@@ -30,6 +31,7 @@ class Routes {
   static const call = "/call";
   static const userProfile = "/userProfile";
   static const subscription = "/subscription";
+  static const pdfViewer = "/pdfViewer";
 
   static Route generatedRoutes(RouteSettings settings) {
     Widget child;
@@ -63,6 +65,12 @@ class Routes {
       // type = PageTransitionType.rightToLeft;
       case Routes.subscription:
         child = const SubscriptionScreen();
+      case Routes.pdfViewer:
+        var arguments = settings.arguments as Map<String, dynamic>;
+        child = PdfViewerScreen(
+          pdfPath: arguments["path"],
+          fileName: arguments["fileName"],
+        );
       default:
         throw Exception('Invalid route: ${settings.name}');
     }

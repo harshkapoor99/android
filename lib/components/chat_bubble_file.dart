@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +13,7 @@ import 'package:guftagu_mobile/components/utility_components/nip_painter.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/models/master/chat_message.dart';
+import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/utils/download_util.dart';
@@ -18,6 +21,8 @@ import 'package:guftagu_mobile/utils/extensions.dart';
 import 'package:guftagu_mobile/utils/file_name_form_url.dart';
 import 'package:guftagu_mobile/utils/file_type_from_mime.dart';
 import 'package:mime/mime.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:pdfx/pdfx.dart';
 
 class ChatBubbleFile extends ConsumerWidget {
   final ChatMessage message;
@@ -176,6 +181,9 @@ class ChatBubbleFile extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
+                                if (message.chatType != ChatType.image.name &&
+                                    url != null)
+                                  PdfPreviewChatBubble(pdfUrl: url!),
                                 if (message.chatType != ChatType.image.name)
                                   Row(
                                     crossAxisAlignment:
@@ -261,6 +269,121 @@ class ChatBubbleFile extends ConsumerWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class PdfPreviewChatBubble extends StatefulWidget {
+  final String pdfUrl;
+
+  const PdfPreviewChatBubble({super.key, required this.pdfUrl});
+
+  @override
+  State<PdfPreviewChatBubble> createState() => _PdfPreviewChatBubbleState();
+}
+
+class _PdfPreviewChatBubbleState extends State<PdfPreviewChatBubble> {
+  String? _pdfPath;
+  Uint8List? _thumbnail;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadAndLoadThumbnail();
+  }
+
+  // Downloads the PDF from the URL, saves it to a temporary file,
+  // and then generates a thumbnail from that file.
+  Future<void> _downloadAndLoadThumbnail() async {
+    try {
+      // 1. Determine the local file path
+      final tempDir = await getTemporaryDirectory();
+      final tempFilePath =
+          '${tempDir.path}/${getFileNameFromUrl(widget.pdfUrl)}';
+
+      // 2. Download the PDF from the URL directly to the file using Dio
+      final dio = Dio();
+      await dio.download(widget.pdfUrl, tempFilePath);
+
+      // 3. Store the local file path
+      _pdfPath = tempFilePath;
+
+      // 4. Generate the thumbnail from the local file
+      final document = await PdfDocument.openFile(_pdfPath!);
+      final page = await document.getPage(1);
+      final pageImage = await page.render(
+        width: 150,
+        height: 200,
+        format: PdfPageImageFormat.png,
+      );
+      await page.close();
+      await document.close();
+
+      setState(() {
+        _thumbnail = pageImage?.bytes;
+        _isLoading = false;
+      });
+    } on DioError catch (e) {
+      print('DioError downloading PDF: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading PDF: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: GestureDetector(
+        onTap:
+            _pdfPath == null
+                ? null // Disable tap while loading or on error
+                : () {
+                  context.nav.pushNamed(
+                    Routes.pdfViewer,
+                    arguments: {
+                      "path": _pdfPath!,
+                      "fileName": getFileNameFromUrl(widget.pdfUrl),
+                    },
+                  );
+                },
+        child: Container(
+          height: 200,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(2)),
+          child:
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _thumbnail != null
+                  ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: BorderRadiusGeometry.circular(2),
+                          child: Image.memory(
+                            _thumbnail!,
+                            width: double.infinity,
+                            fit: BoxFit.fitWidth,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                  : Center(
+                    child: Text(
+                      'Failed to load PDF',
+                      style: context.appTextStyle.text,
+                    ),
+                  ),
+        ),
       ),
     );
   }
