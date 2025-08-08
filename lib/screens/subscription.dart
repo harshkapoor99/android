@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
+import 'package:guftagu_mobile/components/utility_components/animated_reveal.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/subscription_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
@@ -70,7 +71,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                             bottom: screenHeight * 0.01,
                           ),
                           child: Text(
-                            'Subscriptions',
+                            context.l.profileRecharge,
                             style: TextStyle(
                               fontSize: _getResponsiveFontSize(context, 28),
                               fontWeight: FontWeight.w700,
@@ -85,26 +86,110 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                           child: Column(
                             children: [
                               SizedBox(height: screenHeight * 0.03),
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Column(
-                                  spacing: 16,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: List.generate(
-                                    provider.products.length,
-                                    (index) {
-                                      return Text("data");
-                                    },
+                              if (provider.loading)
+                                const CircularProgressIndicator()
+                              else if (!provider.isAvailable)
+                                const Text(
+                                  "Opps! Looks like the store provider is not available right now.",
+                                )
+                              else
+                                SingleChildScrollView(
+                                  child: Column(
+                                    spacing: 16,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: List.generate(
+                                      provider.products.length,
+                                      (index) {
+                                        final product =
+                                            provider.products[index];
+                                        final isSelected =
+                                            product == provider.seletedProduct;
+                                        if (product.id != "") {
+                                          return AnimatedReveal(
+                                            delay: Duration(
+                                              milliseconds: 500 * index,
+                                            ),
+                                            child: Material(
+                                              color: Colors.transparent,
+                                              child: ListTile(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadiusGeometry.circular(
+                                                        10,
+                                                      ),
+                                                ),
+                                                leading: SvgPicture.asset(
+                                                  Assets.svgs.icDiamonGold,
+                                                ),
+                                                title: Text(
+                                                  product.title,
+                                                  style:
+                                                      context
+                                                          .appTextStyle
+                                                          .appBarText,
+                                                ),
+                                                subtitle: Text(
+                                                  product.description,
+                                                  style:
+                                                      context
+                                                          .appTextStyle
+                                                          .buttonText,
+                                                ),
+                                                trailing: Text(
+                                                  product.rawPrice.toString() +
+                                                      product.currencySymbol,
+                                                  style:
+                                                      context
+                                                          .appTextStyle
+                                                          .appBarText,
+                                                ),
+                                                tileColor: context
+                                                    .colorExt
+                                                    .background
+                                                    .withAlpha(128),
+                                                selectedTileColor: context
+                                                    .colorExt
+                                                    .primary
+                                                    .withAlpha(200),
+
+                                                onTap:
+                                                    () => ref
+                                                        .read(
+                                                          subscriptionProvider
+                                                              .notifier,
+                                                        )
+                                                        .selectSub(product),
+                                                selected: isSelected,
+                                                style: ListTileStyle.drawer,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
                                   ),
                                 ),
+
+                              Text(
+                                "purchasePending: ${provider.purchasePending.toString()}",
                               ),
+                              Text(
+                                "isAvailable: ${provider.isAvailable.toString()}",
+                              ),
+                              Text("loading: ${provider.loading.toString()}"),
+                              Text("products: ${provider.products.length}"),
 
                               GradientButton(
                                 title: "CONTINUE",
-                                disabled: provider.seletedSub == null,
-                                onTap: () {},
+                                disabled: provider.seletedProduct == null,
+                                onTap:
+                                    ref
+                                        .read(subscriptionProvider.notifier)
+                                        .purchaseProduct,
                               ),
                               SizedBox(height: screenHeight * 0.025),
 

@@ -5,12 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/subscription_provider.gen.dart';
 
-const String _kSilverSubscriptionId = 'subscription_silver';
-const String _kGoldSubscriptionId = 'subscription_gold';
-const List<String> _kProductIds = <String>[
-  _kSilverSubscriptionId,
-  _kGoldSubscriptionId,
-];
+const Set<String> _kProductIds = {"100_coins", "200_coins", "single_coin"};
 
 @riverpod
 class Subscription extends _$Subscription {
@@ -19,6 +14,7 @@ class Subscription extends _$Subscription {
     late StreamSubscription<List<PurchaseDetails>> subscription;
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         InAppPurchase.instance.purchaseStream;
+    print("Fetching Subscription");
     subscription = purchaseUpdated.listen(
       (purchaseDetailsList) {
         _listenToPurchaseUpdated(purchaseDetailsList);
@@ -30,12 +26,21 @@ class Subscription extends _$Subscription {
         // handle error here.
       },
     );
+    initStoreInfo();
     SubscritionState iniState = SubscritionState(subscriptions: subscription);
     return iniState;
   }
 
   Future<void> initStoreInfo() async {
-    final bool isAvailable = await InAppPurchase.instance.isAvailable();
+    print("initStoreInfo");
+    bool isAvailable = false;
+    try {
+      isAvailable = await InAppPurchase.instance.isAvailable();
+    } catch (e) {
+      print("ERROR> $e");
+      rethrow;
+    }
+    print("isAvailable $isAvailable");
     if (!isAvailable) {
       state.isAvailable = isAvailable;
       state.products = <ProductDetails>[];
@@ -44,6 +49,7 @@ class Subscription extends _$Subscription {
       state.consumables = <String>[];
       state.purchasePending = false;
       state.loading = false;
+      state = state._updateWith(state);
 
       return;
     }
@@ -57,7 +63,7 @@ class Subscription extends _$Subscription {
 
     final ProductDetailsResponse productDetailResponse = await InAppPurchase
         .instance
-        .queryProductDetails(_kProductIds.toSet());
+        .queryProductDetails(_kProductIds);
     if (productDetailResponse.error != null) {
       // state.queryProductError = productDetailResponse.error!.message;
       state.isAvailable = isAvailable;
@@ -85,54 +91,70 @@ class Subscription extends _$Subscription {
     }
 
     // final List<String> consumables = await ConsumableStore.load();
-    // state.isAvailable = isAvailable;
-    // state.products = productDetailResponse.productDetails;
-    // state.notFoundIds = productDetailResponse.notFoundIDs;
+    state.isAvailable = isAvailable;
+    state.products = productDetailResponse.productDetails;
+    state.notFoundIds = productDetailResponse.notFoundIDs;
     // state.consumables = consumables;
-    // state.purchasePending = false;
-    // state.loading = false;
-    // state = state._updateWith(state);
+    state.purchasePending = false;
+    state.loading = false;
+    state = state._updateWith(state);
   }
 
-  void selectSub(PurchaseDetails sub) async {
+  void selectSub(ProductDetails sub) async {
     // final currentState = await future;
     // currentState.seletedSub = sub;
-    state.seletedSub = sub;
+    state.seletedProduct = sub;
     // state = AsyncData(currentState._updateWith(currentState));
     state = state._updateWith(state);
   }
 
   void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
-      if (purchaseDetails.status == PurchaseStatus.pending) {
-        // _showPendingUI();
-        print("pending");
-      } else {
-        if (purchaseDetails.status == PurchaseStatus.error) {
-          // _handleError(purchaseDetails.error!);
-          print("Error: ${purchaseDetails.error!}");
-        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
-            purchaseDetails.status == PurchaseStatus.restored) {
-          print("pDetails: $purchaseDetails");
-          // bool valid = await _verifyPurchase(purchaseDetails);
-          // if (valid) {
-          //   // _deliverProduct(purchaseDetails);
-          // } else {
-          //   // _handleInvalidPurchase(purchaseDetails);
-          // }
-        }
-        if (purchaseDetails.pendingCompletePurchase) {
-          await InAppPurchase.instance.completePurchase(purchaseDetails);
-        }
+    print(purchaseDetailsList);
+    purchaseDetailsList.forEach(_handlePurchaseUpdate);
+  }
+
+  Future<void> _handlePurchaseUpdate(PurchaseDetails purchaseDetails) async {
+    if (purchaseDetails.status == PurchaseStatus.pending) {
+      // _showPendingUI();
+      print("pending");
+    } else {
+      if (purchaseDetails.status == PurchaseStatus.error) {
+        // _handleError(purchaseDetails.error!);
+        print("Error: ${purchaseDetails.error!}");
+      } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+          purchaseDetails.status == PurchaseStatus.restored) {
+        print("pDetails: $purchaseDetails");
+        // bool valid = await _verifyPurchase(purchaseDetails);
+        // if (valid) {
+        //   // _deliverProduct(purchaseDetails);
+        // } else {
+        //   // _handleInvalidPurchase(purchaseDetails);
+        // }
       }
-    });
+      if (purchaseDetails.pendingCompletePurchase) {
+        await InAppPurchase.instance.completePurchase(purchaseDetails);
+      }
+    }
+  }
+
+  void purchaseProduct() {
+    if (state.seletedProduct != null) {
+      final PurchaseParam purchaseParam = PurchaseParam(
+        productDetails: state.seletedProduct!,
+      );
+      // if (_isConsumable(productDetails)) {
+      InAppPurchase.instance.buyConsumable(purchaseParam: purchaseParam);
+      // } else {
+      //   InAppPurchase.instance.buyNonConsumable(purchaseParam: purchaseParam);
+      // }
+    }
   }
 }
 
 class SubscritionState {
   SubscritionState({
     required this.subscriptions,
-    this.seletedSub,
+    this.seletedProduct,
     this.products = const [],
     this.purchases = const [],
     this.consumables = const [],
@@ -142,7 +164,7 @@ class SubscritionState {
     this.loading = true,
   });
   // final List<SubscriptionModel> subscriptions;
-  PurchaseDetails? seletedSub;
+  ProductDetails? seletedProduct;
   StreamSubscription<List<PurchaseDetails>> subscriptions;
 
   List<ProductDetails> products;
@@ -156,7 +178,7 @@ class SubscritionState {
   SubscritionState _updateWith(SubscritionState state) {
     return SubscritionState(
       subscriptions: state.subscriptions,
-      seletedSub: state.seletedSub,
+      seletedProduct: state.seletedProduct,
       products: state.products,
       purchases: state.purchases,
       consumables: state.consumables,

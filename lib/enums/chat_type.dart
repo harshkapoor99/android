@@ -2,6 +2,7 @@ enum ChatType {
   text,
   audio,
   file,
+  document,
   image,
   call;
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_recorder/flutter_recorder.dart';
 import 'package:guftagu_mobile/enums/player_status.dart';
 import 'package:guftagu_mobile/models/character.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/utils/download_util.dart';
@@ -121,19 +122,33 @@ class Call extends _$Call {
                   creatorId:
                       ref.read(hiveServiceProvider.notifier).getUserId()!,
                 );
-            try {
-              final file = await writeToFile(response.data);
-              await state.player.preparePlayer(path: file.filePath);
-              state.player.setFinishMode(finishMode: FinishMode.stop);
-              if (state.isCallStarted) {
-                print("Playing Audio");
-                state.player.startPlayer();
+            if (response.headers["content-type"]?.contains(
+                  "application/json",
+                ) ==
+                true) {
+              // Handle JSON response if needed
+              printDebug("Received application/json response");
+              // You can parse the JSON here if required
+            } else {
+              try {
+                ref
+                    .read(walletProvider.notifier)
+                    .deductCoins(
+                      response.headers["X-Coins-Deducted"] as double? ?? 0,
+                    );
+                final file = await writeToFile(response.data);
+                await state.player.preparePlayer(path: file.filePath);
+                state.player.setFinishMode(finishMode: FinishMode.stop);
+                if (state.isCallStarted) {
+                  print("Playing Audio");
+                  state.player.startPlayer();
+                }
+              } catch (e) {
+                rethrow;
+              } finally {
+                state.inFlight = false;
+                state = state._updateWith(state);
               }
-            } catch (e) {
-              rethrow;
-            } finally {
-              state.inFlight = false;
-              state = state._updateWith(state);
             }
           }
         } else {

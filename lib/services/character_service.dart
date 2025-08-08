@@ -198,6 +198,7 @@ class CharacterServiceImpl implements CharacterService {
         "ref_image_backstory": refImageBackstory,
         "ref_image": refImage,
       },
+      timeout: const Duration(seconds: 30),
     );
     return response;
   }

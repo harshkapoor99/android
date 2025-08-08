@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:guftagu_mobile/models/character_details.dart';
 import 'package:guftagu_mobile/models/gen_image.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/services/character_service.dart';
 import 'package:guftagu_mobile/services/chat_service.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
@@ -105,6 +106,7 @@ class CharacterProfile extends _$CharacterProfile {
 
       if (response.statusCode == 200) {
         final resImages = response.data['image_gallery'];
+        final coinsUsed = response.data['coins_used'];
         List<GenImage> images = List<GenImage>.from(
           resImages.map((x) => GenImage.fromMap(x)),
         );
@@ -112,6 +114,7 @@ class CharacterProfile extends _$CharacterProfile {
           isGeneratingImages: false,
         );
         updatedState.genImages = images;
+        ref.read(walletProvider.notifier).deductCoins(coinsUsed);
         state = AsyncData(updatedState);
       } else {
         // Handle API error

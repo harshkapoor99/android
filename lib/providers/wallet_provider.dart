@@ -1,6 +1,10 @@
+import 'package:flutter/material.dart';
+import 'package:guftagu_mobile/components/recharge_coin_dialog.dart';
 import 'package:guftagu_mobile/models/wallet.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/subscription_service.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
+import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/wallet_provider.gen.dart';
@@ -40,6 +44,18 @@ class Wallet extends _$Wallet {
     }
 
     state = state._updateWith(state);
+  }
+
+  bool checkWalletHasCoin() {
+    // TODO: update logic
+    if (state.coins >= 0) {
+      showDialog(
+        context: AppConstants.navigatorKey.currentContext!,
+        builder: (context) => const RechargeCoinsDialog(),
+      );
+      return false;
+    }
+    return true;
   }
 }
 

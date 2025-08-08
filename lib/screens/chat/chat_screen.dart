@@ -15,6 +15,7 @@ import 'package:guftagu_mobile/components/wallet_coin_wiget.dart';
 import 'package:guftagu_mobile/enums/chat_type.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/call_provider.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/routes.dart';
 import 'package:guftagu_mobile/utils/date_formats.dart';
 import 'package:guftagu_mobile/providers/chat_provider.dart';
@@ -134,6 +135,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
         if (didPop) {
           ref.read(chatProvider.notifier).fetchChatList();
           ref.read(chatProvider.notifier).clearHistory();
+          ref.read(walletProvider.notifier).fetchWallet();
         }
       },
       child: Scaffold(
@@ -292,7 +294,8 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                               url: message.voiceUrl,
                             ),
                           if (message.chatType == ChatType.file.name ||
-                              message.chatType == ChatType.image.name)
+                              message.chatType == ChatType.image.name ||
+                              message.chatType == ChatType.document.name)
                             ChatBubbleFile(
                               message: message,
                               isMe: message.isMe,

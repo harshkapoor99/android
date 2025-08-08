@@ -94,6 +94,9 @@ class Chat extends _$Chat {
   }
 
   void chatWithCharacter() async {
+    if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+      return;
+    }
     try {
       appendChat(
         isMe: true,
