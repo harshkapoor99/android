@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -116,8 +116,13 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
                                   height: 16,
                                 ),
                                 Text(
-                                  "Coin Balance: ${wallet.coins.ceil()}",
+                                  "Coin Balance:",
                                   style: context.appTextStyle.subTitle,
+                                ),
+                                AnimatedFlipCounter(
+                                  duration: const Duration(milliseconds: 500),
+                                  value: wallet.coins.ceil(),
+                                  textStyle: context.appTextStyle.subTitle,
                                 ),
                               ],
                             ),

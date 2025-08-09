@@ -149,6 +149,9 @@ class Subscription extends _$Subscription {
           var hasRecharged =
               await ref.read(walletProvider.notifier).checkWalletRechage();
           if (hasRecharged) {
+            if (purchaseDetails.pendingCompletePurchase) {
+              await InAppPurchase.instance.completePurchase(purchaseDetails);
+            }
             AppConstants.showSnackbar(
               isSuccess: true,
               message: "Recharge Successful",
@@ -160,18 +163,7 @@ class Subscription extends _$Subscription {
             );
           }
         }
-
-        // bool valid = await _verifyPurchase(purchaseDetails);
-        // if (valid) {
-        //   // _deliverProduct(purchaseDetails);
-        // } else {
-        //   // _handleInvalidPurchase(purchaseDetails);
-        // }
       }
-      if (purchaseDetails.pendingCompletePurchase) {
-        await InAppPurchase.instance.completePurchase(purchaseDetails);
-      }
-
       state.purchasePending = false;
       state = state._updateWith(state);
     }
