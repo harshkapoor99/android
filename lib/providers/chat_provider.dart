@@ -146,6 +146,9 @@ class Chat extends _$Chat {
   }
 
   void audioChatWithCharacter(String path) async {
+    if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+      return;
+    }
     try {
       appendChat(
         isMe: true,
@@ -186,6 +189,9 @@ class Chat extends _$Chat {
   }
 
   void fileChatWithCharacter({bool isImage = false}) async {
+    if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+      return;
+    }
     try {
       if (state.uploadFile != null) {
         String fileName = basename(state.uploadFile!.path);

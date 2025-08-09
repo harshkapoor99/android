@@ -4,7 +4,6 @@ import 'package:guftagu_mobile/models/wallet.dart';
 import 'package:guftagu_mobile/services/hive_service.dart';
 import 'package:guftagu_mobile/services/subscription_service.dart';
 import 'package:guftagu_mobile/utils/app_constants.dart';
-import 'package:guftagu_mobile/utils/context_less_nav.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part '../gen/providers/wallet_provider.gen.dart';
@@ -31,6 +30,23 @@ class Wallet extends _$Wallet {
     }
   }
 
+  Future<bool> checkWalletRechage() async {
+    try {
+      final response = await ref
+          .read(subscriptionServiceProvider)
+          .fetchWallet(ref.read(hiveServiceProvider.notifier).getUserId()!);
+      WalletModel walletModel = WalletModel.fromJson(response.data["wallet"]);
+      if (walletModel.coin > state.coins) {
+        setWalletCoin(walletModel.coin);
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
+    return false;
+  }
+
   void setWalletCoin(double coins) {
     state.coins = coins;
     state = state._updateWith(state);
@@ -47,8 +63,7 @@ class Wallet extends _$Wallet {
   }
 
   bool checkWalletHasCoin() {
-    // TODO: update logic
-    if (state.coins >= 0) {
+    if (state.coins <= 0) {
       showDialog(
         context: AppConstants.navigatorKey.currentContext!,
         builder: (context) => const RechargeCoinsDialog(),

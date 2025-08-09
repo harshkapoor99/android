@@ -46,6 +46,9 @@ class CharacterProfile extends _$CharacterProfile {
   }
 
   void generateRandomPrompt() async {
+    // if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+    //   return;
+    // }
     try {
       // Set loading state
       final currentState = await future;
@@ -91,6 +94,9 @@ class CharacterProfile extends _$CharacterProfile {
   }
 
   void generateNewImages() async {
+    if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+      return;
+    }
     try {
       // Set loading state
       final currentState = await future;

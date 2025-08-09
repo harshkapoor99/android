@@ -208,6 +208,9 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void createCharacter() async {
+    if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+      return;
+    }
     state = state._updateWith(isCharacterGenerating: true);
     try {
       final Response response = await ref
@@ -278,6 +281,9 @@ class CharacterCreation extends _$CharacterCreation {
   }
 
   void generateRandomPrompt() async {
+    // if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+    //   return;
+    // }
     state = state._updateWith(isCharacterGenerating: true);
     try {
       final Response response = await ref

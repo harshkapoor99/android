@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:guftagu_mobile/configs/endpoint.dart';
+import 'package:guftagu_mobile/enums/payment_status.dart';
 import 'package:guftagu_mobile/services/api_client.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,6 +16,17 @@ SubscriptionService subscriptionService(Ref ref) {
 abstract class SubscriptionService {
   Future<Response> fetchSubscriptions();
   Future<Response> fetchWallet(String userId);
+  Future<Response> rechargeWallet({
+    required String userId,
+    required int coin,
+    required String transationId,
+    required String orderId,
+    required double rechargeAmount,
+    required String currencySymbol,
+    required String paymentType,
+    required Map<String, dynamic> paymentData,
+    required PaymentStatus paymentStatus,
+  });
 }
 
 class SubscriptionServiceImpl implements SubscriptionService {
@@ -31,6 +43,34 @@ class SubscriptionServiceImpl implements SubscriptionService {
     return await _apiClient.post(
       RemoteEndpoint.fetchWallet.url,
       data: {"user_id": userId},
+    );
+  }
+
+  @override
+  Future<Response> rechargeWallet({
+    required String userId,
+    required int coin,
+    required String transationId,
+    required String orderId,
+    required double rechargeAmount,
+    required String currencySymbol,
+    required String paymentType,
+    required Map<String, dynamic> paymentData,
+    required PaymentStatus paymentStatus,
+  }) async {
+    return await _apiClient.post(
+      RemoteEndpoint.rechargeWallet.url,
+      data: {
+        "user_id": userId,
+        "coin": coin,
+        "transaction_id": transationId,
+        "order_id": orderId,
+        "recharge_amount": rechargeAmount,
+        "currency": currencySymbol,
+        "payment_type": paymentType,
+        "payment_data": paymentData,
+        "payment_status": paymentStatus.name,
+      },
     );
   }
 }

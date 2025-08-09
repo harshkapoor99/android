@@ -104,6 +104,9 @@ enum RemoteEndpoint {
   ),
   fetchWallet(
     path: "subscriptionandbillingservice/wallet/walletdetailsbyuserid/",
+  ),
+  rechargeWallet(
+    path: "subscriptionandbillingservice/walletrecharge/createwalletrecharge/",
   )
   // ending semicolon - DONT REMOVE THIS COMMENT
   ;

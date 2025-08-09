@@ -1,5 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:guftagu_mobile/enums/payment_status.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
+import 'package:guftagu_mobile/services/hive_service.dart';
+import 'package:guftagu_mobile/services/subscription_service.dart';
+import 'package:guftagu_mobile/utils/app_constants.dart';
+import 'package:guftagu_mobile/utils/product_selector.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -100,7 +107,7 @@ class Subscription extends _$Subscription {
     state = state._updateWith(state);
   }
 
-  void selectSub(ProductDetails sub) async {
+  void selectProduct(ProductDetails sub) async {
     // final currentState = await future;
     // currentState.seletedSub = sub;
     state.seletedProduct = sub;
@@ -115,15 +122,45 @@ class Subscription extends _$Subscription {
 
   Future<void> _handlePurchaseUpdate(PurchaseDetails purchaseDetails) async {
     if (purchaseDetails.status == PurchaseStatus.pending) {
-      // _showPendingUI();
-      print("pending");
+      state.purchasePending = true;
+      state = state._updateWith(state);
     } else {
       if (purchaseDetails.status == PurchaseStatus.error) {
         // _handleError(purchaseDetails.error!);
         print("Error: ${purchaseDetails.error!}");
       } else if (purchaseDetails.status == PurchaseStatus.purchased ||
           purchaseDetails.status == PurchaseStatus.restored) {
-        print("pDetails: $purchaseDetails");
+        print("pDetails: ${purchaseDetails.toString()}");
+        var res = await ref
+            .read(subscriptionServiceProvider)
+            .rechargeWallet(
+              userId: ref.read(hiveServiceProvider.notifier).getUserId()!,
+              coin: getCoinFromProductId(purchaseDetails.productID),
+              transationId: purchaseDetails.transactionDate ?? "",
+              orderId: purchaseDetails.purchaseID ?? "",
+              rechargeAmount: state.seletedProduct!.rawPrice,
+              currencySymbol: state.seletedProduct!.currencySymbol,
+              paymentType: Platform.isIOS ? "App Store" : "Play Store",
+              paymentData: {},
+              paymentStatus: PaymentStatus.SUCCESS,
+            );
+
+        if (res.statusCode == 201) {
+          var hasRecharged =
+              await ref.read(walletProvider.notifier).checkWalletRechage();
+          if (hasRecharged) {
+            AppConstants.showSnackbar(
+              isSuccess: true,
+              message: "Recharge Successful",
+            );
+          } else {
+            AppConstants.showSnackbar(
+              isSuccess: false,
+              message: "Recharge Failed",
+            );
+          }
+        }
+
         // bool valid = await _verifyPurchase(purchaseDetails);
         // if (valid) {
         //   // _deliverProduct(purchaseDetails);
@@ -134,6 +171,9 @@ class Subscription extends _$Subscription {
       if (purchaseDetails.pendingCompletePurchase) {
         await InAppPurchase.instance.completePurchase(purchaseDetails);
       }
+
+      state.purchasePending = false;
+      state = state._updateWith(state);
     }
   }
 

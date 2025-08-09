@@ -211,6 +211,9 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             const WalletCoinWiget(),
             IconButton(
               onPressed: () {
+                if (!ref.read(walletProvider.notifier).checkWalletHasCoin()) {
+                  return;
+                }
                 if (!ref.read(callProvider).isCallStarted) {
                   ref
                       .read(callProvider.notifier)

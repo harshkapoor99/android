@@ -1,11 +1,16 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:guftagu_mobile/components/benefir_row.dart';
 import 'package:guftagu_mobile/components/gradient_button.dart';
 import 'package:guftagu_mobile/components/utility_components/animated_reveal.dart';
 import 'package:guftagu_mobile/gen/assets.gen.dart';
 import 'package:guftagu_mobile/providers/subscription_provider.dart';
+import 'package:guftagu_mobile/providers/wallet_provider.dart';
 import 'package:guftagu_mobile/utils/context_less_nav.dart';
+import 'package:guftagu_mobile/utils/extensions.dart';
+import 'package:guftagu_mobile/utils/string_formats.dart';
 
 class SubscriptionScreen extends ConsumerStatefulWidget {
   const SubscriptionScreen({super.key});
@@ -31,6 +36,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     final screenWidth = MediaQuery.sizeOf(context).width;
 
     final provider = ref.watch(subscriptionProvider);
+    final wallet = ref.watch(walletProvider);
 
     return Scaffold(
       body: SafeArea(
@@ -48,233 +54,284 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             Center(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: SingleChildScrollView(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          context.colorExt.background,
-                        ],
-                        stops: const [0, 1.0],
-                      ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, context.colorExt.background],
+                      stops: const [0, 1.0],
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: screenHeight * 0.1,
-                            bottom: screenHeight * 0.01,
-                          ),
-                          child: Text(
-                            context.l.profileRecharge,
-                            style: TextStyle(
-                              fontSize: _getResponsiveFontSize(context, 28),
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SvgPicture.asset(
+                        Assets.svgs.icDiamonGold,
+                        width: 60,
+                        height: 60,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: screenHeight * 0.01,
+                          bottom: screenHeight * 0.01,
+                        ),
+                        child: Text(
+                          context.l.profileRecharge,
+                          style: TextStyle(
+                            fontSize: _getResponsiveFontSize(context, 28),
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
                           ),
                         ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: screenWidth * 0.05,
-                          ),
-                          child: Column(
-                            children: [
-                              SizedBox(height: screenHeight * 0.03),
-                              if (provider.loading)
-                                const CircularProgressIndicator()
-                              else if (!provider.isAvailable)
-                                const Text(
-                                  "Opps! Looks like the store provider is not available right now.",
-                                )
-                              else
-                                SingleChildScrollView(
-                                  child: Column(
-                                    spacing: 16,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: List.generate(
-                                      provider.products.length,
-                                      (index) {
-                                        final product =
-                                            provider.products[index];
-                                        final isSelected =
-                                            product == provider.seletedProduct;
-                                        if (product.id != "") {
-                                          return AnimatedReveal(
-                                            delay: Duration(
-                                              milliseconds: 500 * index,
-                                            ),
-                                            child: Material(
-                                              color: Colors.transparent,
-                                              child: ListTile(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadiusGeometry.circular(
-                                                        10,
-                                                      ),
-                                                ),
-                                                leading: SvgPicture.asset(
-                                                  Assets.svgs.icDiamonGold,
-                                                ),
-                                                title: Text(
-                                                  product.title,
-                                                  style:
-                                                      context
-                                                          .appTextStyle
-                                                          .appBarText,
-                                                ),
-                                                subtitle: Text(
-                                                  product.description,
-                                                  style:
-                                                      context
-                                                          .appTextStyle
-                                                          .buttonText,
-                                                ),
-                                                trailing: Text(
-                                                  product.rawPrice.toString() +
-                                                      product.currencySymbol,
-                                                  style:
-                                                      context
-                                                          .appTextStyle
-                                                          .appBarText,
-                                                ),
-                                                tileColor: context
-                                                    .colorExt
-                                                    .background
-                                                    .withAlpha(128),
-                                                selectedTileColor: context
-                                                    .colorExt
-                                                    .primary
-                                                    .withAlpha(200),
+                      ),
+                      const Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // List of benefits
+                            BenefitRow(text: 'Unlimited Chat'),
+                            BenefitRow(text: 'Unlock AI Calling'),
+                            BenefitRow(text: 'Unlock Images & Videos'),
+                            BenefitRow(text: 'Personalized Experience'),
+                          ],
+                        ),
+                      ),
 
-                                                onTap:
-                                                    () => ref
-                                                        .read(
-                                                          subscriptionProvider
-                                                              .notifier,
-                                                        )
-                                                        .selectSub(product),
-                                                selected: isSelected,
-                                                style: ListTileStyle.drawer,
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: screenWidth * 0.05,
+                        ),
+                        child: Column(
+                          children: [
+                            (screenHeight * 0.03).ph,
+                            Row(
+                              spacing: 5,
+                              children: [
+                                SvgPicture.asset(
+                                  Assets.svgs.icDiamonGold,
+                                  width: 16,
+                                  height: 16,
+                                ),
+                                Text(
+                                  "Coin Balance: ${wallet.coins.ceil()}",
+                                  style: context.appTextStyle.subTitle,
+                                ),
+                              ],
+                            ),
+                            if (provider.loading)
+                              const CircularProgressIndicator()
+                            else if (!provider.isAvailable)
+                              Text(
+                                "Opps! Looks like the store provider is not available right now.",
+                                style: context.appTextStyle.buttonText,
+                              )
+                            else
+                              GridView.count(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 12,
+                                crossAxisSpacing: 12,
+                                childAspectRatio:
+                                    (screenWidth / 2) /
+                                    (screenHeight *
+                                        0.18), // dynamic aspect ratio
+                                children: List.generate(provider.products.length, (
+                                  index,
+                                ) {
+                                  final product = provider.products[index];
+                                  final isSelected =
+                                      product == provider.seletedProduct;
+                                  if (product.id != "") {
+                                    return AnimatedReveal(
+                                      delay: Duration(
+                                        milliseconds: 500 * index,
+                                      ),
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {
+                                            ref
+                                                .read(
+                                                  subscriptionProvider.notifier,
+                                                )
+                                                .selectProduct(product);
+                                          },
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          child: Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              border: Border.all(
+                                                color:
+                                                    isSelected
+                                                        ? context
+                                                            .colorExt
+                                                            .primary
+                                                        : context
+                                                            .colorExt
+                                                            .textHint,
+                                                width: 2,
                                               ),
                                             ),
-                                          );
-                                        }
-                                        return const SizedBox.shrink();
-                                      },
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  // Remove spacing property, not supported in Row
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      Assets.svgs.icDiamonGold,
+                                                      width: 14,
+                                                      height: 14,
+                                                    ),
+                                                    const SizedBox(width: 5),
+                                                    Text(
+                                                      removeAppNameFromProductTitle(
+                                                        product.title,
+                                                      ),
+                                                      style:
+                                                          context
+                                                              .appTextStyle
+                                                              .textBold,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ],
+                                                ),
+                                                4.ph,
+                                                Text(
+                                                  product.price,
+                                                  style: context
+                                                      .appTextStyle
+                                                      .textSemibold
+                                                      .copyWith(
+                                                        color:
+                                                            context
+                                                                .colorExt
+                                                                .border,
+                                                      ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return const SizedBox.shrink();
+                                }),
+                              ),
+                            // if (kDebugMode) ...[
+                            //   Text(
+                            //     "purchasePending: ${provider.purchasePending.toString()}",
+                            //   ),
+                            //   Text(
+                            //     "isAvailable: ${provider.isAvailable.toString()}",
+                            //   ),
+                            //   Text("loading: ${provider.loading.toString()}"),
+                            //   Text("products: ${provider.products.length}"),
+                            // ],
+                            (screenHeight * 0.03).ph,
+
+                            GradientButton(
+                              title: "CONTINUE",
+                              disabled: provider.seletedProduct == null,
+                              onTap:
+                                  ref
+                                      .read(subscriptionProvider.notifier)
+                                      .purchaseProduct,
+                            ),
+
+                            (screenHeight * 0.04).ph,
+
+                            // Links Row (using Wrap)
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 8.0,
+                              runSpacing: 0.0,
+                              children: [
+                                TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    foregroundColor: const Color(0xffa3a3a3),
+                                  ),
+                                  child: Text(
+                                    'Privacy Policy',
+                                    style: TextStyle(
+                                      fontSize: _getResponsiveFontSize(
+                                        context,
+                                        13,
+                                      ),
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
-
-                              Text(
-                                "purchasePending: ${provider.purchasePending.toString()}",
-                              ),
-                              Text(
-                                "isAvailable: ${provider.isAvailable.toString()}",
-                              ),
-                              Text("loading: ${provider.loading.toString()}"),
-                              Text("products: ${provider.products.length}"),
-
-                              GradientButton(
-                                title: "CONTINUE",
-                                disabled: provider.seletedProduct == null,
-                                onTap:
-                                    ref
-                                        .read(subscriptionProvider.notifier)
-                                        .purchaseProduct,
-                              ),
-                              SizedBox(height: screenHeight * 0.025),
-
-                              // Footer Text
-                              Text(
-                                'Subscription renews automatically. You can cancel anytime',
-                                style: TextStyle(
-                                  color: const Color(0xffa3a3a3),
-                                  fontSize: _getResponsiveFontSize(context, 12),
-                                  fontWeight: FontWeight.w600,
+                                Container(
+                                  height: _getResponsiveFontSize(context, 12),
+                                  width: 1,
+                                  color: Colors.grey,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-
-                              SizedBox(height: screenHeight * 0.015),
-
-                              // Links Row (using Wrap)
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 8.0,
-                                runSpacing: 0.0,
-                                children: [
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      foregroundColor: const Color(0xffa3a3a3),
-                                    ),
-                                    child: Text(
-                                      'Privacy Policy',
-                                      style: TextStyle(
-                                        fontSize: _getResponsiveFontSize(
-                                          context,
-                                          13,
-                                        ),
-                                        fontWeight: FontWeight.w600,
+                                TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    foregroundColor: const Color(0xffa3a3a3),
+                                  ),
+                                  child: Text(
+                                    'Term and Condition',
+                                    style: TextStyle(
+                                      fontSize: _getResponsiveFontSize(
+                                        context,
+                                        13,
                                       ),
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                  Container(
-                                    height: _getResponsiveFontSize(context, 12),
-                                    width: 1,
-                                    color: Colors.grey,
-                                  ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    style: TextButton.styleFrom(
-                                      padding: EdgeInsets.zero,
-                                      minimumSize: Size.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      foregroundColor: const Color(0xffa3a3a3),
-                                    ),
-                                    child: Text(
-                                      'Term and Condition',
-                                      style: TextStyle(
-                                        fontSize: _getResponsiveFontSize(
-                                          context,
-                                          13,
-                                        ),
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
 
-                              SizedBox(
-                                height: screenHeight * 0.03,
-                              ), // Bottom padding
-                            ],
-                          ),
+                            (screenHeight * 0.03).ph, // Bottom padding
+                          ],
                         ),
-                        // --- End Bottom Section Content ---
-                      ],
-                    ),
+                      ),
+                      // --- End Bottom Section Content ---
+                    ],
                   ),
                 ),
               ),
             ),
 
+            if (provider.purchasePending)
+              const Stack(
+                children: <Widget>[
+                  Opacity(
+                    opacity: 0.3,
+                    child: ModalBarrier(dismissible: false, color: Colors.grey),
+                  ),
+                  Center(child: CircularProgressIndicator()),
+                ],
+              ),
             // Back button (Remains fixed due to Stack positioning)
             Positioned(
               top: 10 + MediaQuery.paddingOf(context).top,

@@ -17,9 +17,9 @@ class RechargeCoinsDialog extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: const Color(0xFF1c1c1e),
+          color: context.colorExt.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.white12),
+          border: Border.all(color: context.colorExt.sheet),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -29,8 +29,8 @@ class RechargeCoinsDialog extends StatelessWidget {
             Center(
               child: SvgPicture.asset(
                 Assets.svgs.icDiamonGold,
-                width: 60,
-                height: 60,
+                width: 40,
+                height: 40,
               ),
             ),
             const SizedBox(height: 20),
@@ -39,7 +39,9 @@ class RechargeCoinsDialog extends StatelessWidget {
             Text(
               "You don't have enough coins.\nKindly recharge.",
               textAlign: TextAlign.center,
-              style: context.appTextStyle.textBold,
+              style: context.appTextStyle.textBold.copyWith(
+                color: Colors.redAccent,
+              ),
             ),
             const SizedBox(height: 20),
 
@@ -79,26 +81,6 @@ class RechargeCoinsDialog extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class BenefirRow extends StatelessWidget {
-  final String text;
-  const BenefirRow({super.key, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SvgPicture.asset(Assets.icons.tablerHandFingerRight),
-          const SizedBox(width: 10),
-          Text(text, style: context.appTextStyle.labelText),
-        ],
       ),
     );
   }
