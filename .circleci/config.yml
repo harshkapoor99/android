@@ -1,183 +1,31 @@
-# .circleci/config.yml
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
 version: 2.1
 
-# Define reusable commands for common steps
-commands:
-  flutter_setup:
-    description: "Checkout, restore cache, install Flutter, get dependencies, and save cache."
-    steps:
-      - checkout
-      # - run:
-      #     name: Check checkout path
-      #     command: |
-      #       ls -al ~
-      #       ls -al ~/project
-      # - restore_cache:
-      #     keys:
-      #       - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
-      #       - flutter-{{ .Branch }}
-      #       - flutter-
-      - run:
-          name: Install Ninja Build
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y ninja-build # -y to auto-confirm
-      - run:
-          name: Install Flutter SDK
-          command: |
-            if ! command -v flutter &> /dev/null
-            then
-                echo "Flutter not found. Installing..."
-                git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
-                echo 'export PATH="$PATH:$HOME/flutter/bin"' >> $BASH_ENV
-                source $BASH_ENV
-            else
-                echo "Flutter already installed."
-                flutter --version
-            fi
-            flutter doctor
-      - run:
-          name: Get Flutter Dependencies
-          command: flutter pub get
-      # - save_cache:
-      #     paths:
-      #       - ~/.pub-cache
-      #       - $HOME/flutter
-      #     key: flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
-
-  android_build_and_artifact:
-    description: "Builds the Android release APK and stores it as an artifact."
-    steps:
-      - run:
-          name: Generating asset, font and code files
-          command: |
-            dart run build_runner build
-      - run:
-          name: Generating app locales
-          command: |
-            flutter gen-l10n  --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=intl_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
-      - run:
-          name: Decode and store signing key
-          command: |
-            echo "Decoding and storing key.properties file..."
-            echo $KEYPROPERTIES | base64 --decode > android/key.properties
-            if [ -f android/key.properties ]; then
-              echo "key.properties created successfully."
-            else
-              echo "Failed to create key.properties!"
-              exit 1
-            fi
-      - run:
-          name: Build Android Release APK
-          command: |
-            flutter build apk --release
-
-            # Get the tag name, with a fallback if not running on a tag
-            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
-            # Generate a timestamp (YYYYMMDDHHMMSS)
-            TIMESTAMP=$(date +%F_%H-%M)
-
-            # Construct the new filename for the artifact (e.g., app-alpha1-2024-07-08_18-45.apk)
-            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
-            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
-
-            # Rename the built APK to a temporary, predictable name
-            # This temporary name is what 'store_artifacts' will look for in the 'path' field.
-            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
-
-            # Export the dynamic filename so it can be used in the 'destination' field of store_artifacts
-            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
-      - store_artifacts:
-          # The 'path' refers to the file's location after the 'mv' command
-          path: build/app/outputs/flutter-apk
-          # The 'destination' is the name the artifact will have in the CircleCI UI,
-          # # which can use the dynamically set environment variable.
-          # destination: ${DYNAMIC_ARTIFACT_FILENAME}
-
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  # Job for Alpha builds
-  build_alpha_android_job:
+  say-hello:
+    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/docs/configuration-reference/#executor-job
     docker:
-      - image: cimg/android:2025.04
-    resource_class: large
+      # Specify the version you desire here
+      # See: https://circleci.com/developer/images/image/cimg/base
+      - image: cimg/base:current
+
+    # Add steps to the job
+    # See: https://circleci.com/docs/jobs-steps/#steps-overview & https://circleci.com/docs/configuration-reference/#steps
     steps:
-      - flutter_setup # Use the reusable command
+      # Checkout the code as the first step.
+      - checkout
       - run:
-          name: "Change Package Name for Alpha"
-          command: |
-            OLD_PACKAGE="com.guftagu.app"
-            NEW_PACKAGE="com.guftagu.alpha"
+          name: "Say hello"
+          command: "echo Hello, World!"
 
-            # --- Android Package Name Change ---
-            echo "Changing Android package name from $OLD_PACKAGE to $NEW_PACKAGE"
-            # Replace in AndroidManifest.xml
-            sed -i "s/${OLD_PACKAGE}/${NEW_PACKAGE}/g" android/app/src/main/AndroidManifest.xml
-            # Replace in build.gradle (applicationId)
-            sed -i "s/applicationId = \"${OLD_PACKAGE}\"/applicationId = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
-            sed -i "s/namespace = \"${OLD_PACKAGE}\"/namespace = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
-
-            # Rename directory structure and update MainActivity.kt
-            OLD_PATH="android/app/src/main/kotlin/com/guftagu/app"
-            NEW_PATH="android/app/src/main/kotlin/com/guftagu/alpha"
-            mkdir -p "$NEW_PATH"
-            mv "$OLD_PATH/MainActivity.kt" "$NEW_PATH/MainActivity.kt"
-            sed -i "s/package ${OLD_PACKAGE}/package ${NEW_PACKAGE}/g" "$NEW_PATH/MainActivity.kt"
-            rmdir "$OLD_PATH" # Remove old empty directories
-
-            # --- Android App Name Change ---
-            sed -i 's/Guftagu/Guftagu(Alpha)/g' android/app/src/main/AndroidManifest.xml
-
-            # --- iOS Bundle ID Change ---
-            echo "Changing iOS bundle ID from $OLD_PACKAGE to $NEW_PACKAGE"
-            # Replace in project.pbxproj
-            sed -i "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
-            # For iOS, you might also need to update Info.plist if the bundle identifier is explicitly set there.
-            sed -i "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
-
-            # --- iOS App name Change ---
-            sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
-
-      - android_build_and_artifact # Use the reusable command
-      - run:
-          name: "Alpha Build Specific Steps"
-          command: |
-            echo "Performing alpha-specific post-build actions for tag: $CIRCLE_TAG"
-            # Add any alpha-specific deployment or notification steps here
-            # e.g., deploy to a specific alpha Firebase distribution group
-
-  # Job for Beta builds
-  build_beta_android_job:
-    docker:
-      - image: cimg/android:2024.06-node
-    resource_class: large
-    steps:
-      - flutter_setup # Use the reusable command
-      - android_build_and_artifact # Use the reusable command
-      - run:
-          name: "Beta Build Specific Steps"
-          command: |
-            echo "Performing beta-specific post-build actions for tag: $CIRCLE_TAG"
-            # Add any beta-specific deployment or notification steps here
-            # e.g., deploy to a specific beta Firebase distribution group
-
+# Orchestrate jobs using workflows
+# See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  build_app_workflow:
+  say-hello-workflow: # This is the name of the workflow, feel free to change it to better match your workflow.
+    # Inside the workflow, you define the jobs you want to run.
     jobs:
-      - build_alpha_android_job:
-          # This job will run ONLY if the tag matches the regex `.*alpha.*`
-          # and the workflow is triggered by a tag.
-          filters:
-            tags:
-              only: /.*alpha.*/ # Matches any tag containing "alpha"
-            branches:
-              only: /alpha-rc/ # Only branches for this specific job
-
-      - build_beta_android_job:
-          # This job will run ONLY if the tag matches the regex `.*beta.*`
-          # and the workflow is triggered by a tag.
-          filters:
-            tags:
-              only: /.*beta.*/ # Matches any tag containing "beta"
-            branches:
-              only: /beta-rc/ # Only branches for this specific job
-
+      - say-hello
