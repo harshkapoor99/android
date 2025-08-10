@@ -135,13 +135,17 @@ workflows:
             - create_pr_feature_to_test
           filters:
              branches:
-               only: harsh
+               ignore: 
+                    - test
+                    - main
       - merge_feature_to_test:
           requires:
             - hold_for_test_pr_approval
           filters:
             branches:
-              only: harsh
+              ignore: 
+                   - test
+                   - main
 
   test-to-main:
     jobs:
