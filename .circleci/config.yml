@@ -7,29 +7,34 @@ jobs:
     steps:
       - checkout
       - run:
-           name: Install GitHub CLI
-           command: |
-                   sudo apt update && sudo apt install -y curl
-                   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
-                  sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-                  sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-                   echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
-                   sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-                   sudo apt update && sudo apt install -y gh
+          name: Install GitHub CLI
+          command: |
+            sudo apt update && sudo apt install -y curl
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+              sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+            https://cli.github.com/packages stable main" | \
+              sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update && sudo apt install -y gh
       - run:
           name: Create PR from feature to test
           command: |
-                    if [ -z "$GH_TOKEN" ]; then
-                     echo "GH_TOKEN is not set. Please set it in CircleCI Project Settings → Environment Variables."
-                      exit 1
-                      fi
-                      export GITHUB_TOKEN="$GH_TOKEN"
-                      git config --global user.email "ci@example.com"
-                      git config --global user.name "CircleCI Bot"
-                      git fetch --all
-                      git checkout "$CIRCLE_BRANCH"
-                      gh pr create --base test --head "$CIRCLE_BRANCH" --title "[CI] Merge $CIRCLE_BRANCH to test" --body "Automated PR from CircleCI"
-          
+            if [ -z "$GH_TOKEN" ]; then
+              echo "GH_TOKEN is not set. Please set it in CircleCI Project Settings → Environment Variables."
+              exit 1
+            fi
+            export GITHUB_TOKEN="$GH_TOKEN"
+            git config --global user.email "ci@example.com"
+            git config --global user.name "CircleCI Bot"
+            git fetch --all
+            git checkout "$CIRCLE_BRANCH"
+            gh pr create \
+              --base test \
+              --head "$CIRCLE_BRANCH" \
+              --title "[CI] Merge $CIRCLE_BRANCH to test" \
+              --body "Automated PR from CircleCI"
+
   hold_for_test_pr_approval:
     type: approval
 
@@ -64,7 +69,8 @@ jobs:
             curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
               sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
             sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
+            https://cli.github.com/packages stable main" | \
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
             sudo apt update && sudo apt install -y gh
       - run:
@@ -77,7 +83,11 @@ jobs:
             git config --global user.name "CircleCI Bot"
             git fetch --all
             git checkout test
-            gh pr create --base main --head test --title "[CI] Merge test to main" --body "Automated PR from CircleCI"
+            gh pr create \
+              --base main \
+              --head test \
+              --title "[CI] Merge test to main" \
+              --body "Automated PR from CircleCI"
 
   hold_for_main_pr_approval:
     type: approval
@@ -130,6 +140,7 @@ jobs:
 
 workflows:
   version: 2
+
   feature-to-test:
     jobs:
       - create_pr_feature_to_test:
@@ -142,18 +153,18 @@ workflows:
           requires:
             - create_pr_feature_to_test
           filters:
-             branches:
-               ignore: 
-                    - test
-                    - main
+            branches:
+              ignore:
+                - test
+                - main
       - merge_feature_to_test:
           requires:
             - hold_for_test_pr_approval
           filters:
             branches:
-              ignore: 
-                   - test
-                   - main
+              ignore:
+                - test
+                - main
 
   test-to-main:
     jobs:
@@ -184,3 +195,4 @@ workflows:
             branches:
               only:
                 - main
+
