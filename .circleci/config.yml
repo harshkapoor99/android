@@ -1,183 +1,168 @@
-# .circleci/config.yml
 version: 2.1
 
-# Define reusable commands for common steps
-commands:
-  flutter_setup:
-    description: "Checkout, restore cache, install Flutter, get dependencies, and save cache."
+jobs:
+  create_pr_feature_to_test:
+    docker:
+      - image: cimg/python:3.10
     steps:
       - checkout
-      # - run:
-      #     name: Check checkout path
-      #     command: |
-      #       ls -al ~
-      #       ls -al ~/project
-      # - restore_cache:
-      #     keys:
-      #       - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
-      #       - flutter-{{ .Branch }}
-      #       - flutter-
       - run:
-          name: Install Ninja Build
+          name: Install GitHub CLI
           command: |
-            sudo apt-get update
-            sudo apt-get install -y ninja-build # -y to auto-confirm
+            sudo apt update && sudo apt install -y curl
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+              sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+              sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update && sudo apt install -y gh
       - run:
-          name: Install Flutter SDK
+          name: Create PR from feature to test
           command: |
-            if ! command -v flutter &> /dev/null
-            then
-                echo "Flutter not found. Installing..."
-                git clone https://github.com/flutter/flutter.git -b stable --depth 1 $HOME/flutter
-                echo 'export PATH="$PATH:$HOME/flutter/bin"' >> $BASH_ENV
-                source $BASH_ENV
-            else
-                echo "Flutter already installed."
-                flutter --version
-            fi
-            flutter doctor
-      - run:
-          name: Get Flutter Dependencies
-          command: flutter pub get
-      # - save_cache:
-      #     paths:
-      #       - ~/.pub-cache
-      #       - $HOME/flutter
-      #     key: flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
+            git config --global user.email "ci@example.com"
+            git config --global user.name "CircleCI Bot"
+            git fetch --all
+            git checkout "$CIRCLE_BRANCH"
+            gh pr create --base test --head "$CIRCLE_BRANCH" --title "[CI] Merge $CIRCLE_BRANCH to test" --body "Automated PR from CircleCI"
 
-  android_build_and_artifact:
-    description: "Builds the Android release APK and stores it as an artifact."
+  hold_for_test_pr_approval:
+    type: approval
+
+  merge_feature_to_test:
+    docker:
+      - image: cimg/python:3.10
     steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:kTvcBKQIYpwUzYIPu72z0IdfR1tHX+NaneassXNSK8I"
       - run:
-          name: Generating asset, font and code files
+          name: Merge branch to test after approval
           command: |
-            dart run build_runner build
+            git config --global user.email "ci@example.com"
+            git config --global user.name "CircleCI Bot"
+            git fetch origin
+            git checkout test
+            git pull origin test
+            git merge --no-ff "$CIRCLE_BRANCH" -m "Auto-merged $CIRCLE_BRANCH to test after approval"
+            git push origin test
+
+  create_pr_test_to_main:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
       - run:
-          name: Generating app locales
+          name: Install GitHub CLI
           command: |
-            flutter gen-l10n  --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=intl_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
+            sudo apt update && sudo apt install -y curl
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+              sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+            sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+              sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            sudo apt update && sudo apt install -y gh
       - run:
-          name: Decode and store signing key
+          name: Create PR from test to main
           command: |
-            echo "Decoding and storing key.properties file..."
-            echo $KEYPROPERTIES | base64 --decode > android/key.properties
-            if [ -f android/key.properties ]; then
-              echo "key.properties created successfully."
-            else
-              echo "Failed to create key.properties!"
-              exit 1
-            fi
+            git config --global user.email "ci@example.com"
+            git config --global user.name "CircleCI Bot"
+            git fetch --all
+            git checkout test
+            gh pr create --base main --head test --title "[CI] Merge test to main" --body "Automated PR from CircleCI"
+
+  hold_for_main_pr_approval:
+    type: approval
+
+  merge_test_to_main:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints:
+            - "SHA256:kTvcBKQIYpwUzYIPu72z0IdfR1tHX+NaneassXNSK8I"
       - run:
-          name: Build Android Release APK
+          name: Merge test to main after approval
           command: |
+            git config --global user.email "ci@example.com"
+            git config --global user.name "CircleCI Bot"
+            git fetch origin
+            git checkout main
+            git pull origin main
+            git merge --no-ff test -m "Auto-merged test to main after approval"
+            git push origin main
+
+  test_job:
+    docker:
+      - image: cimg/python:3.10
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            echo "Running tests..."
+            # Replace with actual test commands for Flutter/Dart
+            flutter test
+
+  build_flutter_apk:
+    docker:
+      - image: cirrusci/flutter:latest
+    steps:
+      - checkout
+      - run:
+          name: Build Flutter APK
+          command: |
+            flutter pub get
             flutter build apk --release
-
-            # Get the tag name, with a fallback if not running on a tag
-            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
-            # Generate a timestamp (YYYYMMDDHHMMSS)
-            TIMESTAMP=$(date +%F_%H-%M)
-
-            # Construct the new filename for the artifact (e.g., app-alpha1-2024-07-08_18-45.apk)
-            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
-            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
-
-            # Rename the built APK to a temporary, predictable name
-            # This temporary name is what 'store_artifacts' will look for in the 'path' field.
-            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
-
-            # Export the dynamic filename so it can be used in the 'destination' field of store_artifacts
-            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
-      - store_artifacts:
-          # The 'path' refers to the file's location after the 'mv' command
-          path: build/app/outputs/flutter-apk
-          # The 'destination' is the name the artifact will have in the CircleCI UI,
-          # # which can use the dynamically set environment variable.
-          # destination: ${DYNAMIC_ARTIFACT_FILENAME}
-
-jobs:
-  # Job for Alpha builds
-  build_alpha_android_job:
-    docker:
-      - image: cimg/android:2025.04
-    resource_class: large
-    steps:
-      - flutter_setup # Use the reusable command
-      - run:
-          name: "Change Package Name for Alpha"
-          command: |
-            OLD_PACKAGE="com.guftagu.app"
-            NEW_PACKAGE="com.guftagu.alpha"
-
-            # --- Android Package Name Change ---
-            echo "Changing Android package name from $OLD_PACKAGE to $NEW_PACKAGE"
-            # Replace in AndroidManifest.xml
-            sed -i "s/${OLD_PACKAGE}/${NEW_PACKAGE}/g" android/app/src/main/AndroidManifest.xml
-            # Replace in build.gradle (applicationId)
-            sed -i "s/applicationId = \"${OLD_PACKAGE}\"/applicationId = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
-            sed -i "s/namespace = \"${OLD_PACKAGE}\"/namespace = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
-
-            # Rename directory structure and update MainActivity.kt
-            OLD_PATH="android/app/src/main/kotlin/com/guftagu/app"
-            NEW_PATH="android/app/src/main/kotlin/com/guftagu/alpha"
-            mkdir -p "$NEW_PATH"
-            mv "$OLD_PATH/MainActivity.kt" "$NEW_PATH/MainActivity.kt"
-            sed -i "s/package ${OLD_PACKAGE}/package ${NEW_PACKAGE}/g" "$NEW_PATH/MainActivity.kt"
-            rmdir "$OLD_PATH" # Remove old empty directories
-
-            # --- Android App Name Change ---
-            sed -i 's/Guftagu/Guftagu(Alpha)/g' android/app/src/main/AndroidManifest.xml
-
-            # --- iOS Bundle ID Change ---
-            echo "Changing iOS bundle ID from $OLD_PACKAGE to $NEW_PACKAGE"
-            # Replace in project.pbxproj
-            sed -i "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
-            # For iOS, you might also need to update Info.plist if the bundle identifier is explicitly set there.
-            sed -i "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
-
-            # --- iOS App name Change ---
-            sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
-
-      - android_build_and_artifact # Use the reusable command
-      - run:
-          name: "Alpha Build Specific Steps"
-          command: |
-            echo "Performing alpha-specific post-build actions for tag: $CIRCLE_TAG"
-            # Add any alpha-specific deployment or notification steps here
-            # e.g., deploy to a specific alpha Firebase distribution group
-
-  # Job for Beta builds
-  build_beta_android_job:
-    docker:
-      - image: cimg/android:2024.06-node
-    resource_class: large
-    steps:
-      - flutter_setup # Use the reusable command
-      - android_build_and_artifact # Use the reusable command
-      - run:
-          name: "Beta Build Specific Steps"
-          command: |
-            echo "Performing beta-specific post-build actions for tag: $CIRCLE_TAG"
-            # Add any beta-specific deployment or notification steps here
-            # e.g., deploy to a specific beta Firebase distribution group
+      - persist_to_workspace:
+          root: .
+          paths:
+            - build/app/outputs/flutter-apk/app-release.apk
 
 workflows:
-  build_app_workflow:
+  version: 2
+  feature-to-test:
     jobs:
-      - build_alpha_android_job:
-          # This job will run ONLY if the tag matches the regex `.*alpha.*`
-          # and the workflow is triggered by a tag.
+      - create_pr_feature_to_test:
           filters:
-            tags:
-              only: /.*alpha.*/ # Matches any tag containing "alpha"
             branches:
-              only: /alpha-rc/ # Only branches for this specific job
+              ignore:
+                - test
+                - main
+      - hold_for_test_pr_approval:
+          requires:
+            - create_pr_feature_to_test
+      - merge_feature_to_test:
+          requires:
+            - hold_for_test_pr_approval
 
-      - build_beta_android_job:
-          # This job will run ONLY if the tag matches the regex `.*beta.*`
-          # and the workflow is triggered by a tag.
+  test-to-main:
+    jobs:
+      - create_pr_test_to_main:
           filters:
-            tags:
-              only: /.*beta.*/ # Matches any tag containing "beta"
             branches:
-              only: /beta-rc/ # Only branches for this specific job
+              only:
+                - test
+      - hold_for_main_pr_approval:
+          requires:
+            - create_pr_test_to_main
+      - merge_test_to_main:
+          requires:
+            - hold_for_main_pr_approval
 
+  test_and_build:
+    jobs:
+      - test_job:
+          filters:
+            branches:
+              only:
+                - test
+                - main
+      - build_flutter_apk:
+          requires:
+            - test_job
+          filters:
+            branches:
+              only:
+                - main
