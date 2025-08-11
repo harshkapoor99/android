@@ -29,7 +29,8 @@ jobs:
             git config --global user.name "CircleCI Bot"
             git fetch --all
             git checkout "$CIRCLE_BRANCH"
-            gh pr create --base tests --head "$CIRCLE_BRANCH" --title "[CI] Merge $CIRCLE_BRANCH to tests" --body "Automated PR from CircleCI
+            gh pr create --base tests --head "$CIRCLE_BRANCH" --title "[CI] Merge $CIRCLE_BRANCH to tests"\
+            --body "Automated PR from CircleCI"
   hold_for_test_pr_approval:
     type: approval
 
