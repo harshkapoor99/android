@@ -200,9 +200,15 @@ workflows:
       - hold_for_main_pr_approval:
           requires:
             - create_pr_test_to_main
+          filters:
+            branches:
+              only: tests
       - merge_test_to_main:
           requires:
             - hold_for_main_pr_approval
+          filters:
+            branches:
+              only: tests
 
   test_and_build:
     jobs:
@@ -210,7 +216,6 @@ workflows:
           filters:
             branches:
               only:
-                - tests
                 - main
       - build_flutter_apk:
           requires:
