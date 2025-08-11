@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   create_pr_feature_to_test:
     docker:
-      - image: cimg/python:3.10
+      - image: cirrusci/flutter:stable
     steps:
       - checkout
       - run:
@@ -29,18 +29,13 @@ jobs:
             git config --global user.name "CircleCI Bot"
             git fetch --all
             git checkout "$CIRCLE_BRANCH"
-            gh pr create \
-              --base test \
-              --head "$CIRCLE_BRANCH" \
-              --title "[CI] Merge $CIRCLE_BRANCH to test" \
-              --body "Automated PR from CircleCI"
-
+            gh pr create --base tests --head "$CIRCLE_BRANCH" --title "[CI] Merge $CIRCLE_BRANCH to tests" --body "Automated PR from CircleCI
   hold_for_test_pr_approval:
     type: approval
 
   merge_feature_to_test:
     docker:
-      - image: cimg/python:3.10
+      - image: cirrusci/flutter:stable
     steps:
       - checkout
       - add_ssh_keys:
@@ -52,14 +47,15 @@ jobs:
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch origin
-            git checkout test
-            git pull origin test
-            git merge --no-ff "$CIRCLE_BRANCH" -m "Auto-merged $CIRCLE_BRANCH to test after approval"
-            git push origin test
+            git checkout tests
+            git pull origin tests
+            git merge --no-ff "$CIRCLE_BRANCH" -m "Auto-merged $CIRCLE_BRANCH to tests after approval"
+            
+            git push origin tests
 
   create_pr_test_to_main:
     docker:
-      - image: cimg/python:3.10
+      - image: cirrusci/flutter:stable
     steps:
       - checkout
       - run:
@@ -82,19 +78,15 @@ jobs:
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch --all
-            git checkout test
-            gh pr create \
-              --base main \
-              --head test \
-              --title "[CI] Merge test to main" \
-              --body "Automated PR from CircleCI"
+            git checkout tests
+            gh pr create --base main --head tests --title "[CI] Merge tests to main" --body "Automated PR from CircleCI"
 
   hold_for_main_pr_approval:
     type: approval
 
   merge_test_to_main:
     docker:
-      - image: cimg/python:3.10
+      - image: cirrusci/flutter:stable
     steps:
       - checkout
       - add_ssh_keys:
@@ -108,19 +100,18 @@ jobs:
             git fetch origin
             git checkout main
             git pull origin main
-            git merge --no-ff test -m "Auto-merged test to main after approval"
+            git merge --no-ff tests -m "Auto-merged tests to main after approval"
             git push origin main
 
   test_job:
     docker:
-      - image: cimg/python:3.10
+      - image: cirrusci/flutter:stable
     steps:
       - checkout
       - run:
           name: Run tests
           command: |
             echo "Running tests..."
-            # Replace with actual test commands for Flutter/Dart
             flutter test
 
   build_flutter_apk:
@@ -147,7 +138,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - test
+                - tests
                 - main
       - hold_for_test_pr_approval:
           requires:
@@ -155,7 +146,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - test
+                - tests
                 - main
       - merge_feature_to_test:
           requires:
@@ -163,7 +154,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - test
+                - tests
                 - main
 
   test-to-main:
@@ -172,7 +163,7 @@ workflows:
           filters:
             branches:
               only:
-                - test
+                - tests
       - hold_for_main_pr_approval:
           requires:
             - create_pr_test_to_main
@@ -186,7 +177,7 @@ workflows:
           filters:
             branches:
               only:
-                - test
+                - tests
                 - main
       - build_flutter_apk:
           requires:
