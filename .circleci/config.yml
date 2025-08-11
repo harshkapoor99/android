@@ -5,7 +5,7 @@ jobs:
     docker:
 
 
-      - image: cirrusci/flutter:stable
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
 
 
     steps:
@@ -56,7 +56,7 @@ jobs:
     docker:
 
 
-      - image: cirrusci/flutter:stable
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
 
     steps:
       - checkout
@@ -79,7 +79,7 @@ jobs:
 
   create_pr_test_to_main:
     docker:
-      - image: cirrusci/flutter:stable
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
     steps:
       - checkout
       - run:
@@ -117,7 +117,7 @@ jobs:
     docker:
 
 
-      - image: cirrusci/flutter:stable
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
 
 
 
@@ -145,7 +145,7 @@ jobs:
 
   test_job:
     docker:
-      - image: cirrusci/flutter:stable
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
     steps:
       - checkout
       - run:
@@ -162,7 +162,7 @@ jobs:
 
   build_flutter_apk:
     docker:
-      - image: cirrusci/flutter:latest
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
     steps:
       - checkout
       - run:
