@@ -4,7 +4,9 @@ jobs:
   create_pr_feature_to_test:
     docker:
 
+
       - image: cirrusci/flutter:stable
+
 
     steps:
       - checkout
@@ -16,8 +18,10 @@ jobs:
               sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
             sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
 
+
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
             https://cli.github.com/packages stable main" | \
+
 
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
             sudo apt update && sudo apt install -y gh
@@ -25,16 +29,19 @@ jobs:
           name: Create PR from feature to test
           command: |
 
+
             if [ -z "$GH_TOKEN" ]; then
               echo "GH_TOKEN is not set. Please set it in CircleCI Project Settings → Environment Variables."
               exit 1
             fi
             export GITHUB_TOKEN="$GH_TOKEN"
 
+
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch --all
             git checkout "$CIRCLE_BRANCH"
+
 
              gh pr create \
               --base tests \
@@ -48,12 +55,14 @@ jobs:
   merge_feature_to_test:
     docker:
 
+
       - image: cirrusci/flutter:stable
 
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
+
             - "SHA256:1gLCvRLQ0VPmPmVADX1UZth0hBWAOWs60C8QWfFItfE"
       - run:
           name: Merge branch to test after approval
@@ -107,14 +116,18 @@ jobs:
   merge_test_to_main:
     docker:
 
+
       - image: cirrusci/flutter:stable
+
 
 
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
+
             - "SHA256:1gLCvRLQ0VPmPmVADX1UZth0hBWAOWs60C8QWfFItfE"
+
       - run:
           name: Merge test to main after approval
           command: |
@@ -124,14 +137,18 @@ jobs:
             git checkout main
             git pull origin main
 
+
             git merge --no-ff tests -m "Auto-merged tests to main after approval"
+
 
             git push origin main
 
   test_job:
     docker:
 
+
       - image: cirrusci/flutter:stable
+
 
     steps:
       - checkout
@@ -139,6 +156,8 @@ jobs:
           name: Run tests
           command: |
             echo "Running tests..."
+
+
 
 
             flutter test
@@ -166,9 +185,7 @@ workflows:
       - create_pr_feature_to_test:
           filters:
             branches:
-              ignore:
-
-                - tests
+                 - tests
                  - main
       - hold_for_test_pr_approval:
           requires:
@@ -210,6 +227,7 @@ workflows:
             branches:
               only: tests
 
+
   test_and_build:
     jobs:
       - test_job:
@@ -224,5 +242,4 @@ workflows:
             branches:
               only:
                 - main
-
 
