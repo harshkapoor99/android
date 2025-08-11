@@ -2,7 +2,7 @@ version: 2.1
 
 defaults: &flutter_docker
   docker:
-    - image: ghcr.io/cirruslabs/flutter:3.27.1  # ✅ Flutter 3.27.3 includes Dart 3.7.x
+    - image: ghcr.io/cirruslabs/flutter:3.27.0 # ✅ Flutter 3.27.3 includes Dart 3.7.x
 
 jobs:
   create_pr_feature_to_test:
