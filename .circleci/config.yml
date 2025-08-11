@@ -84,13 +84,15 @@ jobs:
             https://cli.github.com/packages stable main" | \
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
             sudo apt update && sudo apt install -y gh
-      - run:
-          name: Authenticate GitHub CLI
-          command: echo "$GH_TOKEN" | gh auth login --with-token
-
+      
       - run:
           name: Create PR from test to main
           command: |
+            if [ -z "$GH_TOKEN" ]; then
+              echo "GH_TOKEN is not set. Please set it in CircleCI Project Settings → Environment Variables."
+              exit 1
+            fi
+            export GITHUB_TOKEN="$GH_TOKEN"
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch --all
