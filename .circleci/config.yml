@@ -183,7 +183,7 @@ workflows:
 
   test_and_build:
     jobs:
-      - test_job:
+      - build_flutter_apk:
           filters:
             branches:
               only:
