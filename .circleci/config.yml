@@ -35,7 +35,8 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:kTvcBKQIYpwUzYIPu72z0IdfR1tHX+NaneassXNSK8I"
+            - "SHA256:hWFyizoeUHzOdypZ6nzKdyWRJi5rYQNUa1KAUO0K5es"
+
       - run:
           name: Merge branch to test after approval
           command: |
@@ -81,7 +82,7 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "SHA256:kTvcBKQIYpwUzYIPu72z0IdfR1tHX+NaneassXNSK8I"
+            - "SHA256:hWFyizoeUHzOdypZ6nzKdyWRJi5rYQNUa1KAUO0K5es"
       - run:
           name: Merge test to main after approval
           command: |
