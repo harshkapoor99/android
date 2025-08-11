@@ -185,12 +185,13 @@ workflows:
       - create_pr_feature_to_test:
           filters:
             branches:
+              ignore:
+
                  - tests
                  - main
       - hold_for_test_pr_approval:
           requires:
             - create_pr_feature_to_test
-
           filters:
             branches:
               ignore:
