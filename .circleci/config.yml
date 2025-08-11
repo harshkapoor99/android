@@ -145,22 +145,20 @@ jobs:
 
   test_job:
     docker:
-
-
       - image: cirrusci/flutter:stable
-
-
     steps:
       - checkout
       - run:
-          name: Run tests
-          command: |
-            echo "Running tests..."
+          name: Install Dependencies
+          command: flutter pub get
+      - run:
+          name: Run Tests
+          command: flutter test
+          
 
 
 
 
-            flutter test
 
   build_flutter_apk:
     docker:
@@ -236,11 +234,11 @@ workflows:
             branches:
               only:
                 - main
-      - build_flutter_apk:
-          requires:
-            - test_job
-          filters:
-            branches:
-              only:
-                - main
+      # - build_flutter_apk:
+      #     requires:
+      #       - test_job
+      #     filters:
+      #       branches:
+      #         only:
+      #           - main
 
