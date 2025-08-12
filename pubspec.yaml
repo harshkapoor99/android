@@ -59,6 +59,7 @@ dev_dependencies:
   riverpod_generator: ^2.6.5
   custom_lint: ^0.7.5
   riverpod_lint: ^2.6.5
+  intl_utils: ^2.8.4
 
 flutter:
   generate: true
