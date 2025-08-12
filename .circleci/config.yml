@@ -119,17 +119,17 @@ jobs:
       - run:
           name: Run Tests
           command: flutter test
-          
+
   generate_flutter_localizations:
-  <<: *flutter_docker
+    <<: *flutter_docker
     steps:
       - checkout
       - run:
-         name: Install Flutter dependencies
-         command: flutter pub get
+          name: Install Flutter dependencies
+          command: flutter pub get
       - run:
-         name: Generate Flutter localization files
-         command: flutter gen-l10n
+          name: Generate Flutter localization files
+          command: flutter gen-l10n
 
   build_flutter_apk:
     <<: *flutter_docker
@@ -154,7 +154,6 @@ workflows:
             branches:
               only:
                 - harsh
-                
       - hold_for_test_pr_approval:
           requires:
             - create_pr_feature_to_test
@@ -167,9 +166,8 @@ workflows:
             - hold_for_test_pr_approval
           filters:
             branches:
-              only :
+              only:
                 - harsh
-                
 
   test-to-main:
     jobs:
@@ -194,16 +192,17 @@ workflows:
   test_and_build:
     jobs:
       - generate_flutter_localizations:
-        filters:
-          branches:
-            only:
-              - main
-      - build_flutter_apk:
-          requires:
-           - generate_flutter_localizations
           filters:
             branches:
               only:
                 - main
+      - build_flutter_apk:
+          requires:
+            - generate_flutter_localizations
+          filters:
+            branches:
+              only:
+                - main
+
 
 
