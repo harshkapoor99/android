@@ -122,14 +122,14 @@ jobs:
           
   generate_flutter_localizations:
   <<: *flutter_docker
-  steps:
-    - checkout
-    - run:
-        name: Install Flutter dependencies
-        command: flutter pub get
-    - run:
-        name: Generate Flutter localization files
-        command: flutter gen-l10n
+    steps:
+      - checkout
+      - run:
+         name: Install Flutter dependencies
+         command: flutter pub get
+      - run:
+         name: Generate Flutter localization files
+         command: flutter gen-l10n
 
   build_flutter_apk:
     <<: *flutter_docker
