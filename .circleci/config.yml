@@ -129,7 +129,7 @@ jobs:
           command: flutter pub get
       - run:
           name: Generate Flutter localization files
-          command: flutter pub run intl_utils:generate
+          command: flutter gen-l10n
 
 
   build_flutter_apk:
