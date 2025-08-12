@@ -47,21 +47,21 @@ jobs:
           destination: app-release.apk
 
 workflows:
-  pr_automation_workflow:
-    jobs:
-      - create_pr_alpha_to_main:
-          filters:
-            branches:
-              only: alpha
-      - create_pr_main_to_tests:
-          filters:
-            branches:
-              only: main
+  # pr_automation_workflow:
+  #   jobs:
+  #     - create_pr_alpha_to_main:
+  #         filters:
+  #           branches:
+  #             only: alpha
+  #     - create_pr_main_to_tests:
+  #         filters:
+  #           branches:
+  #             only: main
 
   build_on_main_workflow:
     jobs:
       - build_release_android_job:
           filters:
             branches:
-              only: tests
+              only: alpha
 
