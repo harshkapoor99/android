@@ -96,6 +96,6 @@ flutter_intl:
     enabled: true
     arb_dir: lib/l10n
     template_arb_file: app_en.arb
-    output_dir: lib/generated
+    output_dir: lib/gen/l10n
     output_class: AppLocalizations 
 
