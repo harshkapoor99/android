@@ -1,26 +1,15 @@
 version: 2.1
 
-# Define reusable commands for common steps
 commands:
   flutter_setup:
     description: "Checkout, restore cache, install Flutter, get dependencies, and save cache."
     steps:
       - checkout
-      # - run:
-      #     name: Check checkout path
-      #     command: |
-      #       ls -al ~
-      #       ls -al ~/project
-      # - restore_cache:
-      #     keys:
-      #       - flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
-      #       - flutter-{{ .Branch }}
-      #       - flutter-
       - run:
           name: Install Ninja Build
           command: |
             sudo apt-get update
-            sudo apt-get install -y ninja-build # -y to auto-confirm
+            sudo apt-get install -y ninja-build
       - run:
           name: Install Flutter SDK
           command: |
@@ -38,19 +27,11 @@ commands:
       - run:
           name: Get Flutter Dependencies
           command: flutter pub get
-      # - save_cache:
-      #     paths:
-      #       - ~/.pub-cache
-      #       - $HOME/flutter
-      #     key: flutter-{{ .Branch }}-{{ checksum "pubspec.yaml" }}
- jobs:
+
+jobs:
   create_pr_feature_to_test:
     docker:
-
-
       - image: cirrusci/flutter:3.7.0
-
-
     steps:
       - checkout
       - run:
@@ -60,33 +41,23 @@ commands:
             curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
               sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
             sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
-
-
             echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] \
             https://cli.github.com/packages stable main" | \
-
-
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
             sudo apt update && sudo apt install -y gh
       - run:
           name: Create PR from feature to test
           command: |
-
-
             if [ -z "$GH_TOKEN" ]; then
               echo "GH_TOKEN is not set. Please set it in CircleCI Project Settings → Environment Variables."
               exit 1
             fi
             export GITHUB_TOKEN="$GH_TOKEN"
-
-
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch --all
             git checkout "$CIRCLE_BRANCH"
-
-
-             gh pr create \
+            gh pr create \
               --base tests \
               --head "$CIRCLE_BRANCH" \
               --title "[CI] Merge $CIRCLE_BRANCH to tests" \
@@ -97,19 +68,14 @@ commands:
 
   merge_feature_to_test:
     docker:
-
-
       - image: cirrusci/flutter:3.7.0
-
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
-
             - "SHA256:1gLCvRLQ0VPmPmVADX1UZth0hBWAOWs60C8QWfFItfE"
       - run:
           name: Merge branch to test after approval
-
           command: |
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
@@ -117,7 +83,6 @@ commands:
             git checkout tests
             git pull origin tests
             git merge --no-ff "$CIRCLE_BRANCH" -m "Auto-merged $CIRCLE_BRANCH to tests after approval"
-            
             git push origin tests
 
   create_pr_test_to_main:
@@ -136,7 +101,6 @@ commands:
             https://cli.github.com/packages stable main" | \
               sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
             sudo apt update && sudo apt install -y gh
-      
       - run:
           name: Create PR from test to main
           command: |
@@ -148,29 +112,20 @@ commands:
             git config --global user.email "ci@example.com"
             git config --global user.name "CircleCI Bot"
             git fetch --all
-
             git checkout tests
             gh pr create --base main --head tests --title "[CI] Merge tests to main" --body "Automated PR from CircleCI"
-
 
   hold_for_main_pr_approval:
     type: approval
 
   merge_test_to_main:
     docker:
-
-
       - image: cirrusci/flutter:3.7.0
-
-
-
     steps:
       - checkout
       - add_ssh_keys:
           fingerprints:
-
             - "SHA256:1gLCvRLQ0VPmPmVADX1UZth0hBWAOWs60C8QWfFItfE"
-
       - run:
           name: Merge test to main after approval
           command: |
@@ -179,11 +134,7 @@ commands:
             git fetch origin
             git checkout main
             git pull origin main
-
-
             git merge --no-ff tests -m "Auto-merged tests to main after approval"
-
-
             git push origin main
 
   test_job:
@@ -201,11 +152,6 @@ commands:
           command: |
             flutter test --coverage
       - store_test_results:
-          
-
-
-
-
 
   build_flutter_apk:
     docker:
@@ -222,57 +168,10 @@ commands:
           paths:
             - build/app/outputs/flutter-apk/app-release.apk
 
- workflows:
+workflows:
   version: 2
-
   feature-to-test:
     jobs:
-  #     - create_pr_feature_to_test:
-  #         filters:
-  #           branches:
-  #             ignore:
-
-  #                - tests
-  #                - main
-  #     - hold_for_test_pr_approval:
-  #         requires:
-  #           - create_pr_feature_to_test
-  #         filters:
-  #           branches:
-  #             ignore:
-  #               - tests
-  #               - main
-  #     - merge_feature_to_test:
-  #         requires:
-  #           - hold_for_test_pr_approval
-  #         filters:
-  #           branches:
-  #             ignore:
-  #               - tests
-  #               - main
-
-
-  # test-to-main:
-  #   jobs:
-  #     - create_pr_test_to_main:
-
-  #         filters:
-  #           branches:
-  #             only:
-  #               - tests
-  #     - hold_for_main_pr_approval:
-  #         requires:
-  #           - create_pr_test_to_main
-  #         filters:
-  #           branches:
-  #             only: tests
-  #     - merge_test_to_main:
-  #         requires:
-  #           - hold_for_main_pr_approval
-  #         filters:
-  #           branches:
-  #             only: tests
-
 
   test_and_build:
     jobs:
@@ -281,10 +180,3 @@ commands:
             branches:
               only:
                 - alpha
-      # - build_flutter_apk:
-      #     requires:
-      #       - test_job
-      #     filters:
-      #       branches:
-      #         only:
-      #           - main
