@@ -70,14 +70,6 @@ flutter:
     - assets/icons/
     - assets/animations/
 
-  flutter_intl:
-    enabled: true
-    arb_dir: lib/l10n
-    template_arbs: intl_en.arb
-    output_dir: lib/generated
-    output_class: AppLocalizations
-
-
   fonts:
     - family: OpenSans
       fonts:
@@ -87,6 +79,13 @@ flutter:
           weight: 600
         - asset: assets/fonts/OpenSans-Bold.ttf
           weight: 700
+          
+flutter_intl:
+    enabled: true
+    arb_dir: lib/l10n
+    template_arbs: intl_en.arb
+    output_dir: lib/generated
+    output_class: AppLocalizations          
 
 flutter_launcher_icons:
   image_path_android: "assets/images/logo.png"
