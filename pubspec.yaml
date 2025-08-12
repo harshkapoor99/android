@@ -70,11 +70,13 @@ flutter:
     - assets/icons/
     - assets/animations/
 
-  l10n:
-    arb-dir: lib/l10n
-    template-arb-file: intl_en.arb
-    output-localization-file: app_localizations.dart
-    output-class: AppLocalizations
+  flutter_intl:
+    enabled: true
+    arb_dir: lib/l10n
+    template_arbs: intl_en.arb
+    output_dir: lib/generated
+    output_class: AppLocalizations
+
 
   fonts:
     - family: OpenSans
