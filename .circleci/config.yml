@@ -132,8 +132,8 @@ jobs:
           command: flutter gen-l10n
 
 
-build_flutter_apk:
- <<: *flutter_docker
+ build_flutter_apk:
+   <<: *flutter_docker
    steps:
     - checkout
 
