@@ -1,67 +1,37 @@
 version: 2.1
 
-defaults: &flutter_docker
-  docker:
-    - image: ghcr.io/cirruslabs/flutter:3.27.0
-
-android_docker: &android_docker
-  docker:
-    - image: cimg/android:2024.09
+executors:
+  flutter_executor:
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
 
 jobs:
-  create_pr_alpha_to_main:
-    <<: *flutter_docker
+  build_release_apk:
+    executor: flutter_executor
     steps:
       - checkout
       - run:
-          name: Install GitHub CLI
-          command: |
-            sudo apt update && sudo apt install -y gh
+          name: Install dependencies
+          command: flutter pub get
       - run:
-          name: Create PR from alpha to main
+          name: Build Android Release APK
           command: |
-             gh pr create --base main --head harsh --title "Automated PR from harsh to main" --body "Auto-created by CircleCI"
+            flutter build apk --release
 
-  create_pr_main_to_tests:
-    <<: *flutter_docker
-    steps:
-      - checkout
-      - run:
-          name: Install GitHub CLI
-          command: |
-            sudo apt update && sudo apt install -y gh
-      - run:
-          name: Create PR from main to tests
-          command: |
-             gh pr create --base tests --head main --title "Automated PR from main to tests" --body "Auto-created by CircleCI"
+            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
+            TIMESTAMP=$(date +%F_%H-%M)
+            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
+            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
 
-  build_release_android_job:
-    <<: *android_docker
-    steps:
-      - checkout
-      - run:
-          name: Build Release APK
-          command: ./gradlew assembleRelease
+            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
+
+            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
       - store_artifacts:
-          path: app/build/outputs/apk/release/app-release.apk
-          destination: app-release.apk
+          path: build/app/outputs/flutter-apk
+          destination: apks
 
 workflows:
-  # pr_automation_workflow:
-  #   jobs:
-  #     - create_pr_alpha_to_main:
-  #         filters:
-  #           branches:
-  #             only: alpha
-  #     - create_pr_main_to_tests:
-  #         filters:
-  #           branches:
-  #             only: main
-
-  build_on_main_workflow:
+  build_on_main:
+    when: << pipeline.git.branch >> == "alpha"
     jobs:
-      - build_release_android_job:
-          filters:
-            branches:
-              only: alpha
-
+      - build_release_apk
