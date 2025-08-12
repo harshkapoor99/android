@@ -32,4 +32,5 @@ workflows:
   build_on_main:
     when: << pipeline.git.branch >> == "alpha"
     jobs:
-      - build_release_apk
+      - build_android_debug_apk
+      
