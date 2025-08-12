@@ -139,6 +139,20 @@ jobs:
           name: Install Flutter dependencies
           command: flutter pub get
       - run:
+          name: Check for duplicate ARB locale files
+          command: |
+              echo "🔍 Checking for duplicate ARB files..."
+              DUPLICATES=$(find lib/l10n -type f -name "*.arb" | sed -E 's/.*_([a-z]{2})\.arb/\1/' | sort | uniq -d)
+              if [ -n "$DUPLICATES" ]; then
+              echo "❌ Duplicate locale ARB files found for:"
+              echo "$DUPLICATES" | tr '\n' ' '
+              echo
+              find lib/l10n -name "*.arb"
+              exit 1
+              else
+               echo "✅ No duplicate ARB files found."
+              fi
+      - run:
           name: Generate Flutter localization files
           command: |
             flutter pub run intl_utils:generate || true
