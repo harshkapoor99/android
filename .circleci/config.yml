@@ -20,9 +20,7 @@ jobs:
       - run:
           name: Create PR from alpha to main
           command: |
-            echo "$GH_TOKEN" | gh auth login --with-token
-
-            gh pr create --base main --head alpha --title "Automated PR from harsh to main" --body "Auto-created by CircleCI"
+             gh pr create --base main --head harsh --title "Automated PR from harsh to main" --body "Auto-created by CircleCI"
 
   create_pr_main_to_tests:
     <<: *flutter_docker
@@ -35,9 +33,7 @@ jobs:
       - run:
           name: Create PR from main to tests
           command: |
-            echo "$GH_TOKEN" | gh auth login --with-token
-
-            gh pr create --base tests --head main --title "Automated PR from main to tests" --body "Auto-created by CircleCI"
+             gh pr create --base tests --head main --title "Automated PR from main to tests" --body "Auto-created by CircleCI"
 
   build_release_android_job:
     <<: *android_docker
