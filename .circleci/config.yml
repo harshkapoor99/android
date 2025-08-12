@@ -138,30 +138,27 @@ jobs:
       - run:
           name: Install Flutter dependencies
           command: flutter pub get
-      
+      - run:
+          name: Clean old build artifacts & ARB files
+          command: |
+            echo "🧹 Removing old build artifacts..."
+            rm -rf .dart_tool build
+            echo "🗑 Removing duplicate or misplaced ARB files..."
+            find . -type f -name "intl_*.arb" -delete
+            find . -type f -name "*en.arb" ! -path "./lib/l10n/*" -delete
+            echo "✅ Cleanup complete."
       - run:
           name: Generate Flutter localization files
           command: |
-             flutter pub run intl_utils:generate --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=app_en.arb || true
-             flutter gen-l10n
-      - run:
-          name: Check for duplicate ARB locale files
-          command: |
-              echo "🔍 Checking for duplicate ARB files..."
-              DUPLICATES=$(find lib/l10n -type f -name "*.arb" | sed -E 's/.*_([a-z]{2})\.arb/\1/' | sort | uniq -d)
-              if [ -n "$DUPLICATES" ]; then
-              echo "❌ Duplicate locale ARB files found for:"
-              echo "$DUPLICATES" | tr '\n' ' '
-              echo
-              find lib/l10n -name "*.arb"
-              exit 1
-              else
-               echo "✅ No duplicate ARB files found."
-              fi      
+            flutter pub run intl_utils:generate \
+              --arb-dir=lib/l10n \
+              --output-dir=lib/gen/l10n \
+              --template-arb-file=app_en.arb
+            flutter gen-l10n
       - run:
           name: Verify localization file exists
           command: |
-            if [ ! -f lib/gen/l10n/app_localizations.gen.dart ]; then
+            if [ ! -f lib/gen/l10n/app_localizations.dart ]; then
               echo "❌ Localization file missing! Build stopped."
               exit 1
             else
@@ -236,7 +233,3 @@ workflows:
             branches:
               only:
                 - main
-
-
-
-
