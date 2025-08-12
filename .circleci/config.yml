@@ -132,29 +132,46 @@ jobs:
           command: flutter gen-l10n
 
 
-  build_flutter_apk:
-    <<: *flutter_docker
-    steps:
-      - checkout
-      - run:
-          name: Install Flutter dependencies
-          command: flutter pub get
-      - run:
-          name: Generate Flutter localization files
-          command: flutter pub run intl_utils:generate
-      - run:
-          name: List generated localization files
-          command: ls -R lib/gen/l10n || echo "Localization files missing!"
-      - run:
-          name: Generate assets & other build_runner files
-          command: flutter pub run build_runner build --delete-conflicting-outputs
-      - run:
-          name: Build Flutter APK
-          command: flutter build apk --release
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build/app/outputs/flutter-apk/app-release.apk
+build_flutter_apk:
+  <<: *flutter_docker
+   steps:
+    - checkout
+
+    - run:
+        name: Install Flutter dependencies
+        command: flutter pub get
+
+    # Generate localization files (two ways to be safe)
+    - run:
+        name: Generate Flutter localization files
+        command: |
+          flutter pub run intl_utils:generate || true
+          flutter gen-l10n
+
+    # Check that the file now exists
+    - run:
+        name: Verify localization file exists
+        command: |
+          if [ ! -f lib/gen/l10n/app_localizations.gen.dart ]; then
+            echo "❌ Localization file missing! Build stopped."
+            exit 1
+          else
+            echo "✅ Localization file found."
+          fi
+
+    - run:
+        name: Generate assets & other build_runner files
+        command: flutter pub run build_runner build --delete-conflicting-outputs
+
+    - run:
+        name: Build Flutter APK
+        command: flutter build apk --release
+
+    - persist_to_workspace:
+        root: .
+        paths:
+          - build/app/outputs/flutter-apk/app-release.apk
+
       
 
 workflows:
