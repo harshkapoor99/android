@@ -133,7 +133,7 @@ jobs:
 
 
 build_flutter_apk:
-  <<: *flutter_docker
+ <<: *flutter_docker
    steps:
     - checkout
 
