@@ -20,7 +20,8 @@ jobs:
       - run:
           name: Create PR from alpha to main
           command: |
-            gh auth login --with-token <<< "$GH_TOKEN"
+            echo "$GH_TOKEN" | gh auth login --with-token
+
             gh pr create --base main --head alpha --title "Automated PR from harsh to main" --body "Auto-created by CircleCI"
 
   create_pr_main_to_tests:
@@ -34,7 +35,8 @@ jobs:
       - run:
           name: Create PR from main to tests
           command: |
-            gh auth login --with-token <<< "$GH_TOKEN"
+            echo "$GH_TOKEN" | gh auth login --with-token
+
             gh pr create --base tests --head main --title "Automated PR from main to tests" --body "Auto-created by CircleCI"
 
   build_release_android_job:
