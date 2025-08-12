@@ -138,6 +138,12 @@ jobs:
       - run:
           name: Install Flutter dependencies
           command: flutter pub get
+      
+      - run:
+          name: Generate Flutter localization files
+          command: |
+            flutter pub run intl_utils:generate || true
+            flutter gen-l10n
       - run:
           name: Check for duplicate ARB locale files
           command: |
@@ -151,12 +157,7 @@ jobs:
               exit 1
               else
                echo "✅ No duplicate ARB files found."
-              fi
-      - run:
-          name: Generate Flutter localization files
-          command: |
-            flutter pub run intl_utils:generate || true
-            flutter gen-l10n
+              fi      
       - run:
           name: Verify localization file exists
           command: |
