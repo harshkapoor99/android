@@ -18,7 +18,7 @@ jobs:
           command: |
             sudo apt update && sudo apt install -y gh
       - run:
-          name: Create PR from harsh to main
+          name: Create PR from alpha to main
           command: |
             gh auth login --with-token <<< "$GH_TOKEN"
             gh pr create --base main --head alpha --title "Automated PR from harsh to main" --body "Auto-created by CircleCI"
@@ -51,7 +51,7 @@ jobs:
 workflows:
   pr_automation_workflow:
     jobs:
-      - create_pr_harsh_to_main:
+      - create_pr_alpha_to_main:
           filters:
             branches:
               only: alpha
