@@ -7,29 +7,26 @@ executors:
 
 
 jobs:
-  build_release_apk:
-    executor: flutter_executor
+  build_android_debug_apk:
+    docker:
+      - image: ghcr.io/cirruslabs/flutter:3.27.0
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: flutter pub get
       - run:
-          name: Build Android Release APK
+          name: Build Android Debug APK
           command: |
-            flutter build apk --release
-
-            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
+            flutter build apk --debug
             TIMESTAMP=$(date +%F_%H-%M)
-            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
-            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
-
-            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
-
-            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
+            DYNAMIC_FILENAME="app-debug-${TIMESTAMP}.apk"
+            mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/$DYNAMIC_FILENAME
+            echo "export DYNAMIC_FILENAME=$DYNAMIC_FILENAME" >> $BASH_ENV
       - store_artifacts:
           path: build/app/outputs/flutter-apk
-          destination: apks
+          destination: apk
+
 
 workflows:
   build_on_main:
