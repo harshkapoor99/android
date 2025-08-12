@@ -3,7 +3,8 @@ version: 2.1
 executors:
   flutter_executor:
     docker: 
-      - image: ghcr.io/cirruslabs/flutter:latest
+      - image: ghcr.io/cirruslabs/flutter:3.28.0
+
 
 
 
