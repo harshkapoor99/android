@@ -1,44 +1,96 @@
 version: 2.1
 
-jobs:
-  build_release_apk:
-    docker:
-       - image: ghcr.io/cirruslabs/flutter:latest
+defaults: &flutter_docker
+  docker:
+    - image: ghcr.io/cirruslabs/flutter:latest # Flutter + Dart
 
+commands:
+  flutter_setup:
     steps:
-      - checkout
-
       - run:
-          name: Install dependencies
+          name: Install Flutter dependencies
+          command: flutter pub get
+
+  android_build_and_artifact:
+    description: "Build Android release APK and store as artifact"
+    steps:
+      - run:
+          name: Generating asset, font, and code files
+          command: dart run build_runner build
+      - run:
+          name: Generating app locales
           command: |
-            flutter pub get
-
+            flutter gen-l10n --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=app_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
       - run:
-          name: Build Release APK (unsigned in CI)
+          name: Decode and store signing key
+          command: |
+            echo "Decoding and storing key.properties file..."
+            echo $KEYPROPERTIES | base64 --decode > android/key.properties
+            if [ -f android/key.properties ]; then
+              echo "key.properties created successfully."
+            else
+              echo "Failed to create key.properties!"
+              exit 1
+            fi
+      - run:
+          name: Build Android Release APK
           command: |
             flutter build apk --release
 
-            # Generate a timestamp
+            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
             TIMESTAMP=$(date +%F_%H-%M)
-            BRANCH_NAME=${CIRCLE_BRANCH:-unknown}
+            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
 
-            # Construct the filename
-            ARTIFACT_NAME="app-release_${BRANCH_NAME}-${TIMESTAMP}.apk"
+            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
 
-            # Rename the APK
-            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$ARTIFACT_NAME
+            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
 
-            # Save filename for next steps
-            echo "export ARTIFACT_NAME=$ARTIFACT_NAME" >> $BASH_ENV
-
+            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
       - store_artifacts:
           path: build/app/outputs/flutter-apk
-          destination: apk-artifacts
+          destination: android_apks
+
+jobs:
+  build_alpha_android_job:
+    <<: *flutter_docker
+    resource_class: large
+    steps:
+      - checkout
+      - flutter_setup
+      - run:
+          name: "Change Package Name for Alpha"
+          command: |
+            OLD_PACKAGE="com.guftagu.app"
+            NEW_PACKAGE="com.guftagu.alpha"
+
+            echo "Changing Android package name from $OLD_PACKAGE to $NEW_PACKAGE"
+
+            sed -i "s/${OLD_PACKAGE}/${NEW_PACKAGE}/g" android/app/src/main/AndroidManifest.xml
+            sed -i "s/applicationId = \"${OLD_PACKAGE}\"/applicationId = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
+            sed -i "s/namespace = \"${OLD_PACKAGE}\"/namespace = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
+
+            OLD_PATH="android/app/src/main/kotlin/com/guftagu/app"
+            NEW_PATH="android/app/src/main/kotlin/com/guftagu/alpha"
+            mkdir -p "$NEW_PATH"
+            mv "$OLD_PATH/MainActivity.kt" "$NEW_PATH/MainActivity.kt"
+            sed -i "s/package ${OLD_PACKAGE}/package ${NEW_PACKAGE}/g" "$NEW_PATH/MainActivity.kt"
+            rmdir "$OLD_PATH"
+
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' android/app/src/main/AndroidManifest.xml
+
+            sed -i "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
+            sed -i "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
+
+      - android_build_and_artifact
+      - run:
+          name: Alpha Build Specific Steps
+          command: |
+            echo "Alpha build completed for tag: $CIRCLE_TAG"
+            # Add alpha deployment steps here
 
 workflows:
-  build_on_main:
-    when:
-      condition:
-        equal: [ alpha, << pipeline.git.branch >> ]
+  version: 2
+  alpha_build_workflow:
     jobs:
-      - build_release_apk
+      - build_alpha_android_job
