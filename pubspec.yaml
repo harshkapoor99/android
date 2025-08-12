@@ -93,7 +93,7 @@ flutter_launcher_icons:
 flutter_intl:
     enabled: true
     arb_dir: lib/l10n
-    template_arb_file: intl_en.arb
+    template_arb_file: app_en.arb
     output_dir: lib/generated
     output_class: AppLocalizations 
 
