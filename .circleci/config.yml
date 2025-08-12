@@ -142,8 +142,8 @@ jobs:
       - run:
           name: Generate Flutter localization files
           command: |
-            flutter pub run intl_utils:generate || true
-            flutter gen-l10n
+             flutter pub run intl_utils:generate --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=app_en.arb || true
+             flutter gen-l10n
       - run:
           name: Check for duplicate ARB locale files
           command: |
