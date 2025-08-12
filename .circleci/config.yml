@@ -1,38 +1,43 @@
 version: 2.1
 
-executors:
-  flutter_executor:
-    docker: 
-      - image: ghcr.io/cirruslabs/flutter:3.28.0
-
-
-
-
 jobs:
-  build_android_debug_apk:
+  build_release_apk:
     docker:
-      - image: ghcr.io/cirruslabs/flutter:3.27.0
+      - image: cimg/flutter:3.27.0
     steps:
       - checkout
+
       - run:
           name: Install dependencies
-          command: flutter pub get
-      - run:
-          name: Build Android Debug APK
           command: |
-            flutter build apk --debug
+            flutter pub get
+
+      - run:
+          name: Build Release APK (unsigned in CI)
+          command: |
+            flutter build apk --release
+
+            # Generate a timestamp
             TIMESTAMP=$(date +%F_%H-%M)
-            DYNAMIC_FILENAME="app-debug-${TIMESTAMP}.apk"
-            mv build/app/outputs/flutter-apk/app-debug.apk build/app/outputs/flutter-apk/$DYNAMIC_FILENAME
-            echo "export DYNAMIC_FILENAME=$DYNAMIC_FILENAME" >> $BASH_ENV
+            BRANCH_NAME=${CIRCLE_BRANCH:-unknown}
+
+            # Construct the filename
+            ARTIFACT_NAME="app-release_${BRANCH_NAME}-${TIMESTAMP}.apk"
+
+            # Rename the APK
+            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$ARTIFACT_NAME
+
+            # Save filename for next steps
+            echo "export ARTIFACT_NAME=$ARTIFACT_NAME" >> $BASH_ENV
+
       - store_artifacts:
           path: build/app/outputs/flutter-apk
-          destination: apk
-
+          destination: apk-artifacts
 
 workflows:
   build_on_main:
-    when: << pipeline.git.branch >> == "alpha"
+    when:
+      condition:
+        equal: [ alpha, << pipeline.git.branch >> ]
     jobs:
-      - build_android_debug_apk
-      
+      - build_release_apk
