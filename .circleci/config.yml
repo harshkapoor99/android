@@ -50,7 +50,7 @@ commands:
           path: build/app/outputs/flutter-apk
           destination: android_apks
 
- jobs:
+jobs:
   build_alpha_android_job:
     <<: *flutter_docker
     resource_class: large
@@ -94,7 +94,6 @@ commands:
           command: |
             echo "Alpha build completed for tag: $CIRCLE_TAG"
             # Add alpha deployment steps here
-
 
 workflows:
   version: 2
