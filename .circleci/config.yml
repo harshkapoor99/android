@@ -2,6 +2,7 @@ version: 2.1
 
 defaults: &flutter_docker
   docker:
+
     - image: ghcr.io/cirruslabs/flutter:latest # Flutter + Dart
 
 commands:
@@ -49,6 +50,7 @@ commands:
       - store_artifacts:
           path: build/app/outputs/flutter-apk
           destination: android_apks
+
 
 jobs:
   create_pr_feature_to_test:
@@ -191,6 +193,7 @@ jobs:
           command: |
             echo $KEYSTORE_BASE64 | base64 --decode > android/app/guftagu-release.jks
 
+ 
       - run:
           name: Decode key.properties file
           command: |
@@ -227,6 +230,7 @@ workflows:
             branches:
               only:
                 - harsh
+
   test-to-main:
     jobs:
       - create_pr_test_to_main:
@@ -248,7 +252,9 @@ workflows:
               only: tests
   alpha_build_workflow:
     jobs:
+
       - build_alpha_android_job:
+
           filters:
             branches:
               only:
