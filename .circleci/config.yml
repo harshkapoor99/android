@@ -83,6 +83,11 @@ jobs:
             sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
 
       - run:
+          name: Decode keystore file
+          command: |
+            echo $KEYSTORE_BASE64 | base64 --decode > android/app/guftagu-release.jks
+
+      - run:
           name: Decode key.properties file
           command: |
             echo "$KEYPROPERTIES" | base64 --decode > android/key.properties
