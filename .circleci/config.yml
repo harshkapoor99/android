@@ -2,7 +2,55 @@ version: 2.1
 
 defaults: &flutter_docker
   docker:
-    - image: ghcr.io/cirruslabs/flutter:latest # ✅ Flutter 3.27.3 includes Dart 3.7.x
+
+    - image: ghcr.io/cirruslabs/flutter:latest # Flutter + Dart
+
+commands:
+  flutter_setup:
+    steps:
+      - run:
+          name: Install Flutter dependencies
+          command: flutter pub get
+
+  android_build_and_artifact:
+    description: "Build Android release APK and store as artifact"
+    steps:
+      - run:
+          name: Generating asset, font, and code files
+          command: dart run build_runner build
+      - run:
+          name: Generating app locales
+          command: |
+            flutter gen-l10n --no-synthetic-package --arb-dir=lib/l10n --output-dir=lib/gen/l10n --template-arb-file=app_en.arb --no-use-escaping --no-nullable-getter --output-localization-file=app_localizations.gen.dart
+      - run:
+          name: Decode and store signing key
+          command: |
+            echo "Decoding and storing key.properties file..."
+            echo $KEYPROPERTIES | base64 --decode > android/key.properties
+            if [ -f android/key.properties ]; then
+              echo "key.properties created successfully."
+            else
+              echo "Failed to create key.properties!"
+              exit 1
+            fi
+      - run:
+          name: Build Android Release APK
+          command: |
+            flutter build apk --release
+
+            TAG_NAME=${CIRCLE_TAG:-"no-tag"}
+            TIMESTAMP=$(date +%F_%H-%M)
+            DYNAMIC_ARTIFACT_FILENAME="app-release_${TAG_NAME}-${TIMESTAMP}"
+
+            echo "Generated artifact filename: $DYNAMIC_ARTIFACT_FILENAME"
+
+            mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/$DYNAMIC_ARTIFACT_FILENAME.apk
+
+            echo "export DYNAMIC_ARTIFACT_FILENAME=$DYNAMIC_ARTIFACT_FILENAME" >> $BASH_ENV
+      - store_artifacts:
+          path: build/app/outputs/flutter-apk
+          destination: android_apks
+
 
 jobs:
   create_pr_feature_to_test:
@@ -109,41 +157,55 @@ jobs:
             git merge --no-ff tests -m "Auto-merged tests to main after approval"
             git push origin main
 
-  test_job:
+  build_alpha_android_job:
     <<: *flutter_docker
+    resource_class: large
     steps:
       - checkout
+      - flutter_setup
       - run:
-          name: Install Dependencies
-          command: flutter pub get
-      - run:
-          name: Run Tests
-          command: flutter test
-
-  generate_flutter_localizations:
-    <<: *flutter_docker
-    steps:
-      - checkout
-      - run:
-          name: Install Flutter dependencies
-          command: flutter pub get
-      - run:
-          name: Generate Flutter localization files
-          command: flutter gen-l10n
-
-  build_flutter_apk:
-    <<: *flutter_docker
-    steps:
-      - checkout
-      - run:
-          name: Build Flutter APK
+          name: "Change Package Name for Alpha"
           command: |
-            flutter pub get
-            flutter build apk --release
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build/app/outputs/flutter-apk/app-release.apk
+            OLD_PACKAGE="com.guftagu.app"
+            NEW_PACKAGE="com.guftagu.alpha"
+
+            echo "Changing Android package name from $OLD_PACKAGE to $NEW_PACKAGE"
+
+            sed -i "s/${OLD_PACKAGE}/${NEW_PACKAGE}/g" android/app/src/main/AndroidManifest.xml
+            sed -i "s/applicationId = \"${OLD_PACKAGE}\"/applicationId = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
+            sed -i "s/namespace = \"${OLD_PACKAGE}\"/namespace = \"${NEW_PACKAGE}\"/g" android/app/build.gradle.kts
+
+            OLD_PATH="android/app/src/main/kotlin/com/guftagu/app"
+            NEW_PATH="android/app/src/main/kotlin/com/guftagu/alpha"
+            mkdir -p "$NEW_PATH"
+            mv "$OLD_PATH/MainActivity.kt" "$NEW_PATH/MainActivity.kt"
+            sed -i "s/package ${OLD_PACKAGE}/package ${NEW_PACKAGE}/g" "$NEW_PATH/MainActivity.kt"
+            rmdir "$OLD_PATH"
+
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' android/app/src/main/AndroidManifest.xml
+
+            sed -i "s/PRODUCT_BUNDLE_IDENTIFIER = ${OLD_PACKAGE}/PRODUCT_BUNDLE_IDENTIFIER = ${NEW_PACKAGE}/g" ios/Runner.xcodeproj/project.pbxproj
+            sed -i "s/<string>${OLD_PACKAGE}<\/string>/<string>${NEW_PACKAGE}<\/string>/g" ios/Runner/Info.plist
+            sed -i 's/Guftagu/Guftagu(Alpha)/g' ios/Runner/Info.plist
+
+      - run:
+          name: Decode keystore file
+          command: |
+            echo $KEYSTORE_BASE64 | base64 --decode > android/app/guftagu-release.jks
+
+ 
+      - run:
+          name: Decode key.properties file
+          command: |
+            echo "$KEYPROPERTIES" | base64 --decode > android/key.properties
+
+      - android_build_and_artifact
+
+      - run:
+          name: Alpha Build Specific Steps
+          command: |
+            echo "Alpha build completed for tag: $CIRCLE_TAG"
+            # Add alpha deployment steps here
 
 workflows:
   version: 2
@@ -188,21 +250,13 @@ workflows:
           filters:
             branches:
               only: tests
-
-  test_and_build:
+  alpha_build_workflow:
     jobs:
-      - generate_flutter_localizations:
+
+      - build_alpha_android_job:
+
           filters:
             branches:
               only:
                 - main
-      - build_flutter_apk:
-          requires:
-            - generate_flutter_localizations
-          filters:
-            branches:
-              only:
-                - main
-
-
 
